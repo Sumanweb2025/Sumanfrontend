@@ -1,0 +1,20 @@
+.top-header {
+  background-color: #d62323;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 20px;
+  font-size: 14px;
+}
+
+.top-left,
+.top-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.top-right {
+  gap: 12px;
+}
