@@ -33,3 +33,45 @@
 .phone-number {
   color: orange;
 }
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  background: none;
+  border: none;
+  color: #fff;
+  font-weight: 500;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.dropdown-toggle:hover {
+  text-decoration: underline;
+}
+
+.dropdown-content {
+  position: absolute;
+  background-color: #fff;
+  top: 40px;
+  left: 0;
+  min-width: 160px;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+  z-index: 1000;
+  border-radius: 4px;
+}
+
+.dropdown-content a {
+  display: block;
+  padding: 10px 15px;
+  color: #015329;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.dropdown-content a:hover {
+  background-color: #f0f0f0;
+}
