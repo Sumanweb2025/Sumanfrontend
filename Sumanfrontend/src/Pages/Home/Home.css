@@ -1,0 +1,70 @@
+.ad-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to right, #1d8332, #42b04f);
+  padding: 50px;
+  color: #fff;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.7s ease;
+}
+
+.ad-section.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ad-text {
+  flex: 1;
+  padding-right: 40px;
+}
+
+.ad-text h1 {
+  font-size: 32px;
+  font-weight: bold;
+  color: #ffda7e;
+  margin-bottom: 10px;
+}
+
+.ad-text h2 {
+  font-size: 36px;
+  font-family: 'Georgia', serif;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.ad-text p {
+  font-size: 18px;
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.6;
+}
+
+.ad-badge {
+  margin-top: 15px;
+  display: inline-block;
+  background: #ffc107;
+  color: #333;
+  padding: 6px 14px;
+  border-radius: 18px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.ad-images {
+  flex: 1;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.ad-img {
+  width: 160px;
+  border-radius: 12px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+  transition: transform 0.4s ease;
+}
+
+.ad-img:hover {
+  transform: scale(1.05);
+}
