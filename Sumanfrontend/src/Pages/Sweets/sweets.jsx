@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './Groceries.css'; // reuse the same styles
+import './sweets.css';
 import Header from '../../Components/Header/Header';
 import Footer from "../../Components/Footer/Footer";
 
-const GroceriesPage = ({ addToCart, onFilterChange, activeFilters }) => {
+const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [wishlistItems, setWishlistItems] = useState([]);
@@ -20,7 +20,7 @@ const GroceriesPage = ({ addToCart, onFilterChange, activeFilters }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const productsResponse = await axios.get(`${API_URL}api/products/search?category=Groceries`);
+        const productsResponse = await axios.get(`${API_URL}api/products/search?category=sweets`);
         const productsData = productsResponse.data?.data || productsResponse.data?.products || productsResponse.data;
         setProducts(productsData);
 
@@ -28,9 +28,7 @@ const GroceriesPage = ({ addToCart, onFilterChange, activeFilters }) => {
         if (token) {
           try {
             const wishlistResponse = await axios.get(`${API_URL}/api/wishlist`, {
-              headers: {
-                'Authorization': `Bearer ${token}`
-              }
+              headers: { 'Authorization': `Bearer ${token}` }
             });
             const wishlistData = wishlistResponse.data?.data || wishlistResponse.data;
             setWishlistItems(wishlistData.map(item => item.product_id || item.productId));
@@ -51,22 +49,14 @@ const GroceriesPage = ({ addToCart, onFilterChange, activeFilters }) => {
 
   useEffect(() => {
     let result = [...products];
-
     if (activeFilters?.brand) {
-      result = result.filter(product =>
-        product.brand?.toLowerCase() === activeFilters.brand.toLowerCase()
-      );
+      result = result.filter(product => product.brand?.toLowerCase() === activeFilters.brand.toLowerCase());
     }
-
     if (activeFilters?.category) {
-      result = result.filter(product =>
-        product.category?.toLowerCase() === activeFilters.category.toLowerCase()
-      );
+      result = result.filter(product => product.category?.toLowerCase() === activeFilters.category.toLowerCase());
     }
-
     if (searchTerm.trim()) {
       const searchTerms = searchTerm.toLowerCase().split(' ').filter(term => term.length > 0);
-
       result = result.filter(product => {
         const productFields = [
           product.name?.toLowerCase() || '',
@@ -75,44 +65,31 @@ const GroceriesPage = ({ addToCart, onFilterChange, activeFilters }) => {
           product.description?.toLowerCase() || '',
           product.tags?.join(' ')?.toLowerCase() || ''
         ].join(' ');
-
-        return searchTerms.every(term =>
-          productFields.includes(term)
-        );
+        return searchTerms.every(term => productFields.includes(term));
       });
     }
-
     setFilteredProducts(result);
     setCurrentPage(1);
   }, [products, activeFilters, searchTerm]);
 
   const clearFilter = (type) => {
-    const newFilters = { ...activeFilters, [type]: '' };
-    if (onFilterChange) {
-      onFilterChange(newFilters);
-    }
+    const newFilters = {...activeFilters, [type]: ''};
+    if (onFilterChange) onFilterChange(newFilters);
   };
 
   const clearAllFilters = () => {
-    if (onFilterChange) {
-      onFilterChange({ brand: '', category: '' });
-    }
+    if (onFilterChange) onFilterChange({ brand: '', category: '' });
   };
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  const handleClearSearch = () => {
-    setSearchTerm('');
-  };
+  const handleClearSearch = () => setSearchTerm('');
 
   const handleWishlistClick = async (productId) => {
     if (!productId || wishlistLoading) return;
-
     setWishlistLoading(true);
     try {
       const token = localStorage.getItem('token');
@@ -120,16 +97,13 @@ const GroceriesPage = ({ addToCart, onFilterChange, activeFilters }) => {
         alert('Please login to add items to your wishlist');
         return;
       }
-
       const config = {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       };
-
       const isInWishlist = wishlistItems.includes(productId);
-
       if (isInWishlist) {
         await axios.delete(`${API_URL}/api/wishlist/${productId}`, config);
         setWishlistItems(prev => prev.filter(id => id !== productId));
@@ -152,7 +126,6 @@ const GroceriesPage = ({ addToCart, onFilterChange, activeFilters }) => {
         alert('Please login to add items to your cart');
         return;
       }
-
       await addToCart(product);
       alert(`${product.name} added to cart!`);
     } catch (err) {
@@ -161,15 +134,15 @@ const GroceriesPage = ({ addToCart, onFilterChange, activeFilters }) => {
     }
   };
 
-  if (loading) return <div className="loading">Loading Groceries...</div>;
+  if (loading) return <div className="loading">Loading sweets...</div>;
   if (error) return <div className="error">Error: {error}</div>;
 
   return (
     <>
       <Header />
-      <div className="products-container">
+      <div className="sweets-container">
         <h1>Welcome to the Suman Food!</h1>
-        <h2>Groceries</h2>
+        <h2>Sweets Products</h2>
 
         {(activeFilters?.brand || activeFilters?.category) && (
           <div className="active-filters">
@@ -193,7 +166,7 @@ const GroceriesPage = ({ addToCart, onFilterChange, activeFilters }) => {
         <div className="search-container">
           <input
             type="text"
-            placeholder="Search groceries by name, brand or description..."
+            placeholder="Search sweets by name, brand or category..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
@@ -204,12 +177,12 @@ const GroceriesPage = ({ addToCart, onFilterChange, activeFilters }) => {
         </div>
 
         {filteredProducts.length === 0 ? (
-          <div className="empty">No groceries found</div>
+          <div className="empty">No sweets found matching your criteria</div>
         ) : (
           <>
-            <div className="products-grid">
+            <div className="sweets-grid">
               {currentProducts.map((product) => (
-                <div key={product.product_id || product.id} className="grocery-product-card">
+                <div key={product.product_id || product.id} className="sweet-product-card">
                   <div className="product-image-container">
                     <img
                       src={product.imageUrl || `${API_URL}/uploads/${product.image}`}
@@ -222,7 +195,7 @@ const GroceriesPage = ({ addToCart, onFilterChange, activeFilters }) => {
                     />
                   </div>
 
-                  <div className="grocery-product-details">
+                  <div className="sweet-product-details">
                     <h2 className="product-name">{product.name}</h2>
                     <div className="product-brand">{product.brand}</div>
                     <div className="product-category">{product.category}</div>
@@ -278,4 +251,4 @@ const GroceriesPage = ({ addToCart, onFilterChange, activeFilters }) => {
   );
 };
 
-export default GroceriesPage;
+export default SweetsListingPage;
