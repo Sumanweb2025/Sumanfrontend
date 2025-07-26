@@ -15,7 +15,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(8);
 
-  const API_URL = 'http://localhost:5000/';
+  const API_URL = 'http://localhost:8000/';
 
   // Fetch all products and user's wishlist
   useEffect(() => {

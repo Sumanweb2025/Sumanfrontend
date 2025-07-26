@@ -8,7 +8,6 @@ import Ourproduct1 from "../src/Components/Ourproduct1/Ourproduct1";
 import Gutproduct from "../src/Components/Gudproduct/Gudproduct";
 import Offer from "../src/Components/Offer/Offer";
 import Groceries from './Pages/Groceries/Groceries';
-import Navbar from './Components/Navbar/Navbar';
 import Iyyapa from './Components/Iyyapa/Iyyapa';
 import Amirth from './Components/Amirth/Amirth';
 import Venba from './Components/Venba/Venba';
@@ -19,7 +18,6 @@ import Footer from './Components/Footer/Footer';
 const App = () => {
   return (
     <Router>
-      <Navbar />
       <Routes>
         <Route exact path="/" element={<Home />} />
          <Route path="/product" element={<Product />} />
