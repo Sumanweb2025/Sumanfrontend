@@ -1,13 +1,13 @@
 import React from 'react';
 import './MainHeader.css';
-import image4 from '../../assets/image4.jpg'
+import logoImage from '../../assets/logo.jpeg';
 import { FaSearch, FaUser, FaHeart, FaShoppingCart } from 'react-icons/fa';
 
 const MainHeader = () => {
   return (
     <div className="main-header">
       {/* Logo */}
-      <img src="image4" alt="Logo" className="main-logo" />
+      <img src={logoImage} alt="Logo" className="main-logo" width={280}/>
 
       {/* Search Bar */}
       <div className="search-bar">
