@@ -3,6 +3,10 @@ import Header from '../../Components/Header/Header';
 import image1 from '../../assets/image1.jpg';
 import image2 from '../../assets/image2.jpg';
 import Product from '../../Components/Product/Product';
+import Oruproduct from '../../Components/Ourproduct/Ourproduct';
+import Ourproduct1 from "../../Components/Ourproduct1/Ourproduct1";
+import GutProduct from '../../Components/Gudproduct/Gudproduct';
+import Offer from '../../Components/Offer/Offer';
 import './Home.css';
 
 const Home = () => {
@@ -31,7 +35,11 @@ const Home = () => {
         </div>
         
       </div>
+      <Oruproduct/>
       <Product/>
+      <Ourproduct1/>
+      <Offer/>
+      <GutProduct/>
     </>
   );
 };

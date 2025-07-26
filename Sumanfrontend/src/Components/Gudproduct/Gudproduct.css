@@ -1,0 +1,143 @@
+/* Page container */
+.get-product-page {
+  font-family: 'Poppins', sans-serif;
+  background-color: #2d5a27;
+  padding: 30px 20px;
+  text-align: center;
+}
+
+/* Headings */
+.get-product-page header h1 {
+  font-size: 2.5rem;
+  color: #F5B800;;
+  margin-bottom: 8px;
+}
+
+.get-product-page header h2 {
+  font-size: 1.1rem;
+  color: white;
+  margin-bottom: 20px;
+}
+
+/* Toggle buttons */
+.get-category-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.get-category-toggle button {
+  padding: 8px 18px;
+  border: none;
+  background-color: #F5B800;
+  color: #2d5a27;
+  font-weight: bold;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.get-category-toggle .get-active {
+  background-color: #2d5a27;
+  color:#F5B800;
+  border: 2px solid #F5B800;
+}
+
+/* Product grid */
+.get-product-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+/* Product card styles */
+.get-product-card {
+ display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  border-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  max-height: 160px;
+  transition: transform 0.3s ease;
+}
+
+.get-product-card:hover {
+  transform: scale(1.03);
+}
+
+.get-product-card img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 0 auto 10px;
+  display: block;
+}
+.get-product-card .get-content {
+  flex: 1;
+  text-align: left;
+}
+
+.get-product-card .get-content h3 {
+  font-size: 1rem;
+  color: #5a3725;
+  margin: 4px 0;
+}
+
+.get-product-card .get-content p {
+  font-size: 0.85rem;
+  color: #a1755c;
+  margin-bottom: 4px;
+}
+
+/* Cart icon */
+.get-product-card::after {
+  content: '🛒';
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  font-size: 1.2rem;
+}
+
+.get-product-card h3 {
+  font-size: 0.9rem;
+  color: #5a3725;
+  margin: 4px 0;
+}
+
+.get-product-card p {
+  font-size: 0.8rem;
+  color: #a1755c;
+  margin-bottom: 4px;
+}
+
+/* Cart icon */
+.get-product-card::after {
+  content: '🛒';
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-size: 1.2rem;
+}
+
+/* Footer button */
+.get-shop-button {
+ background-color: #F5B800;
+  color: #2d5a27;
+  padding: 10px 28px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.get-shop-button:hover {
+  background-color: #3f2719;
+}

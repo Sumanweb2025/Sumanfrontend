@@ -1,0 +1,151 @@
+.discovery-container {
+  background-color: #f9f5f0;
+  padding: 80px 20px;
+  font-family: 'Arial', sans-serif;
+  overflow: hidden;
+}
+
+.discovery-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 50px;
+}
+
+.discovery-text {
+  flex: 1;
+  text-align: left;
+}
+
+.discovery-image-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.discovery-image-container {
+  position: relative;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transition: all 0.8s ease;
+  height: 180px;
+}
+
+.discovery-image-container.visible {
+  opacity: 1;
+}
+
+.discovery-image-container.left {
+  transform: translateX(-100px);
+}
+
+.discovery-image-container.right {
+  transform: translateX(100px);
+}
+
+.discovery-image-container.visible.left,
+.discovery-image-container.visible.right {
+  transform: translateX(0);
+}
+
+.discovery-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.discovery-image:hover {
+  transform: scale(1.05);
+}
+
+.discovery-title {
+  color: #2d5a27;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  font-family: 'Georgia', serif;
+}
+
+.discovery-subtitle {
+  color: #333;
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 1.3;
+  margin-bottom: 25px;
+}
+
+.discovery-description {
+  color: #666;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 35px;
+}
+
+.discovery-buttons {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.discovery-btn {
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.discovery-btn.primary {
+  background-color: #F5B800;
+  color: #2d5a27;
+}
+
+.discovery-btn.secondary {
+  background-color: transparent;
+  color: #2d5a27;
+  border: 2px solid #2d5a27;
+}
+
+.discovery-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .discovery-content {
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .discovery-text {
+    text-align: center;
+  }
+  
+  .discovery-image-grid {
+    width: 100%;
+  }
+  
+  .discovery-title {
+    font-size: 2rem;
+  }
+  
+  .discovery-subtitle {
+    font-size: 1.6rem;
+  }
+  
+  .discovery-description {
+    font-size: 1rem;
+  }
+  
+  .discovery-buttons {
+    justify-content: center;
+  }
+}

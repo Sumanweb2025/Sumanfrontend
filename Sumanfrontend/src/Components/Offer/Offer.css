@@ -1,0 +1,127 @@
+/* Offer.css */
+.offer-banner {
+  background-color: #F39C12;
+  padding: 50px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  font-family: 'Segoe UI', sans-serif;
+  color: #fff;
+  gap: 40px;
+}
+
+.image-section img {
+  width: 150px;
+  margin-right: 20px;
+  transition: transform 0.4s ease;
+}
+
+.image-section img:hover {
+  transform: scale(1.1) rotate(-2deg);
+}
+
+.offer-details {
+  text-align: center;
+}
+
+.discount-badge {
+  background-color: #b84c24;
+  width: 200px;
+  height: 200px;
+  position: relative;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bubble {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 3px solid #ffc107;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.text {
+  color: #ffc107;
+  font-family: cursive;
+  text-align: center;
+}
+
+.percent {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.off {
+  font-size: 24px;
+  margin-top: 5px;
+}
+
+.curve.bottom {
+  position: absolute;
+  width: 60px;
+  height: 20px;
+  border-bottom: 4px solid #ffc107;
+  border-radius: 50%;
+  bottom: -10px;
+  left: 20px;
+  transform: rotate(-20deg);
+}
+
+.curve.bottom.second {
+  bottom: -20px;
+  left: 30px;
+  width: 70px;
+  transform: rotate(-30deg);
+}
+
+
+@keyframes pulseBadge {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.offer-details h1 {
+  font-size: 48px;
+  margin: 16px 0;
+  text-shadow: 1px 1px 2px #000;
+}
+
+.offer-details h3 {
+  font-size: 20px;
+  font-style: italic;
+  margin-bottom: 20px;
+}
+
+.offer-details button {
+  background-color: #F1C40F;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  color: #000;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.offer-details button:hover {
+  background-color: #FFD700;
+  transform: translateY(-2px);
+}
