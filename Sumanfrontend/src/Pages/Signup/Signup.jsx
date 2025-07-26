@@ -73,7 +73,7 @@ const SignUp = () => {
     setErrors({});
 
     try {
-      const response = await axios.post('http://localhost:5000/api/register', { // Updated endpoint
+      const response = await axios.post('http://localhost:8000/api/register', { // Updated endpoint
         name: signupData.name.trim(),
         email: signupData.email.toLowerCase().trim(),
         password: signupData.password

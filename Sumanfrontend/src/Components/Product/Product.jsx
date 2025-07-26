@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './Product.css';
 
-const API_URL = 'http://localhost:5000';
+const API_URL = 'http://localhost:8000';
 
 const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) => {
   const [products, setProducts] = useState([]);
