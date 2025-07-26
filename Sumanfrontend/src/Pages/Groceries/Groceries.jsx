@@ -15,7 +15,7 @@ const GroceriesPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(8);
 
-  const API_URL = 'http://localhost:8000/';
+  const API_URL = 'http://localhost:5000/';
 
   useEffect(() => {
     const fetchData = async () => {
@@ -167,39 +167,39 @@ const GroceriesPage = ({ addToCart, onFilterChange, activeFilters }) => {
   return (
     <>
       <Header />
-      <div className="products-container">
+      <div className="gro-products-container">
         <h1>Welcome to the Suman Food!</h1>
         <h2>Groceries</h2>
 
         {(activeFilters?.brand || activeFilters?.category) && (
-          <div className="active-filters">
+          <div className="gre-active-filters">
             <h3>Active Filters:</h3>
             {activeFilters.brand && (
-              <span className="filter-tag">
+              <span className="gre-filter-tag">
                 Brand: {activeFilters.brand}
                 <button onClick={() => clearFilter('brand')} className="clear-filter">×</button>
               </span>
             )}
             {activeFilters.category && (
-              <span className="filter-tag">
+              <span className="gre-filter-tag">
                 Category: {activeFilters.category}
                 <button onClick={() => clearFilter('category')} className="clear-filter">×</button>
               </span>
             )}
-            <button className="clear-all-filters" onClick={clearAllFilters}>Clear All</button>
+            <button className="gre-clear-all-filters" onClick={clearAllFilters}>Clear All</button>
           </div>
         )}
 
-        <div className="search-container">
+        <div className="gre-search-container">
           <input
             type="text"
             placeholder="Search groceries by name, brand or description..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
+            className="gre-search-input"
           />
           {searchTerm && (
-            <button className="clear-search" onClick={handleClearSearch}>Clear</button>
+            <button className="gre-clear-search" onClick={handleClearSearch}>Clear</button>
           )}
         </div>
 
@@ -207,14 +207,14 @@ const GroceriesPage = ({ addToCart, onFilterChange, activeFilters }) => {
           <div className="empty">No groceries found</div>
         ) : (
           <>
-            <div className="products-grid">
+            <div className="gre-products-grid">
               {currentProducts.map((product) => (
-                <div key={product.product_id || product.id} className="product-card">
-                  <div className="product-image-container">
+                <div key={product.product_id || product.id} className="gre-product-card">
+                  <div className="gre-product-image-container">
                     <img
                       src={product.imageUrl || `${API_URL}/uploads/${product.image}`}
                       alt={product.name}
-                      className="product-image"
+                      className="gre-product-image"
                       onError={(e) => {
                         e.target.src = 'https://via.placeholder.com/300';
                         e.target.onerror = null;
@@ -222,32 +222,32 @@ const GroceriesPage = ({ addToCart, onFilterChange, activeFilters }) => {
                     />
                   </div>
 
-                  <div className="product-details">
-                    <h2 className="product-name">{product.name}</h2>
-                    <div className="product-brand">{product.brand}</div>
-                    <div className="product-category">{product.category}</div>
-                    <div className="product-price">₹{product.price}</div>
-                    {product.piece && <div className="product-piece">{product.piece} pieces</div>}
+                  <div className="gre-product-details">
+                    <h2 className="gre-product-name">{product.name}</h2>
+                    <div className="gre-product-brand">{product.brand}</div>
+                    <div className="gre-product-category">{product.category}</div>
+                    <div className="gre-product-price">₹{product.price}</div>
+                    {product.piece && <div className="gre-product-piece">{product.piece} pieces</div>}
 
-                    <div className="product-rating">
+                    <div className="gre-product-rating">
                       {Array(5).fill().map((_, i) => (
-                        <span key={i} className={i < Math.floor(product.rating || 0) ? 'star-filled' : 'star-empty'}>
+                        <span key={i} className={i < Math.floor(product.rating || 0) ? 'gre-star-filled' : 'gre-star-empty'}>
                           ★
                         </span>
                       ))}
                       <span>({product.rating?.toFixed(1) || '0.0'})</span>
                     </div>
 
-                    <p className="product-description">
+                    <p className="gre-product-description">
                       {product.description?.length > 100
                         ? `${product.description.substring(0, 100)}...`
                         : product.description}
                     </p>
 
-                    <div className="product-actions">
-                      <button className="add-to-cart" onClick={() => handleAddToCart(product)}>Add to Cart</button>
+                    <div className="gre-product-actions">
+                      <button className="gre-add-to-cart" onClick={() => handleAddToCart(product)}>Add to Cart</button>
                       <button
-                        className={`wishlist ${wishlistItems.includes(product.product_id || product.id) ? 'active' : ''}`}
+                        className={`gre-wishlist ${wishlistItems.includes(product.product_id || product.id) ? 'active' : ''}`}
                         onClick={() => handleWishlistClick(product.product_id || product.id)}
                         disabled={wishlistLoading}
                       >
@@ -260,11 +260,11 @@ const GroceriesPage = ({ addToCart, onFilterChange, activeFilters }) => {
             </div>
 
             {totalPages > 1 && (
-              <div className="pagination-dots">
+              <div className="gre-pagination-dots">
                 {Array.from({ length: totalPages }, (_, i) => (
                   <button
                     key={i + 1}
-                    className={`dot ${currentPage === i + 1 ? 'active' : ''}`}
+                    className={`gre-dot ${currentPage === i + 1 ? 'gre-active' : ''}`}
                     onClick={() => paginate(i + 1)}
                   />
                 ))}

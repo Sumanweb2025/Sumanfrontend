@@ -1,22 +1,22 @@
 /* Base Styles */
-.products-container {
+.gre-products-container {
   width: 100%;
   min-height: 100vh;
   padding: 20px;
   box-sizing: border-box; 
   background-color: #ebe0c6;
 }
-.products-container h1{
+.gre-products-container h1{
   text-align: center;
 }
 
-.products-grid {
+.gre-products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Increased card width */
   gap: 30px;
 }
 
-.product-card {
+.gre-product-card {
   width: 100%;
   min-width: 300px; /* Minimum card width */
   max-width: 350px; /* Maximum card width */
@@ -28,36 +28,36 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
 }
 
-.product-details {
+.gre-product-details {
   flex: 1;
   padding: 15px;
   display: flex;
   flex-direction: column;
 }
 
-.product-card:hover {
+.gre-product-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-.product-image-container {
+.gre-product-image-container {
   width: 100%;
   height: 250px; /* Increased height */
   overflow: hidden;
 }
 
-.product-image {
+.gre-product-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
 }
 
-.product-image:hover {
+.gre-product-image:hover {
   transform: scale(1.05);
 }
 
-.product-gram {
+.gre-product-gram {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -68,36 +68,36 @@
   font-size: 12px;
 }
 
-.product-details {
+.gre-product-details {
   padding: 15px;
 }
 
-.product-name {
+.gre-product-name {
   font-size: 18px;
   margin: 0 0 5px 0;
   color: #333;
 }
 
-.product-brand, .product-category {
+.gre-product-brand, .gre-product-category {
   font-size: 14px;
   color: #666;
   margin: 5px 0;
 }
 
-.product-price {
+.gre-product-price {
   font-size: 20px;
   font-weight: bold;
   color: #2e7d32;
   margin: 10px 0;
 }
 
-.product-piece {
+.gre-product-piece {
   font-size: 14px;
   color: #666;
   margin-bottom: 10px;
 }
 
-.product-rating {
+.gre-product-rating {
   margin: 10px 0;
   display: flex;
   align-items: center;
@@ -111,20 +111,20 @@
   color: #ddd;
 }
 
-.product-description {
+.gre-product-description {
   font-size: 14px;
   color: #555;
   margin: 10px 0;
   line-height: 1.4;
 }
 
-.product-actions {
+.gre-product-actions {
   display: flex;
   justify-content: space-between;
   margin-top: 15px;
 }
 
-.add-to-cart {
+.gre-add-to-cart {
   background-color: #4CAF50;
   color: white;
   border: none;
@@ -134,7 +134,7 @@
   transition: background-color 0.3s;
 }
 
-.add-to-cart:hover {
+.gre-add-to-cart:hover {
   background-color: #388e3c;
 }
 

@@ -124,79 +124,81 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
 
   if (loading) return <div className="loading">Loading products...</div>;
   if (error) return <div className="error">Error: {error}</div>;
+// ...inside your JSX return
 
-  return (
-    <div className="main-products-container">
-      <div className="main-products-header">
-        <h1>Our Products</h1>
-        <h2>Best selling</h2>
-        <button className="view-all-btn">VIEW ALL PRODUCTS</button>
-      </div>
+return (
+  <div className="pro-main-products-container">
+    <div className="pro-main-products-header">
+      <h1>Our Products</h1>
+      <h2>Best selling</h2>
+      <button className="pro-view-all-btn">VIEW ALL PRODUCTS</button>
+    </div>
 
-      <div className="main-products-grid">
-        {currentProducts.map((product) => {
-          const productId = product.product_id || product.id;
-          if (!productId) return null;
+    <div className="pro-main-products-grid">
+      {currentProducts.map((product) => {
+        const productId = product.product_id || product.id;
+        if (!productId) return null;
 
-          return (
-            <div
-              key={productId}
-              className="product-card"
-              onClick={() => handleProductClick(productId)}
-            >
-              <div className="product-image-container">
-                <img
-                  src={product.imageUrl || `${API_URL}/images/Products/${product.image}` || 'https://via.placeholder.com/300'}
-                  alt={product.name || 'Product image'}
-                  className="product-image"
-                  onError={(e) => {
-                    e.target.src = 'https://via.placeholder.com/300';
-                    e.target.onerror = null;
-                  }}
-                />
-              </div>
+        return (
+          <div
+            key={productId}
+            className="pro-product-card"
+            onClick={() => handleProductClick(productId)}
+          >
+            <div className="pro-product-image-container">
+              <img
+                src={product.imageUrl || `${API_URL}/images/Products/${product.image}` || 'https://via.placeholder.com/300'}
+                alt={product.name || 'Product image'}
+                className="pro-product-image"
+                onError={(e) => {
+                  e.target.src = 'https://via.placeholder.com/300';
+                  e.target.onerror = null;
+                }}
+              />
+            </div>
 
-              <div className="product-details">
-                <h3 className="product-name">{product.name || 'Unnamed Product'}</h3>
-                <p className="product-description">{product.description || 'A delicious snack item'}</p>
-                <div className="product-price">${product.price || '0'}.00</div>
+            <div className="pro-product-details">
+              <h3 className="pro-product-name">{product.name || 'Unnamed Product'}</h3>
+              <p className="pro-product-description">{product.description || 'A delicious snack item'}</p>
+              <div className="pro-product-price">${product.price || '0'}.00</div>
 
-                <div className="product-actions">
-                  <button
-                    className="add-to-cart"
-                    onClick={(e) => handleAddToCart(product, e)}
-                  >
-                    Add to Cart
-                  </button>
-                  <button
-                    className={`wishlist ${wishlistItems.includes(productId) ? 'active' : ''}`}
-                    onClick={(e) => handleWishlistClick(productId, e)}
-                    disabled={wishlistLoading}
-                    title={wishlistItems.includes(productId) ? 'Remove from wishlist' : 'Add to wishlist'}
-                  >
-                    {wishlistLoading ? '⏳' : (wishlistItems.includes(productId) ? '❤️' : '♡')}
-                  </button>
-                </div>
+              <div className="pro-product-actions">
+                <button
+                  className="pro-add-to-cart"
+                  onClick={(e) => handleAddToCart(product, e)}
+                >
+                  Add to Cart
+                </button>
+                <button
+                  className={`pro-wishlist ${wishlistItems.includes(productId) ? 'active' : ''}`}
+                  onClick={(e) => handleWishlistClick(productId, e)}
+                  disabled={wishlistLoading}
+                  title={wishlistItems.includes(productId) ? 'Remove from wishlist' : 'Add to wishlist'}
+                >
+                  {wishlistLoading ? '⏳' : (wishlistItems.includes(productId) ? '❤️' : '♡')}
+                </button>
               </div>
             </div>
-          );
-        })}
-      </div>
-
-      {totalPages > 1 && (
-        <div className="pagination-dots">
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button
-              key={i + 1}
-              className={`dot ${currentPage === i + 1 ? 'active' : ''}`}
-              onClick={() => paginate(i + 1)}
-              aria-label={`Go to page ${i + 1}`}
-            />
-          ))}
-        </div>
-      )}
+          </div>
+        );
+      })}
     </div>
-  );
+
+    {totalPages > 1 && (
+      <div className="pro-pagination-dots">
+        {Array.from({ length: totalPages }, (_, i) => (
+          <button
+            key={i + 1}
+            className={`pro-dot ${currentPage === i + 1 ? 'active' : ''}`}
+            onClick={() => paginate(i + 1)}
+            aria-label={`Go to page ${i + 1}`}
+          />
+        ))}
+      </div>
+    )}
+  </div>
+);
+
 };
 
 export default ProductListingPage;
