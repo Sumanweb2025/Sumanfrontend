@@ -255,7 +255,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         <>
           <div className="products-grid">
             {currentProducts.map((product) => (
-              <div key={product.product_id || product.id} className="product-card">
+              <div key={product.product_id || product.id} className="amirth-product-card">
                 <div className="product-image-container">
                   <img
                     src={product.imageUrl || `${API_URL}/uploads/${product.image}`}
@@ -268,7 +268,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                   />
                 </div>
 
-                <div className="product-details">
+                <div className="amirth-product-details">
                   <h2 className="product-name">{product.name}</h2>
                   <div className="product-brand">{product.brand}</div>
                   <div className="product-category">{product.category}</div>

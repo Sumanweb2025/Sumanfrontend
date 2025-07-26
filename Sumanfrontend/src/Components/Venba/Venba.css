@@ -16,7 +16,7 @@
   gap: 30px;
 }
 
-.product-card {
+.venba-product-card {
   width: 100%;
   min-width: 300px; /* Minimum card width */
   max-width: 350px; /* Maximum card width */
@@ -28,7 +28,7 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
 }
 
-.product-details {
+.venba-product-details {
   flex: 1;
   padding: 15px;
   display: flex;
