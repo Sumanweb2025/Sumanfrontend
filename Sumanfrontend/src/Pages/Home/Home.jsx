@@ -7,6 +7,7 @@ import Oruproduct from '../../Components/Ourproduct/Ourproduct';
 import Ourproduct1 from "../../Components/Ourproduct1/Ourproduct1";
 import GutProduct from '../../Components/Gudproduct/Gudproduct';
 import Offer from '../../Components/Offer/Offer';
+import Footer from '../../Components/Footer/Footer';
 import './Home.css';
 
 const Home = () => {
@@ -40,6 +41,7 @@ const Home = () => {
       <Ourproduct1/>
       <Offer/>
       <GutProduct/>
+      <Footer/>
     </>
   );
 };
