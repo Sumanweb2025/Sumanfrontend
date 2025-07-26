@@ -126,76 +126,75 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
   if (error) return <div className="error">Error: {error}</div>;
 
   return (
-    <div className="products-container-new">
-      <div className="products-section">
-        <div className="products-header-new">
-          <h1 className="products-title">Our Products</h1>
-          <h2 className="products-subtitle">Best selling</h2>
-          <button className="view-all-btn-new">VIEW ALL PRODUCTS</button>
-        </div>
+    <div className="main-products-container">
+      <div className="main-products-header">
+        <h1>Our Products</h1>
+        <h2>Best selling</h2>
+        <button className="view-all-btn">VIEW ALL PRODUCTS</button>
+      </div>
 
-        <div className="products-grid-new">
-          {currentProducts.map((product) => {
-            const productId = product.product_id || product.id;
-            if (!productId) return null;
+      <div className="main-products-grid">
+        {currentProducts.map((product) => {
+          const productId = product.product_id || product.id;
+          if (!productId) return null;
 
-            return (
-              <div
-                key={productId}
-                className="product-card-new"
-                onClick={() => handleProductClick(productId)}
-              >
-                <div className="product-image-container-new">
+          return (
+            <div
+              key={productId}
+              className="product-card"
+              onClick={() => handleProductClick(productId)}
+            >
+              <div className="product-image-container">
+                <img
+                  src={product.imageUrl || `${API_URL}/images/Products/${product.image}` || 'https://via.placeholder.com/300'}
+                  alt={product.name || 'Product image'}
+                  className="product-image"
+                  onError={(e) => {
+                    e.target.src = 'https://via.placeholder.com/300';
+                    e.target.onerror = null;
+                  }}
+                />
+              </div>
+
+              <div className="product-details">
+                <h3 className="product-name">{product.name || 'Unnamed Product'}</h3>
+                <p className="product-description">{product.description || 'A delicious snack item'}</p>
+                <div className="product-price">${product.price || '0'}.00</div>
+
+                <div className="product-actions">
                   <button
-                    className={`wishlist-btn-new ${wishlistItems.includes(productId) ? 'active' : ''}`}
+                    className="add-to-cart"
+                    onClick={(e) => handleAddToCart(product, e)}
+                  >
+                    Add to Cart
+                  </button>
+                  <button
+                    className={`wishlist ${wishlistItems.includes(productId) ? 'active' : ''}`}
                     onClick={(e) => handleWishlistClick(productId, e)}
                     disabled={wishlistLoading}
                     title={wishlistItems.includes(productId) ? 'Remove from wishlist' : 'Add to wishlist'}
                   >
-                    {wishlistLoading ? '⏳' : (wishlistItems.includes(productId) ? '❤️' : '🤍')}
+                    {wishlistLoading ? '⏳' : (wishlistItems.includes(productId) ? '❤️' : '♡')}
                   </button>
-                  <img
-                    src={product.imageUrl || `${API_URL}/images/Products/${product.image}` || 'https://via.placeholder.com/300'}
-                    alt={product.name || 'Product image'}
-                    className="product-image-new"
-                    onError={(e) => {
-                      e.target.src = 'https://via.placeholder.com/300';
-                      e.target.onerror = null;
-                    }}
-                  />
-                </div>
-
-                <div className="product-details-new">
-                  <h3 className="product-name-new">{product.name || 'Unnamed Product'}</h3>
-                  <p className="product-description-new">{product.description || 'A delicious snack item'}</p>
-                  <div className="product-footer-new">
-                    <div className="product-price-new">${product.price || '0'}.00</div>
-                    <button
-                      className="add-to-cart-btn-new"
-                      onClick={(e) => handleAddToCart(product, e)}
-                    >
-                      🛒
-                    </button>
-                  </div>
                 </div>
               </div>
-            );
-          })}
-        </div>
-
-        {totalPages > 1 && (
-          <div className="pagination-dots-new">
-            {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                key={i + 1}
-                className={`dot-new ${currentPage === i + 1 ? 'active' : ''}`}
-                onClick={() => paginate(i + 1)}
-                aria-label={`Go to page ${i + 1}`}
-              />
-            ))}
-          </div>
-        )}
+            </div>
+          );
+        })}
       </div>
+
+      {totalPages > 1 && (
+        <div className="pagination-dots">
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i + 1}
+              className={`dot ${currentPage === i + 1 ? 'active' : ''}`}
+              onClick={() => paginate(i + 1)}
+              aria-label={`Go to page ${i + 1}`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

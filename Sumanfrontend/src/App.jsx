@@ -10,7 +10,6 @@ import Gutproduct from "../src/Components/Gudproduct/Gudproduct";
 import Offer from "../src/Components/Offer/Offer";
 
 import Groceries from './Pages/Groceries/Groceries';
-import Navbar from './Components/Navbar/Navbar';
 import Iyyapa from './Components/Iyyapa/Iyyapa';
 import Amirth from './Components/Amirth/Amirth';
 import Venba from './Components/Venba/Venba';
@@ -21,7 +20,6 @@ import SignIn from './Pages/Signin/Signin';
 const App = () => {
   return (
     <Router>
-      <Navbar />
       <Routes>
         <Route exact path="/" element={<Home />} />
          <Route path="/product" element={<Product />} />
