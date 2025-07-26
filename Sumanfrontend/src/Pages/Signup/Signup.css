@@ -1,0 +1,127 @@
+/* SignUp.css - Minimal Design Matching Reference */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+}
+
+.signup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+              url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect fill="%23f4f4f4" width="1200" height="800"/><circle cx="150" cy="150" r="100" fill="%23ff6b6b" opacity="0.2"/><circle cx="900" cy="200" r="80" fill="%234ecdc4" opacity="0.2"/><circle cx="300" cy="600" r="120" fill="%23ffe66d" opacity="0.2"/><circle cx="1100" cy="700" r="90" fill="%23ff8b94" opacity="0.2"/><circle cx="600" cy="100" r="70" fill="%2395e1d3" opacity="0.2"/></svg>');
+  background-size: cover;
+  background-position: center;
+}
+
+.signup-card {
+  width: 100%;
+  max-width: 350px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  padding: 30px;
+  text-align: center;
+}
+
+.signup-logo {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.signup-header h2 {
+  color: #333;
+  margin-bottom: 5px;
+  font-size: 18px;
+  font-weight: normal;
+  text-transform: uppercase;
+}
+
+.signup-subtitle {
+  color: #666;
+  font-size: 12px;
+  margin: 10px 0 25px 0;
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.form-group label {
+  font-size: 13px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.form-group input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #f9f9f9;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #999;
+}
+
+.terms-checkbox {
+  display: flex;
+  align-items: center;
+  margin: 15px 0;
+  font-size: 13px;
+}
+
+.terms-checkbox input {
+  margin-right: 8px;
+}
+
+.signup-btn {
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  width: 100%;
+}
+
+.signup-footer {
+  text-align: center;
+  margin-top: 20px;
+  color: #666;
+  font-size: 13px;
+}
+
+.signup-footer a {
+  color: #333;
+  text-decoration: underline;
+}
+
+.copyright {
+  text-align: center;
+  margin-top: 30px;
+  color: #999;
+  font-size: 11px;
+  text-transform: uppercase;
+}

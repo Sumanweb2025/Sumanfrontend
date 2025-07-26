@@ -1,0 +1,167 @@
+/* Main Container */
+.signin-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+              url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect fill="%23f4f4f4" width="1200" height="800"/><circle cx="150" cy="150" r="100" fill="%23ff6b6b" opacity="0.2"/><circle cx="900" cy="200" r="80" fill="%234ecdc4" opacity="0.2"/><circle cx="300" cy="600" r="120" fill="%23ffe66d" opacity="0.2"/><circle cx="1100" cy="700" r="90" fill="%23ff8b94" opacity="0.2"/><circle cx="600" cy="100" r="70" fill="%2395e1d3" opacity="0.2"/></svg>');
+  background-size: cover;
+  background-position: center;
+}
+
+/* Card Styling */
+.signin-card {
+  width: 100%;
+  max-width: 350px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 0;
+  padding: 30px;
+  box-shadow: none;
+}
+
+/* Logo Styling - Matching "CYNUSHIP SHELL" from image */
+.signin-logo {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #333;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Header Styling */
+.signin-header {
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.signin-header h2 {
+  color: #333;
+  margin-bottom: 5px;
+  font-size: 18px;
+  font-weight: normal;
+  text-transform: uppercase;
+}
+
+.signin-subtitle {
+  color: #666;
+  font-size: 12px;
+  margin-top: 10px;
+}
+
+/* Form Styling */
+.signin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 0;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #f9f9f9;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #999;
+}
+
+/* Remember Me Checkbox */
+.remember-me {
+  display: flex;
+  align-items: center;
+  margin: 15px 0;
+}
+
+.remember-me input {
+  margin-right: 8px;
+}
+
+.remember-me label {
+  font-size: 13px;
+  color: #666;
+}
+
+/* Button Styling */
+.signin-btn {
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 0;
+  font-size: 14px;
+  font-weight: normal;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.signin-btn:hover {
+  background-color: #555;
+}
+
+/* Links Styling */
+.signin-links {
+  text-align: center;
+  margin: 15px 0 25px 0;
+}
+
+.forgot-password-btn {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+/* Copyright Styling */
+.copyright {
+  text-align: center;
+  margin-top: 30px;
+  color: #999;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+/* Remove all animations and transitions */
+.signin-btn, .form-group input {
+  transition: none;
+}
+
+/* Add to your Signin.css */
+.spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
