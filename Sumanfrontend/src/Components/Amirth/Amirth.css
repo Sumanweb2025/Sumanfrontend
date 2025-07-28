@@ -16,7 +16,7 @@
   gap: 30px;
 }
 
-.product-card {
+.amirth-product-card {
   width: 100%;
   min-width: 300px; /* Minimum card width */
   max-width: 350px; /* Maximum card width */
@@ -28,14 +28,14 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
 }
 
-.product-details {
+.amirth-product-details {
   flex: 1;
   padding: 15px;
   display: flex;
   flex-direction: column;
 }
 
-.product-card:hover {
+.amirth-product-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
