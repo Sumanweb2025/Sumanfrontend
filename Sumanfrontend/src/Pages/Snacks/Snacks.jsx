@@ -15,7 +15,7 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(8);
 
-  const API_URL = 'http://localhost:8000/';
+  const API_URL = 'http://localhost:5000/';
 
   useEffect(() => {
     const fetchData = async () => {

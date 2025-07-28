@@ -1,127 +1,134 @@
-/* Offer.css */
-.offer-banner {
-  background-color: #F39C12;
-  padding: 50px 30px;
+.offers-banner {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  font-family: 'Segoe UI', sans-serif;
+  background-color: #cf5122; /* orange-red background */
+  padding: 40px;
+  position: relative;
   color: #fff;
-  gap: 40px;
+  font-family: 'Poppins', sans-serif;
+  overflow: hidden;
 }
 
-.image-section img {
-  width: 150px;
-  margin-right: 20px;
-  transition: transform 0.4s ease;
+.offer-image-section {
+  display: flex;
+  gap: 20px;
+  align-items: center;
 }
 
-.image-section img:hover {
-  transform: scale(1.1) rotate(-2deg);
+.offer-image-section img {
+  width: 220px;
+  height: auto;
+  border-radius: 10px;
+  object-fit: cover;
 }
 
 .offer-details {
   text-align: center;
+  flex: 1;
 }
 
-.discount-badge {
-  background-color: #b84c24;
-  width: 200px;
-  height: 200px;
-  position: relative;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.offer-discount-badge {
+  position: absolute;
+  top: 20%;
+  left: 30%;
+  transform: translate(-50%, -50%);
 }
 
-.bubble {
+.offer-bubble {
   position: relative;
-  width: 150px;
-  height: 150px;
+  width: 100px;
+  height: 100px;
+  background: transparent;
+}
+
+.offer-bubble .offer-text {
+  background: #ffcc00;
   border-radius: 50%;
-  border: 3px solid #ffc107;
+  width: 100px;
+  height: 100px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  color: #cf5122;
+  font-weight: bold;
+  font-size: 18px;
+  position: relative;
+  z-index: 2;
 }
 
-.text {
-  color: #ffc107;
-  font-family: cursive;
+.offer-curve.bottom {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border: 4px solid #ffcc00;
+  border-radius: 50%;
+  left: -10px;
+  top: -10px;
+  z-index: 1;
+}
+
+.offer-curve.bottom.second {
+  width: 140px;
+  height: 140px;
+  left: -20px;
+  top: -20px;
+  border-color: #ffcc00;
+  opacity: 0.5;
+}
+
+h1 {
+  font-size: 48px;
+  font-weight: bold;
+  color: #fff;
+  margin: 20px 0 10px;
+}
+
+h3 {
+  font-size: 24px;
+  color: #ffe98a;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.offer-countdown {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.offer-countdown .block {
+  background-color: #d4551f;
+  padding: 15px 20px;
+  border-radius: 10px;
   text-align: center;
+  color: #fff;
 }
 
-.percent {
+.offer-countdown .number {
   font-size: 28px;
   font-weight: bold;
 }
 
-.off {
-  font-size: 24px;
+.offer-countdown .label {
+  font-size: 14px;
   margin-top: 5px;
 }
 
-.curve.bottom {
-  position: absolute;
-  width: 60px;
-  height: 20px;
-  border-bottom: 4px solid #ffc107;
-  border-radius: 50%;
-  bottom: -10px;
-  left: 20px;
-  transform: rotate(-20deg);
-}
-
-.curve.bottom.second {
-  bottom: -20px;
-  left: 30px;
-  width: 70px;
-  transform: rotate(-30deg);
-}
-
-
-@keyframes pulseBadge {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.15);
-    opacity: 0.85;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.offer-details h1 {
-  font-size: 48px;
-  margin: 16px 0;
-  text-shadow: 1px 1px 2px #000;
-}
-
-.offer-details h3 {
-  font-size: 20px;
-  font-style: italic;
-  margin-bottom: 20px;
-}
-
-.offer-details button {
-  background-color: #F1C40F;
-  padding: 12px 24px;
+button {
+  padding: 12px 25px;
+  background-color: #ffc107;
   border: none;
-  border-radius: 8px;
-  font-weight: bold;
   color: #000;
+  font-weight: bold;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
 }
 
-.offer-details button:hover {
-  background-color: #FFD700;
-  transform: translateY(-2px);
+button:hover {
+  background-color: #e0a800;
 }
