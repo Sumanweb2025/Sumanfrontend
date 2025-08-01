@@ -1,69 +1,131 @@
-import React, { useState, useEffect } from 'react'; // ✅ added missing imports
-import image5 from '../../assets/image5.jpeg';
-import milkchocolate from '../../assets/milkchocolate.jpg';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import './Offer.css';
 
-const SpecialOfferBanner = () => {
-  const targetDate = new Date();
-  targetDate.setDate(targetDate.getDate() + 30);
-
-  const calculateTimeLeft = () => {
-    const diff = +new Date(targetDate) - Date.now();
-    return {
-      total: diff,
-      days: Math.max(Math.floor(diff / (1000 * 60 * 60 * 24)), 0),
-      hours: Math.max(Math.floor((diff / (1000 * 60 * 60)) % 24), 0),
-      minutes: Math.max(Math.floor((diff / (1000 * 60)) % 60), 0),
-      seconds: Math.max(Math.floor((diff / 1000) % 60), 0),
-    };
-  };
-
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+const SpecialOffer = () => {
+  const [timeLeft, setTimeLeft] = useState(null);
+  const [offer, setOffer] = useState(null);
+  const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [targetDate]);
+    const fetchOffer = async () => {
+      try {
+        const res = await fetch('http://localhost:8000/api/offers/active');
+        const data = await res.json();
+
+        // If backend says there's no offer
+        if (data.message === 'No active offer') {
+          setIsActive(false);
+          return;
+        }
+
+        const endDate = new Date(data.endDate);
+        const now = new Date();
+
+        // If offer expired
+        if (endDate <= now) {
+          setIsActive(false);
+          return;
+        }
+
+        setOffer(data);
+        setIsActive(true);
+
+        // Countdown logic
+        const calculateTimeLeft = () => {
+          const now = new Date();
+          const diff = endDate - now;
+
+          if (diff <= 0) {
+            setIsActive(false); // Offer expired
+            return null;
+          }
+
+          return {
+            days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+            hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+            minutes: Math.floor((diff / 1000 / 60) % 60),
+            seconds: Math.floor((diff / 1000) % 60),
+          };
+        };
+
+        setTimeLeft(calculateTimeLeft());
+
+        const timer = setInterval(() => {
+          const updatedTime = calculateTimeLeft();
+          if (updatedTime) {
+            setTimeLeft(updatedTime);
+          } else {
+            clearInterval(timer); // Stop timer if expired
+          }
+        }, 1000);
+
+        return () => clearInterval(timer);
+      } catch {
+        setIsActive(false);
+      }
+    };
+
+    fetchOffer();
+  }, []);
+
+  // If there's no valid offer, return nothing
+  if (!isActive || !offer || !timeLeft) return null;
 
   return (
-    <div className="offers-banner">
-      <div className="offer-image-section">
-        <img src={image5} alt="Donut" />
-        <img src={milkchocolate} alt="Twisted Pastry" />
-      </div>
+    <motion.section
+      className="special-offer"
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1 }}
+    >
+      <div className="offer-container">
+        <div className="offer-content">
+          <div className="offer-text">
+            <h2 className="offer-subtitle">🎉 Limited Time</h2>
+            <h1 className="offer-title shimmer-text">Special Offer – {offer.discount}% OFF</h1>
+            <p className="offer-description">
+              Our sweetest deals are here! Grab {offer.title} at delicious discounts before time runs out.
+            </p>
 
-      <div className="offer-details">
-        <div className="offer-discount-badge">
-          <div className="offer-bubble">
-            <div className="offer-text">
-              <div className="offer-percent">30%</div>
-              <div className="off">Off</div>
+            <div className="countdown-timer">
+              {['days', 'hours', 'minutes', 'seconds'].map((unit, i) => (
+                <React.Fragment key={unit}>
+                  <div className="countdown-item">
+                    <span className="countdown-value">{timeLeft[unit]}</span>
+                    <span className="countdown-label">{unit}</span>
+                  </div>
+                  {i < 3 && <div className="countdown-separator">:</div>}
+                </React.Fragment>
+              ))}
             </div>
-            <div className="offer-curve bottom"></div>
-            <div className="offer-curve bottom second"></div>
+
+            <button
+              className="offer-button"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
+              Shop Now
+            </button>
           </div>
-        </div>
-        <h1>SPECIAL OFFER</h1>
-        
-        <div className="offer-countdown">
-          {['days', 'hours', 'minutes', 'seconds'].map((unit) => (
-            <div key={unit} className="block">
-              <div className="number">{timeLeft[unit]}</div>
-              <div className="label">
-                {unit.charAt(0).toUpperCase() + unit.slice(1)}
-              </div>
-            </div>
-          ))}
-        </div>
 
-        
-        <h3>Coming Soon!</h3>
-        <button>DISCOVER NOW</button>
+          <motion.div
+            className="offer-image"
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{ repeat: Infinity, duration: 3 }}
+          >
+            <motion.div
+              className="discount-badge pulse"
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+            >
+              <span>{offer.discount}%</span>
+              <span>OFF</span>
+            </motion.div>
+          </motion.div>
+        </div>
       </div>
-    </div>
+    </motion.section>
   );
 };
 
-export default SpecialOfferBanner;
+export default SpecialOffer;

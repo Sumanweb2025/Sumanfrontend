@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './Groceries.css'; // reuse the same styles
+import './Groceries.css';
 import Header from '../../Components/Header/Header';
 import Footer from "../../Components/Footer/Footer";
+import WishlistPopup from '../../Components/WishlistPopup/WishlistPopup';
+import CartPopup from '../../Components/CartPopup/CartPopup';
 
-const GroceriesPage = ({ addToCart, onFilterChange, activeFilters }) => {
+const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [wishlistItems, setWishlistItems] = useState([]);
@@ -13,29 +17,50 @@ const GroceriesPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const [wishlistLoading, setWishlistLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage] = useState(8);
+  const [productsPerPage] = useState(9);
+  const [sortBy, setSortBy] = useState('default');
+  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [selectedBrands, setSelectedBrands] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  
+  // Popup states
+  const [showWishlistPopup, setShowWishlistPopup] = useState(false);
+  const [showCartPopup, setShowCartPopup] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [cartItems, setCartItems] = useState([]);
 
-  const API_URL = 'http://localhost:5000/';
+  const API_URL = 'http://localhost:8000/';
+
+  // Get unique brands and categories for filters
+  const uniqueBrands = [...new Set(products.map(product => product.brand).filter(Boolean))];
+  const uniqueCategories = [...new Set(products.map(product => product.category).filter(Boolean))];
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const productsResponse = await axios.get(`${API_URL}api/products/search?category=Groceries`);
+        // Fetch groceries category
+        const productsResponse = await axios.get(`${API_URL}api/products/search?category=groceries`);
         const productsData = productsResponse.data?.data || productsResponse.data?.products || productsResponse.data;
         setProducts(productsData);
 
         const token = localStorage.getItem('token');
         if (token) {
           try {
-            const wishlistResponse = await axios.get(`${API_URL}/api/wishlist`, {
-              headers: {
-                'Authorization': `Bearer ${token}`
-              }
+            // Fetch wishlist
+            const wishlistResponse = await axios.get(`${API_URL}api/wishlist`, {
+              headers: { 'Authorization': `Bearer ${token}` }
             });
             const wishlistData = wishlistResponse.data?.data || wishlistResponse.data;
-            setWishlistItems(wishlistData.map(item => item.product_id || item.productId));
+            setWishlistItems(wishlistData.products?.map(item => item.productId._id || item.productId) || []);
+
+            // Fetch cart
+            const cartResponse = await axios.get(`${API_URL}api/cart`, {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const cartData = cartResponse.data?.data || cartResponse.data;
+            setCartItems(cartData.items || []);
           } catch (wishlistError) {
-            console.log('Wishlist not loaded', wishlistError);
+            console.log('Wishlist/Cart not loaded', wishlistError);
           }
         }
 
@@ -51,22 +76,25 @@ const GroceriesPage = ({ addToCart, onFilterChange, activeFilters }) => {
 
   useEffect(() => {
     let result = [...products];
-
-    if (activeFilters?.brand) {
-      result = result.filter(product =>
-        product.brand?.toLowerCase() === activeFilters.brand.toLowerCase()
-      );
+    
+    // Brand filter
+    if (selectedBrands.length > 0) {
+      result = result.filter(product => selectedBrands.includes(product.brand));
     }
-
-    if (activeFilters?.category) {
-      result = result.filter(product =>
-        product.category?.toLowerCase() === activeFilters.category.toLowerCase()
-      );
+    
+    // Category filter
+    if (selectedCategories.length > 0) {
+      result = result.filter(product => selectedCategories.includes(product.category));
     }
-
+    
+    // Price range filter
+    result = result.filter(product => 
+      product.price >= priceRange[0] && product.price <= priceRange[1]
+    );
+    
+    // Search filter
     if (searchTerm.trim()) {
       const searchTerms = searchTerm.toLowerCase().split(' ').filter(term => term.length > 0);
-
       result = result.filter(product => {
         const productFields = [
           product.name?.toLowerCase() || '',
@@ -75,49 +103,147 @@ const GroceriesPage = ({ addToCart, onFilterChange, activeFilters }) => {
           product.description?.toLowerCase() || '',
           product.tags?.join(' ')?.toLowerCase() || ''
         ].join(' ');
-
-        return searchTerms.every(term =>
-          productFields.includes(term)
-        );
+        return searchTerms.every(term => productFields.includes(term));
       });
     }
-
+    
+    // Sorting
+    switch (sortBy) {
+      case 'price-low':
+        result.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-high':
+        result.sort((a, b) => b.price - a.price);
+        break;
+      case 'rating':
+        result.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+        break;
+      case 'name':
+        result.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      default:
+        break;
+    }
+    
     setFilteredProducts(result);
     setCurrentPage(1);
-  }, [products, activeFilters, searchTerm]);
+  }, [products, selectedBrands, selectedCategories, priceRange, searchTerm, sortBy]);
 
-  const clearFilter = (type) => {
-    const newFilters = { ...activeFilters, [type]: '' };
-    if (onFilterChange) {
-      onFilterChange(newFilters);
-    }
+  const handleBrandChange = (brand) => {
+    setSelectedBrands(prev => 
+      prev.includes(brand) 
+        ? prev.filter(b => b !== brand)
+        : [...prev, brand]
+    );
+  };
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategories(prev => 
+      prev.includes(category) 
+        ? prev.filter(c => c !== category)
+        : [...prev, category]
+    );
   };
 
   const clearAllFilters = () => {
-    if (onFilterChange) {
-      onFilterChange({ brand: '', category: '' });
-    }
+    setSelectedBrands([]);
+    setSelectedCategories([]);
+    setPriceRange([0, 1000]);
+    setSearchTerm('');
+    setSortBy('default');
   };
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const handleClearSearch = () => {
-    setSearchTerm('');
+  const handleProductClick = (product) => {
+    // Navigate to product details page
+    navigate(`/product/${product.product_id || product.id}`, { state: { product } });
   };
 
-  const handleWishlistClick = async (productId) => {
-    if (!productId || wishlistLoading) return;
+  const handleWishlistClick = async (e, product) => {
+    e.stopPropagation(); // Prevent card click
+    if (!product || wishlistLoading) return;
+    
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Please login to add items to your wishlist');
+      return;
+    }
 
     setWishlistLoading(true);
     try {
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      };
+
+      const productId = product.product_id || product._id || product.id;
+      const isInWishlist = wishlistItems.includes(productId);
+      
+      if (isInWishlist) {
+        await axios.delete(`${API_URL}api/wishlist/${productId}`, config);
+        setWishlistItems(prev => prev.filter(id => id !== productId));
+        
+        // Dispatch custom event to update header count
+        window.dispatchEvent(new CustomEvent('wishlistUpdated'));
+      } else {
+        await axios.post(`${API_URL}api/wishlist`, { productId }, config);
+        setWishlistItems(prev => [...prev, productId]);
+        
+        // Dispatch custom event to update header count
+        window.dispatchEvent(new CustomEvent('wishlistUpdated'));
+        
+        // Show wishlist popup
+        setSelectedProduct(product);
+        setShowWishlistPopup(true);
+      }
+    } catch (err) {
+      console.error('Wishlist error:', err);
+      alert(err.response?.data?.message || 'Failed to update wishlist');
+    } finally {
+      setWishlistLoading(false);
+    }
+  };
+
+  const handleAddToCartFromWishlist = async (productId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      };
+
+      await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
+      
+      // Update cart items
+      const cartResponse = await axios.get(`${API_URL}api/cart`, config);
+      const cartData = cartResponse.data?.data || cartResponse.data;
+      setCartItems(cartData.items || []);
+
+      // Dispatch custom event to update header count
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
+
+      return true;
+    } catch (err) {
+      console.error('Add to cart error:', err);
+      throw err;
+    }
+  };
+
+  const handleAddToCart = async (e, product) => {
+    e.stopPropagation(); // Prevent card click
+    try {
       const token = localStorage.getItem('token');
       if (!token) {
-        alert('Please login to add items to your wishlist');
+        alert('Please login to add items to your cart');
         return;
       }
 
@@ -128,157 +254,289 @@ const GroceriesPage = ({ addToCart, onFilterChange, activeFilters }) => {
         }
       };
 
-      const isInWishlist = wishlistItems.includes(productId);
+      const productId = product.product_id || product._id || product.id;
+      await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
+      
+      // Update cart items
+      const cartResponse = await axios.get(`${API_URL}api/cart`, config);
+      const cartData = cartResponse.data?.data || cartResponse.data;
+      setCartItems(cartData.items || []);
 
-      if (isInWishlist) {
-        await axios.delete(`${API_URL}/api/wishlist/${productId}`, config);
-        setWishlistItems(prev => prev.filter(id => id !== productId));
-      } else {
-        await axios.post(`${API_URL}/api/wishlist`, { productId }, config);
-        setWishlistItems(prev => [...prev, productId]);
-      }
-    } catch (err) {
-      console.error('Wishlist error:', err);
-      alert(err.response?.data?.message || 'Failed to update wishlist');
-    } finally {
-      setWishlistLoading(false);
-    }
-  };
+      // Dispatch custom event to update header count
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
 
-  const handleAddToCart = async (product) => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        alert('Please login to add items to your cart');
-        return;
-      }
-
-      await addToCart(product);
-      alert(`${product.name} added to cart!`);
+      // Show cart popup
+      setSelectedProduct(product);
+      setShowCartPopup(true);
     } catch (err) {
       console.error('Add to cart error:', err);
       alert(err.response?.data?.message || 'Failed to add to cart');
     }
   };
 
-  if (loading) return <div className="loading">Loading Groceries...</div>;
-  if (error) return <div className="error">Error: {error}</div>;
+  const handleContinueShopping = () => {
+    setShowWishlistPopup(false);
+    setShowCartPopup(false);
+    setSelectedProduct(null);
+  };
+
+  const handleOpenWishlistPage = () => {
+    setShowWishlistPopup(false);
+    navigate('/wishlist');
+  };
+
+  const handleViewCart = () => {
+    setShowCartPopup(false);
+    navigate('/cart');
+  };
+
+  if (loading) return <div className="grocery-loading">Loading grocery items...</div>;
+  if (error) return <div className="grocery-error">Error: {error}</div>;
 
   return (
     <>
       <Header />
-      <div className="gro-products-container">
-        <h1>Welcome to the Suman Food!</h1>
-        <h2>Groceries</h2>
-
-        {(activeFilters?.brand || activeFilters?.category) && (
-          <div className="gre-active-filters">
-            <h3>Active Filters:</h3>
-            {activeFilters.brand && (
-              <span className="gre-filter-tag">
-                Brand: {activeFilters.brand}
-                <button onClick={() => clearFilter('brand')} className="clear-filter">×</button>
-              </span>
-            )}
-            {activeFilters.category && (
-              <span className="gre-filter-tag">
-                Category: {activeFilters.category}
-                <button onClick={() => clearFilter('category')} className="clear-filter">×</button>
-              </span>
-            )}
-            <button className="gre-clear-all-filters" onClick={clearAllFilters}>Clear All</button>
+      <div className="grocery-page">
+        <div className="grocery-container">
+          {/* Breadcrumb */}
+          <div className="grocery-breadcrumb">
+            <span>Home</span> / <span>Products</span> / <span className="current">Grocery</span>
           </div>
-        )}
 
-        <div className="gre-search-container">
-          <input
-            type="text"
-            placeholder="Search groceries by name, brand or description..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="gre-search-input"
-          />
-          {searchTerm && (
-            <button className="gre-clear-search" onClick={handleClearSearch}>Clear</button>
-          )}
-        </div>
+          <div className="grocery-page-content">
+            {/* Sidebar Filters */}
+            <div className="grocery-sidebar">
+              <div className="grocery-filter-section">
+                <h3>Quick Listing</h3>
+                <div className="grocery-search-container">
+                  <input
+                    type="text"
+                    placeholder="Search grocery items..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="grocery-search-input"
+                  />
+                </div>
+              </div>
 
-        {filteredProducts.length === 0 ? (
-          <div className="empty">No groceries found</div>
-        ) : (
-          <>
-            <div className="gre-products-grid">
-              {currentProducts.map((product) => (
+              <div className="grocery-filter-section">
+                <h3>Categories</h3>
+                <div className="grocery-filter-options">
+                  {uniqueCategories.map(category => (
+                    <label key={category} className="grocery-filter-option">
+                      <input
+                        type="checkbox"
+                        checked={selectedCategories.includes(category)}
+                        onChange={() => handleCategoryChange(category)}
+                      />
+                      <span>{category}</span>
+                      <span className="grocery-count">
+                        ({products.filter(p => p.category === category).length})
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
 
-                <div key={product.product_id || product.id} className="gre-product-card">
-                  <div className="gre-product-image-container">
+              <div className="grocery-filter-section">
+                <h3>Brands</h3>
+                <div className="grocery-filter-options">
+                  {uniqueBrands.map(brand => (
+                    <label key={brand} className="grocery-filter-option">
+                      <input
+                        type="checkbox"
+                        checked={selectedBrands.includes(brand)}
+                        onChange={() => handleBrandChange(brand)}
+                      />
+                      <span>{brand}</span>
+                      <span className="grocery-count">
+                        ({products.filter(p => p.brand === brand).length})
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
 
-                    <img
-                      src={product.imageUrl || `${API_URL}/uploads/${product.image}`}
-                      alt={product.name}
-                      className="gre-product-image"
-                      onError={(e) => {
-                        e.target.src = 'https://via.placeholder.com/300';
-                        e.target.onerror = null;
-                      }}
-                    />
-                  </div>
-
-                  <div className="gre-product-details">
-                    <h2 className="gre-product-name">{product.name}</h2>
-                    <div className="gre-product-brand">{product.brand}</div>
-                    <div className="gre-product-category">{product.category}</div>
-                    <div className="gre-product-price">₹{product.price}</div>
-                    {product.piece && <div className="gre-product-piece">{product.piece} pieces</div>}
-
-
-                    <div className="gre-product-rating">
-                      {Array(5).fill().map((_, i) => (
-                        <span key={i} className={i < Math.floor(product.rating || 0) ? 'gre-star-filled' : 'gre-star-empty'}>
-                          ★
-                        </span>
-                      ))}
-                      <span>({product.rating?.toFixed(1) || '0.0'})</span>
-                    </div>
-
-                    <p className="gre-product-description">
-                      {product.description?.length > 100
-                        ? `${product.description.substring(0, 100)}...`
-                        : product.description}
-                    </p>
-
-                    <div className="gre-product-actions">
-                      <button className="gre-add-to-cart" onClick={() => handleAddToCart(product)}>Add to Cart</button>
-                      <button
-                        className={`gre-wishlist ${wishlistItems.includes(product.product_id || product.id) ? 'active' : ''}`}
-                        onClick={() => handleWishlistClick(product.product_id || product.id)}
-                        disabled={wishlistLoading}
-                      >
-                        {wishlistItems.includes(product.product_id || product.id) ? '❤️' : '♡'}
-                      </button>
-                    </div>
+              <div className="grocery-filter-section">
+                <h3>Price Range</h3>
+                <div className="grocery-price-range">
+                  <input
+                    type="range"
+                    min="0"
+                    max="1000"
+                    value={priceRange[1]}
+                    onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
+                    className="grocery-price-slider"
+                  />
+                  <div className="grocery-price-values">
+                    ₹{priceRange[0]} - ₹{priceRange[1]}
                   </div>
                 </div>
-              ))}
+              </div>
+
+              <div className="grocery-filter-section">
+                <h3>Best Deals</h3>
+                <div className="grocery-deal-items">
+                  {products.slice(0, 3).map(product => (
+                    <div key={product.product_id || product.id} className="grocery-deal-item">
+                      <img 
+                        src={product.imageUrl || `${API_URL}/uploads/${product.image}`}
+                        alt={product.name}
+                        className="grocery-deal-image"
+                      />
+                      <div className="grocery-deal-info">
+                        <div className="grocery-deal-name">{product.name}</div>
+                        <div className="grocery-deal-price">₹{product.price}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <button className="grocery-clear-filters-btn" onClick={clearAllFilters}>
+                Clear All Filters
+              </button>
             </div>
 
-            {totalPages > 1 && (
-              <div className="gre-pagination-dots">
-                {Array.from({ length: totalPages }, (_, i) => (
-                  <button
-                    key={i + 1}
-                    className={`gre-dot ${currentPage === i + 1 ? 'gre-active' : ''}`}
-                    onClick={() => paginate(i + 1)}
-                  />
-                ))}
+            {/* Main Content */}
+            <div className="grocery-main-content">
+              <div className="grocery-page-header">
+                <h1>Grocery Items</h1>
+                <div className="grocery-sort-controls">
+                  <select 
+                    value={sortBy} 
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="grocery-sort-select"
+                  >
+                    <option value="default">Default Sorting</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="rating">Highest Rated</option>
+                    <option value="name">Name: A to Z</option>
+                  </select>
+                </div>
               </div>
-            )}
-          </>
-        )}
+
+              <div className="grocery-results-info">
+                Showing {indexOfFirstProduct + 1}-{Math.min(indexOfLastProduct, filteredProducts.length)} of {filteredProducts.length} results
+              </div>
+
+              {filteredProducts.length === 0 ? (
+                <div className="grocery-empty">No grocery items found matching your criteria</div>
+              ) : (
+                <>
+                  <div className="grocery-products-grid">
+                    {currentProducts.map((product) => (
+                      <div 
+                        key={product.product_id || product.id} 
+                        className="grocery-product-card"
+                        onClick={() => handleProductClick(product)}
+                      >
+                        <div className="grocery-product-image-container">
+                          <img
+                            src={product.imageUrl || `${API_URL}/uploads/${product.image}`}
+                            alt={product.name}
+                            className="grocery-product-image"
+                            onError={(e) => {
+                              e.target.src = 'https://via.placeholder.com/300';
+                              e.target.onerror = null;
+                            }}
+                          />
+                          <button
+                            className={`grocery-wishlist-btn ${wishlistItems.includes(product.product_id || product._id || product.id) ? 'active' : ''}`}
+                            onClick={(e) => handleWishlistClick(e, product)}
+                            disabled={wishlistLoading}
+                          >
+                            {wishlistItems.includes(product.product_id || product._id || product.id) ? '❤️' : '♡'}
+                          </button>
+                        </div>
+
+                        <div className="grocery-product-info">
+                          <h3 className="grocery-product-name">{product.name}</h3>
+                          <div className="grocery-product-brand">{product.brand}</div>
+                          
+                          <div className="grocery-product-rating">
+                            {Array(5).fill().map((_, i) => (
+                              <span key={i} className={i < Math.floor(product.rating || 0) ? 'grocery-star-filled' : 'grocery-star-empty'}>
+                                ★
+                              </span>
+                            ))}
+                            <span className="grocery-rating-text">({product.rating?.toFixed(1) || '0.0'})</span>
+                          </div>
+
+                          <div className="grocery-product-price">₹{product.price}</div>
+                          {product.piece && <div className="grocery-product-piece">{product.piece} pieces</div>}
+
+                          <button 
+                            className="grocery-add-to-cart-btn"
+                            onClick={(e) => handleAddToCart(e, product)}
+                          >
+                            Add to Cart
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {totalPages > 1 && (
+                    <div className="grocery-pagination">
+                      <button 
+                        onClick={() => paginate(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="grocery-pagination-btn"
+                      >
+                        Previous
+                      </button>
+                      
+                      {Array.from({ length: totalPages }, (_, i) => (
+                        <button
+                          key={i + 1}
+                          className={`grocery-pagination-btn ${currentPage === i + 1 ? 'active' : ''}`}
+                          onClick={() => paginate(i + 1)}
+                        >
+                          {i + 1}
+                        </button>
+                      ))}
+                      
+                      <button 
+                        onClick={() => paginate(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="grocery-pagination-btn"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
+      
+      {/* Wishlist Popup */}
+      <WishlistPopup
+        isOpen={showWishlistPopup}
+        onClose={() => setShowWishlistPopup(false)}
+        product={selectedProduct}
+        onAddToCart={handleAddToCartFromWishlist}
+        onContinueShopping={handleContinueShopping}
+        onOpenWishlistPage={handleOpenWishlistPage}
+      />
+
+      {/* Cart Popup */}
+      <CartPopup
+        isOpen={showCartPopup}
+        onClose={() => setShowCartPopup(false)}
+        product={selectedProduct}
+        cartItems={cartItems}
+        onContinueShopping={handleContinueShopping}
+        onViewCart={handleViewCart}
+      />
+      
       <Footer />
     </>
   );
 };
 
-export default GroceriesPage;
+export default GroceryListingPage;

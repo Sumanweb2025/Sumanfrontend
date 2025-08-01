@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import Header from '../../Components/Header/Header';
-import image1 from '../../assets/image1.jpg';
+import homeheader from '../../assets/homeheader.png';
 import image2 from '../../assets/image2.jpg';
 import Product from '../../Components/Product/Product';
 import Oruproduct from '../../Components/Ourproduct/Ourproduct';
 import Ourproduct1 from "../../Components/Ourproduct1/Ourproduct1";
 import GutProduct from '../../Components/Gudproduct/Gudproduct';
 import Offer from '../../Components/Offer/Offer';
+import Banner from '../../Components/ShippingBanner/ShippingBanner';
+import Testimonials from '../../Components/Testimonials/Testimonial'; 
 import Footer from '../../Components/Footer/Footer';
 import './Home.css';
 
@@ -20,28 +22,31 @@ const Home = () => {
 
   return (
     <>
-      <div>
+      <div className='home-container'>
         <Header />
         <div className={`ad-section ${visible ? 'show' : ''}`}>
-          <div className="ad-text">
-            <h1>🔥 Hot & Special</h1>
-            <h2>UNLEASH YOUR TASTE BUDS!</h2>
-            <p>Where every grain of rice tells a story of tradition and joy</p>
-            <span className="ad-badge">Organic Ingredients · Ready in 30 min</span>
+          <div className="ad-left">
+            <h3 className="ad-title">Hot & Special</h3>
+            <h2 className="ad-subtext">
+              UNLEASH YOUR <span className="highlight-text">TASTE BUDS!</span>
+            </h2>
+            <p className='ad-description'>Where every grain of rice tells a story of tradition and joy</p>
           </div>
-          <div className="ad-images">
-            <img src={image1} alt="Palada Payasam Bowl" className="ad-img" />
-            <img src={image2} alt="Product Box" className="ad-img" />
+          <div className="ad-right">
+            <img src={homeheader} alt="Delicious Dish" className="ad-main-img" />
           </div>
         </div>
-        
+
+
       </div>
-      <Oruproduct/>
-      <Product/>
-      <Ourproduct1/>
-      <Offer/>
-      <GutProduct/>
-      <Footer/>
+      <Oruproduct />
+      <Product />
+      <Ourproduct1 />
+      <Offer />
+      <GutProduct />
+      <Testimonials />
+      <Banner />
+      <Footer />
     </>
   );
 };

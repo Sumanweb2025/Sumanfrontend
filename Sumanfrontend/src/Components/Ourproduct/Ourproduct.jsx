@@ -1,4 +1,5 @@
 import './Ourproduct.css';
+import { Link } from 'react-router-dom';
 
 const categories = [
   {
@@ -7,6 +8,7 @@ const categories = [
     img: 'https://images.unsplash.com/photo-1582716401301-b2407dc7563d?w=200&h=200&fit=crop&crop=center',
     alt: 'Indian Sweets',
     className: 'sweets',
+    link: '/sweets',
   },
   {
     title: 'SNACKS',
@@ -14,12 +16,12 @@ const categories = [
     img: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=200&h=200&fit=crop&crop=center',
     alt: 'Indian Snacks',
     className: 'snacks',
+    link: '/snacks',
   },
   {
     title: 'HEAT & EAT',
     count: '15 products',
     img: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80',
-
     alt: 'Ready to Eat Food',
     className: 'heat-eat',
     comingSoon: true,
@@ -45,7 +47,7 @@ const categories = [
 const FoodCategories = () => {
   return (
     <div className="our-container">
-      <h1 className="our-section-title">Our Products Category</h1>
+      <h2 className="our-section-title">Explore Our Product Categories</h2>
       <div className="our-cards-grid">
         {categories.map((cat, idx) => (
           <div key={idx} className={`our-card our-${cat.className}`}>
@@ -53,7 +55,13 @@ const FoodCategories = () => {
             <div className="our-card-image">
               <img src={cat.img} alt={cat.alt} />
             </div>
-            <div className="our-card-title">{cat.title}</div>
+            {cat.link ? (
+              <Link to={cat.link} className="our-card-title-link">
+                <div className="our-card-title">{cat.title}</div>
+              </Link>
+            ) : (
+              <div className="our-card-title">{cat.title}</div>
+            )}
             <div className="our-card-count">{cat.count}</div>
           </div>
         ))}

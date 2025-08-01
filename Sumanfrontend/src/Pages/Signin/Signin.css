@@ -1,62 +1,57 @@
-/* Main Container */
-.signin-container {
+
+
+/* Container */
+.login-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
-              url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect fill="%23f4f4f4" width="1200" height="800"/><circle cx="150" cy="150" r="100" fill="%23ff6b6b" opacity="0.2"/><circle cx="900" cy="200" r="80" fill="%234ecdc4" opacity="0.2"/><circle cx="300" cy="600" r="120" fill="%23ffe66d" opacity="0.2"/><circle cx="1100" cy="700" r="90" fill="%23ff8b94" opacity="0.2"/><circle cx="600" cy="100" r="70" fill="%2395e1d3" opacity="0.2"/></svg>');
-  background-size: cover;
-  background-position: center;
+  height: 100%;
 }
 
-/* Card Styling */
-.signin-card {
+/* Card */
+.login-card {
+  background-color: #fff;
+  padding: 40px;
   width: 100%;
-  max-width: 350px;
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 0;
-  padding: 30px;
-  box-shadow: none;
+  max-width: 400px;
+  border-radius: 12px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
+  animation: fadeIn 0.6s ease-in-out;
 }
 
-/* Logo Styling - Matching "CYNUSHIP SHELL" from image */
-.signin-logo {
-  font-size: 20px;
+/* Logo styling with colorful characters */
+.login-logo {
+  font-size: 32px;
   font-weight: bold;
-  margin-bottom: 30px;
-  color: #333;
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-/* Header Styling */
-.signin-header {
-  margin-bottom: 25px;
+  margin-bottom: 20px;
   text-align: center;
 }
 
-.signin-header h2 {
-  color: #333;
-  margin-bottom: 5px;
-  font-size: 18px;
-  font-weight: normal;
-  text-transform: uppercase;
+.login-logo .red { color: #e53935; }
+.login-logo .orange { color: #f57c00; }
+.login-logo .green { color: #43a047; }
+
+/* Header */
+.login-header h2 {
+  font-size: 24px;
+  margin-bottom: 8px;
+  text-align: center;
 }
 
-.signin-subtitle {
-  color: #666;
-  font-size: 12px;
-  margin-top: 10px;
+.login-subtitle {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
-/* Form Styling */
-.signin-form {
+/* Form */
+.login-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 .form-group {
@@ -64,104 +59,107 @@
   flex-direction: column;
 }
 
-.form-group input {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 0;
-  font-size: 14px;
-  width: 100%;
-  box-sizing: border-box;
-  background-color: #f9f9f9;
-}
-
-.form-group input:focus {
-  outline: none;
-  border-color: #999;
-}
-
-/* Remember Me Checkbox */
-.remember-me {
-  display: flex;
-  align-items: center;
-  margin: 15px 0;
-}
-
-.remember-me input {
-  margin-right: 8px;
-}
-
-.remember-me label {
-  font-size: 13px;
-  color: #666;
-}
-
-/* Button Styling */
-.signin-btn {
-  background-color: #333;
-  color: white;
-  border: none;
+input[type="email"],
+input[type="password"] {
   padding: 12px;
-  border-radius: 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  transition: border-color 0.3s;
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus {
+  border-color: #4caf50;
+  outline: none;
+}
+
+.error {
+  border-color: #e53935;
+}
+
+.error-text {
+  color: #e53935;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+/* Error box */
+.error-message {
+  background-color: #ffe6e6;
+  color: #c62828;
+  padding: 10px 15px;
+  border-radius: 6px;
   font-size: 14px;
-  font-weight: normal;
+  margin-bottom: 12px;
+}
+
+/* Button */
+.login-btn {
+  background-color: #43a047;
+  color: #fff;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s;
-  margin-top: 5px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
 }
 
-.signin-btn:hover {
-  background-color: #555;
+.login-btn:hover {
+  background-color: #388e3c;
 }
 
-/* Links Styling */
-.signin-links {
+.login-btn:disabled {
+  background-color: #a5d6a7;
+  cursor: not-allowed;
+}
+
+/* Spinner inside button */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #fff;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Footer links */
+.login-footer {
   text-align: center;
-  margin: 15px 0 25px 0;
+  margin-top: 20px;
+  font-size: 14px;
 }
 
-.forgot-password-btn {
-  background: none;
-  border: none;
-  color: #666;
-  font-size: 12px;
-  cursor: pointer;
-  padding: 0;
+.login-footer a {
+  color: #4caf50;
+  text-decoration: none;
+}
+
+.login-footer a:hover {
   text-decoration: underline;
 }
 
-/* Copyright Styling */
-.copyright {
+/* Copyright */
+copyright {
+  font-size: 12px;
+  color: #aaa;
   text-align: center;
-  margin-top: 30px;
-  color: #999;
-  font-size: 11px;
-  text-transform: uppercase;
+  margin-top: 16px;
 }
 
-/* Remove all animations and transitions */
-.signin-btn, .form-group input {
-  transition: none;
-}
-
-/* Add to your Signin.css */
-.spinner {
-  display: inline-block;
-  width: 1rem;
-  height: 1rem;
-  border: 2px solid rgba(255,255,255,0.3);
-  border-radius: 50%;
-  border-top-color: white;
-  animation: spin 1s ease-in-out infinite;
-  margin-right: 8px;
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes spin {
+  from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
-}
-
-button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
 }
