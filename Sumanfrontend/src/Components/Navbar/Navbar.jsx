@@ -39,20 +39,20 @@ const Navbar = () => {
   ];
 
   return (
-    <div className="navbar">
+    <div className="Header-navbar">
       {/* Navigation Links */}
-      <div className="nav-links">
+      <div className="Header-nav-links">
         {navLinks.map((item) => (
           <Link key={item.name} to={item.path}>{item.name}</Link>
         ))}
 
         {/* Brands Dropdown with Ref */}
-        <div className="dropdown" ref={dropdownRef}>
-          <button className="dropdown-toggle" onClick={() => setShowBrands(!showBrands)}>
+        <div className="Header-dropdown" ref={dropdownRef}>
+          <button className="Header-dropdown-toggle" onClick={() => setShowBrands(!showBrands)}>
             Brands <FaChevronDown style={{ marginLeft: '6px' }} />
           </button>
           {showBrands && (
-            <div className="dropdown-content">
+            <div className="Header-dropdown-content">
               {brandLinks.map((brand) => (
                 <Link key={brand.name} to={brand.path}>{brand.name}</Link>
               ))}
