@@ -1,0 +1,41 @@
+.banner {
+  display: flex;
+  justify-content: space-around;
+  background-color: #0f5132;
+  padding: 40px 20px;
+  flex-wrap: wrap;
+}
+
+.banner-item {
+  color: white;
+  text-align: center;
+  flex: 1 1 220px;
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.banner-top-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.banner-icon {
+  font-size: 28px;
+  color: #ffd700;
+}
+
+.banner-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.banner-subtitle {
+  font-size: 14px;
+  opacity: 0.9;
+  margin-top: 5px;
+}

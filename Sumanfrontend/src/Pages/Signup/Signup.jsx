@@ -1,3 +1,4 @@
+// Signup.jsx - Updated for Backend Integration
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -8,7 +9,7 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [signupData, setSignupData] = useState({
-    name: '', // Changed from username to name
+    name: '',
     email: '',
     password: '',
     agreeToTerms: false
@@ -38,18 +39,18 @@ const SignUp = () => {
       newErrors.email = 'Please enter a valid email address';
     }
     
-    if (!signupData.name.trim()) { // Changed from username to name
-      newErrors.name = 'Full name is required'; // Updated error message
-    } else if (signupData.name.trim().length < 3) {
-      newErrors.name = 'Name must be at least 3 characters';
+    if (!signupData.name.trim()) {
+      newErrors.name = 'Full name is required';
+    } else if (signupData.name.trim().length < 2) {
+      newErrors.name = 'Name must be at least 2 characters';
     }
     
     if (!signupData.password) {
       newErrors.password = 'Password is required';
     } else if (signupData.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
-    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(signupData.password)) {
-      newErrors.password = 'Password must contain at least one uppercase letter, one lowercase letter, and one number';
+    } else if (!/(?=.*[A-Za-z])(?=.*\d)/.test(signupData.password)) {
+      newErrors.password = 'Password must contain at least one letter and one number';
     }
     
     if (!signupData.agreeToTerms) {
@@ -73,28 +74,48 @@ const SignUp = () => {
     setErrors({});
 
     try {
-      const response = await axios.post('http://localhost:5000/api/register', { // Updated endpoint
+      // Updated to match backend endpoint
+      const response = await axios.post('http://localhost:8000/api/auth/signup', {
         name: signupData.name.trim(),
         email: signupData.email.toLowerCase().trim(),
         password: signupData.password
       });
 
-      // Successful registration
-      localStorage.setItem('registrationSuccess', 'true');
-      navigate('/signin', { state: { fromSignup: true } });
+      if (response.data.success) {
+        // Store user data and token
+        localStorage.setItem('token', response.data.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.data.user));
+        
+        // Show success message
+        alert('Account created successfully! Welcome to Food Court!');
+        
+        // Redirect to login page
+        navigate('/signin', { replace: true });
+      }
 
     } catch (error) {
       console.error('Signup error:', error);
       
-      if (error.response) {
-        // Backend validation errors
-        if (error.response.data.errors) {
-          setErrors(error.response.data.errors);
+      if (error.response && error.response.data) {
+        const { data } = error.response;
+        
+        if (data.errors && Array.isArray(data.errors)) {
+          // Handle validation errors from express-validator
+          const formattedErrors = {};
+          data.errors.forEach(err => {
+            formattedErrors[err.path || err.param] = err.msg;
+          });
+          setErrors(formattedErrors);
+        } else if (data.message) {
+          // Handle general error messages
+          setErrors({ api: data.message });
         } else {
-          setErrors({ api: error.response.data.message || 'Registration failed' });
+          setErrors({ api: 'Registration failed. Please try again.' });
         }
+      } else if (error.request) {
+        setErrors({ api: 'Network error. Please check your connection and try again.' });
       } else {
-        setErrors({ api: 'Network error. Please try again.' });
+        setErrors({ api: 'An unexpected error occurred. Please try again.' });
       }
     } finally {
       setLoading(false);
@@ -113,6 +134,26 @@ const SignUp = () => {
     if (/[^a-zA-Z\d]/.test(signupData.password)) strength++;
     
     return (strength / 5) * 100;
+  };
+
+  const getStrengthColor = () => {
+    const strength = getPasswordStrength();
+    if (strength < 40) return '#ff4757';
+    if (strength < 80) return '#ffa502';
+    return '#2ed573';
+  };
+
+  const getStrengthText = () => {
+    const strength = Math.floor(getPasswordStrength() / 20);
+    switch(strength) {
+      case 0: return 'Very Weak';
+      case 1: return 'Weak';
+      case 2: return 'Fair';
+      case 3: return 'Good';
+      case 4: return 'Strong';
+      case 5: return 'Very Strong';
+      default: return '';
+    }
   };
 
   return (
@@ -147,8 +188,8 @@ const SignUp = () => {
           <div className="form-group">
             <input
               type="text"
-              name="name" // Changed from username to name
-              placeholder="Full Name" // Updated placeholder
+              name="name"
+              placeholder="Full Name"
               value={signupData.name}
               onChange={handleChange}
               className={errors.name ? 'error' : ''}
@@ -172,22 +213,14 @@ const SignUp = () => {
                 <div className="strength-meter">
                   <div 
                     className="strength-bar"
-                    style={{ width: `${getPasswordStrength()}%` }}
+                    style={{ 
+                      width: `${getPasswordStrength()}%`,
+                      backgroundColor: getStrengthColor()
+                    }}
                   ></div>
                 </div>
-                <span className="strength-text">
-                  {(() => {
-                    const strength = Math.floor(getPasswordStrength() / 20);
-                    switch(strength) {
-                      case 0: return 'Very Weak';
-                      case 1: return 'Weak';
-                      case 2: return 'Fair';
-                      case 3: return 'Good';
-                      case 4: return 'Strong';
-                      case 5: return 'Very Strong';
-                      default: return '';
-                    }
-                  })()}
+                <span className="strength-text" style={{ color: getStrengthColor() }}>
+                  {getStrengthText()}
                 </span>
               </div>
             )}
@@ -231,3 +264,8 @@ const SignUp = () => {
 };
 
 export default SignUp;
+
+
+
+
+

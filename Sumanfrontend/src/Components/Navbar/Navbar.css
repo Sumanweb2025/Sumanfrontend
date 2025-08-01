@@ -34,11 +34,11 @@
   color: orange;
 }
 
-.dropdown {
+.nav-dropdown {
   position: relative;
 }
 
-.dropdown-toggle {
+.nav-dropdown-toggle {
   background: none;
   border: none;
   color: #fff;
@@ -49,11 +49,11 @@
   align-items: center;
 }
 
-.dropdown-toggle:hover {
+.nav-dropdown-toggle:hover {
   text-decoration: underline;
 }
 
-.dropdown-content {
+.nav-dropdown-content {
   position: absolute;
   background-color: #fff;
   top: 40px;
@@ -64,7 +64,7 @@
   border-radius: 4px;
 }
 
-.dropdown-content a {
+.nav-dropdown-content a {
   display: block;
   padding: 10px 15px;
   color: #015329;
@@ -72,6 +72,6 @@
   font-weight: 500;
 }
 
-.dropdown-content a:hover {
+.nav-dropdown-content a:hover {
   background-color: #f0f0f0;
 }

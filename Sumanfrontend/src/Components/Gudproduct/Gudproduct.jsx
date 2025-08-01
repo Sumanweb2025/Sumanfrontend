@@ -1,137 +1,472 @@
-import React, { useState } from 'react';
-import sweetsImage from '../../assets/candy.png';
-import groceryImage from '../../assets/image8.png';
-import snacksImage from '../../assets/image7.jpg';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './Gudproduct.css';
+import WishlistPopup from '../../Components/WishlistPopup/WishlistPopup';
+import CartPopup from '../../Components/CartPopup/CartPopup';
 
-const products = [
-  {
-    name: 'Achu Munuku',
-    price: '$20.00',
-    image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80'
-  },
-  {
-    name: 'Delelous Burfi',
-    price: '$20.00',
-    image: 'https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80'
-  },
-  {
-    name: 'SESAME BLACK BALL 80G',
-    price: '$20.00',
-    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80'
-  },
-  {
-    name: 'SESAME WHITE BALL 80G',
-    price: '$20.00',
-    image: 'https://images.unsplash.com/photo-1551024506-0bccd828d307?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80'
-  },
-  {
-    name: 'Peanut Balls 100G',
-    price: '$20.00',
-    image: 'https://images.unsplash.com/photo-1603532648955-039310d9ed75?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80'
-  },
-  {
-    name: 'Peanut Halwa 150G',
-    price: '$20.00',
-    image: 'https://images.unsplash.com/photo-1607478900771-4f50e7eec937?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80'
-  }
-];
+const API_URL = 'http://localhost:8000';
 
-const ProductCard = ({ product }) => (
-  <div className="get-product-card">
-    <img src={product.image} alt={product.name} />
-    <h3>{product.name}</h3>
-    <p>{product.price}</p>
-  </div>
-);
+const FeaturedProducts = () => {
+  const [activeCategory, setActiveCategory] = useState('sweets');
+  const [products, setProducts] = useState({
+    sweets: [],
+    snacks: []
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  // Wishlist and Cart states
+  const [wishlistItems, setWishlistItems] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
+  
+  // Popup states
+  const [showWishlistPopup, setShowWishlistPopup] = useState(false);
+  const [showCartPopup, setShowCartPopup] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  
+  const navigate = useNavigate();
 
-const ProductPage = () => {
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
-
-  const handleSubscribe = (e) => {
-    e.preventDefault();
-    if (!email) return;
-    console.log('Subscribed with email:', email);
-    setSubscribed(true);
+  // API endpoints
+  const API_ENDPOINTS = {
+    sweets: `${API_URL}/api/products/search?category=sweets`,
+    snacks: `${API_URL}/api/products/search?category=sweets`
   };
 
-  return (
-    <div className="get-product-page">
-      <header>
-        <h1>Our Products</h1>
-        <h2>What Special Today</h2>
-        <div className="get-category-toggle">
-          <button className="get-active">Sweets</button>
-          <button>Snacks</button>
-        </div>
-      </header>
+  // Fetch products from backend
+  const fetchProducts = async (category) => {
+    try {
+      const response = await fetch(API_ENDPOINTS[category], {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
 
-      <section className="get-product-list">
-        {products.map((product) => (
-          <ProductCard key={product.name} product={product} />
-        ))}
+      if (!response.ok) {
+        throw new Error(`Failed to fetch ${category}: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log(`${category} API Response:`, data);
+      
+      if (data.products) {
+        return data.products;
+      } else if (Array.isArray(data)) {
+        return data;
+      } else if (data.data) {
+        return data.data;
+      } else if (data.results) {
+        return data.results;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.error(`Error fetching ${category}:`, error);
+      throw error;
+    }
+  };
+
+  // Load products and user data on component mount
+  useEffect(() => {
+    const loadAllData = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        // Fetch both categories in parallel
+        const [sweetsData, snacksData] = await Promise.all([
+          fetchProducts('sweets'),
+          fetchProducts('snacks')
+        ]);
+
+        setProducts({
+          sweets: sweetsData || [],
+          snacks: snacksData || []
+        });
+
+        // Fetch wishlist and cart if user is logged in
+        const token = localStorage.getItem('token');
+        if (token) {
+          try {
+            // Fetch wishlist
+            const wishlistResponse = await axios.get(`${API_URL}/api/wishlist`, {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const wishlistData = wishlistResponse.data?.data || wishlistResponse.data;
+            setWishlistItems(wishlistData.products?.map(item => item.productId._id || item.productId) || []);
+
+            // Fetch cart
+            const cartResponse = await axios.get(`${API_URL}/api/cart`, {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const cartData = cartResponse.data?.data || cartResponse.data;
+            setCartItems(cartData.items || []);
+          } catch (userDataError) {
+            console.log('Wishlist/Cart not loaded:', userDataError);
+            setWishlistItems([]);
+            setCartItems([]);
+          }
+        }
+      } catch (error) {
+        setError(`Failed to load products: ${error.message}`);
+        console.error('Error loading products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadAllData();
+  }, []);
+
+  // Handle wishlist click
+  const handleWishlistClick = async (product, e) => {
+    e?.stopPropagation();
+    if (!product || wishlistLoading) return;
+    
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Please login to add items to your wishlist');
+      return;
+    }
+
+    setWishlistLoading(true);
+    try {
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      };
+
+      const productId = product.product_id || product._id || product.id;
+      const isInWishlist = wishlistItems.includes(productId);
+      
+      if (isInWishlist) {
+        await axios.delete(`${API_URL}/api/wishlist/${productId}`, config);
+        setWishlistItems(prev => prev.filter(id => id !== productId));
+        
+        // Dispatch custom event to update header count
+        window.dispatchEvent(new CustomEvent('wishlistUpdated'));
+      } else {
+        await axios.post(`${API_URL}/api/wishlist`, { productId }, config);
+        setWishlistItems(prev => [...prev, productId]);
+        
+        // Dispatch custom event to update header count
+        window.dispatchEvent(new CustomEvent('wishlistUpdated'));
+        
+        // Show wishlist popup
+        setSelectedProduct(product);
+        setShowWishlistPopup(true);
+      }
+    } catch (err) {
+      console.error('Wishlist error:', err);
+      alert(err.response?.data?.message || 'Failed to update wishlist');
+    } finally {
+      setWishlistLoading(false);
+    }
+  };
+
+  // Handle add to cart
+  const handleAddToCart = async (product, e) => {
+    e?.stopPropagation();
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Please login to add items to your cart');
+        return;
+      }
+
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      };
+
+      const productId = product.product_id || product._id || product.id;
+      await axios.post(`${API_URL}/api/cart`, { productId, quantity: 1 }, config);
+      
+      // Update cart items
+      const cartResponse = await axios.get(`${API_URL}/api/cart`, config);
+      const cartData = cartResponse.data?.data || cartResponse.data;
+      setCartItems(cartData.items || []);
+
+      // Dispatch custom event to update header count
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
+
+      // Show cart popup
+      setSelectedProduct(product);
+      setShowCartPopup(true);
+    } catch (err) {
+      console.error('Add to cart error:', err);
+      alert(err.response?.data?.message || 'Failed to add to cart');
+    }
+  };
+
+  // Handle add to cart from wishlist popup
+  const handleAddToCartFromWishlist = async (productId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      };
+
+      await axios.post(`${API_URL}/api/cart`, { productId, quantity: 1 }, config);
+      
+      // Update cart items
+      const cartResponse = await axios.get(`${API_URL}/api/cart`, config);
+      const cartData = cartResponse.data?.data || cartResponse.data;
+      setCartItems(cartData.items || []);
+
+      // Dispatch custom event to update header count
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
+
+      return true;
+    } catch (err) {
+      console.error('Add to cart error:', err);
+      throw err;
+    }
+  };
+
+  // Handle product click
+  const handleProductClick = (productId) => {
+    if (productId) {
+      navigate(`/products/${productId}`);
+    }
+  };
+
+  // Popup handlers
+  const handleContinueShopping = () => {
+    setShowWishlistPopup(false);
+    setShowCartPopup(false);
+    setSelectedProduct(null);
+  };
+
+  const handleOpenWishlistPage = () => {
+    setShowWishlistPopup(false);
+    navigate('/wishlist');
+  };
+
+  const handleViewCart = () => {
+    setShowCartPopup(false);
+    navigate('/cart');
+  };
+
+  // Handle shop now click
+  const handleShopNow = () => {
+    console.log('Shop now clicked for category:', activeCategory);
+    if (activeCategory === 'sweets') {
+      navigate('/sweets');
+    } else if (activeCategory === 'snacks') {
+      navigate('/snacks');
+    }
+  };
+
+  const currentProducts = products[activeCategory] || [];
+  const displayProducts = currentProducts.slice(0, 6);
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading special products...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <p className="error-message">{error}</p>
+        <button 
+          className="retry-button"
+          onClick={() => window.location.reload()}
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <section className="special-today-section">
+        <div className="gud-container">
+          {/* Header */}
+          <div className="section-header">
+            <h3 className="section-subtitle">Our Products</h3>
+            <h1 className="section-title">What Special Today</h1>
+          </div>
+
+          {/* Category Tabs */}
+          <div className="category-tabs">
+            <button 
+              className={`tab-button ${activeCategory === 'sweets' ? 'active' : ''}`}
+              onClick={() => setActiveCategory('sweets')}
+            >
+              SWEETS
+            </button>
+            <button 
+              className={`tab-button ${activeCategory === 'snacks' ? 'active' : ''}`}
+              onClick={() => setActiveCategory('snacks')}
+            >
+              SNACKS
+            </button>
+          </div>
+
+          {/* Products Grid */}
+          <div className="gud-products-grid">
+            {displayProducts.length > 0 ? (
+              displayProducts.map((product) => {
+                const productId = product._id?.$oid || product._id || product.product_id;
+                if (!productId) return null;
+
+                return (
+                  <div 
+                    key={productId} 
+                    className="gud-product-card"
+                    onClick={() => handleProductClick(productId)}
+                  >
+                    <div className="gud-product-image-card">
+                      <img
+                        src={product.imageUrl || `${API_URL}/images/Products/${product.image}` || 'https://via.placeholder.com/300'}
+                        alt={product.name}
+                        className="product-image"
+                        onError={(e) => {
+                          e.target.src = 'https://via.placeholder.com/300';
+                          e.target.onerror = null;
+                        }}
+                      />
+                      
+                      {/* Wishlist heart */}
+                      <button
+                        className={`wishlist-heart ${wishlistItems.includes(productId) ? 'active' : ''}`}
+                        onClick={(e) => handleWishlistClick(product, e)}
+                        disabled={wishlistLoading}
+                        title={wishlistItems.includes(productId) ? 'Remove from wishlist' : 'Add to wishlist'}
+                      >
+                        {wishlistLoading ? '⏳' : (wishlistItems.includes(productId) ? '❤️' : '♡')}
+                      </button>
+
+                      <div className="gud-product-info">
+                        <h3 className="product-name">{product.name}</h3>
+                        <span className="product-price">₹{(product.price || 0).toFixed(2)}</span>
+                        
+                        <div className="product-footer">
+                          <button 
+                            className="gudproduct-add-to-cart-btn"
+                            onClick={(e) => handleAddToCart(product, e)}
+                            title="Add to Cart"
+                          >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="no-products">
+                <p>No {activeCategory} products available at the moment.</p>
+              </div>
+            )}
+          </div>
+
+          {/* Shop Now Button */}
+          {displayProducts.length > 0 && (
+            <div className="shop-now-container">
+              <button className="shop-now-btn" onClick={handleShopNow}>
+                SHOP NOW
+              </button>
+            </div>
+          )}
+
+          {/* Featured Cards */}
+          <div className="featured-cards">
+            <div className="feature-card delicious-sweets">
+              <div className="card-content">
+                <span className="card-tag">Today's HeartBeat</span>
+                <h2 className="card-title">DELICIOUS SWEETS</h2>
+                <p className="card-description">The best options of the day in your town</p>
+                <button className="card-button" onClick={handleShopNow}>
+                  SHOP NOW
+                </button>
+              </div>
+            </div>
+
+            <div className="feature-card grocery">
+              <div className="card-content">
+                <span className="card-tag">Healthy & Delicious</span>
+                <h2 className="card-title">GROCERY</h2>
+                <p className="card-description">This weekend only</p>
+                <button className="card-button" onClick={handleShopNow}>
+                  SHOP NOW
+                </button>
+              </div>
+            </div>
+
+            <div className="feature-card grab-snacks">
+              <div className="card-content">
+                <h2 className="card-title">GRAB YOUR SNACKS</h2>
+                <button className="card-button special" onClick={handleShopNow}>
+                  SHOP NOW
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Newsletter Section */}
+          <div className="newsletter-section">
+            <div className="newsletter-content">
+              <div className="newsletter-text">
+                <h2 className="newsletter-title">Newsletter</h2>
+                <h3 className="newsletter-subtitle">Get <span className="highlight">10% </span> off your order!</h3>
+                <p className="newsletter-description">
+                  Get E-mail updates about our latest shop and special offers.
+                </p>
+              </div>
+              <div className="newsletter-form">
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  className="newsletter-input"
+                />
+                <button className="newsletter-btn">SUBSCRIBE</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <footer>
-        <button className="get-shop-button">SHOP NOW</button>
-      </footer>
+      {/* Wishlist Popup */}
+      <WishlistPopup
+        isOpen={showWishlistPopup}
+        onClose={() => setShowWishlistPopup(false)}
+        product={selectedProduct}
+        onAddToCart={handleAddToCartFromWishlist}
+        onContinueShopping={handleContinueShopping}
+        onOpenWishlistPage={handleOpenWishlistPage}
+      />
 
-      <div className="deal-cards-container">
-        <div className="deal-card sweets">
-          <p className="tagline">Today’s Best Deal</p>
-          <h2 className="title">DELICIOUS SWEETS</h2>
-          <p className="subtitle">The best options of the day in your town</p>
-          <button>SHOP NOW</button>
-          <img src={sweetsImage} alt="Sweets" className="deal-image" />
-        </div>
-
-        <div className="deal-card grocery">
-          <p className="tagline">Healthy & Delicious</p>
-          <h2 className="title">GROCERY</h2>
-          <p className="subtitle">This weekend only</p>
-          <button>SHOP NOW</button>
-          <img src={groceryImage} alt="Grocery" className="deal-image" />
-        </div>
-
-        <div className="deal-card snacks">
-          <h2 className="title">GRAB YOUR SNACKS</h2>
-          <p className="subtitle">Super Delicious</p>
-          <button>SHOP NOW</button>
-          <img src={snacksImage} alt="Snacks" className="deal-image" />
-        </div>
-      </div>
-
-      {/* Newsletter Section */}
-      <div className="newsletter-container">
-        <div className="newsletter-left">
-          <h2 className="newsletter-heading">Newsletter</h2>
-          <p className="newsletter-offer">Get 10% off your order!</p>
-          <p className="newsletter-description">
-            Enter your email and receive a 10% discount on your next order!
-          </p>
-          <form className="newsletter-form" onSubmit={handleSubscribe}>
-            <input
-              type="email"
-              className="newsletter-input"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <button type="submit" className="newsletter-button">
-              SUBSCRIBE
-            </button>
-          </form>
-          {subscribed && <p className="newsletter-success">🎉 Subscribed successfully!</p>}
-        </div>
-        <div className="newsletter-right">
-          <img src="/images/vegetables.png" alt="Vegetables" className="newsletter-image" />
-          <img src="/images/ladoos.png" alt="Ladoos" className="newsletter-image" />
-        </div>
-      </div>
-    </div>
+      {/* Cart Popup */}
+      <CartPopup
+        isOpen={showCartPopup}
+        onClose={() => setShowCartPopup(false)}
+        product={selectedProduct}
+        cartItems={cartItems}
+        onContinueShopping={handleContinueShopping}
+        onViewCart={handleViewCart}
+      />
+    </>
   );
 };
 
-export default ProductPage;
+export default FeaturedProducts;

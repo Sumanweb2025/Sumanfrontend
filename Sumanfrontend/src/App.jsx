@@ -4,6 +4,7 @@ import './App.css';
 import Home from './Pages/Home/Home';
 import Product from '../src/Components/Product/Product';
 import Sweets from './Pages/Sweets/sweets';
+import ProductDetailsPage from './Pages/ProductDetailsPage/ProductDetailsPage';
 import Snacks from './Pages/Snacks/Snacks';
 import Ourproduct from "../src/Components/Ourproduct/Ourproduct";
 import Ourproduct1 from "../src/Components/Ourproduct1/Ourproduct1";
@@ -15,8 +16,12 @@ import Amirth from './Components/Amirth/Amirth';
 import Venba from './Components/Venba/Venba';
 import SignUp from './Pages/Signup/Signup';
 import SignIn from './Pages/Signin/Signin';
+import Profile from './Pages/Profile/Profile';
 import Footer from './Components/Footer/Footer';
 import Contacts from './Pages/Contact/Contact';
+import Wishlist from './Pages/Wishlist/Wishlist';
+import Cart from './Pages/Cart/Cart';
+import CheckoutPage from './Pages/CheckOut/CheckOut';
 
 const App = () => {
   return (
@@ -39,7 +44,12 @@ const App = () => {
         <Route path="/brands/venba" element={<Venba />} />
         <Route path="/signup" element={<SignUp />} />
          <Route path="/signin" element={<SignIn />} />
+         <Route path="/profile" element={<Profile />} />
          <Route path="/footer" element={<Footer/>} />
+         <Route path="/product/:id" element={<ProductDetailsPage/>} />
+         <Route path="/wishlist" element={<Wishlist />} />
+         <Route path="/cart" element={<Cart />} /> 
+         <Route path='/checkout' element={<CheckoutPage/>} />
 
       </Routes>
     </Router>

@@ -1,65 +1,106 @@
-.footer-wrapper {
-  position: relative;
-  bottom: 0;
-  width: 100%;
-  background-image: url('/src/images/image2.jpg');
-  backdrop-filter: blur(20px); /* Use public folder or import */
-  background-size: cover;
-  backdrop-filter: blur(5px);
-  background-position: center;
-  color: #fff;
-  padding: 60px 10%;
-  z-index: 1;
+.iyappaa-footer {
+  background: white;
+  padding: 60px 40px 30px;
+  font-family: 'Segoe UI', sans-serif;
+  color: #000;
 }
 
-//.footer-overlay {
-  backdrop-filter: blur(8px); /* Blur effect */
-  background-color: rgba(0, 0, 0, 0.6); /* Dark overlay */
-  padding: 40px;
-  border-radius: 10px;
-}
-
-.footer-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+.footer-main {
+  display: flex;
+  flex-wrap: wrap;
   gap: 40px;
+  justify-content: space-between;
 }
 
-.footer-section h3 {
-  font-size: 1.4rem;
-  margin-bottom: 15px;
-  color: #ffcc00;
+.footer-left {
+  flex: 1 1 240px;
 }
 
-.footer-section p,
-.footer-section li {
-  font-size: 1rem;
-  line-height: 1.6;
-  margin-bottom: 8px;
+.footer-logo {
+  width: 140px;
+  margin-bottom: 10px;
 }
 
-.footer-section ul {
+.footer-tagline {
+  font-size: 14px;
+  color: gray;
+  margin-bottom: 5px;
+}
+
+.footer-contact {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.red-text {
+  color: #d40000;
+}
+
+.footer-column {
+  flex: 1 1 200px;
+}
+
+.footer-column h4 {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.footer-column ul {
   list-style: none;
   padding: 0;
 }
 
-.footer-section input {
-  padding: 10px;
-  width: 100%;
+.footer-column li {
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: gray;
+}
+
+.footer-bottom {
+  margin-top: 40px;
+  border-top: 1px solid #ccc;
+  padding-top: 20px;
+  text-align: center;
+}
+
+.footer-social {
+  display: flex;
+  justify-content:flex-start;
+  gap: 20px;
+  font-size: 20px;
+  margin-top: 10px;
+}
+
+.footer-social svg {
+  color: #555;
+  transition: color 0.3s;
+}
+
+.footer-social svg:hover {
+  color: #d40000;
+}
+
+.footer-policies {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 14px;
+  color: #d40000;
   margin-bottom: 10px;
-  border-radius: 5px;
-  border: none;
+  text-align: start;
 }
 
-.footer-section button {
-  background-color: #ffcc00;
-  color: #000;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.footer-payments{
+  display:flex;
+  justify-content: end;
 }
 
-.footer-section button:hover {
-  background-color: #e6b800;
+.footer-payments img {
+  width: 150px;
+}
+
+.footer-copyright {
+  font-size: 12px;
+  color: #777;
 }

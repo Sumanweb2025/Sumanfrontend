@@ -47,12 +47,12 @@ const Navbar = () => {
         ))}
 
         {/* Brands Dropdown with Ref */}
-        <div className="dropdown" ref={dropdownRef}>
-          <button className="dropdown-toggle" onClick={() => setShowBrands(!showBrands)}>
+        <div className="nav-dropdown" ref={dropdownRef}>
+          <button className="nav-dropdown-toggle" onClick={() => setShowBrands(!showBrands)}>
             Brands <FaChevronDown style={{ marginLeft: '6px' }} />
           </button>
           {showBrands && (
-            <div className="dropdown-content">
+            <div className="nav-dropdown-content">
               {brandLinks.map((brand) => (
                 <Link key={brand.name} to={brand.path}>{brand.name}</Link>
               ))}
