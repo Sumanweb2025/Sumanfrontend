@@ -11,9 +11,20 @@ import Banner from '../../Components/ShippingBanner/ShippingBanner';
 import Testimonials from '../../Components/Testimonials/Testimonial'; 
 import Footer from '../../Components/Footer/Footer';
 import './Home.css';
+import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 
 const Home = () => {
   const [visible, setVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
+  
+    useEffect(() => {
+      // Simulate API/data loading
+      const timer = setTimeout(() => {
+        setLoading(false);
+      }, 1000); // 1 second loading delay
+  
+      return () => clearTimeout(timer);
+    }, []);
 
   useEffect(() => {
     const timeout = setTimeout(() => setVisible(true), 300);
@@ -21,9 +32,15 @@ const Home = () => {
   }, []);
 
   return (
-    <>
-      <div className='home-container'>
+    <><LoadingSpinner 
+              isLoading={loading} 
+              brandName="Iyappaa Foods" 
+              loadingText="Loading our site..."
+              progressColor="#3b82f6"
+            />
+      
         <Header />
+        <div className='home-container'>
         <div className={`ad-section ${visible ? 'show' : ''}`}>
           <div className="ad-left">
             <h3 className="ad-title">Hot & Special</h3>

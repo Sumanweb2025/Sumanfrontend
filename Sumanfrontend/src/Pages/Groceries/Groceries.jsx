@@ -6,6 +6,7 @@ import Header from '../../Components/Header/Header';
 import Footer from "../../Components/Footer/Footer";
 import WishlistPopup from '../../Components/WishlistPopup/WishlistPopup';
 import CartPopup from '../../Components/CartPopup/CartPopup';
+import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 
 const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const navigate = useNavigate();
@@ -290,11 +291,15 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     navigate('/cart');
   };
 
-  if (loading) return <div className="grocery-loading">Loading grocery items...</div>;
-  if (error) return <div className="grocery-error">Error: {error}</div>;
 
   return (
     <>
+       <LoadingSpinner 
+                  isLoading={loading} 
+                  brandName="Groceries" 
+                  loadingText="Loading grocery items..."
+                  progressColor="#3b82f6"
+                />
       <Header />
       <div className="grocery-page">
         <div className="grocery-container">

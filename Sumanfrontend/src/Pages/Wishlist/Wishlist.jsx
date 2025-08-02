@@ -4,6 +4,7 @@ import axios from 'axios';
 import './Wishlist.css';
 import Header from '../../Components/Header/Header';
 import Footer from "../../Components/Footer/Footer";
+import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 
 const WishlistPage = () => {
   const navigate = useNavigate();
@@ -104,28 +105,15 @@ const WishlistPage = () => {
     navigate('/products');
   };
 
-  if (loading) return (
-    <>
-      <Header />
-      <div className="wishlist-page">
-        <div className="loading">Loading your wishlist...</div>
-      </div>
-      <Footer />
-    </>
-  );
-
-  if (error) return (
-    <>
-      <Header />
-      <div className="wishlist-page">
-        <div className="error">Error: {error}</div>
-      </div>
-      <Footer />
-    </>
-  );
 
   return (
     <>
+    <LoadingSpinner 
+                            isLoading={loading} 
+                            brandName="Wishlist details" 
+                            loadingText="Loading your wishlist..."
+                            progressColor="#3b82f6"
+                          />
       <Header />
       <div className="wishlist-page">
         <div className="wishlist-container">

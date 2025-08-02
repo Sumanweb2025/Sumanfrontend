@@ -6,6 +6,7 @@ import Header from '../../Components/Header/Header';
 import Footer from "../../Components/Footer/Footer";
 import WishlistPopup from '../../Components/WishlistPopup/WishlistPopup';
 import CartPopup from '../../Components/CartPopup/CartPopup';
+import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 
 const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const navigate = useNavigate();
@@ -289,11 +290,15 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     navigate('/cart');
   };
 
-  if (loading) return <div className="loading">Loading sweets...</div>;
-  if (error) return <div className="error">Error: {error}</div>;
 
   return (
     <>
+    <LoadingSpinner 
+        isLoading={loading} 
+        brandName="Sweet Delights" 
+        loadingText="Loading delicious sweets..."
+        progressColor="#3b82f6"
+      />
       <Header />
       <div className="sweets-page">
         <div className="sweets-container">

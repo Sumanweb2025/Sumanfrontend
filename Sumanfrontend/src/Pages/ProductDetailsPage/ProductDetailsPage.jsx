@@ -4,6 +4,7 @@ import axios from 'axios';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 import './ProductDetailsPage.css';
+import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 
 const ProductDetailsPage = ({ addToCart }) => {
   const { id } = useParams();
@@ -120,8 +121,7 @@ const ProductDetailsPage = ({ addToCart }) => {
     window.scrollTo(0, 0);
   };
 
-  if (loading) return <div className="loading">Loading product details...</div>;
-  if (error) return <div className="error">Error: {error}</div>;
+  
   if (!product) return <div className="error">Product not found</div>;
 
   const productImages = [
@@ -133,6 +133,12 @@ const ProductDetailsPage = ({ addToCart }) => {
 
   return (
     <>
+    <LoadingSpinner 
+                    isLoading={loading} 
+                    brandName="Product Details" 
+                    loadingText="Loading our product details..."
+                    progressColor="#3b82f6"
+                  />
       <Header />
       <div className="product-details-page">
         <div className="container">

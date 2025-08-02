@@ -4,6 +4,7 @@ import axios from 'axios';
 import './Cart.css';
 import Header from '../../Components/Header/Header';
 import Footer from "../../Components/Footer/Footer";
+import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 
 const CartPage = () => {
   const navigate = useNavigate();
@@ -184,25 +185,6 @@ const CartPage = () => {
     return cartItems.reduce((total, item) => total + item.quantity, 0);
   };
 
-  if (loading) return (
-    <>
-      <Header />
-      <div className="cart-page">
-        <div className="loading">Loading your cart...</div>
-      </div>
-      <Footer />
-    </>
-  );
-
-  if (error) return (
-    <>
-      <Header />
-      <div className="cart-page">
-        <div className="error">Error: {error}</div>
-      </div>
-      <Footer />
-    </>
-  );
 
   const subtotal = calculateSubtotal();
   const tax = calculateTax(subtotal);
@@ -211,6 +193,12 @@ const CartPage = () => {
 
   return (
     <>
+    <LoadingSpinner 
+        isLoading={loading} 
+        brandName="Cart Items" 
+        loadingText="Loading cart items..."
+        progressColor="#3b82f6"
+      />
       <Header />
       <div className="cart-page">
         <div className="cart-container">

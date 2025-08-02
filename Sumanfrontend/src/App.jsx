@@ -22,6 +22,8 @@ import Contacts from './Pages/Contact/Contact';
 import Wishlist from './Pages/Wishlist/Wishlist';
 import Cart from './Pages/Cart/Cart';
 import CheckoutPage from './Pages/CheckOut/CheckOut';
+import MyOrders from './Pages/Myorders/Myorders';
+import OrderTrackingPage from './Pages/OrderTracking/OrderTracking';
 
 const App = () => {
   return (
@@ -50,6 +52,8 @@ const App = () => {
          <Route path="/wishlist" element={<Wishlist />} />
          <Route path="/cart" element={<Cart />} /> 
          <Route path='/checkout' element={<CheckoutPage/>} />
+         <Route path='/myorders' element={<MyOrders/>} />
+         <Route path="/track-order" element={<OrderTrackingPage />} />
 
       </Routes>
     </Router>

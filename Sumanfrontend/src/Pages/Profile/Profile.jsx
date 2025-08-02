@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Profile.css';
 import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaEdit, FaSave, FaTimes } from 'react-icons/fa';
+import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 
 const ProfilePage = ({ onBack }) => {
   const [user, setUser] = useState(null);
@@ -138,6 +139,13 @@ const ProfilePage = ({ onBack }) => {
   }
 
   return (
+    <>
+      <LoadingSpinner 
+                    isLoading={loading} 
+                    brandName="My Profile" 
+                    loadingText="Loading your profile..."
+                    progressColor="#3b82f6"
+                  />
     <div className="profile-page">
       <div className="profile-container">
         <div className="profile-header">
@@ -317,6 +325,7 @@ const ProfilePage = ({ onBack }) => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

@@ -4,6 +4,7 @@ import axios from 'axios';
 import './CheckOut.css';
 import Header from '../../Components/Header/Header';
 import Footer from "../../Components/Footer/Footer";
+import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -239,23 +240,16 @@ const CheckoutPage = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <>
-        <Header />
-        <div className="checkout-page">
-          <div className="loading-container">
-            <div className="loading-text">Loading checkout...</div>
-          </div>
-        </div>
-        <Footer />
-      </>
-    );
-  }
 
   if (showSuccess) {
     return (
       <>
+       <LoadingSpinner 
+              isLoading={loading} 
+              brandName="Checkout" 
+              loadingText="Loading checkout..."
+              progressColor="#3b82f6"
+            />
         <Header />
         <div className="checkout-page">
           <div className="success-modal-overlay">
@@ -275,7 +269,7 @@ const CheckoutPage = () => {
                 <div className="success-actions">
                   <button
                     className="btn-primary"
-                    onClick={() => navigate('/orders')}
+                    onClick={() => navigate('/myorders')}
                   >
                     View My Orders
                   </button>
@@ -317,8 +311,8 @@ const CheckoutPage = () => {
             <div className="checkout-left">
               {/* Contact Information */}
               <div className="checkout-section">
-                <h2 className="section-title">Contact information</h2>
-                <p className="section-description">We'll use this email to send you details and updates about your order.</p>
+                <h2 className="checkout-section-title">Contact information</h2>
+                <p className="checkout-section-description">We'll use this email to send you details and updates about your order.</p>
                 
                 <div className="form-group">
                   <input
@@ -341,9 +335,9 @@ const CheckoutPage = () => {
 
               {/* Billing Address */}
               <div className="checkout-section">
-                <h2 className="section-title">Billing address</h2>
-                <p className="section-description">Enter the billing address that matches your payment method.</p>
-                
+                <h2 className="checkout-section-title">Billing address</h2>
+                <p className="checkout-section-description">Enter the billing address that matches your payment method.</p>
+
                 <form onSubmit={handleSubmit}>
                   {/* Country */}
                   <div className="form-group">
@@ -492,10 +486,10 @@ const CheckoutPage = () => {
 
               {/* Payment Options */}
               <div className="checkout-section">
-                <h2 className="section-title">Payment options</h2>
+                <h2 className="checkout-section-title">Payment options</h2>
                 
-                <div className="payment-methods">
-                  <label className="payment-method">
+                <div className="checkout-payment-methods">
+                  <label className="checkout-payment-method">
                     <input
                       type="radio"
                       name="paymentMethod"
@@ -504,7 +498,7 @@ const CheckoutPage = () => {
                       onChange={(e) => setFormData(prev => ({...prev, paymentMethod: e.target.value}))}
                       className="payment-radio"
                     />
-                    <div className="payment-content">
+                    <div className="checkout-payment-content">
                       <div className="payment-icon">💳</div>
                       <div className="payment-info">
                         <div className="payment-name">Credit/Debit Card</div>
@@ -513,7 +507,7 @@ const CheckoutPage = () => {
                     </div>
                   </label>
 
-                  <label className="payment-method">
+                  <label className="checkout-payment-method">
                     <input
                       type="radio"
                       name="paymentMethod"
@@ -522,7 +516,7 @@ const CheckoutPage = () => {
                       onChange={(e) => setFormData(prev => ({...prev, paymentMethod: e.target.value}))}
                       className="payment-radio"
                     />
-                    <div className="payment-content">
+                    <div className="checkout-payment-content">
                       <div className="payment-icon">📱</div>
                       <div className="payment-info">
                         <div className="payment-name">UPI</div>
@@ -531,7 +525,7 @@ const CheckoutPage = () => {
                     </div>
                   </label>
 
-                  <label className="payment-method">
+                  <label className="checkout-payment-method">
                     <input
                       type="radio"
                       name="paymentMethod"
@@ -540,7 +534,7 @@ const CheckoutPage = () => {
                       onChange={(e) => setFormData(prev => ({...prev, paymentMethod: e.target.value}))}
                       className="payment-radio"
                     />
-                    <div className="payment-content">
+                    <div className="checkout-payment-content">
                       <div className="payment-icon">🏦</div>
                       <div className="payment-info">
                         <div className="payment-name">Net Banking</div>
@@ -549,7 +543,7 @@ const CheckoutPage = () => {
                     </div>
                   </label>
 
-                  <label className="payment-method">
+                  <label className="checkout-payment-method">
                     <input
                       type="radio"
                       name="paymentMethod"
@@ -558,7 +552,7 @@ const CheckoutPage = () => {
                       onChange={(e) => setFormData(prev => ({...prev, paymentMethod: e.target.value}))}
                       className="payment-radio"
                     />
-                    <div className="payment-content">
+                    <div className="checkout-payment-content">
                       <div className="payment-icon">👛</div>
                       <div className="payment-info">
                         <div className="payment-name">Digital Wallet</div>
@@ -567,7 +561,7 @@ const CheckoutPage = () => {
                     </div>
                   </label>
 
-                  <label className="payment-method">
+                  <label className="checkout-payment-method">
                     <input
                       type="radio"
                       name="paymentMethod"
@@ -576,7 +570,7 @@ const CheckoutPage = () => {
                       onChange={(e) => setFormData(prev => ({...prev, paymentMethod: e.target.value}))}
                       className="payment-radio"
                     />
-                    <div className="payment-content">
+                    <div className="checkout-payment-content">
                       <div className="payment-icon">💰</div>
                       <div className="payment-info">
                         <div className="payment-name">Cash on Delivery</div>
@@ -586,15 +580,15 @@ const CheckoutPage = () => {
                   </label>
                 </div>
 
-                <div className="order-note-section">
+                <div className="checkout-order-note-section">
                   <label className="checkbox-container">
                     <input type="checkbox" className="checkbox-input" />
                     <span className="checkbox-label">Add a note to your order</span>
                   </label>
                 </div>
 
-                <div className="terms-section">
-                  <p className="terms-text">
+                <div className="checkout-terms-section">
+                  <p className="checkout-terms-text">
                     By proceeding with your purchase you agree to our Terms and Conditions and{' '}
                     <a href="#" className="privacy-link">Privacy Policy</a>
                   </p>
