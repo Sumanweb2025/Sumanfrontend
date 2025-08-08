@@ -161,8 +161,14 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleProductClick = (product) => {
-    // Navigate to product details page
-    navigate(`/product/${product.product_id || product.id}`, { state: { product } });
+    // Show existing loading spinner when navigating to product details
+    setLoading(true);
+    
+    // Small delay to show the loading spinner before navigation
+    setTimeout(() => {
+      // Navigate to product details page
+      navigate(`/product/${product.product_id || product.id}`, { state: { product } });
+    }, 1000);
   };
 
   const handleWishlistClick = async (e, product) => {
@@ -374,7 +380,7 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                     className="grocery-price-slider"
                   />
                   <div className="grocery-price-values">
-                    ₹{priceRange[0]} - ₹{priceRange[1]}
+                    ${priceRange[0]} - ${priceRange[1]}
                   </div>
                 </div>
               </div>
@@ -391,7 +397,7 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                       />
                       <div className="grocery-deal-info">
                         <div className="grocery-deal-name">{product.name}</div>
-                        <div className="grocery-deal-price">₹{product.price}</div>
+                        <div className="grocery-deal-price">${product.price}</div>
                       </div>
                     </div>
                   ))}
@@ -469,7 +475,7 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                             <span className="grocery-rating-text">({product.rating?.toFixed(1) || '0.0'})</span>
                           </div>
 
-                          <div className="grocery-product-price">₹{product.price}</div>
+                          <div className="grocery-product-price">${product.price}</div>
                           {product.piece && <div className="grocery-product-piece">{product.piece} pieces</div>}
 
                           <button 

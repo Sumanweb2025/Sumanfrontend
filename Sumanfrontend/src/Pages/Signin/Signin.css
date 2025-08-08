@@ -153,6 +153,63 @@ copyright {
   margin-top: 16px;
 }
 
+.google-auth-section {
+  margin-bottom: 20px;
+}
+
+.google-signin-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+#google-signin-button {
+  width: 100% !important;
+  max-width: 400px;
+}
+
+/* Override Google button styles */
+#google-signin-button > div {
+  width: 100% !important;
+  justify-content: center !important;
+}
+
+.google-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #666;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.auth-divider {
+  position: relative;
+  text-align: center;
+  margin: 25px 0;
+}
+
+.auth-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #ddd;
+}
+
+.auth-divider span {
+  background: white;
+  padding: 0 15px;
+  color: #666;
+  font-size: 14px;
+  position: relative;
+  z-index: 1;
+}
+
 /* Animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }

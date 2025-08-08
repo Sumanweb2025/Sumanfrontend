@@ -355,7 +355,7 @@ const FeaturedProducts = () => {
 
                       <div className="gud-product-info">
                         <h3 className="product-name">{product.name}</h3>
-                        <span className="product-price">₹{(product.price || 0).toFixed(2)}</span>
+                        <span className="product-price">${(product.price || 0).toFixed(2)}</span>
                         
                         <div className="product-footer">
                           <button 
@@ -396,7 +396,7 @@ const FeaturedProducts = () => {
                 <span className="card-tag">Today's HeartBeat</span>
                 <h2 className="card-title">DELICIOUS SWEETS</h2>
                 <p className="card-description">The best options of the day in your town</p>
-                <button className="card-button" onClick={handleShopNow}>
+                <button className="card-button" onClick={() => navigate('/sweets')}>
                   SHOP NOW
                 </button>
               </div>
@@ -407,7 +407,7 @@ const FeaturedProducts = () => {
                 <span className="card-tag">Healthy & Delicious</span>
                 <h2 className="card-title">GROCERY</h2>
                 <p className="card-description">This weekend only</p>
-                <button className="card-button" onClick={handleShopNow}>
+                <button className="card-button" onClick={() => navigate('/groceries')}>
                   SHOP NOW
                 </button>
               </div>
@@ -416,7 +416,7 @@ const FeaturedProducts = () => {
             <div className="feature-card grab-snacks">
               <div className="card-content">
                 <h2 className="card-title">GRAB YOUR SNACKS</h2>
-                <button className="card-button special" onClick={handleShopNow}>
+                <button className="card-button special" onClick={() => navigate('/snacks')}>
                   SHOP NOW
                 </button>
               </div>

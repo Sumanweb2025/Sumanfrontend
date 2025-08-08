@@ -272,7 +272,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                   <h2 className="product-name">{product.name}</h2>
                   <div className="product-brand">{product.brand}</div>
                   <div className="product-category">{product.category}</div>
-                  <div className="product-price">₹{product.price}</div>
+                  <div className="product-price">${product.price}</div>
                   {product.piece && <div className="product-piece">{product.piece} pieces</div>}
 
                   <div className="product-rating">

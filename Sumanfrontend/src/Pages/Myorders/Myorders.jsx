@@ -8,7 +8,7 @@ import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 const MyOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const API_URL = 'http://localhost:8000/';
+  const API_URL = 'http://localhost:8000';
 
   useEffect(() => {
     fetchOrders();
@@ -22,7 +22,7 @@ const MyOrders = () => {
         return;
       }
 
-      const response = await axios.get(`${API_URL}api/orders`, {
+      const response = await axios.get(`${API_URL}/api/orders`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -34,14 +34,64 @@ const MyOrders = () => {
     }
   };
 
+  // Helper function to get the correct image URL
+  const getImageUrl = (item) => {
+    // Priority order based on your backend logic:
+    // 1. imageUrl from item level (backend response)
+    // 2. imageUrl from productId (populated product)
+    // 3. Construct from productId.image
+    // 4. Construct from item.image
+    // 5. Fallback to placeholder
+
+    if (item.imageUrl) {
+      return item.imageUrl;
+    }
+
+    if (item.productId?.imageUrl) {
+      return item.productId.imageUrl;
+    }
+
+    if (item.productId?.image) {
+      return `${API_URL}/images/Products/${item.productId.image}`;
+    }
+
+    if (item.image) {
+      return `${API_URL}/images/Products/${item.image}`;
+    }
+
+    return 'https://via.placeholder.com/60?text=No+Image';
+  };
+
+  // Handle image loading errors with fallback
+  const handleImageError = (e, item) => {
+    const img = e.target;
+
+    // Try alternative image paths
+    if (img.src.includes('/images/Products/')) {
+      // Try with uploads path instead
+      const imageName = item.productId?.image || item.image;
+      if (imageName) {
+        img.src = `${API_URL}/uploads/${imageName}`;
+      } else {
+        img.src = 'https://via.placeholder.com/60?text=No+Image';
+      }
+    } else if (img.src.includes('/uploads/')) {
+      // If uploads also fails, use placeholder
+      img.src = 'https://via.placeholder.com/60?text=No+Image';
+    } else {
+      // Final fallback
+      img.src = 'https://via.placeholder.com/60?text=No+Image';
+    }
+  };
+
   return (
     <>
-     <LoadingSpinner 
-                isLoading={loading} 
-                brandName="My Orders" 
-                loadingText="Loading your orders..."
-                progressColor="#3b82f6"
-              />
+      <LoadingSpinner
+        isLoading={loading}
+        brandName="My Orders"
+        loadingText="Loading your orders..."
+        progressColor="#3b82f6"
+      />
       <Header />
       <div className="my-orders-page">
         <div className="my-orders-container">
@@ -68,7 +118,10 @@ const MyOrders = () => {
                   <div className="my-order-details">
                     <div>
                       <span className="my-order-label">Total:</span>
-                      <span>₹{order.total}</span>
+                      <span>
+                        $
+                        {(order.orderSummary?.total ?? order.total)?.toFixed(2)}
+                      </span>
                     </div>
                     <div>
                       <span className="my-order-label">Payment:</span>
@@ -84,14 +137,16 @@ const MyOrders = () => {
                     {order.items.map((item) => (
                       <div key={item._id} className="my-order-item">
                         <img
-                          src={item.productId.imageUrl || `${API_URL}/uploads/${item.productId.image}`}
-                          alt={item.productId.name}
-                          onError={(e) => (e.target.src = 'https://via.placeholder.com/60')}
+                          src={getImageUrl(item)}
+                          alt={item.name || item.productId?.name || 'Product'}
+                          onError={(e) => handleImageError(e, item)}
                         />
                         <div>
-                          <p className="my-order-item-name">{item.productId.name}</p>
+                          <p className="my-order-item-name">
+                            {item.name || item.productId?.name || 'Product Name'}
+                          </p>
                           <p>Qty: {item.quantity}</p>
-                          <p>₹{(item.quantity * item.productId.price).toFixed(2)}</p>
+                          <p>${(item.quantity * (item.price || item.productId?.price || 0)).toFixed(2)}</p>
                         </div>
                       </div>
                     ))}

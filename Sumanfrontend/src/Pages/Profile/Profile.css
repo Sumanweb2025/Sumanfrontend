@@ -1,10 +1,10 @@
-.profile-page {
+.profile-acc-page {
   min-height: 100vh;
   background-color: #f5f5f5;
   padding: 20px;
 }
 
-.profile-container {
+.profile-acc-container {
   max-width: 800px;
   margin: 0 auto;
   background: white;
@@ -13,7 +13,7 @@
   overflow: hidden;
 }
 
-.profile-header {
+.profile-acc-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -22,7 +22,7 @@
   color: white;
 }
 
-.profile-header h1 {
+.profile-acc-header h1 {
   margin: 0;
   font-size: 28px;
   font-weight: 600;
@@ -61,16 +61,16 @@
   background: rgba(255,255,255,0.3);
 }
 
-.profile-content {
+.profile-acc-content {
   padding: 30px;
 }
 
-.profile-page-avatar {
+.profile-acc-avatar {
   text-align: center;
   margin-bottom: 30px;
 }
 
-.profile-page-avatar .profile-icon {
+.profile-acc-avatar .profile-acc-icon {
   font-size: 80px;
   color: #ff6b35;
   background: #f0f0f0;
@@ -78,17 +78,17 @@
   border-radius: 50%;
 }
 
-.form-section {
+.profile-form-section {
   margin-bottom: 30px;
   padding-bottom: 20px;
   border-bottom: 1px solid #e0e0e0;
 }
 
-.form-section:last-child {
+.profile-form-section:last-child {
   border-bottom: none;
 }
 
-.form-section h3 {
+.profile-form-section h3 {
   color: #333;
   margin-bottom: 20px;
   font-size: 20px;
@@ -97,11 +97,11 @@
   gap: 10px;
 }
 
-.form-group {
+.profile-form-group {
   margin-bottom: 20px;
 }
 
-.form-group label {
+.profile-form-group label {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -111,7 +111,7 @@
   font-size: 14px;
 }
 
-.form-group input {
+.profile-form-group input {
   width: 100%;
   padding: 12px 16px;
   border: 1px solid #ddd;
@@ -120,13 +120,13 @@
   transition: border-color 0.2s;
 }
 
-.form-group input:focus {
+.profile-form-group input:focus {
   outline: none;
   border-color: #ff6b35;
   box-shadow: 0 0 0 2px rgba(255,107,53,0.1);
 }
 
-.form-value {
+.profile-form-value {
   display: block;
   padding: 12px 16px;
   background: #f8f9fa;
@@ -136,25 +136,25 @@
   color: #333;
 }
 
-.form-value.readonly {
+.profile-form-value.readonly {
   background: #f0f0f0;
   color: #666;
 }
 
-.form-group small {
+.profile-form-group small {
   color: #666;
   font-size: 12px;
   margin-top: 4px;
   display: block;
 }
 
-.form-row {
+.profile-form-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 20px;
 }
 
-.form-actions {
+.profile-form-actions {
   display: flex;
   gap: 15px;
   justify-content: center;

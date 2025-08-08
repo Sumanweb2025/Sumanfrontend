@@ -160,8 +160,14 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleProductClick = (product) => {
-    // Navigate to product details page
-    navigate(`/product/${product.product_id || product.id}`, { state: { product } });
+    // Show existing loading spinner when navigating to product details
+    setLoading(true);
+    
+    // Small delay to show the loading spinner before navigation
+    setTimeout(() => {
+      // Navigate to product details page
+      navigate(`/product/${product.product_id || product.id}`, { state: { product } });
+    }, 1000);
   };
 
   const handleWishlistClick = async (e, product) => {
@@ -373,7 +379,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                     className="price-slider"
                   />
                   <div className="price-values">
-                    ₹{priceRange[0]} - ₹{priceRange[1]}
+                    ${priceRange[0]} - ${priceRange[1]}
                   </div>
                 </div>
               </div>
@@ -390,7 +396,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                       />
                       <div className="deal-info">
                         <div className="deal-name">{product.name}</div>
-                        <div className="deal-price">₹{product.price}</div>
+                        <div className="deal-price">${product.price}</div>
                       </div>
                     </div>
                   ))}
@@ -468,7 +474,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                             <span className="rating-text">({product.rating?.toFixed(1) || '0.0'})</span>
                           </div>
 
-                          <div className="product-price">₹{product.price}</div>
+                          <div className="product-price">${product.price}</div>
                           {product.piece && <div className="product-piece">{product.piece} pieces</div>}
 
                           <button 

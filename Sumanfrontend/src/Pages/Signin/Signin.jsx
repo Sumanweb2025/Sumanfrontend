@@ -1,11 +1,67 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './Signin.css'; // You can reuse similar styles
+import './Signin.css';
+
+// Google Sign-In Component
+const GoogleSignIn = ({ onSuccess, onError, loading }) => {
+  useEffect(() => {
+    // Load Google Sign-In script
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+
+    script.onload = () => {
+      if (window.google) {
+        window.google.accounts.id.initialize({
+          client_id: import.meta.env.VITE_APP_GOOGLE_CLIENT_ID || 'your-google-client-id',
+          callback: handleGoogleResponse,
+          auto_select: false,
+          cancel_on_tap_outside: true
+        });
+
+        window.google.accounts.id.renderButton(
+          document.getElementById('google-signin-button'),
+          {
+            theme: 'outline',
+            size: 'large',
+            width: '100%',
+            text: 'signin_with',
+            shape: 'rectangular'
+          }
+        );
+      }
+    };
+
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
+  }, []);
+
+  const handleGoogleResponse = async (response) => {
+    try {
+      onSuccess(response.credential);
+    } catch (error) {
+      console.error('Google sign-in error:', error);
+      onError('Google sign-in failed');
+    }
+  };
+
+  return (
+    <div className="google-signin-container">
+      <div id="google-signin-button" style={{ opacity: loading ? 0.6 : 1 }}></div>
+    </div>
+  );
+};
 
 const Login = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [loginData, setLoginData] = useState({
     email: '',
@@ -92,6 +148,41 @@ const Login = () => {
     }
   };
 
+  const handleGoogleSuccess = async (credential) => {
+    setGoogleLoading(true);
+    setErrors({});
+
+    try {
+      const response = await axios.post('http://localhost:8000/api/auth/google-auth', {
+        credential
+      });
+
+      if (response.data.success) {
+        // Store user data and token
+        localStorage.setItem('token', response.data.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.data.user));
+        
+        // Redirect to home page
+        navigate('/', { replace: true });
+      }
+
+    } catch (error) {
+      console.error('Google auth error:', error);
+      
+      if (error.response && error.response.data) {
+        setErrors({ api: error.response.data.message || 'Google authentication failed' });
+      } else {
+        setErrors({ api: 'Network error. Please try again.' });
+      }
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
+  const handleGoogleError = (errorMessage) => {
+    setErrors({ api: errorMessage });
+  };
+
   return (
     <div className="login-container">
       <div className="login-card">
@@ -107,6 +198,26 @@ const Login = () => {
         
         {errors.api && <div className="error-message">{errors.api}</div>}
         
+        {/* Google Sign-In Button */}
+        <div className="google-auth-section">
+          <GoogleSignIn 
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            loading={googleLoading}
+          />
+          {googleLoading && (
+            <div className="google-loading">
+              <span className="spinner"></span> Signing in with Google...
+            </div>
+          )}
+        </div>
+
+        {/* Divider */}
+        <div className="auth-divider">
+          <span>or</span>
+        </div>
+        
+        {/* Email/Password Form */}
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
             <input
@@ -134,7 +245,7 @@ const Login = () => {
             {errors.password && <span className="error-text">{errors.password}</span>}
           </div>
           
-          <button type="submit" className="login-btn" disabled={loading}>
+          <button type="submit" className="login-btn" disabled={loading || googleLoading}>
             {loading ? (
               <>
                 <span className="spinner"></span> Signing In...

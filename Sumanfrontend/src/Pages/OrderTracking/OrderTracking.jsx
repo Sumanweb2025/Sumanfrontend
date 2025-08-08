@@ -10,7 +10,7 @@ const OrderTracking = () => {
   const [orderData, setOrderData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const API_URL = 'http://localhost:8000/';
+  const API_URL = 'http://localhost:8000';
 
   const handleTrackOrder = async () => {
     if (!orderId.trim() || !billingEmail.trim()) {
@@ -23,7 +23,7 @@ const OrderTracking = () => {
     setOrderData(null);
 
     try {
-      const response = await fetch(`${API_URL}api/orders/track-order`, {
+      const response = await fetch(`${API_URL}/api/orders/track-order`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -52,6 +52,56 @@ const OrderTracking = () => {
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       handleTrackOrder();
+    }
+  };
+
+  // Helper function to get the correct image URL - same logic as MyOrders
+  const getImageUrl = (item) => {
+    // Priority order based on backend logic:
+    // 1. imageUrl from item level (backend response)
+    // 2. imageUrl from productId (populated product)
+    // 3. Construct from productId.image
+    // 4. Construct from item.image
+    // 5. Fallback to placeholder
+
+    if (item.imageUrl) {
+      return item.imageUrl;
+    }
+    
+    if (item.productId?.imageUrl) {
+      return item.productId.imageUrl;
+    }
+    
+    if (item.productId?.image) {
+      return `${API_URL}/images/Products/${item.productId.image}`;
+    }
+    
+    if (item.image) {
+      return `${API_URL}/images/Products/${item.image}`;
+    }
+    
+    return 'https://via.placeholder.com/60?text=No+Image';
+  };
+
+  // Handle image loading errors with fallback
+  const handleImageError = (e, item) => {
+    const img = e.target;
+    
+    // Try alternative image paths
+    if (img.src.includes('/images/Products/')) {
+      // Try with uploads path instead
+      const imageName = item.productId?.image || item.image;
+      if (imageName) {
+        img.src = `${API_URL}/uploads/${imageName}`;
+      } else {
+        img.src = 'https://via.placeholder.com/60?text=No+Image';
+      }
+    } else if (img.src.includes('/uploads/')) {
+      // If uploads also fails, use placeholder
+      img.src = 'https://via.placeholder.com/60?text=No+Image';
+    } else {
+      // Final fallback
+      img.src = 'https://via.placeholder.com/60?text=No+Image';
     }
   };
 
@@ -169,7 +219,7 @@ const OrderTracking = () => {
 
                   <div className="info-card">
                     <strong className="info-label">Total Amount:</strong>
-                    <div className="info-value">₹{orderData.total}</div>
+                    <div className="info-value">${orderData.total}</div>
                   </div>
 
                   <div className="info-card">
@@ -206,25 +256,25 @@ const OrderTracking = () => {
                   <div className="summary-details">
                     <div className="summary-row">
                       <span>Subtotal:</span>
-                      <span>₹{orderData.subtotal}</span>
+                      <span>${orderData.subtotal}</span>
                     </div>
                     <div className="summary-row">
-                      <span>Tax (18% GST):</span>
-                      <span>₹{orderData.tax}</span>
+                      <span>Tax (13% HST):</span>
+                      <span>${orderData.tax}</span>
                     </div>
                     <div className="summary-row">
                       <span>Shipping:</span>
-                      <span>₹{orderData.shipping}</span>
+                      <span>${orderData.shipping}</span>
                     </div>
                     {orderData.discount > 0 && (
                       <div className="summary-row discount">
                         <span>Discount {orderData.appliedCoupon ? `(${orderData.appliedCoupon.code})` : ''}:</span>
-                        <span>-₹{orderData.discount}</span>
+                        <span>-${orderData.discount}</span>
                       </div>
                     )}
                     <div className="summary-row total">
                       <span>Total:</span>
-                      <span>₹{orderData.total}</span>
+                      <span>${orderData.total}</span>
                     </div>
                   </div>
                 </div>
@@ -236,20 +286,20 @@ const OrderTracking = () => {
                     {orderData.items?.map((item, index) => (
                       <div key={index} className="order-item">
                         <img
-                          src={item.productId?.imageUrl || `${API_URL}uploads/${item.productId?.image}` || item.image || 'https://via.placeholder.com/60'}
+                          src={getImageUrl(item)}
                           alt={item.productId?.name || item.name || 'Product'}
                           className="item-image"
-                          onError={(e) => e.target.src = 'https://via.placeholder.com/60'}
+                          onError={(e) => handleImageError(e, item)}
                         />
                         <div className="item-details">
                           <div className="item-name">
                             {item.productId?.name || item.name || 'Product Name'}
                           </div>
                           <div className="item-info">
-                            Quantity: {item.quantity} × ₹{item.productId?.price || item.price || 0}
+                            Quantity: {item.quantity} × ${item.productId?.price || item.price || 0}
                           </div>
                           <div className="item-total">
-                            ₹{((item.quantity || 0) * (item.productId?.price || item.price || 0)).toFixed(2)}
+                            ${((item.quantity || 0) * (item.productId?.price || item.price || 0)).toFixed(2)}
                           </div>
                         </div>
                       </div>

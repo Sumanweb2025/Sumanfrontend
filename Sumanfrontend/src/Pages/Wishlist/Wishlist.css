@@ -233,6 +233,93 @@
   background: #0056b3;
   transform: translateY(-2px);
 }
+/* Custom styles for react-toastify (optional) */
+.Toastify__toast {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.Toastify__toast--success {
+  background: linear-gradient(135deg, #29f384 , #00A149 );
+  color: white;
+}
+
+.Toastify__toast--error {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.Toastify__progress-bar--success {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.Toastify__progress-bar--error {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* Processing state for wishlist items */
+.wishlist-item.processing {
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.wishlist-item.removing {
+  opacity: 0.5;
+  transform: scale(0.98);
+  transition: all 0.3s ease;
+}
+
+/* Loading spinner for add to cart button */
+.loading-spinner {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Enhanced button states */
+.add-to-cart-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.add-to-cart-btn:disabled:hover {
+  background-color: #3b82f6;
+  transform: none;
+}
+
+.remove-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive toast for mobile */
+@media (max-width: 768px) {
+  .toast-notification {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+    min-width: auto;
+  }
+  
+  .toast-content {
+    padding: 12px;
+    gap: 10px;
+  }
+  
+  .toast-message {
+    font-size: 13px;
+  }
+}
 
 /* Wishlist Actions */
 .wishlist-actions {

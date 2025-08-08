@@ -13,7 +13,7 @@ const CartPage = () => {
   const [error, setError] = useState(null);
   const [updatingItems, setUpdatingItems] = useState(new Set());
 
-  const API_URL = 'http://localhost:8000/';
+  const API_URL = 'http://localhost:8000';
 
   useEffect(() => {
     fetchCart();
@@ -27,11 +27,12 @@ const CartPage = () => {
         return;
       }
 
-      const response = await axios.get(`${API_URL}api/cart`, {
+      const response = await axios.get(`${API_URL}/api/cart`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
       const cartData = response.data?.data || response.data;
+      console.log('Cart data received:', cartData); // Debug log
       setCartItems(cartData.items || []);
       setLoading(false);
     } catch (err) {
@@ -41,6 +42,33 @@ const CartPage = () => {
     }
   };
 
+  // Helper function to get correct image URL
+  const getImageUrl = (product) => {
+    // First priority: imageUrl from backend (now added by cart controller)
+    if (product.imageUrl) {
+      return product.imageUrl;
+    }
+
+    // Second priority: construct from image field using Products path
+    if (product.image) {
+      return `${API_URL}/images/Products/${product.image}`;
+    }
+
+    // Fallback: placeholder
+    return 'https://via.placeholder.com/300x300?text=No+Image';
+  };
+
+  // Helper function to safely parse numbers
+  const safeParseFloat = (value) => {
+    const parsed = parseFloat(value);
+    return isNaN(parsed) ? 0 : parsed;
+  };
+
+  const safeParseInt = (value) => {
+    const parsed = parseInt(value);
+    return isNaN(parsed) ? 0 : parsed;
+  };
+
   const updateQuantity = async (productId, newQuantity) => {
     const token = localStorage.getItem('token');
     if (!token || newQuantity < 1) return;
@@ -48,20 +76,27 @@ const CartPage = () => {
     setUpdatingItems(prev => new Set(prev).add(productId));
 
     try {
-      await axios.put(`${API_URL}api/cart/${productId}`,
+      const response = await axios.put(`${API_URL}/api/cart/${productId}`,
         { quantity: newQuantity },
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
 
-      setCartItems(prev =>
-        prev.map(item => {
-          const itemProductId = item.productId._id || item.productId;
-          if (itemProductId === productId) {
-            return { ...item, quantity: newQuantity };
-          }
-          return item;
-        })
-      );
+      // Update with response data to ensure consistency
+      const updatedCartData = response.data?.data;
+      if (updatedCartData && updatedCartData.items) {
+        setCartItems(updatedCartData.items);
+      } else {
+        // Fallback to local update
+        setCartItems(prev =>
+          prev.map(item => {
+            const itemProductId = item.productId._id || item.productId;
+            if (itemProductId === productId) {
+              return { ...item, quantity: newQuantity };
+            }
+            return item;
+          })
+        );
+      }
 
       // Dispatch custom event to update header count
       window.dispatchEvent(new CustomEvent('cartUpdated'));
@@ -84,13 +119,20 @@ const CartPage = () => {
     setUpdatingItems(prev => new Set(prev).add(productId));
 
     try {
-      await axios.delete(`${API_URL}api/cart/${productId}`, {
+      const response = await axios.delete(`${API_URL}/api/cart/${productId}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
-      setCartItems(prev =>
-        prev.filter(item => (item.productId._id || item.productId) !== productId)
-      );
+      // Update with response data to ensure consistency
+      const updatedCartData = response.data?.data;
+      if (updatedCartData && updatedCartData.items) {
+        setCartItems(updatedCartData.items);
+      } else {
+        // Fallback to local update
+        setCartItems(prev =>
+          prev.filter(item => (item.productId._id || item.productId) !== productId)
+        );
+      }
 
       // Dispatch custom event to update header count
       window.dispatchEvent(new CustomEvent('cartUpdated'));
@@ -115,7 +157,7 @@ const CartPage = () => {
     }
 
     try {
-      await axios.delete(`${API_URL}api/cart/`, {
+      await axios.delete(`${API_URL}/api/cart/`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -137,7 +179,7 @@ const CartPage = () => {
   };
 
   const handleContinueShopping = () => {
-    navigate('/products');
+    navigate('/sweets');
   };
 
   const handleCheckout = () => {
@@ -161,17 +203,19 @@ const CartPage = () => {
 
   const calculateSubtotal = () => {
     return cartItems.reduce((total, item) => {
-      const price = item.productId?.price || 0;
-      return total + (price * item.quantity);
+      const price = safeParseFloat(item.productId?.price);
+      const quantity = safeParseInt(item.quantity);
+      console.log(`Item: ${item.productId?.name}, Price: ${price}, Quantity: ${quantity}`); // Debug log
+      return total + (price * quantity);
     }, 0);
   };
 
   const calculateTax = (subtotal) => {
-    return subtotal * 0.18; // 18% GST
+    return subtotal * 0.13; // 13% HST (common Canadian rate)
   };
 
   const calculateShipping = (subtotal) => {
-    return subtotal > 500 ? 0 : 50; // Free shipping above ₹500
+    return subtotal > 75 ? 0 : 15; // Free shipping above $75 CAD
   };
 
   const calculateTotal = () => {
@@ -182,9 +226,8 @@ const CartPage = () => {
   };
 
   const getTotalItemCount = () => {
-    return cartItems.reduce((total, item) => total + item.quantity, 0);
+    return cartItems.reduce((total, item) => total + safeParseInt(item.quantity), 0);
   };
-
 
   const subtotal = calculateSubtotal();
   const tax = calculateTax(subtotal);
@@ -193,9 +236,9 @@ const CartPage = () => {
 
   return (
     <>
-    <LoadingSpinner 
-        isLoading={loading} 
-        brandName="Cart Items" 
+      <LoadingSpinner
+        isLoading={loading}
+        brandName="Cart Items"
         loadingText="Loading cart items..."
         progressColor="#3b82f6"
       />
@@ -243,6 +286,9 @@ const CartPage = () => {
                     const product = item.productId;
                     const productId = product._id || product.id;
                     const isUpdating = updatingItems.has(productId);
+                    const imageUrl = getImageUrl(product);
+                    const price = safeParseFloat(product.price);
+                    const quantity = safeParseInt(item.quantity);
 
                     return (
                       <div key={productId} className={`cart-item ${isUpdating ? 'updating' : ''}`}>
@@ -260,12 +306,16 @@ const CartPage = () => {
                           onClick={() => handleProductClick(product)}
                         >
                           <img
-                            src={product.imageUrl || `${API_URL}/uploads/${product.image}`}
-                            alt={product.name}
+                            src={imageUrl}
+                            alt={product.name || 'Product'}
                             className="product-image"
                             onError={(e) => {
-                              e.target.src = 'https://via.placeholder.com/300';
+                              console.log('Image failed to load:', e.target.src);
+                              e.target.src = 'https://via.placeholder.com/300x300?text=No+Image';
                               e.target.onerror = null;
+                            }}
+                            onLoad={() => {
+                              console.log('Image loaded successfully:', imageUrl);
                             }}
                           />
                         </div>
@@ -286,7 +336,7 @@ const CartPage = () => {
                             <p className="item-category">{product.category}</p>
                           )}
 
-                          <div className="item-price">₹{product.price}</div>
+                          <div className="item-price">${price.toFixed(2)}</div>
 
                           {product.description && (
                             <p className="item-description">
@@ -301,15 +351,15 @@ const CartPage = () => {
                         <div className="quantity-controls">
                           <button
                             className="quantity-btn"
-                            onClick={() => updateQuantity(productId, item.quantity - 1)}
-                            disabled={item.quantity <= 1 || isUpdating}
+                            onClick={() => updateQuantity(productId, quantity - 1)}
+                            disabled={quantity <= 1 || isUpdating}
                           >
                             -
                           </button>
-                          <span className="quantity">{item.quantity}</span>
+                          <span className="quantity">{quantity}</span>
                           <button
                             className="quantity-btn"
-                            onClick={() => updateQuantity(productId, item.quantity + 1)}
+                            onClick={() => updateQuantity(productId, quantity + 1)}
                             disabled={isUpdating}
                           >
                             +
@@ -317,7 +367,7 @@ const CartPage = () => {
                         </div>
 
                         <div className="item-total">
-                          ₹{(product.price * item.quantity).toFixed(2)}
+                          ${(price * quantity).toFixed(2)}
                         </div>
                       </div>
                     );
@@ -331,17 +381,17 @@ const CartPage = () => {
 
                   <div className="summary-row">
                     <span>Subtotal ({getTotalItemCount()} items):</span>
-                    <span>₹{subtotal.toFixed(2)}</span>
+                    <span>${subtotal.toFixed(2)}</span>
                   </div>
 
                   <div className="summary-row">
-                    <span>Tax (GST 18%):</span>
-                    <span>₹{tax.toFixed(2)}</span>
+                    <span>Tax (HST 13%):</span>
+                    <span>${tax.toFixed(2)}</span>
                   </div>
 
                   <div className="summary-row">
                     <span>Shipping:</span>
-                    <span>{shipping === 0 ? 'FREE' : `₹${shipping.toFixed(2)}`}</span>
+                    <span>{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span>
                   </div>
 
                   {shipping === 0 && (
@@ -352,13 +402,13 @@ const CartPage = () => {
 
                   {shipping > 0 && (
                     <div className="shipping-notice">
-                      Add ₹{(500 - subtotal).toFixed(2)} more for free shipping
+                      Add ${(75 - subtotal).toFixed(2)} more for free shipping
                     </div>
                   )}
 
                   <div className="summary-row total">
                     <span>Total:</span>
-                    <span>₹{total.toFixed(2)}</span>
+                    <span>${total.toFixed(2)}</span>
                   </div>
 
                   <button

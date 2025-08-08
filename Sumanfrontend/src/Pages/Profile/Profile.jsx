@@ -146,9 +146,9 @@ const ProfilePage = ({ onBack }) => {
                     loadingText="Loading your profile..."
                     progressColor="#3b82f6"
                   />
-    <div className="profile-page">
-      <div className="profile-container">
-        <div className="profile-header">
+    <div className="profile-acc-page">
+      <div className="profile-acc-container">
+        <div className="profile-acc-header">
           <button className="back-button" onClick={onBack}>
             ← Back
           </button>
@@ -163,17 +163,17 @@ const ProfilePage = ({ onBack }) => {
           )}
         </div>
 
-        <div className="profile-content">
-          <div className="profile-page-avatar">
-            <FaUser className='profile-icon'/>
+        <div className="profile-acc-content">
+          <div className="profile-acc-avatar">
+            <FaUser className='profile-acc-icon'/>
           </div>
 
-          <div className="profile-form">
+          <div className="profile-acc-form">
             {/* Basic Information */}
-            <div className="form-section">
+            <div className="profile-form-section">
               <h3>Basic Information</h3>
               
-              <div className="form-group">
+              <div className="profile-form-group">
                 <label>
                   <FaUser /> Name
                 </label>
@@ -186,19 +186,19 @@ const ProfilePage = ({ onBack }) => {
                     placeholder="Enter your name"
                   />
                 ) : (
-                  <span className="form-value">{user.name}</span>
+                  <span className="profile-form-value">{user.name}</span>
                 )}
               </div>
 
-              <div className="form-group">
+              <div className="profile-form-group">
                 <label>
                   <FaEnvelope /> Email
                 </label>
-                <span className="form-value readonly">{user.email}</span>
+                <span className="profile-form-value readonly">{user.email}</span>
                 <small>Email cannot be changed</small>
               </div>
 
-              <div className="form-group">
+              <div className="profile-form-group">
                 <label>
                   <FaPhone /> Phone
                 </label>
@@ -211,18 +211,18 @@ const ProfilePage = ({ onBack }) => {
                     placeholder="Enter your phone number"
                   />
                 ) : (
-                  <span className="form-value">{user.phone || 'Not provided'}</span>
+                  <span className="profile-form-value">{user.phone || 'Not provided'}</span>
                 )}
               </div>
             </div>
 
             {/* Address Information */}
-            <div className="form-section">
+            <div className="profile-form-section">
               <h3>
                 <FaMapMarkerAlt /> Address Information
               </h3>
-              
-              <div className="form-group">
+
+              <div className="profile-form-group">
                 <label>Street Address</label>
                 {isEditing ? (
                   <input
@@ -233,12 +233,12 @@ const ProfilePage = ({ onBack }) => {
                     placeholder="Enter street address"
                   />
                 ) : (
-                  <span className="form-value">{user.address?.street || 'Not provided'}</span>
+                  <span className="profile-form-value">{user.address?.street || 'Not provided'}</span>
                 )}
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
+              <div className="profile-form-row">
+                <div className="profile-form-group">
                   <label>City</label>
                   {isEditing ? (
                     <input
@@ -249,11 +249,11 @@ const ProfilePage = ({ onBack }) => {
                       placeholder="City"
                     />
                   ) : (
-                    <span className="form-value">{user.address?.city || 'Not provided'}</span>
+                    <span className="profile-form-value">{user.address?.city || 'Not provided'}</span>
                   )}
                 </div>
 
-                <div className="form-group">
+                <div className="profile-form-group">
                   <label>State</label>
                   {isEditing ? (
                     <input
@@ -264,11 +264,11 @@ const ProfilePage = ({ onBack }) => {
                       placeholder="State"
                     />
                   ) : (
-                    <span className="form-value">{user.address?.state || 'Not provided'}</span>
+                    <span className="profile-form-value">{user.address?.state || 'Not provided'}</span>
                   )}
                 </div>
 
-                <div className="form-group">
+                <div className="profile-form-group">
                   <label>Pincode</label>
                   {isEditing ? (
                     <input
@@ -279,24 +279,24 @@ const ProfilePage = ({ onBack }) => {
                       placeholder="Pincode"
                     />
                   ) : (
-                    <span className="form-value">{user.address?.pincode || 'Not provided'}</span>
+                    <span className="profile-form-value">{user.address?.pincode || 'Not provided'}</span>
                   )}
                 </div>
               </div>
             </div>
 
             {/* Account Information */}
-            <div className="form-section">
+            <div className="profile-form-section">
               <h3>Account Information</h3>
-              <div className="form-group">
+              <div className="profile-form-group">
                 <label>Member Since</label>
-                <span className="form-value">
+                <span className="profile-form-value">
                   {new Date(user.createdAt).toLocaleDateString('en-IN')}
                 </span>
               </div>
-              <div className="form-group">
+              <div className="profile-form-group">
                 <label>Last Login</label>
-                <span className="form-value">
+                <span className="profile-form-value">
                   {user.lastLogin ? new Date(user.lastLogin).toLocaleDateString('en-IN') : 'Never'}
                 </span>
               </div>
@@ -304,7 +304,7 @@ const ProfilePage = ({ onBack }) => {
 
             {/* Action Buttons */}
             {isEditing && (
-              <div className="form-actions">
+              <div className="profile-form-actions">
                 <button 
                   className="save-button"
                   onClick={handleSave}
