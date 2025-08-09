@@ -418,11 +418,17 @@ const ProductDetailsPage = ({ addToCart }) => {
                 )}
               </div>
 
-              {product.piece && (
-                <div className="product-piece">
-                  <strong>Quantity:</strong> {product.piece} pieces
-                </div>
-              )}
+              {/* Stock status section */}
+  <div className="product-stock-info">
+    {product.piece > 0 ? (
+      <>
+        <div className="product-stock in-stock">In Stock</div>
+        
+      </>
+    ) : (
+      <div className="product-stock out-of-stock">Out of Stock</div>
+    )}
+  </div>
 
               <div className="product-description">
                 <h3>Description</h3>

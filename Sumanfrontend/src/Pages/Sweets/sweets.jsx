@@ -379,7 +379,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                     className="sweets-price-slider"
                   />
 
-                  <div className="price-values">
+                  <div className="sweets-price-values">
                     ${priceRange[0]} - ${priceRange[1]}
 
                   </div>
@@ -397,9 +397,9 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                         className="sweets-deal-image"
                       />
 
-                      <div className="deal-info">
-                        <div className="deal-name">{product.name}</div>
-                        <div className="deal-price">${product.price}</div>
+                      <div className="sweets-deal-info">
+                        <div className="sweets-deal-name">{product.name}</div>
+                        <div className="sweets-deal-price">${product.price}</div>
 
                       </div>
                     </div>
@@ -479,8 +479,8 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                           </div>
 
 
-                          <div className="product-price">${product.price}</div>
-                          {product.piece && <div className="product-piece">{product.piece} pieces</div>}
+                          <div className="sweets-product-price">${product.price}</div>
+                          {product.piece && <div className="sweets-product-piece">{product.piece} pieces</div>}
 
 
                           <button 

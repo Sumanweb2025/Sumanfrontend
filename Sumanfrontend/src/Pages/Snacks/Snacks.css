@@ -428,6 +428,20 @@
 .empty {
   color: #666;
 }
+.snacks-product-stock {
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.snacks-product-stock.in-stock {
+  color: #28a745; /* Green for in stock */
+}
+
+.snacks-product-stock.out-of-stock {
+  color: #dc3545; /* Red for out of stock */
+}
+
+
 
 /* Responsive Design */
 @media (max-width: 768px) {
