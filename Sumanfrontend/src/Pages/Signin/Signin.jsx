@@ -1,11 +1,8 @@
 
-// SignIn.jsx - Eurasia Foods Style - Fixed Layout with Google Sign-In
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { GoogleLogin } from '@react-oauth/google';
-import './SignIn.css';
-
+import './Signin.css';
 
 // Google Sign-In Component
 const GoogleSignIn = ({ onSuccess, onError, loading }) => {
@@ -214,28 +211,7 @@ const SignIn = () => {
         <h2 className="form-title">Sign In to Your Account</h2>
         <p className="form-subtitle">Continue your culinary journey</p>
 
-        {/* Google Sign-In Section */}
-        <div className="google-signin-section">
-          <div className="google-signin">
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={handleGoogleError}
-              useOneTap={false}
-              size="large"
-              width="100%"
-              text="signin_with"
-              shape="rectangular"
-              theme="outline"
-              clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
-            />
-          </div>
-          {googleLoading && (
-            <div className="google-loading">
-              <span className="spinner"></span> Signing in with Google...
-            </div>
-          )}
-        </div>
-
+        
         
         {errors.api && <div className="error-message">{errors.api}</div>}
         
@@ -259,7 +235,7 @@ const SignIn = () => {
         </div>
         
         {/* Email/Password Form */}
-        <form onSubmit={handleSubmit} className="login-form">
+        <form onSubmit={handleSubmit} className="signin-form">
 
           <div className="form-group">
             <input
@@ -309,21 +285,16 @@ const SignIn = () => {
 
           <div className="signin-btn-container">
             <button type="submit" className="signin-btn" disabled={loading || googleLoading}>
-              {loading ? (
-                <>
-                  <span className="spinner"></span> Signing In...
-                </>
-              ) : 'Sign In'}
-            </button>
-          </div>
-   
-          <button type="submit" className="login-btn" disabled={loading || googleLoading}>
             {loading ? (
               <>
                 <span className="spinner"></span> Signing In...
               </>
             ) : 'Sign In'}
           </button>
+          </div>
+
+          
+          
 
         </form>
 
