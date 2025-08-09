@@ -4,7 +4,7 @@
 .signup-wrapper {
   display: flex;
   height: 100vh;
-  background: url('D:/Suman/Sumanfrontend/Sumanfrontend/src/assets/log.jpg') center center / cover no-repeat;
+  background: url('../../assets/log.jpg') center center / cover no-repeat;
   overflow: hidden;
 }
 

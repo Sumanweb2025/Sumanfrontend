@@ -22,6 +22,9 @@ const ProductDetailsPage = ({ addToCart }) => {
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [cartItems, setCartItems] = useState([]);
   
+  // Tab state
+  const [activeTab, setActiveTab] = useState('description');
+  
   // Review states
   const [reviews, setReviews] = useState([]);
   const [userReview, setUserReview] = useState(null);
@@ -319,6 +322,171 @@ const ProductDetailsPage = ({ addToCart }) => {
     navigate('/cart');
   };
 
+  // Tab content rendering functions
+  const renderDescription = () => (
+    <div className="tab-content-description">
+      <h3>Product Description</h3>
+      <p>{product.description || 'No description available for this product.'}</p>
+      
+      {product.features && (
+        <div className="product-features">
+          <h4>Key Features</h4>
+          <ul>
+            {product.features.map((feature, index) => (
+              <li key={index}>{feature}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      
+      {product.specifications && (
+        <div className="product-specs">
+          <h4>Specifications</h4>
+          <p>{product.specifications}</p>
+        </div>
+      )}
+    </div>
+  );
+
+  const renderAdditionalInfo = () => (
+    <div className="tab-content-additional">
+      <h3>Additional Information</h3>
+      <table className="additional-info-table">
+        <tbody>
+          <tr>
+            <td><strong>Brand</strong></td>
+            <td>{product.brand || 'N/A'}</td>
+          </tr>
+          <tr>
+            <td><strong>Category</strong></td>
+            <td>{product.category || 'N/A'}</td>
+          </tr>
+          <tr>
+            <td><strong>SKU</strong></td>
+            <td>{product.sku || product.product_id || product.id || 'N/A'}</td>
+          </tr>
+          {product.piece && (
+            <tr>
+              <td><strong>Quantity per Pack</strong></td>
+              <td>{product.piece} pieces</td>
+            </tr>
+          )}
+          <tr>
+            <td><strong>Weight</strong></td>
+            <td>{product.weight || 'N/A'}</td>
+          </tr>
+          <tr>
+            <td><strong>Color</strong></td>
+            <td>{product.color || 'N/A'}</td>
+          </tr>
+          <tr>
+            <td><strong>Warranty</strong></td>
+            <td>{product.warranty || 'Standard manufacturer warranty'}</td>
+          </tr>
+          <tr>
+            <td><strong>Country of Origin</strong></td>
+            <td>{product.country || 'N/A'}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const renderReviews = () => (
+    <div className="tab-content-reviews">
+      <div className="reviews-summary">
+        <h3>Customer Reviews</h3>
+        <div className="rating-summary">
+          <div className="overall-rating">
+            <span className="rating-number">{product.rating?.toFixed(1) || '0.0'}</span>
+            <div className="rating-stars">
+              {renderRatingStars(Math.floor(product.rating || 0))}
+            </div>
+            <span className="rating-count">
+              Based on {product.review_count || 0} {(product.review_count || 0) === 1 ? 'review' : 'reviews'}
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      {/* Write Review Form */}
+      {!userReview && (
+        <div className="write-review-form">
+          <h4>Write a Review</h4>
+          <form onSubmit={handleReviewSubmit}>
+            <div className="rating-input">
+              <label>Rating:</label>
+              <div className="stars-input">
+                {renderRatingStars(
+                  hoveredRating || reviewForm.rating,
+                  true,
+                  handleRatingClick,
+                  setHoveredRating,
+                  () => setHoveredRating(0)
+                )}
+              </div>
+            </div>
+
+            <div className="comment-input">
+              <label>Your Review:</label>
+              <textarea
+                value={reviewForm.comment}
+                onChange={(e) => setReviewForm(prev => ({ ...prev, comment: e.target.value }))}
+                placeholder="Share your thoughts about this product..."
+                maxLength="500"
+                rows="4"
+                required
+              />
+              <small className="char-count">
+                {reviewForm.comment.length}/500 characters
+              </small>
+            </div>
+
+            <button 
+              type="submit" 
+              className="submit-review-btn"
+              disabled={reviewLoading}
+            >
+              {reviewLoading ? 'Submitting...' : 'Submit Review'}
+            </button>
+          </form>
+        </div>
+      )}
+
+      {userReview && (
+        <div className="user-review-notice">
+          <p>✅ You have already reviewed this product. Thank you for your feedback!</p>
+        </div>
+      )}
+
+      {/* Display Reviews */}
+      {reviews.length > 0 ? (
+        <div className="reviews-list">
+          <h4>All Reviews ({reviews.length})</h4>
+          {reviews.map((review) => (
+            <div key={review._id} className="review-item">
+              <div className="review-header">
+                <span className="reviewer-name">{review.user_name}</span>
+                <span className="review-date">{formatDate(review.createdAt)}</span>
+              </div>
+              
+              <div className="review-rating">
+                {renderRatingStars(review.rating)}
+                <span className="rating-text">({review.rating}/5)</span>
+              </div>
+              
+              <p className="review-comment">{review.comment}</p>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="no-reviews">
+          <p>No reviews yet. Be the first to review this product!</p>
+        </div>
+      )}
+    </div>
+  );
+
   if (loading) {
     return (
       <LoadingSpinner 
@@ -424,11 +592,6 @@ const ProductDetailsPage = ({ addToCart }) => {
                 </div>
               )}
 
-              <div className="product-description">
-                <h3>Description</h3>
-                <p>{product.description || 'No description available.'}</p>
-              </div>
-
               <div className="product-actions">
                 <div className="quantity-selector">
                   <label>Quantity:</label>
@@ -458,85 +621,34 @@ const ProductDetailsPage = ({ addToCart }) => {
             </div>
           </div>
 
-          {/* Review Section */}
-          <div className="review-section">
-            <h2>Customer Reviews</h2>
-            
-            {/* Write Review Form */}
-            {!userReview && (
-              <div className="write-review-form">
-                <h3>Write a Review</h3>
-                <form onSubmit={handleReviewSubmit}>
-                  <div className="rating-input">
-                    <label>Rating:</label>
-                    <div className="stars-input">
-                      {renderRatingStars(
-                        hoveredRating || reviewForm.rating,
-                        true,
-                        handleRatingClick,
-                        setHoveredRating,
-                        () => setHoveredRating(0)
-                      )}
-                    </div>
-                  </div>
+          {/* Tabbed Section */}
+          <div className="product-tabs-section">
+            <div className="tabs-navigation">
+              <button 
+                className={`tab-btn ${activeTab === 'description' ? 'active' : ''}`}
+                onClick={() => setActiveTab('description')}
+              >
+                Description
+              </button>
+              <button 
+                className={`tab-btn ${activeTab === 'additional' ? 'active' : ''}`}
+                onClick={() => setActiveTab('additional')}
+              >
+                Additional Information
+              </button>
+              <button 
+                className={`tab-btn ${activeTab === 'reviews' ? 'active' : ''}`}
+                onClick={() => setActiveTab('reviews')}
+              >
+                Reviews ({reviews.length})
+              </button>
+            </div>
 
-                  <div className="comment-input">
-                    <label>Your Review:</label>
-                    <textarea
-                      value={reviewForm.comment}
-                      onChange={(e) => setReviewForm(prev => ({ ...prev, comment: e.target.value }))}
-                      placeholder="Share your thoughts about this product..."
-                      maxLength="500"
-                      rows="4"
-                      required
-                    />
-                    <small className="char-count">
-                      {reviewForm.comment.length}/500 characters
-                    </small>
-                  </div>
-
-                  <button 
-                    type="submit" 
-                    className="submit-review-btn"
-                    disabled={reviewLoading}
-                  >
-                    {reviewLoading ? 'Submitting...' : 'Submit Review'}
-                  </button>
-                </form>
-              </div>
-            )}
-
-            {userReview && (
-              <div className="user-review-notice">
-                <p>✅ You have already reviewed this product. Thank you for your feedback!</p>
-              </div>
-            )}
-
-            {/* Display Reviews */}
-            {reviews.length > 0 ? (
-              <div className="reviews-list">
-                <h3>All Reviews ({reviews.length})</h3>
-                {reviews.map((review) => (
-                  <div key={review._id} className="review-item">
-                    <div className="review-header">
-                      <span className="reviewer-name">{review.user_name}</span>
-                      <span className="review-date">{formatDate(review.createdAt)}</span>
-                    </div>
-                    
-                    <div className="review-rating">
-                      {renderRatingStars(review.rating)}
-                      <span className="rating-text">({review.rating}/5)</span>
-                    </div>
-                    
-                    <p className="review-comment">{review.comment}</p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="no-reviews">
-                <p>No reviews yet. Be the first to review this product!</p>
-              </div>
-            )}
+            <div className="tab-content">
+              {activeTab === 'description' && renderDescription()}
+              {activeTab === 'additional' && renderAdditionalInfo()}
+              {activeTab === 'reviews' && renderReviews()}
+            </div>
           </div>
 
           {/* Related Products */}
