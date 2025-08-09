@@ -1,5 +1,6 @@
 import React from 'react';
 import './Footer.css';
+import { Link } from 'react-router-dom';
 import { FaFacebookF, FaInstagram, FaWhatsapp } from 'react-icons/fa';
 import payment from '../../assets/payment.png';
 import logo from '../../assets/logo.jpeg';
@@ -31,22 +32,22 @@ const Footer = () => {
         <div className="footer-column">
           <h4>Useful Links</h4>
           <ul>
-            <li>Home</li>
-            <li>About</li>
-            <li>Shop</li>
-            <li>Contact</li>
+            <li><Link to="/">Home</Link></li>
+            <li><Link to="/about">About</Link></li>
+            <li><Link to="/sweets">Shop</Link></li>
+            <li><Link to="/contact">Contact</Link></li>
           </ul>
         </div>
 
-        {/* Account & Info */}
+        {/* My Account */}
         <div className="footer-column">
           <h4>My Account</h4>
           <ul>
-            <li>Account</li>
-            <li>Order History</li>
-            <li>Wishlist</li>
-            <li>Order Tracking</li>
-            <li>Cart</li>
+            <li><Link to="/profile">Profile</Link></li>
+            <li><Link to="/orders">Order History</Link></li>
+            <li><Link to="/wishlist">Wishlist</Link></li>
+            <li><Link to="/track-order">Order Tracking</Link></li>
+            <li><Link to="/cart">Cart</Link></li>
           </ul>
         </div>
 
@@ -54,9 +55,9 @@ const Footer = () => {
         <div className="footer-column">
           <h4>Information</h4>
           <ul>
-            <li>Terms & Condition</li>
-            <li>Privacy Policy</li>
-            <li>Return Policy</li>
+            <li><Link to="/terms">Terms & Condition</Link></li>
+            <li><Link to="/privacy">Privacy Policy</Link></li>
+            <li><Link to="/return">Return Policy</Link></li>
           </ul>
         </div>
       </div>
@@ -68,7 +69,7 @@ const Footer = () => {
           <FaInstagram />
           <FaWhatsapp />
         </div>
-        
+
         <p className="footer-copyright">
           Copyright © 2025 iyappaa.com All Rights Reserved.
         </p>

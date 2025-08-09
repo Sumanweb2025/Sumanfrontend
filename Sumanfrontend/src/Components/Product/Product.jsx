@@ -313,7 +313,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
                                   </p>
                                   
                                   <div className="iyappaa-product-bottom">
-                                    <span className="iyappaa-product-price">₹{product.price || '20'}.00</span>
+                                    <span className="iyappaa-product-price">${(product.price || 0).toFixed(2)}</span>
                                     <button
                                       className="iyappaa-cart-icon-btn"
                                       onClick={(e) => handleAddToCart(product, e)}

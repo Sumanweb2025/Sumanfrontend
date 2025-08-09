@@ -1,22 +1,8 @@
-/* Checkout.css */
-
 /* Main Container */
 .checkout-page {
   min-height: 100vh;
-  background-color: #f9fafb;
-}
-
-/* Loading Container */
-.loading-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 50vh;
-}
-
-.loading-text {
-  font-size: 1.25rem;
-  color: #6b7280;
+  background-color: 
+#f9fafb;
 }
 
 /* Header Section */
@@ -36,13 +22,15 @@
   text-align: center;
   font-size: 2rem;
   font-weight: bold;
-  color: #1f2937;
+  color: 
+#1f2937;
   margin: 0 0 0.5rem 0;
 }
 
 .breadcrumb {
   text-align: center;
-  color: #6b7280;
+  color: 
+#6b7280;
   margin-bottom: 0;
 }
 
@@ -52,7 +40,8 @@
 }
 
 .breadcrumb span:hover {
-  color: #ffd700;
+  color: 
+#ffd700;
 }
 
 .breadcrumb-separator {
@@ -60,7 +49,8 @@
 }
 
 .current {
-  color: #1f2937;
+  color: 
+#1f2937;
   font-weight: 500;
 }
 
@@ -92,15 +82,17 @@
   padding: 1.5rem;
 }
 
-.section-title {
+.checkout-section-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1f2937;
+  color: 
+#1f2937;
   margin: 0 0 1rem 0;
 }
 
-.section-description {
-  color: #6b7280;
+.checkout-section-description {
+  color: 
+#6b7280;
   font-size: 0.875rem;
   margin-bottom: 1rem;
   line-height: 1.5;
@@ -114,7 +106,8 @@
 .form-input {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid 
+#d1d5db;
   border-radius: 0.5rem;
   font-size: 1rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -123,12 +116,14 @@
 
 .form-input:focus {
   outline: none;
-  border-color: #ffd700;
+  border-color: 
+#ffd700;
   box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
 }
 
 .form-input.error {
-  border-color: #dc2626;
+  border-color: 
+#dc2626;
 }
 
 .form-row {
@@ -140,7 +135,8 @@
 .error-message {
   display: flex;
   align-items: center;
-  color: #dc2626;
+  color: 
+#dc2626;
   font-size: 0.875rem;
   margin-top: 0.25rem;
 }
@@ -150,7 +146,8 @@
 }
 
 .add-apartment-btn {
-  color: #ffd700;
+  color: 
+#ffd700;
   font-size: 0.875rem;
   background: none;
   border: none;
@@ -162,7 +159,8 @@
 
 .add-apartment-btn:hover {
   text-decoration: underline;
-  color: #e6c200;
+  color: 
+#e6c200;
 }
 
 .apartment-field {
@@ -171,149 +169,55 @@
 }
 
 .guest-notice {
-  color: #6b7280;
+  color: 
+#6b7280;
   font-size: 0.875rem;
   margin-top: 0.5rem;
-}
-
-.user-notice {
-  color: #059669;
-  font-size: 0.875rem;
-  margin-top: 0.5rem;
-  background-color: #f0fdf4;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.375rem;
-  border: 1px solid #bbf7d0;
-}
-
-/* Login Modal */
-.login-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 1rem;
-}
-
-.login-modal {
-  background: white;
-  border-radius: 0.75rem;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  max-width: 480px;
-  width: 100%;
-  animation: modalSlideIn 0.3s ease-out;
-}
-
-@keyframes modalSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.login-modal-content {
-  padding: 2rem;
-  text-align: center;
-}
-
-.login-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-
-.login-modal-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #1f2937;
-  margin: 0 0 1rem 0;
-}
-
-.login-modal-message {
-  color: #6b7280;
-  margin-bottom: 1.5rem;
-  line-height: 1.6;
-}
-
-.login-modal-benefits {
-  background-color: #f9fafb;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-  text-align: left;
-}
-
-.benefit-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-  color: #374151;
-  font-size: 0.875rem;
-}
-
-.benefit-item:last-child {
-  margin-bottom: 0;
-}
-
-.benefit-icon {
-  color: #059669;
-  font-weight: bold;
-  margin-right: 0.75rem;
-  font-size: 1rem;
-}
-
-.login-modal-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
 }
 
 /* Payment Methods */
-.payment-methods {
+.checkout-payment-methods {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   margin-bottom: 1.5rem;
 }
 
-.payment-method {
+.checkout-payment-method {
   display: flex;
   align-items: center;
   padding: 1rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid 
+#d1d5db;
   border-radius: 0.5rem;
   cursor: pointer;
   transition: all 0.2s ease;
   background: white;
 }
 
-.payment-method:hover {
-  background-color: #f9fafb;
-  border-color: #ffd700;
+.checkout-payment-method:hover {
+  background-color: 
+#f9fafb;
+  border-color: 
+#ffd700;
 }
 
-.payment-method:has(.payment-radio:checked) {
-  border-color: #ffd700;
-  background-color: #fffbeb;
+.checkout-payment-method:has(.payment-radio:checked) {
+  border-color: 
+#ffd700;
+  background-color: 
+#fffbeb;
 }
 
 .payment-radio {
   margin-right: 0.75rem;
   width: 1.25rem;
   height: 1.25rem;
-  accent-color: #ffd700;
+  accent-color: 
+#ffd700;
 }
 
-.payment-content {
+.checkout-payment-content {
   display: flex;
   align-items: center;
   flex: 1;
@@ -331,20 +235,24 @@
 
 .payment-name {
   font-weight: 500;
-  color: #1f2937;
+  color: 
+#1f2937;
   margin-bottom: 0.125rem;
 }
 
 .payment-desc {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: 
+#6b7280;
 }
 
 /* Place Order Button */
 .place-order-btn {
   width: 100%;
-  background-color: #ffd700;
-  color: #1f2937;
+  background-color: 
+#ffd700;
+  color: 
+#1f2937;
   padding: 1rem 1.5rem;
   border: none;
   border-radius: 0.5rem;
@@ -360,17 +268,19 @@
 }
 
 .place-order-btn:hover:not(:disabled) {
-  background-color: #e6c200;
+  background-color: 
+#e6c200;
 }
 
 .place-order-btn:disabled {
-  background-color: #9ca3af;
+  background-color: 
+#9ca3af;
   cursor: not-allowed;
   color: white;
 }
 
 /* Order Note Section */
-.order-note-section {
+.checkout-order-note-section {
   margin-bottom: 1.5rem;
 }
 
@@ -383,44 +293,51 @@
 .checkbox-input {
   width: 1rem;
   height: 1rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid 
+#d1d5db;
   border-radius: 0.25rem;
   cursor: pointer;
-  accent-color: #ffd700;
+  accent-color: 
+#ffd700;
 }
 
 .checkbox-label {
-  color: #6b7280;
+  color: 
+#6b7280;
   font-size: 0.875rem;
   cursor: pointer;
 }
 
-.terms-section {
+.checkout-terms-section {
   margin-bottom: 1.5rem;
 }
 
-.terms-text {
-  color: #6b7280;
+.checkout-terms-text {
+  color: 
+#6b7280;
   font-size: 0.875rem;
   line-height: 1.5;
   margin: 0;
 }
 
 .privacy-link {
-  color: #ffd700;
+  color: 
+#ffd700;
   text-decoration: underline;
   transition: color 0.2s ease;
 }
 
 .privacy-link:hover {
-  color: #e6c200;
+  color: 
+#e6c200;
 }
 
 .loading-spinner {
   display: inline-block;
   width: 1rem;
   height: 1rem;
-  border: 2px solid #ffffff;
+  border: 2px solid 
+#ffffff;
   border-radius: 50%;
   border-top-color: transparent;
   animation: spin 1s ease-in-out infinite;
@@ -451,12 +368,14 @@
 .summary-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1f2937;
+  color: 
+#1f2937;
   margin: 0;
 }
 
 .collapse-btn {
-  color: #6b7280;
+  color: 
+#6b7280;
   cursor: pointer;
   padding: 0.25rem;
   border: none;
@@ -466,7 +385,8 @@
 }
 
 .collapse-btn:hover {
-  color: #374151;
+  color: 
+#374151;
 }
 
 /* Order Items */
@@ -497,14 +417,16 @@
   height: 4rem;
   object-fit: cover;
   border-radius: 0.5rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid 
+#e5e7eb;
 }
 
 .item-quantity-badge {
   position: absolute;
   top: -0.5rem;
   right: -0.5rem;
-  background-color: #4b5563;
+  background-color: 
+#4b5563;
   color: white;
   font-size: 0.75rem;
   font-weight: 600;
@@ -523,20 +445,23 @@
 
 .item-name {
   font-weight: 500;
-  color: #1f2937;
+  color: 
+#1f2937;
   margin: 0 0 0.25rem 0;
   font-size: 0.875rem;
   line-height: 1.25;
 }
 
 .item-price {
-  color: #6b7280;
+  color: 
+#6b7280;
   font-size: 0.875rem;
   margin: 0 0 0.25rem 0;
 }
 
 .item-brand {
-  color: #6b7280;
+  color: 
+#6b7280;
   font-size: 0.75rem;
   margin: 0;
 }
@@ -548,13 +473,15 @@
 
 .item-total p {
   font-weight: 600;
-  color: #1f2937;
+  color: 
+#1f2937;
   margin: 0;
 }
 
 /* Coupon Section */
 .coupon-section {
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid 
+#e5e7eb;
   padding-top: 1rem;
   margin-bottom: 1rem;
 }
@@ -564,7 +491,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: #ffd700;
+  color: 
+#ffd700;
   background: none;
   border: none;
   cursor: pointer;
@@ -574,7 +502,8 @@
 }
 
 .coupon-btn:hover {
-  color: #e6c200;
+  color: 
+#e6c200;
 }
 
 .coupon-arrow {
@@ -594,7 +523,8 @@
 .coupon-input {
   flex: 1;
   padding: 0.5rem 0.75rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid 
+#d1d5db;
   border-radius: 0.375rem;
   font-size: 0.875rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -602,13 +532,16 @@
 
 .coupon-input:focus {
   outline: none;
-  border-color: #ffd700;
+  border-color: 
+#ffd700;
   box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
 }
 
 .coupon-apply-btn {
-  background-color: #ffd700;
-  color: #1f2937;
+  background-color: 
+#ffd700;
+  color: 
+#1f2937;
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 0.375rem;
@@ -620,33 +553,40 @@
 }
 
 .coupon-apply-btn:hover:not(:disabled) {
-  background-color: #e6c200;
+  background-color: 
+#e6c200;
 }
 
 .coupon-apply-btn:disabled {
-  background-color: #d1d5db;
+  background-color: 
+#d1d5db;
   cursor: not-allowed;
-  color: #6b7280;
+  color: 
+#6b7280;
 }
 
 .applied-coupon {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #f0fdf4;
+  background-color: 
+#f0fdf4;
   padding: 0.75rem;
   border-radius: 0.5rem;
-  border: 1px solid #bbf7d0;
+  border: 1px solid 
+#bbf7d0;
 }
 
 .coupon-success-text {
-  color: #166534;
+  color: 
+#166534;
   font-weight: 500;
   font-size: 0.875rem;
 }
 
 .coupon-remove-btn {
-  color: #dc2626;
+  color: 
+#dc2626;
   background: none;
   border: none;
   cursor: pointer;
@@ -656,12 +596,14 @@
 }
 
 .coupon-remove-btn:hover {
-  color: #b91c1c;
+  color: 
+#b91c1c;
 }
 
 /* Totals Section */
 .totals-section {
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid 
+#e5e7eb;
   padding-top: 1rem;
 }
 
@@ -669,27 +611,32 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 0.75rem;
-  color: #6b7280;
+  color: 
+#6b7280;
   font-size: 0.875rem;
 }
 
 .total-row.discount-row {
-  color: #059669;
+  color: 
+#059669;
   font-weight: 500;
 }
 
 .total-row.final {
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid 
+#e5e7eb;
   padding-top: 1rem;
   margin-top: 1rem;
   margin-bottom: 0;
   font-size: 1.25rem;
   font-weight: bold;
-  color: #1f2937;
+  color: 
+#1f2937;
 }
 
 .free-shipping-notice {
-  color: #059669;
+  color: 
+#059669;
   font-size: 0.875rem;
   margin-bottom: 0.75rem;
   font-weight: 500;
@@ -731,18 +678,21 @@
 .success-title {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #1f2937;
+  color: 
+#1f2937;
   margin: 0 0 0.5rem 0;
 }
 
 .success-message {
-  color: #6b7280;
+  color: 
+#6b7280;
   margin-bottom: 1.5rem;
   line-height: 1.5;
 }
 
 .order-details {
-  background-color: #f9fafb;
+  background-color: 
+#f9fafb;
   border-radius: 0.5rem;
   padding: 1rem;
   margin-bottom: 1.5rem;
@@ -750,21 +700,24 @@
 
 .order-label {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: 
+#6b7280;
   margin: 0 0 0.25rem 0;
 }
 
 .order-number {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #1f2937;
+  color: 
+#1f2937;
   margin: 0 0 0.75rem 0;
 }
 
 .order-total {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #059669;
+  color: 
+#059669;
   margin: 0;
 }
 
@@ -775,8 +728,10 @@
 }
 
 .btn-primary {
-  background-color: #ffd700;
-  color: #1f2937;
+  background-color: 
+#ffd700;
+  color: 
+#1f2937;
   padding: 0.75rem 1rem;
   border: none;
   border-radius: 0.5rem;
@@ -787,12 +742,15 @@
 }
 
 .btn-primary:hover {
-  background-color: #e6c200;
+  background-color: 
+#e6c200;
 }
 
 .btn-secondary {
-  background-color: #f3f4f6;
-  color: #374151;
+  background-color: 
+#f3f4f6;
+  color: 
+#374151;
   padding: 0.75rem 1rem;
   border: none;
   border-radius: 0.5rem;
@@ -803,7 +761,8 @@
 }
 
 .btn-secondary:hover {
-  background-color: #e5e7eb;
+  background-color: 
+#e5e7eb;
 }
 
 /* Responsive Design */
@@ -812,7 +771,7 @@
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .checkout-right {
     position: static;
   }
@@ -822,33 +781,33 @@
   .checkout-container {
     padding: 0 0.5rem;
   }
-  
+
   .checkout-section {
     padding: 1rem;
   }
-  
+
   .order-summary {
     padding: 1rem;
   }
-  
+
   .form-row {
     grid-template-columns: 1fr;
     gap: 0.75rem;
   }
-  
+
   .checkout-title {
     font-size: 1.75rem;
   }
-  
+
   .success-content {
     padding: 1.5rem;
     margin: 0.5rem;
   }
-  
+
   .success-icon {
     font-size: 3rem;
   }
-  
+
   .success-title {
     font-size: 1.25rem;
   }
@@ -869,55 +828,42 @@
   .coupon-apply-btn {
     align-self: flex-start;
   }
-
-  .login-modal {
-    max-width: 90%;
-    margin: 1rem;
-  }
-
-  .login-modal-content {
-    padding: 1.5rem;
-  }
-
-  .login-modal-actions {
-    gap: 0.5rem;
-  }
 }
 
 @media (max-width: 480px) {
   .checkout-container {
     padding: 0 0.25rem;
   }
-  
+
   .checkout-section {
     padding: 0.75rem;
   }
-  
+
   .order-summary {
     padding: 0.75rem;
   }
-  
+
   .checkout-title {
     font-size: 1.5rem;
   }
-  
+
   .section-title {
     font-size: 1.125rem;
   }
-  
+
   .summary-title {
     font-size: 1.125rem;
   }
-  
+
   .order-item {
     gap: 0.75rem;
   }
-  
+
   .item-image {
     width: 3rem;
     height: 3rem;
   }
-  
+
   .item-quantity-badge {
     width: 1rem;
     height: 1rem;
@@ -933,22 +879,6 @@
   .payment-info {
     margin-top: 0.125rem;
   }
-
-  .login-modal-content {
-    padding: 1rem;
-  }
-
-  .login-icon {
-    font-size: 2.5rem;
-  }
-
-  .login-modal-title {
-    font-size: 1.25rem;
-  }
-
-  .login-modal-benefits {
-    padding: 0.75rem;
-  }
 }
 
 /* Print Styles */
@@ -956,25 +886,26 @@
   .checkout-page {
     background: white;
   }
-  
+
   .checkout-header {
     box-shadow: none;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid 
+#e5e7eb;
   }
-  
+
   .checkout-section,
   .order-summary {
     box-shadow: none;
-    border: 1px solid #e5e7eb;
+    border: 1px solid 
+#e5e7eb;
   }
-  
+
   .place-order-btn,
   .collapse-btn,
   .coupon-btn,
   .add-apartment-btn,
   .coupon-apply-btn,
-  .coupon-remove-btn,
-  .login-modal-overlay {
+  .coupon-remove-btn {
     display: none;
   }
 }

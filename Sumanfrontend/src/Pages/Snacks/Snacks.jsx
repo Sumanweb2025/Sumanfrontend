@@ -6,6 +6,7 @@ import Header from '../../Components/Header/Header';
 import Footer from "../../Components/Footer/Footer";
 import WishlistPopup from '../../Components/WishlistPopup/WishlistPopup';
 import CartPopup from '../../Components/CartPopup/CartPopup';
+import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 
 const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const navigate = useNavigate();
@@ -160,8 +161,14 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleProductClick = (product) => {
-    // Navigate to product details page
-    navigate(`/product/${product.product_id || product.id}`, { state: { product } });
+    // Show existing loading spinner when navigating to product details
+    setLoading(true);
+    
+    // Small delay to show the loading spinner before navigation
+    setTimeout(() => {
+      // Navigate to product details page
+      navigate(`/product/${product.product_id || product.id}`, { state: { product } });
+    }, 1000);
   };
 
   const handleWishlistClick = async (e, product) => {
@@ -290,11 +297,14 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     navigate('/cart');
   };
 
-  if (loading) return <div className="loading">Loading snacks...</div>;
-  if (error) return <div className="error">Error: {error}</div>;
-
   return (
     <>
+    <LoadingSpinner 
+                        isLoading={loading} 
+                        brandName="Delicious Snacks" 
+                        loadingText="Loading our snacks..."
+                        progressColor="#3b82f6"
+                      />
       <Header />
       <div className="snacks-page">
         <div className="snacks-container">
@@ -368,8 +378,10 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                     onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
                     className="snacks-price-slider"
                   />
-                  <div className="snacks-price-values">
-                    ₹{priceRange[0]} - ₹{priceRange[1]}
+
+                  <div className="price-values">
+                    ${priceRange[0]} - ${priceRange[1]}
+
                   </div>
                 </div>
               </div>
@@ -384,9 +396,11 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                         alt={product.name}
                         className="snacks-deal-image"
                       />
-                      <div className="snacks-deal-info">
-                        <div className="snacks-deal-name">{product.name}</div>
-                        <div className="snacks-deal-price">₹{product.price}</div>
+
+                      <div className="deal-info">
+                        <div className="deal-name">{product.name}</div>
+                        <div className="deal-price">${product.price}</div>
+
                       </div>
                     </div>
                   ))}
@@ -464,8 +478,10 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                             <span className="snacks-rating-text">({product.rating?.toFixed(1) || '0.0'})</span>
                           </div>
 
-                          <div className="snacks-product-price">₹{product.price}</div>
-                          {product.piece && <div className="snacks-product-piece">{product.piece} pieces</div>}
+
+                          <div className="product-price">${product.price}</div>
+                          {product.piece && <div className="product-piece">{product.piece} pieces</div>}
+
 
                           <button 
                             className="snack-add-to-cart-btn"

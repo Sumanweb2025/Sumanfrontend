@@ -1,12 +1,30 @@
-import React from 'react';
+import { useState, useEffect} from 'react';
 import './Contact.css';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 import { motion } from 'framer-motion';
+import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 
 const Contact = () => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate API/data loading
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000); // 1 second loading delay
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <>
+     <LoadingSpinner 
+            isLoading={loading} 
+            brandName="Contact Us" 
+            loadingText="Loading contact information..."
+            progressColor="#3b82f6"
+          />
       <Header />
       <motion.div
         className="contact-container"

@@ -6,6 +6,7 @@ import Header from '../../Components/Header/Header';
 import Footer from "../../Components/Footer/Footer";
 import WishlistPopup from '../../Components/WishlistPopup/WishlistPopup';
 import CartPopup from '../../Components/CartPopup/CartPopup';
+import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 
 const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const navigate = useNavigate();
@@ -159,8 +160,14 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleProductClick = (product) => {
-    // Navigate to product details page
-    navigate(`/product/${product.product_id || product.id}`, { state: { product } });
+    // Show existing loading spinner when navigating to product details
+    setLoading(true);
+    
+    // Small delay to show the loading spinner before navigation
+    setTimeout(() => {
+      // Navigate to product details page
+      navigate(`/product/${product.product_id || product.id}`, { state: { product } });
+    }, 1000);
   };
 
   const handleWishlistClick = async (e, product) => {
@@ -289,11 +296,15 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     navigate('/cart');
   };
 
-  if (loading) return <div className="loading">Loading sweets...</div>;
-  if (error) return <div className="error">Error: {error}</div>;
 
   return (
     <>
+    <LoadingSpinner 
+        isLoading={loading} 
+        brandName="Sweet Delights" 
+        loadingText="Loading delicious sweets..."
+        progressColor="#3b82f6"
+      />
       <Header />
       <div className="sweets-page">
         <div className="sweets-container">
@@ -367,8 +378,10 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                     onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
                     className="sweets-price-slider"
                   />
-                  <div className="sweets-price-values">
-                    ₹{priceRange[0]} - ₹{priceRange[1]}
+
+                  <div className="price-values">
+                    ${priceRange[0]} - ${priceRange[1]}
+
                   </div>
                 </div>
               </div>
@@ -383,9 +396,11 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                         alt={product.name}
                         className="sweets-deal-image"
                       />
-                      <div className="sweets-deal-info">
-                        <div className="sweets-deal-name">{product.name}</div>
-                        <div className="sweets-deal-price">₹{product.price}</div>
+
+                      <div className="deal-info">
+                        <div className="deal-name">{product.name}</div>
+                        <div className="deal-price">${product.price}</div>
+
                       </div>
                     </div>
                   ))}
@@ -463,8 +478,10 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                             <span className="sweets-rating-text">({product.rating?.toFixed(1) || '0.0'})</span>
                           </div>
 
-                          <div className="sweets-product-price">₹{product.price}</div>
-                          {product.piece && <div className="sweets-product-piece">{product.piece} pieces</div>}
+
+                          <div className="product-price">${product.price}</div>
+                          {product.piece && <div className="product-piece">{product.piece} pieces</div>}
+
 
                           <button 
                             className="sweet-add-to-cart-btn"

@@ -41,7 +41,7 @@ const CartPopup = ({ isOpen, onClose, product, cartItems, onContinueShopping, on
             </div>
             <div className="item-details">
               <h4>{product.name}</h4>
-              <p className="item-price">₹{product.price}</p>
+              <p className="item-price">${product.price}</p>
               <p className="item-date">{formatDate(new Date())}</p>
             </div>
             <div className="quantity-display">
@@ -64,7 +64,7 @@ const CartPopup = ({ isOpen, onClose, product, cartItems, onContinueShopping, on
                     />
                     <div className="summary-item-info">
                       <span className="summary-item-name">{itemProduct.name}</span>
-                      <span className="summary-item-price">₹{itemProduct.price} x {item.quantity}</span>
+                      <span className="summary-item-price">${itemProduct.price} x {item.quantity}</span>
                     </div>
                   </div>
                 );
@@ -82,7 +82,7 @@ const CartPopup = ({ isOpen, onClose, product, cartItems, onContinueShopping, on
             </div>
             <div className="summary-row total">
               <span>Subtotal:</span>
-              <span>₹{getTotalAmount().toFixed(2)}</span>
+              <span>${getTotalAmount().toFixed(2)}</span>
             </div>
           </div>
         </div>

@@ -48,7 +48,7 @@ const WishlistPopup = ({ isOpen, onClose, product, onAddToCart, onContinueShoppi
           </div>
           <div className="item-details">
             <h4>{product.name}</h4>
-            <p className="item-price">₹{product.price}</p>
+            <p className="item-price">${product.price}</p>
             <p className="item-date">{formatDate(new Date())}</p>
           </div>
           <div className="item-actions">

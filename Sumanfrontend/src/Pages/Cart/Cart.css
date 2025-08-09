@@ -394,17 +394,6 @@
   transform: translateY(-2px);
 }
 
-/* Loading and Error States */
-.loading, .error {
-  text-align: center;
-  padding: 60px 20px;
-  font-size: 1.2rem;
-  color: #666;
-}
-
-.error {
-  color: #dc3545;
-}
 
 /* Responsive Design */
 @media (max-width: 992px) {

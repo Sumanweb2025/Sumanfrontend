@@ -4,6 +4,7 @@ import axios from 'axios';
 import './CheckOut.css';
 import Header from '../../Components/Header/Header';
 import Footer from "../../Components/Footer/Footer";
+import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -28,9 +29,9 @@ const CheckoutPage = () => {
       address: '',
       apartment: '',
       city: '',
-      province: 'Tamil Nadu',
+      province: 'Ontario',
       postalCode: '',
-      country: 'India',
+      country: 'Canada',
       phone: ''
     },
     paymentMethod: 'card'
@@ -39,6 +40,7 @@ const CheckoutPage = () => {
   const [errors, setErrors] = useState({});
 
   const API_URL = 'http://localhost:8000/';
+
 
   // Countries and their states/provinces
   const countriesData = {
@@ -132,7 +134,7 @@ const CheckoutPage = () => {
 
       const couponData = response.data.data;
       setAppliedCoupon(couponData);
-      
+
       // Update order summary with discount
       setOrderSummary(prev => ({
         ...prev,
@@ -179,8 +181,8 @@ const CheckoutPage = () => {
 
     // Postal code validation based on country
     if (formData.billingAddress.postalCode) {
-      if (formData.billingAddress.country === 'India' && !/^\d{6}$/.test(formData.billingAddress.postalCode)) {
-        newErrors['billingAddress.postalCode'] = 'Please enter a valid 6-digit postal code';
+      if (formData.billingAddress.country === 'Canada' && !/^[A-Za-z]\d[A-Za-z] ?\d[A-Za-z]\d$/.test(formData.billingAddress.postalCode)) {
+        newErrors['billingAddress.postalCode'] = 'Please enter a valid Canadian postal code (e.g., K1A 0A6)';
       } else if (formData.billingAddress.country === 'United States' && !/^\d{5}(-\d{4})?$/.test(formData.billingAddress.postalCode)) {
         newErrors['billingAddress.postalCode'] = 'Please enter a valid ZIP code';
       }
@@ -197,7 +199,7 @@ const CheckoutPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -219,7 +221,7 @@ const CheckoutPage = () => {
 
       setOrderDetails(response.data.data);
       setShowSuccess(true);
-      
+
       // Dispatch cart update event
       window.dispatchEvent(new CustomEvent('cartUpdated'));
     } catch (error) {
@@ -239,23 +241,16 @@ const CheckoutPage = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <>
-        <Header />
-        <div className="checkout-page">
-          <div className="loading-container">
-            <div className="loading-text">Loading checkout...</div>
-          </div>
-        </div>
-        <Footer />
-      </>
-    );
-  }
 
   if (showSuccess) {
     return (
       <>
+        <LoadingSpinner
+          isLoading={loading}
+          brandName="Checkout"
+          loadingText="Loading checkout..."
+          progressColor="#3b82f6"
+        />
         <Header />
         <div className="checkout-page">
           <div className="success-modal-overlay">
@@ -264,24 +259,24 @@ const CheckoutPage = () => {
                 <div className="success-icon">🎉</div>
                 <h1 className="success-title">Order Placed Successfully!</h1>
                 <p className="success-message">Thank you for your order. We'll send you a confirmation email shortly.</p>
-                
+
                 <div className="order-details">
                   <p className="order-label">Order Number</p>
                   <p className="order-number">{orderDetails?.orderNumber}</p>
                   <p className="order-label">Total Amount</p>
-                  <p className="order-total">₹{orderDetails?.total}</p>
+                  <p className="order-total">${orderDetails?.total}</p>
                 </div>
 
                 <div className="success-actions">
                   <button
                     className="btn-primary"
-                    onClick={() => navigate('/orders')}
+                    onClick={() => navigate('/myorders')}
                   >
                     View My Orders
                   </button>
                   <button
                     className="btn-secondary"
-                    onClick={() => navigate('/products')}
+                    onClick={() => navigate('/sweets')}
                   >
                     Continue Shopping
                   </button>
@@ -317,9 +312,9 @@ const CheckoutPage = () => {
             <div className="checkout-left">
               {/* Contact Information */}
               <div className="checkout-section">
-                <h2 className="section-title">Contact information</h2>
-                <p className="section-description">We'll use this email to send you details and updates about your order.</p>
-                
+                <h2 className="checkout-section-title">Contact information</h2>
+                <p className="checkout-section-description">We'll use this email to send you details and updates about your order.</p>
+
                 <div className="form-group">
                   <input
                     type="email"
@@ -335,15 +330,15 @@ const CheckoutPage = () => {
                     </p>
                   )}
                 </div>
-                
+
                 <p className="guest-notice">You are currently checking out as a guest.</p>
               </div>
 
               {/* Billing Address */}
               <div className="checkout-section">
-                <h2 className="section-title">Billing address</h2>
-                <p className="section-description">Enter the billing address that matches your payment method.</p>
-                
+                <h2 className="checkout-section-title">Billing address</h2>
+                <p className="checkout-section-description">Enter the billing address that matches your payment method.</p>
+
                 <form onSubmit={handleSubmit}>
                   {/* Country */}
                   <div className="form-group">
@@ -425,7 +420,7 @@ const CheckoutPage = () => {
                       value={formData.billingAddress.apartment}
                       onChange={(e) => handleInputChange('billingAddress', 'apartment', e.target.value)}
                       className="form-input apartment-field"
-                      style={{display: 'none', marginTop: '0.75rem'}}
+                      style={{ display: 'none', marginTop: '0.75rem' }}
                     />
                   </div>
 
@@ -492,19 +487,19 @@ const CheckoutPage = () => {
 
               {/* Payment Options */}
               <div className="checkout-section">
-                <h2 className="section-title">Payment options</h2>
-                
-                <div className="payment-methods">
-                  <label className="payment-method">
+                <h2 className="checkout-section-title">Payment options</h2>
+
+                <div className="checkout-payment-methods">
+                  <label className="checkout-payment-method">
                     <input
                       type="radio"
                       name="paymentMethod"
                       value="card"
                       checked={formData.paymentMethod === 'card'}
-                      onChange={(e) => setFormData(prev => ({...prev, paymentMethod: e.target.value}))}
+                      onChange={(e) => setFormData(prev => ({ ...prev, paymentMethod: e.target.value }))}
                       className="payment-radio"
                     />
-                    <div className="payment-content">
+                    <div className="checkout-payment-content">
                       <div className="payment-icon">💳</div>
                       <div className="payment-info">
                         <div className="payment-name">Credit/Debit Card</div>
@@ -513,16 +508,16 @@ const CheckoutPage = () => {
                     </div>
                   </label>
 
-                  <label className="payment-method">
+                  <label className="checkout-payment-method">
                     <input
                       type="radio"
                       name="paymentMethod"
                       value="upi"
                       checked={formData.paymentMethod === 'upi'}
-                      onChange={(e) => setFormData(prev => ({...prev, paymentMethod: e.target.value}))}
+                      onChange={(e) => setFormData(prev => ({ ...prev, paymentMethod: e.target.value }))}
                       className="payment-radio"
                     />
-                    <div className="payment-content">
+                    <div className="checkout-payment-content">
                       <div className="payment-icon">📱</div>
                       <div className="payment-info">
                         <div className="payment-name">UPI</div>
@@ -531,16 +526,16 @@ const CheckoutPage = () => {
                     </div>
                   </label>
 
-                  <label className="payment-method">
+                  <label className="checkout-payment-method">
                     <input
                       type="radio"
                       name="paymentMethod"
                       value="netbanking"
                       checked={formData.paymentMethod === 'netbanking'}
-                      onChange={(e) => setFormData(prev => ({...prev, paymentMethod: e.target.value}))}
+                      onChange={(e) => setFormData(prev => ({ ...prev, paymentMethod: e.target.value }))}
                       className="payment-radio"
                     />
-                    <div className="payment-content">
+                    <div className="checkout-payment-content">
                       <div className="payment-icon">🏦</div>
                       <div className="payment-info">
                         <div className="payment-name">Net Banking</div>
@@ -549,16 +544,16 @@ const CheckoutPage = () => {
                     </div>
                   </label>
 
-                  <label className="payment-method">
+                  <label className="checkout-payment-method">
                     <input
                       type="radio"
                       name="paymentMethod"
                       value="wallet"
                       checked={formData.paymentMethod === 'wallet'}
-                      onChange={(e) => setFormData(prev => ({...prev, paymentMethod: e.target.value}))}
+                      onChange={(e) => setFormData(prev => ({ ...prev, paymentMethod: e.target.value }))}
                       className="payment-radio"
                     />
-                    <div className="payment-content">
+                    <div className="checkout-payment-content">
                       <div className="payment-icon">👛</div>
                       <div className="payment-info">
                         <div className="payment-name">Digital Wallet</div>
@@ -567,16 +562,16 @@ const CheckoutPage = () => {
                     </div>
                   </label>
 
-                  <label className="payment-method">
+                  <label className="checkout-payment-method">
                     <input
                       type="radio"
                       name="paymentMethod"
                       value="cod"
                       checked={formData.paymentMethod === 'cod'}
-                      onChange={(e) => setFormData(prev => ({...prev, paymentMethod: e.target.value}))}
+                      onChange={(e) => setFormData(prev => ({ ...prev, paymentMethod: e.target.value }))}
                       className="payment-radio"
                     />
-                    <div className="payment-content">
+                    <div className="checkout-payment-content">
                       <div className="payment-icon">💰</div>
                       <div className="payment-info">
                         <div className="payment-name">Cash on Delivery</div>
@@ -586,15 +581,15 @@ const CheckoutPage = () => {
                   </label>
                 </div>
 
-                <div className="order-note-section">
+                <div className="checkout-order-note-section">
                   <label className="checkbox-container">
                     <input type="checkbox" className="checkbox-input" />
                     <span className="checkbox-label">Add a note to your order</span>
                   </label>
                 </div>
 
-                <div className="terms-section">
-                  <p className="terms-text">
+                <div className="checkout-terms-section">
+                  <p className="checkout-terms-text">
                     By proceeding with your purchase you agree to our Terms and Conditions and{' '}
                     <a href="#" className="privacy-link">Privacy Policy</a>
                   </p>
@@ -643,13 +638,13 @@ const CheckoutPage = () => {
                       </div>
                       <div className="item-details">
                         <h3 className="item-name">{item.productId.name}</h3>
-                        <p className="item-price">₹{item.productId.price}</p>
+                        <p className="item-price">${item.productId.price}</p>
                         {item.productId.brand && (
                           <p className="item-brand">{item.productId.brand}</p>
                         )}
                       </div>
                       <div className="item-total">
-                        <p>₹{(item.productId.price * item.quantity).toFixed(2)}</p>
+                        <p>${(item.productId.price * item.quantity).toFixed(2)}</p>
                       </div>
                     </div>
                   ))}
@@ -668,7 +663,7 @@ const CheckoutPage = () => {
                           <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414L11.414 12l3.293 3.293a1 1 0 01-1.414 1.414L10 13.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 12 5.293 8.707a1 1 0 010-1.414z" clipRule="evenodd" />
                         </svg>
                       </button>
-                      
+
                       {showCouponInput && (
                         <div className="coupon-input-container">
                           <input
@@ -707,26 +702,26 @@ const CheckoutPage = () => {
                 <div className="totals-section">
                   <div className="total-row">
                     <span>Subtotal</span>
-                    <span>₹{orderSummary.subtotal}</span>
+                    <span>${orderSummary.subtotal}</span>
                   </div>
-                  
+
                   <div className="total-row">
-                    <span>Tax (GST 18%)</span>
-                    <span>₹{orderSummary.tax}</span>
+                    <span>Tax (HST 13%)</span> 
+                    <span>${orderSummary.tax}</span>
                   </div>
-                  
+
                   <div className="total-row">
                     <span>Shipping</span>
-                    <span>{parseFloat(orderSummary.shipping) === 0 ? 'FREE' : `₹${orderSummary.shipping}`}</span>
+                    <span>{parseFloat(orderSummary.shipping) === 0 ? 'FREE' : `$${orderSummary.shipping}`}</span>
                   </div>
-                  
+
                   {appliedCoupon && (
                     <div className="total-row discount-row">
                       <span>Discount ({appliedCoupon.code})</span>
-                      <span>-₹{appliedCoupon.discount}</span>
+                      <span>-${appliedCoupon.discount}</span>
                     </div>
                   )}
-                  
+
                   {parseFloat(orderSummary.shipping) === 0 && (
                     <div className="free-shipping-notice">
                       🎉 You've earned free shipping!
@@ -736,7 +731,7 @@ const CheckoutPage = () => {
                   {/* Total */}
                   <div className="total-row final">
                     <span>Total</span>
-                    <span>₹{orderSummary.total}</span>
+                    <span>${orderSummary.total}</span>
                   </div>
                 </div>
               </div>

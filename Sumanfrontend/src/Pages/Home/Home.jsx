@@ -11,11 +11,25 @@ import Banner from '../../Components/ShippingBanner/ShippingBanner';
 import Testimonials from '../../Components/Testimonials/Testimonial'; 
 import Footer from '../../Components/Footer/Footer';
 import './Home.css';
+import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 
 const Home = () => {
   const [visible, setVisible] = useState(false);
+
   const [textAnimated, setTextAnimated] = useState(false);
   const [imageAnimated, setImageAnimated] = useState(false);
+
+  const [loading, setLoading] = useState(true);
+  
+    useEffect(() => {
+      // Simulate API/data loading
+      const timer = setTimeout(() => {
+        setLoading(false);
+      }, 1000); // 1 second loading delay
+  
+      return () => clearTimeout(timer);
+    }, []);
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,6 +66,7 @@ const Home = () => {
   }, [visible]);
 
   return (
+
     <>
       <div className="home-container">
         <Header />
@@ -72,6 +87,14 @@ const Home = () => {
             <div className={`ad-right ${imageAnimated ? 'image-animated' : ''}`}>
               <img src={homeheader} alt="Delicious Dish" className="ad-main-img" />
             </div>
+<LoadingSpinner 
+              isLoading={loading} 
+              brandName="Iyappaa Foods" 
+              loadingText="Loading our site..."
+              progressColor="#3b82f6"
+            />
+      
+        
           </div>
         </div>
       </div>

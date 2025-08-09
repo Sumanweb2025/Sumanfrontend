@@ -4,6 +4,9 @@ import axios from 'axios';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
 import './ProductDetailsPage.css';
+import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
+import WishlistPopup from '../../Components/WishlistPopup/WishlistPopup';
+import CartPopup from '../../Components/CartPopup/CartPopup';
 
 const ProductDetailsPage = ({ addToCart }) => {
   const { id } = useParams();
@@ -13,9 +16,16 @@ const ProductDetailsPage = ({ addToCart }) => {
   const [loading, setLoading] = useState(!product);
   const [error, setError] = useState(null);
   const [wishlistItems, setWishlistItems] = useState([]);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
+  
+  // Popup states
+  const [showWishlistPopup, setShowWishlistPopup] = useState(false);
+  const [showCartPopup, setShowCartPopup] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const API_URL = 'http://localhost:8000/';
 
@@ -47,51 +57,105 @@ const ProductDetailsPage = ({ addToCart }) => {
       }
     };
 
-    const fetchWishlist = async () => {
+    const fetchWishlistAndCart = async () => {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const response = await axios.get(`${API_URL}/api/wishlist`, {
+          const config = {
             headers: { 'Authorization': `Bearer ${token}` }
-          });
-          const wishlistData = response.data?.data || response.data;
-          setWishlistItems(wishlistData.map(item => item.product_id || item.productId));
+          };
+
+          // Fetch wishlist
+          const wishlistResponse = await axios.get(`${API_URL}api/wishlist`, config);
+          const wishlistData = wishlistResponse.data?.data || wishlistResponse.data;
+          setWishlistItems(wishlistData.products?.map(item => item.productId._id || item.productId) || 
+                          wishlistData.map(item => item.product_id || item.productId) || []);
+
+          // Fetch cart
+          const cartResponse = await axios.get(`${API_URL}api/cart`, config);
+          const cartData = cartResponse.data?.data || cartResponse.data;
+          setCartItems(cartData.items || []);
         } catch (err) {
-          console.log('Wishlist not loaded', err);
+          console.log('Wishlist/Cart not loaded', err);
         }
       }
     };
 
     fetchProductDetails();
     fetchRelatedProducts();
-    fetchWishlist();
+    fetchWishlistAndCart();
   }, [id, product, API_URL]);
 
   const handleWishlistClick = async () => {
-    const productId = product.product_id || product.id;
+    if (!product || wishlistLoading) return;
+    
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Please login to add items to your wishlist');
+      return;
+    }
+
+    setWishlistLoading(true);
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        alert('Please login to add items to your wishlist');
-        return;
-      }
       const config = {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       };
+
+      const productId = product.product_id || product._id || product.id;
       const isInWishlist = wishlistItems.includes(productId);
+      
       if (isInWishlist) {
-        await axios.delete(`${API_URL}/api/wishlist/${productId}`, config);
+        await axios.delete(`${API_URL}api/wishlist/${productId}`, config);
         setWishlistItems(prev => prev.filter(id => id !== productId));
+        
+        // Dispatch custom event to update header count
+        window.dispatchEvent(new CustomEvent('wishlistUpdated'));
       } else {
-        await axios.post(`${API_URL}/api/wishlist`, { productId }, config);
+        await axios.post(`${API_URL}api/wishlist`, { productId }, config);
         setWishlistItems(prev => [...prev, productId]);
+        
+        // Dispatch custom event to update header count
+        window.dispatchEvent(new CustomEvent('wishlistUpdated'));
+        
+        // Show wishlist popup
+        setSelectedProduct(product);
+        setShowWishlistPopup(true);
       }
     } catch (err) {
       console.error('Wishlist error:', err);
       alert(err.response?.data?.message || 'Failed to update wishlist');
+    } finally {
+      setWishlistLoading(false);
+    }
+  };
+
+  const handleAddToCartFromWishlist = async (productId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      };
+
+      await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
+      
+      // Update cart items
+      const cartResponse = await axios.get(`${API_URL}api/cart`, config);
+      const cartData = cartResponse.data?.data || cartResponse.data;
+      setCartItems(cartData.items || []);
+
+      // Dispatch custom event to update header count
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
+
+      return true;
+    } catch (err) {
+      console.error('Add to cart error:', err);
+      throw err;
     }
   };
 
@@ -103,10 +167,27 @@ const ProductDetailsPage = ({ addToCart }) => {
         return;
       }
       
-      // Add quantity to product object
-      const productWithQuantity = { ...product, quantity };
-      await addToCart(productWithQuantity);
-      alert(`${quantity} x ${product.name} added to cart!`);
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      };
+
+      const productId = product.product_id || product._id || product.id;
+      await axios.post(`${API_URL}api/cart`, { productId, quantity }, config);
+      
+      // Update cart items
+      const cartResponse = await axios.get(`${API_URL}api/cart`, config);
+      const cartData = cartResponse.data?.data || cartResponse.data;
+      setCartItems(cartData.items || []);
+
+      // Dispatch custom event to update header count
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
+
+      // Show cart popup
+      setSelectedProduct(product);
+      setShowCartPopup(true);
     } catch (err) {
       console.error('Add to cart error:', err);
       alert(err.response?.data?.message || 'Failed to add to cart');
@@ -114,14 +195,42 @@ const ProductDetailsPage = ({ addToCart }) => {
   };
 
   const handleRelatedProductClick = (relatedProduct) => {
+    // Show loading spinner when navigating
+    setLoading(true);
     navigate(`/product/${relatedProduct.product_id || relatedProduct.id}`, { 
       state: { product: relatedProduct } 
     });
     window.scrollTo(0, 0);
   };
 
-  if (loading) return <div className="loading">Loading product details...</div>;
-  if (error) return <div className="error">Error: {error}</div>;
+  const handleContinueShopping = () => {
+    setShowWishlistPopup(false);
+    setShowCartPopup(false);
+    setSelectedProduct(null);
+  };
+
+  const handleOpenWishlistPage = () => {
+    setShowWishlistPopup(false);
+    navigate('/wishlist');
+  };
+
+  const handleViewCart = () => {
+    setShowCartPopup(false);
+    navigate('/cart');
+  };
+
+  if (loading) {
+    return (
+      <LoadingSpinner 
+        isLoading={loading} 
+        brandName="Product Details" 
+        loadingText="Loading our product details..."
+        progressColor="#3b82f6"
+      />
+    );
+  }
+
+  if (error) return <div className="error">{error}</div>;
   if (!product) return <div className="error">Product not found</div>;
 
   const productImages = [
@@ -129,7 +238,7 @@ const ProductDetailsPage = ({ addToCart }) => {
     // Add more images if available
   ];
 
-  const isInWishlist = wishlistItems.includes(product.product_id || product.id);
+  const isInWishlist = wishlistItems.includes(product.product_id || product._id || product.id);
 
   return (
     <>
@@ -146,6 +255,14 @@ const ProductDetailsPage = ({ addToCart }) => {
           </div>
 
           <div className="product-details-content">
+            {/* Wishlist Button - Top Right */}
+            <button 
+              className={`product-details-wishlist-btn ${isInWishlist ? 'active' : ''}`}
+              onClick={handleWishlistClick}
+              disabled={wishlistLoading}
+            >
+              {isInWishlist ? '❤️' : '♡'}
+            </button>
             {/* Product Images */}
             <div className="product-images">
               <div className="main-image">
@@ -193,12 +310,12 @@ const ProductDetailsPage = ({ addToCart }) => {
               </div>
 
               <div className="product-price">
-                <span className="current-price">₹{(product.price * quantity).toFixed(2)}</span>
+                <span className="current-price">${(product.price * quantity).toFixed(2)}</span>
                 {product.originalPrice && (
-                  <span className="original-price">₹{(product.originalPrice * quantity).toFixed(2)}</span>
+                  <span className="original-price">${(product.originalPrice * quantity).toFixed(2)}</span>
                 )}
                 {quantity > 1 && (
-                  <span className="price-per-unit">₹{product.price} per unit</span>
+                  <span className="price-per-unit">${product.price} per unit</span>
                 )}
               </div>
 
@@ -233,15 +350,9 @@ const ProductDetailsPage = ({ addToCart }) => {
                   </div>
                 </div>
 
-                <div className="action-buttons">
-                  <button className="add-to-cart-btn" onClick={handleAddToCart}>
+                <div className="details-action-buttons">
+                  <button className="details-add-to-cart-btn" onClick={handleAddToCart}>
                     Add to Cart
-                  </button>
-                  <button 
-                    className={`wishlist-btn ${isInWishlist ? 'active' : ''}`}
-                    onClick={handleWishlistClick}
-                  >
-                    {isInWishlist ? '❤️ In Wishlist' : '♡ Add to Wishlist'}
                   </button>
                 </div>
               </div>
@@ -267,7 +378,7 @@ const ProductDetailsPage = ({ addToCart }) => {
                     )}
                     <tr>
                       <td>Price</td>
-                      <td>₹{product.price}</td>
+                      <td>${product.price}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -305,6 +416,27 @@ const ProductDetailsPage = ({ addToCart }) => {
           )}
         </div>
       </div>
+
+      {/* Wishlist Popup */}
+      <WishlistPopup
+        isOpen={showWishlistPopup}
+        onClose={() => setShowWishlistPopup(false)}
+        product={selectedProduct}
+        onAddToCart={handleAddToCartFromWishlist}
+        onContinueShopping={handleContinueShopping}
+        onOpenWishlistPage={handleOpenWishlistPage}
+      />
+
+      {/* Cart Popup */}
+      <CartPopup
+        isOpen={showCartPopup}
+        onClose={() => setShowCartPopup(false)}
+        product={selectedProduct}
+        cartItems={cartItems}
+        onContinueShopping={handleContinueShopping}
+        onViewCart={handleViewCart}
+      />
+
       <Footer />
     </>
   );

@@ -1,9 +1,67 @@
+
 // SignIn.jsx - Eurasia Foods Style - Fixed Layout with Google Sign-In
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { GoogleLogin } from '@react-oauth/google';
 import './SignIn.css';
+
+
+// Google Sign-In Component
+const GoogleSignIn = ({ onSuccess, onError, loading }) => {
+  useEffect(() => {
+    // Load Google Sign-In script
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+
+    script.onload = () => {
+      if (window.google) {
+        window.google.accounts.id.initialize({
+          client_id: import.meta.env.VITE_APP_GOOGLE_CLIENT_ID || 'your-google-client-id',
+          callback: handleGoogleResponse,
+          auto_select: false,
+          cancel_on_tap_outside: true
+        });
+
+        window.google.accounts.id.renderButton(
+          document.getElementById('google-signin-button'),
+          {
+            theme: 'outline',
+            size: 'large',
+            width: '100%',
+            text: 'signin_with',
+            shape: 'rectangular'
+          }
+        );
+      }
+    };
+
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
+  }, []);
+
+  const handleGoogleResponse = async (response) => {
+    try {
+      onSuccess(response.credential);
+    } catch (error) {
+      console.error('Google sign-in error:', error);
+      onError('Google sign-in failed');
+    }
+  };
+
+  return (
+    <div className="google-signin-container">
+      <div id="google-signin-button" style={{ opacity: loading ? 0.6 : 1 }}></div>
+    </div>
+  );
+};
+
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -102,58 +160,45 @@ const SignIn = () => {
     }
   };
 
-  const handleGoogleSuccess = async (credentialResponse) => {
-    console.log('Google Response:', credentialResponse); // Debug log
+
+  const handleGoogleSuccess = async (credential) => {
+
     setGoogleLoading(true);
     setErrors({});
 
     try {
-      // Fixed: Use 'token' instead of 'idToken' to match backend
-      const response = await axios.post('http://localhost:8000/api/auth/google', {
-        token: credentialResponse.credential
+
+      const response = await axios.post('http://localhost:8000/api/auth/google-auth', {
+        credential
       });
 
-      console.log('Backend Response:', response.data); // Debug log
-
       if (response.data.success) {
-        // Handle both data structures - with or without data wrapper
-        const token = response.data.token || response.data.data?.token;
-        const user = response.data.user || response.data.data?.user;
+        // Store user data and token
+        localStorage.setItem('token', response.data.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.data.user));
         
-        if (token && user) {
-          localStorage.setItem('token', token);
-          localStorage.setItem('user', JSON.stringify(user));
-          alert('Welcome back! Signed in with Google successfully.');
-          navigate('/', { replace: true });
-        } else {
-          console.error('Missing token or user data:', { token, user });
-          setErrors({ api: 'Authentication data incomplete. Please try again.' });
-        }
-      } else {
-        setErrors({ api: response.data.message || 'Google Sign-In failed. Please try again.' });
+        // Redirect to home page
+        navigate('/', { replace: true });
       }
 
     } catch (error) {
-      console.error('Google Sign-In Error:', error);
-      console.error('Error Response:', error.response?.data); // Debug log
-
+      console.error('Google auth error:', error);
+      
       if (error.response && error.response.data) {
-        const message = error.response.data.message || 'Google Sign-In failed. Please try again.';
-        setErrors({ api: message });
-      } else if (error.request) {
-        setErrors({ api: 'Network error. Please check your connection and try again.' });
+        setErrors({ api: error.response.data.message || 'Google authentication failed' });
       } else {
-        setErrors({ api: 'Google Sign-In failed. Please try again.' });
+        setErrors({ api: 'Network error. Please try again.' });
+
       }
     } finally {
       setGoogleLoading(false);
     }
   };
 
-  const handleGoogleError = (error) => {
-    console.error('Google Sign-In failed:', error);
-    setErrors({ api: 'Google Sign-In failed. Please try again.' });
-    setGoogleLoading(false);
+
+  const handleGoogleError = (errorMessage) => {
+    setErrors({ api: errorMessage });
+
   };
 
   return (
@@ -191,15 +236,30 @@ const SignIn = () => {
           )}
         </div>
 
-        {/* Divider */}
-        <div className="divider">
-          <span>or</span>
+        
+        {errors.api && <div className="error-message">{errors.api}</div>}
+        
+        {/* Google Sign-In Button */}
+        <div className="google-auth-section">
+          <GoogleSignIn 
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            loading={googleLoading}
+          />
+          {googleLoading && (
+            <div className="google-loading">
+              <span className="spinner"></span> Signing in with Google...
+            </div>
+          )}
         </div>
 
-        <form onSubmit={handleSubmit} className="signin-form">
-          <div className="error-message-container">
-            {errors.api && <div className="error-message">{errors.api}</div>}
-          </div>
+        {/* Divider */}
+        <div className="auth-divider">
+          <span>or</span>
+        </div>
+        
+        {/* Email/Password Form */}
+        <form onSubmit={handleSubmit} className="login-form">
 
           <div className="form-group">
             <input
@@ -256,6 +316,15 @@ const SignIn = () => {
               ) : 'Sign In'}
             </button>
           </div>
+   
+          <button type="submit" className="login-btn" disabled={loading || googleLoading}>
+            {loading ? (
+              <>
+                <span className="spinner"></span> Signing In...
+              </>
+            ) : 'Sign In'}
+          </button>
+
         </form>
 
         <div className="signin-footer">
