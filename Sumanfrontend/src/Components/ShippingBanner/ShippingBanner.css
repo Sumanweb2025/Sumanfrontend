@@ -2,6 +2,7 @@
   display: flex;
   justify-content: space-around;
   background-color: #0f5132;
+  /* background-image: url('D:\Suman\Sumanfrontend\Sumanfrontend\src\assets\green1.png'); */
   padding: 40px 20px;
   flex-wrap: wrap;
 }

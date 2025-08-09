@@ -1,6 +1,6 @@
 /* Base Styles */
 .grocery-page {
-  background-color: #f8f9fa;
+  background-color: #d0e9c1;
   min-height: 100vh;
 }
 
@@ -65,7 +65,7 @@
 }
 
 .grocery-search-input {
-  width: 80%;
+  width: 100%;
   padding: 10px 15px;
   border: 1px solid #ddd;
   border-radius: 4px;

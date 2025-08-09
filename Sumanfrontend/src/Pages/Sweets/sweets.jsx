@@ -298,31 +298,31 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
       <div className="sweets-page">
         <div className="sweets-container">
           {/* Breadcrumb */}
-          <div className="breadcrumb">
-            <span>Home</span> / <span>Products</span> / <span className="current">Sweets</span>
+          <div className="sweets-breadcrumb">
+            <span>Home</span> / <span>Products</span> / <span className="sweets-current">Sweets</span>
           </div>
 
-          <div className="page-content">
+          <div className="sweets-page-content">
             {/* Sidebar Filters */}
-            <div className="sidebar">
-              <div className="filter-section">
+            <div className="sweets-sidebar">
+              <div className="sweets-filter-section">
                 <h3>Quick Listing</h3>
-                <div className="search-container">
+                <div className="sweets-search-container">
                   <input
                     type="text"
                     placeholder="Search products..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="search-input"
+                    className="sweets-search-input"
                   />
                 </div>
               </div>
 
-              <div className="filter-section">
+              <div className="sweets-filter-section">
                 <h3>Categories</h3>
-                <div className="filter-options">
+                <div className="sweets-filter-options">
                   {uniqueCategories.map(category => (
-                    <label key={category} className="filter-option">
+                    <label key={category} className="sweets-filter-option">
                       <input
                         type="checkbox"
                         checked={selectedCategories.includes(category)}
@@ -337,11 +337,11 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                 </div>
               </div>
 
-              <div className="filter-section">
+              <div className="sweets-filter-section">
                 <h3>Brands</h3>
-                <div className="filter-options">
+                <div className="sweets-filter-options">
                   {uniqueBrands.map(brand => (
-                    <label key={brand} className="filter-option">
+                    <label key={brand} className="sweets-filter-option">
                       <input
                         type="checkbox"
                         checked={selectedBrands.includes(brand)}
@@ -356,56 +356,56 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                 </div>
               </div>
 
-              <div className="filter-section">
+              <div className="sweets-filter-section">
                 <h3>Price Range</h3>
-                <div className="price-range">
+                <div className="sweets-price-range">
                   <input
                     type="range"
                     min="0"
                     max="1000"
                     value={priceRange[1]}
                     onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
-                    className="price-slider"
+                    className="sweets-price-slider"
                   />
-                  <div className="price-values">
+                  <div className="sweets-price-values">
                     ₹{priceRange[0]} - ₹{priceRange[1]}
                   </div>
                 </div>
               </div>
 
-              <div className="filter-section">
+              <div className="sweets-filter-section">
                 <h3>Best Deals</h3>
-                <div className="deal-items">
+                <div className="sweets-deal-items">
                   {products.slice(0, 3).map(product => (
-                    <div key={product.product_id || product.id} className="deal-item">
+                    <div key={product.product_id || product.id} className="sweets-deal-item">
                       <img 
                         src={product.imageUrl || `${API_URL}/uploads/${product.image}`}
                         alt={product.name}
-                        className="deal-image"
+                        className="sweets-deal-image"
                       />
-                      <div className="deal-info">
-                        <div className="deal-name">{product.name}</div>
-                        <div className="deal-price">₹{product.price}</div>
+                      <div className="sweets-deal-info">
+                        <div className="sweets-deal-name">{product.name}</div>
+                        <div className="sweets-deal-price">₹{product.price}</div>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <button className="clear-filters-btn" onClick={clearAllFilters}>
+              <button className="sweets-clear-filters-btn" onClick={clearAllFilters}>
                 Clear All Filters
               </button>
             </div>
 
             {/* Main Content */}
-            <div className="main-content">
-              <div className="page-header">
+            <div className="sweets-main-content">
+              <div className="sweets-page-header">
                 <h1>Sweets</h1>
-                <div className="sort-controls">
+                <div className="sweets-sort-controls">
                   <select 
                     value={sortBy} 
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="sort-select"
+                    className="sweets-sort-select"
                   >
                     <option value="default">Default Sorting</option>
                     <option value="price-low">Price: Low to High</option>
@@ -416,7 +416,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                 </div>
               </div>
 
-              <div className="results-info">
+              <div className="sweets-results-info">
                 Showing {indexOfFirstProduct + 1}-{Math.min(indexOfLastProduct, filteredProducts.length)} of {filteredProducts.length} results
               </div>
 
@@ -424,25 +424,25 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                 <div className="empty">No sweets found matching your criteria</div>
               ) : (
                 <>
-                  <div className="products-grid">
+                  <div className="sweets-products-grid">
                     {currentProducts.map((product) => (
                       <div 
                         key={product.product_id || product.id} 
-                        className="product-card"
+                        className="sweets-product-card"
                         onClick={() => handleProductClick(product)}
                       >
-                        <div className="product-image-container">
+                        <div className="sweets-product-image-container">
                           <img
                             src={product.imageUrl || `${API_URL}/uploads/${product.image}`}
                             alt={product.name}
-                            className="product-image"
+                            className="sweets-product-image"
                             onError={(e) => {
                               e.target.src = 'https://via.placeholder.com/300';
                               e.target.onerror = null;
                             }}
                           />
                           <button
-                            className={`wishlist-btn ${wishlistItems.includes(product.product_id || product._id || product.id) ? 'active' : ''}`}
+                            className={`sweets-wishlist-btn ${wishlistItems.includes(product.product_id || product._id || product.id) ? 'active' : ''}`}
                             onClick={(e) => handleWishlistClick(e, product)}
                             disabled={wishlistLoading}
                           >
@@ -450,21 +450,21 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                           </button>
                         </div>
 
-                        <div className="product-info">
-                          <h3 className="product-name">{product.name}</h3>
-                          <div className="product-brand">{product.brand}</div>
+                        <div className="sweets-product-info">
+                          <h3 className="sweets-product-name">{product.name}</h3>
+                          <div className="sweets-product-brand">{product.brand}</div>
                           
-                          <div className="product-rating">
+                          <div className="sweets-product-rating">
                             {Array(5).fill().map((_, i) => (
                               <span key={i} className={i < Math.floor(product.rating || 0) ? 'star-filled' : 'star-empty'}>
                                 ★
                               </span>
                             ))}
-                            <span className="rating-text">({product.rating?.toFixed(1) || '0.0'})</span>
+                            <span className="sweets-rating-text">({product.rating?.toFixed(1) || '0.0'})</span>
                           </div>
 
-                          <div className="product-price">₹{product.price}</div>
-                          {product.piece && <div className="product-piece">{product.piece} pieces</div>}
+                          <div className="sweets-product-price">₹{product.price}</div>
+                          {product.piece && <div className="sweets-product-piece">{product.piece} pieces</div>}
 
                           <button 
                             className="sweet-add-to-cart-btn"
@@ -478,11 +478,11 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                   </div>
 
                   {totalPages > 1 && (
-                    <div className="pagination">
+                    <div className="sweets-pagination">
                       <button 
                         onClick={() => paginate(currentPage - 1)}
                         disabled={currentPage === 1}
-                        className="pagination-btn"
+                        className="sweets-pagination-btn"
                       >
                         Previous
                       </button>
@@ -490,7 +490,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                       {Array.from({ length: totalPages }, (_, i) => (
                         <button
                           key={i + 1}
-                          className={`pagination-btn ${currentPage === i + 1 ? 'active' : ''}`}
+                          className={`sweets-pagination-btn ${currentPage === i + 1 ? 'active' : ''}`}
                           onClick={() => paginate(i + 1)}
                         >
                           {i + 1}
@@ -500,7 +500,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                       <button 
                         onClick={() => paginate(currentPage + 1)}
                         disabled={currentPage === totalPages}
-                        className="pagination-btn"
+                        className="sweets-pagination-btn"
                       >
                         Next
                       </button>

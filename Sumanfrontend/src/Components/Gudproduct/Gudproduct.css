@@ -2,30 +2,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Inter:wght@400;500;600;700;800&display=swap');
 
 .special-today-section {
-  padding: 80px 0;
+  padding: 50px 0;
+  min-height: 25vh;
+  background-color: #d0e9c1;
 }
 
 .gud-container {
-  max-width: 1200px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 15px;
 }
 
 /* Header Styles */
 .section-header {
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 15px;
 }
 
 .section-subtitle {
-  font-size: 24px;
+  font-size: 40px;
   font-weight: 400;
   color: #fcb900;
-  margin: 0 0 8px 0;
+  margin: 0 0 5px 0;
 }
 
 .section-title {
-  font-size: 42px;
+  font-size: 28px;
   font-weight: 800;
   color: #2c3e50;
   margin: 0;
@@ -37,14 +39,14 @@
 .category-tabs {
   display: flex;
   justify-content: center;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 }
 
 .tab-button {
   color: #000000;
   border: 1px solid #f3f3f3;
-  padding: 12px 32px;
-  font-size: 16px;
+  padding: 8px 20px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -54,12 +56,12 @@
 }
 
 .tab-button:first-child {
-  border-radius: 50px 0 0 50px;
+  border-radius: 40px 0 0 40px;
   border-right: 1px solid #fcb900;
 }
 
 .tab-button:last-child {
-  border-radius: 0 50px 50px 0;
+  border-radius: 0 40px 40px 0;
   border-left: 1px solid #fcb900;
 }
 
@@ -72,13 +74,13 @@
 .gud-products-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 25px;
-  margin-bottom: 50px;
+  gap: 18px;
+  margin-bottom: 35px;
 }
 
 .gud-product-card {
-  border-radius: 20px;
-  padding: 20px;
+  border-radius: 15px;
+  padding: 15px;
   transition: all 0.3s ease;
   position: relative;
   cursor: pointer;
@@ -87,55 +89,55 @@
 }
 
 .gud-product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 }
 
 .gud-product-image-card {
   background-color: #fef9e7;
-  border-radius: 12px;
-  padding: 10px;
+  border-radius: 10px;
+  padding: 8px;
   display: flex;
   flex-direction: row;
   justify-content: center;
-  gap: 20px;
+  gap: 15px;
   position: relative;
 }
 
 .gud-product-image-card img {
-  width: 70px;
-  height: 70px;
+  width: 55px;
+  height: 55px;
   object-fit: cover;
   border-radius: 50%;
-  border: 3px solid #fff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border: 2px solid #fff;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
 }
 
 /* Wishlist Heart Button */
 .wishlist-heart {
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: 4px;
+  right: 4px;
   background: rgba(255, 255, 255, 0.9);
   border: none;
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  width: 26px;
+  height: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 12px;
   cursor: pointer;
   z-index: 10;
   transition: all 0.3s ease;
   backdrop-filter: blur(5px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
 }
 
 .wishlist-heart:hover {
   background: rgba(255, 255, 255, 1);
-  transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: scale(1.05);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
 }
 
 .wishlist-heart.active {
@@ -153,10 +155,10 @@
 }
 
 .product-name {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 700;
   color: #2c3e50;
-  margin: 0 0 8px 0;
+  margin: 0 0 6px 0;
   line-height: 1.3;
   transition: color 0.3s ease;
 }
@@ -169,11 +171,11 @@
   display: flex;
   justify-content: end;
   align-items: center;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .product-price {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 700;
   color: #fcb900;
   margin-right: auto;
@@ -183,14 +185,14 @@
   background: #ffc107;
   color: #000000;
   border: none;
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(255, 193, 7, 0.3);
+  box-shadow: 0 3px 8px rgba(255, 193, 7, 0.25);
   transition: all 0.3s ease;
   position: relative;
   z-index: 5;
@@ -198,8 +200,8 @@
 
 .gudproduct-add-to-cart-btn:hover {
   background: #ffb300;
-  transform: scale(1.05);
-  box-shadow: 0 6px 15px rgba(255, 193, 7, 0.4);
+  transform: scale(1.03);
+  box-shadow: 0 5px 12px rgba(255, 193, 7, 0.35);
 }
 
 .add-to-cart-btn:active {
@@ -207,24 +209,24 @@
 }
 
 .add-to-cart-btn svg {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
 }
 
 /* Shop Now Button */
 .shop-now-container {
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 40px;
 }
 
 .shop-now-btn {
   background: #fcb900;
   color: black;
   border: none;
-  padding: 15px 40px;
-  font-size: 16px;
+  padding: 12px 30px;
+  font-size: 14px;
   font-weight: 600;
-  border-radius: 13px;
+  border-radius: 10px;
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -232,25 +234,25 @@
 }
 
 .shop-now-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(252, 185, 0, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(252, 185, 0, 0.25);
 }
 
 /* Featured Cards */
 .featured-cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 25px;
-  margin-bottom: 60px;
+  gap: 18px;
+  margin-bottom: 40px;
 }
 
 .feature-card {
-  border-radius: 25px;
-  padding: 40px;
+  border-radius: 20px;
+  padding: 25px;
   color: white;
   position: relative;
   overflow: hidden;
-  height: 400px;
+  height: 280px;
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -258,14 +260,14 @@
 }
 
 .feature-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-3px);
 }
 
 .delicious-sweets {
   background-image: url("../../assets/home-sweet.jpg");
   background-size: cover;
   background-position: center;
-  width: 480px;
+  width: 100%;
 }
 
 .grocery {
@@ -275,7 +277,7 @@
 }
 
 .grab-snacks {
-  background-image: url("../../assets/home-snacks.jpg");
+  background-image: url("../../assets/snack.png");
   background-size: cover;
   background-position: center;
 }
@@ -288,26 +290,26 @@
 .card-tag {
   display: inline-block;
   background: rgba(255, 255, 255, 0.2);
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 14px;
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 12px;
   font-weight: 500;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   backdrop-filter: blur(10px);
 }
 
 .card-title {
-  font-size: 32px;
+  font-size: 22px;
   font-weight: 800;
-  margin: 0 0 12px 0;
+  margin: 0 0 8px 0;
   line-height: 1.2;
   text-transform: uppercase;
   color: #fcb900;
 }
 
 .card-description {
-  font-size: 16px;
-  margin: 0 0 25px 0;
+  font-size: 14px;
+  margin: 0 0 18px 0;
   opacity: 0.95;
   line-height: 1.4;
 }
@@ -316,18 +318,19 @@
   background: #fcb900;
   color: #333;
   border: none;
-  padding: 12px 30px;
-  border-radius: 12px;
+  padding: 8px 20px;
+  border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  font-size: 12px;
 }
 
 .card-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
 .card-button.special {
@@ -337,8 +340,8 @@
 
 /* Newsletter Section */
 .newsletter-section {
-  border-radius: 25px;
-  padding: 60px 40px;
+  border-radius: 20px;
+  padding: 40px 25px;
   color: white;
   position: relative;
   overflow: hidden;
@@ -347,9 +350,9 @@
 .newsletter-content {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 40px;
+  gap: 25px;
   align-items: center;
-  max-width: 1000px;
+  max-width: 800px;
   margin: 0 auto;
 }
 
@@ -358,16 +361,16 @@
 }
 
 .newsletter-title {
-  font-size: 32px;
+  font-size: 24px;
   font-weight: 400;
-  margin: 0 0 8px 0;
+  margin: 0 0 6px 0;
   color: #00A149;
 }
 
 .newsletter-subtitle {
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 700;
-  margin: 0 0 12px 0;
+  margin: 0 0 8px 0;
   color: #333;
 }
 
@@ -376,7 +379,7 @@
 }
 
 .newsletter-description {
-  font-size: 16px;
+  font-size: 14px;
   margin: 0;
   opacity: 0.9;
   line-height: 1.5;
@@ -385,16 +388,16 @@
 
 .newsletter-form {
   display: flex;
-  gap: 10px;
-  min-width: 350px;
+  gap: 8px;
+  min-width: 280px;
 }
 
 .newsletter-input {
   flex: 1;
-  padding: 15px 20px;
+  padding: 12px 16px;
   border: none;
-  border-radius: 50px;
-  font-size: 16px;
+  border-radius: 40px;
+  font-size: 14px;
   outline: none;
   font-family: 'Inter', sans-serif;
 }
@@ -407,11 +410,11 @@
   background: #ffd700;
   color: #000000;
   border: none;
-  padding: 15px 30px;
-  border-radius: 120px;
+  padding: 12px 20px;
+  border-radius: 100px;
   font-weight: 600;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   transition: all 0.3s ease;
@@ -419,25 +422,25 @@
 }
 
 .newsletter-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(255, 215, 0, 0.25);
 }
 
 /* Loading and Error States */
 .loading-container {
   text-align: center;
-  padding: 80px 0;
+  padding: 50px 0;
   color: #666;
 }
 
 .loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #fcb900;
+  width: 30px;
+  height: 30px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #fcb900;
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  margin: 0 auto 20px;
+  margin: 0 auto 15px;
 }
 
 @keyframes spin {
@@ -447,37 +450,37 @@
 
 .error-container {
   text-align: center;
-  padding: 80px 0;
+  padding: 50px 0;
   color: #e74c3c;
 }
 
 .error-message {
-  font-size: 18px;
-  margin-bottom: 20px;
+  font-size: 16px;
+  margin-bottom: 15px;
 }
 
 .retry-button {
   background: #fcb900;
   color: white;
   border: none;
-  padding: 12px 24px;
-  border-radius: 25px;
+  padding: 10px 20px;
+  border-radius: 20px;
   cursor: pointer;
   font-weight: 600;
   transition: all 0.3s ease;
 }
 
 .retry-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(252, 185, 0, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 12px rgba(252, 185, 0, 0.25);
 }
 
 .no-products {
   grid-column: 1 / -1;
   text-align: center;
-  padding: 40px;
+  padding: 30px;
   color: #666;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 /* Click prevention for nested elements */
@@ -489,39 +492,35 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .section-title {
-    font-size: 32px;
+    font-size: 24px;
   }
   
   .section-subtitle {
-    font-size: 20px;
+    font-size: 32px;
   }
   
-  .products-grid {
+  .gud-products-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    gap: 15px;
   }
   
   .featured-cards {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 15px;
   }
   
   .feature-card {
-    padding: 30px;
-    min-height: 200px;
-  }
-  
-  .delicious-sweets {
-    width: 100%;
+    padding: 20px;
+    height: 200px;
   }
   
   .card-title {
-    font-size: 24px;
+    font-size: 18px;
   }
   
   .newsletter-content {
     grid-template-columns: 1fr;
-    gap: 30px;
+    gap: 20px;
     text-align: center;
   }
   
@@ -531,92 +530,97 @@
   }
   
   .newsletter-title {
-    font-size: 24px;
+    font-size: 20px;
   }
   
   .newsletter-subtitle {
-    font-size: 20px;
+    font-size: 16px;
   }
 
   .wishlist-heart {
-    width: 28px;
-    height: 28px;
-    font-size: 14px;
+    width: 24px;
+    height: 24px;
+    font-size: 11px;
   }
 
-  .product-image-card {
-    gap: 15px;
+  .gud-product-image-card {
+    gap: 12px;
   }
 }
 
 @media (max-width: 480px) {
-  .container {
-    padding: 0 15px;
+  .gud-container {
+    padding: 0 12px;
   }
   
   .special-today-section {
-    padding: 60px 0;
+    padding: 40px 0;
   }
   
   .section-title {
+    font-size: 20px;
+  }
+  
+  .section-subtitle {
     font-size: 28px;
   }
   
-  .products-grid {
+  .gud-products-grid {
     grid-template-columns: 1fr;
   }
 
-  .product-image-card {
+  .gud-product-image-card {
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
   }
 
-  .product-image-card img {
-    width: 60px;
-    height: 60px;
+  .gud-product-image-card img {
+    width: 50px;
+    height: 50px;
   }
   
   .category-tabs {
     flex-direction: column;
     gap: 0;
-    max-width: 300px;
-    margin: 0 auto 40px;
+    max-width: 250px;
+    margin: 0 auto 25px;
   }
   
   .tab-button:first-child {
-    border-radius: 25px 25px 0 0;
+    border-radius: 20px 20px 0 0;
     border-right: 1px solid #fcb900;
   }
   
   .tab-button:last-child {
-    border-radius: 0 0 25px 25px;
+    border-radius: 0 0 20px 20px;
     border-left: 1px solid #fcb900;
   }
   
   .newsletter-section {
-    padding: 40px 20px;
+    padding: 30px 15px;
   }
   
   .feature-card {
-    padding: 25px;
+    padding: 18px;
+    height: 180px;
   }
 
   .wishlist-heart {
-    width: 26px;
-    height: 26px;
-    font-size: 12px;
+    width: 22px;
+    height: 22px;
+    font-size: 10px;
     top: 3px;
     right: 3px;
   }
 
-  .add-to-cart-btn {
-    width: 35px;
-    height: 35px;
+  .gudproduct-add-to-cart-btn {
+    width: 28px;
+    height: 28px;
   }
 
-  .add-to-cart-btn svg {
-    width: 14px;
-    height: 14px;
+  .gudproduct-add-to-cart-btn svg {
+    width: 12px;
+    height: 12px;
   }
 }

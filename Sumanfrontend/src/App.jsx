@@ -25,6 +25,7 @@ import CheckoutPage from './Pages/CheckOut/CheckOut';
 
 const App = () => {
   return (
+    
     <Router>
       <Routes>
         <Route exact path="/" element={<Home />} />
