@@ -204,7 +204,7 @@
 }
 
 .parallax-bg {
-  background-image: url('D:\Suman\Sumanfrontend\Sumanfrontend\src\assets\Green Geometric and Botanical Harmony1.png');
+  background-image: url('../../assets/Green Geometric and Botanical Harmony1.png');
   background-attachment: fixed;
   background-size: cover;
   background-position: center;
