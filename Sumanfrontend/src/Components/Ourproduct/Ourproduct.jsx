@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const categories = [
   {
     title: 'SWEETS',
-    count: '9 products',
+    
     img: 'https://images.unsplash.com/photo-1582716401301-b2407dc7563d?w=200&h=200&fit=crop&crop=center',
     alt: 'Indian Sweets',
     className: 'sweets',
@@ -12,31 +12,28 @@ const categories = [
   },
   {
     title: 'SNACKS',
-    count: '15 products',
     img: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=200&h=200&fit=crop&crop=center',
     alt: 'Indian Snacks',
     className: 'snacks',
     link: '/snacks',
   },
   {
+    title: 'GROCERY',
+    img: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=200&h=200&fit=crop&crop=center',
+    alt: 'Grocery Items',
+    className: 'grocery',
+    link: '/groceries',
+  },
+  {
     title: 'HEAT & EAT',
-    count: '15 products',
     img: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200&q=80',
     alt: 'Ready to Eat Food',
     className: 'heat-eat',
     comingSoon: true,
   },
-  {
-    title: 'GROCERY',
-    count: '0 products',
-    img: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=200&h=200&fit=crop&crop=center',
-    alt: 'Grocery Items',
-    className: 'grocery',
-    comingSoon: true,
-  },
+  
   {
     title: 'NUTRITIONS',
-    count: '0 products',
     img: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=200&h=200&fit=crop&crop=center',
     alt: 'Nutrition Products',
     className: 'nutritions',

@@ -24,6 +24,7 @@ import Cart from './Pages/Cart/Cart';
 import CheckoutPage from './Pages/CheckOut/CheckOut';
 import MyOrders from './Pages/Myorders/Myorders';
 import OrderTrackingPage from './Pages/OrderTracking/OrderTracking';
+import AboutUs from './Pages/Aboutus/Aboutus';
 
 const App = () => {
   return (
@@ -53,6 +54,7 @@ const App = () => {
          <Route path='/checkout' element={<CheckoutPage/>} />
          <Route path='/myorders' element={<MyOrders/>} />
          <Route path="/track-order" element={<OrderTrackingPage />} />
+         <Route path='/Aboutus' element={<AboutUs/>} />
 
       </Routes>
     </Router>

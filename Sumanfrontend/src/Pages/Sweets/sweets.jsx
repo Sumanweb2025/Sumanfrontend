@@ -480,8 +480,16 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
 
 
                           <div className="sweets-product-price">${product.price}</div>
-                          {product.piece && <div className="sweets-product-piece">{product.piece} pieces</div>}
-
+                           {/* Stock status based on piece count */}
+                          {product.piece > 0 ? (
+                            <div className="sweets-product-stock in-stock">
+                              In Stock
+                            </div>
+                          ) : (
+                            <div className="sweets-product-stock out-of-stock">
+                              Out of Stock
+                            </div>
+                          )}
 
                           <button 
                             className="sweet-add-to-cart-btn"

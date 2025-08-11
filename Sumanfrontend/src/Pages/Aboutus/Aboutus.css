@@ -1,0 +1,281 @@
+/* Base Styles */
+.about-us-page {
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.section {
+  padding: 80px 0;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.section-header h2 {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+.divider {
+  width: 80px;
+  height: 3px;
+  background: #e74c3c;
+  margin: 0 auto 20px;
+}
+
+.section-subtitle {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+}
+
+/* Hero Section */
+.about-hero {
+  height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  background-size: cover;
+  background-position: center;
+}
+
+.hero-content h1 {
+  font-size: 4rem;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero-subtitle {
+  font-size: 1.5rem;
+  font-weight: 300;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Icons */
+.section-main-icon {
+  font-size: 8rem;
+  color: #e74c3c;
+  opacity: 0.2;
+}
+
+.team-icon, .value-icon {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.value-icon {
+  color: #e74c3c;
+}
+
+.team-icon {
+  color: #2c3e50;
+}
+
+/* Journey Section */
+.journey-content {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+}
+
+.journey-text {
+  flex: 1;
+}
+
+.journey-text p {
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+}
+
+.journey-icon {
+  flex: 1;
+  text-align: center;
+}
+
+/* Mission Section */
+.mission-content {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+}
+
+.mission-icon {
+  flex: 1;
+  text-align: center;
+}
+
+.mission-text {
+  flex: 1;
+}
+
+.mission-text h2 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+.mission-text ul {
+  margin-top: 20px;
+  padding-left: 20px;
+}
+
+.mission-text li {
+  margin-bottom: 10px;
+}
+
+/* Values Section */
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.value-card {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.value-card:hover {
+  transform: translateY(-10px);
+}
+
+.value-icon-container {
+  margin-bottom: 20px;
+}
+
+.value-card h3 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+/* Team Section */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.team-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  text-align: center;
+}
+
+.team-card:hover {
+  transform: translateY(-10px);
+}
+
+.team-icon-container {
+  margin-bottom: 20px;
+}
+
+.team-details h3 {
+  color: #2c3e50;
+  margin-bottom: 5px;
+}
+
+.role {
+  color: #e74c3c;
+  font-weight: 500;
+  margin-bottom: 15px;
+}
+
+.bio {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+/* CTA Section */
+.cta-section {
+  color: white;
+  text-align: center;
+  background-size: cover;
+  background-position: center;
+}
+
+.cta-section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.cta-section p {
+  max-width: 700px;
+  margin: 0 auto 30px;
+  font-size: 1.1rem;
+}
+
+.cta-button {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.1rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+  background: #c0392b;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .journey-content,
+  .mission-content {
+    flex-direction: column;
+  }
+  
+  .hero-content h1 {
+    font-size: 2.5rem;
+  }
+  
+  .section {
+    padding: 60px 0;
+    background-attachment: scroll;
+  }
+  
+  .section-main-icon {
+    font-size: 5rem;
+    margin-top: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.2rem;
+  }
+  
+  .section-header h2 {
+    font-size: 2rem;
+  }
+}
