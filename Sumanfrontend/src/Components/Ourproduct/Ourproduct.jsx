@@ -44,11 +44,11 @@ const categories = [
 const FoodCategories = () => {
   return (
     <div className="our-container">
-      <h2 className="our-section-title">Explore Our Product Categories</h2>
+      <h2 className="section-title text-center text-animate our-section-title">Explore Our Product Categories</h2>
       <div className="our-cards-grid">
         {categories.map((cat, idx) => (
           <div key={idx} className={`our-card our-${cat.className}`}>
-            {cat.comingSoon && <div className="our-coming-soon">COMING SOON</div>}
+            {cat.comingSoon && <div className="our-coming-soon small-text font-bold">COMING SOON</div>}
             <div className="our-card-image">
               <img src={cat.img} alt={cat.alt} />
             </div>

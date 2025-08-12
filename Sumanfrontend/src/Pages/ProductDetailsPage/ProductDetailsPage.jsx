@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../../Components/Header/Header';
+import Banner from '../../Components/ShippingBanner/ShippingBanner';
 import Footer from '../../Components/Footer/Footer';
 import './ProductDetailsPage.css';
 import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
@@ -711,7 +712,7 @@ const ProductDetailsPage = ({ addToCart }) => {
         onContinueShopping={handleContinueShopping}
         onViewCart={handleViewCart}
       />
-
+      <Banner />
       <Footer />
     </>
   );

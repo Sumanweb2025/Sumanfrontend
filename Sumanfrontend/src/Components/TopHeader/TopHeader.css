@@ -1,11 +1,75 @@
+/* Top Header Main Container */
 .top-header {
   background-color: #015329;
   color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Desktop Layout */
+.desktop-layout {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   padding: 6px 20px;
   font-size: 14px;
+  gap: 20px;
+}
+
+/* Desktop News Ticker */
+.desktop-news-ticker {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.desktop-ticker-content {
+  display: inline-flex;
+  animation: scroll-left 35s linear infinite;
+  white-space: nowrap;
+  animation-delay: 0s;
+  animation-fill-mode: both;
+}
+
+.desktop-ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 50px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.desktop-ticker-item svg {
+  flex-shrink: 0;
+}
+
+/* Pause animation on hover for desktop */
+.desktop-news-ticker:hover .desktop-ticker-content {
+  animation-play-state: paused;
+}
+
+/* Desktop Social Icons */
+.desktop-social {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.desktop-social svg {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 2px;
+  border-radius: 3px;
+}
+
+.desktop-social svg:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
 }
 
 .top-left,
@@ -17,4 +81,190 @@
 
 .top-right {
   gap: 12px;
+}
+
+.top-center {
+  font-weight: 500;
+}
+
+.top-right svg {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 2px;
+  border-radius: 3px;
+}
+
+.top-right svg:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+/* Mobile Layout - Hidden by default */
+.mobile-layout {
+  display: none;
+  padding: 8px 15px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+/* News Ticker for Mobile */
+.news-ticker {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  height: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.ticker-content {
+  display: inline-flex;
+  animation: scroll-left 30s linear infinite;
+  white-space: nowrap;
+  animation-delay: 0s;
+  animation-fill-mode: both;
+}
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 40px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.ticker-item svg {
+  flex-shrink: 0;
+}
+
+/* Scrolling Animation - Starts immediately */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Additional animation properties for immediate start */
+.desktop-ticker-content,
+.ticker-content {
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: normal;
+  will-change: transform;
+}
+
+/* Pause animation on hover */
+.news-ticker:hover .ticker-content {
+  animation-play-state: paused;
+}
+
+/* Mobile Social Icons */
+.mobile-social {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.mobile-social svg {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 4px;
+  border-radius: 3px;
+  font-size: 14px;
+}
+
+.mobile-social svg:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+/* Tablet Styles (768px - 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .desktop-layout {
+    padding: 6px 15px;
+    gap: 15px;
+  }
+  
+  .desktop-ticker-item {
+    font-size: 13px;
+    gap: 6px;
+    margin-right: 45px;
+  }
+  
+  .desktop-social {
+    gap: 10px;
+  }
+  
+  .desktop-social svg {
+    font-size: 13px;
+  }
+}
+
+/* Mobile Styles (max-width: 768px) */
+@media (max-width: 768px) {
+  /* Hide desktop layout */
+  .desktop-layout {
+    display: none;
+  }
+  
+  /* Show mobile layout */
+  .mobile-layout {
+    display: flex;
+  }
+  
+  .top-header {
+    padding: 0;
+  }
+}
+
+/* Small Mobile Styles (max-width: 480px) */
+@media (max-width: 480px) {
+  .mobile-layout {
+    padding: 6px 10px;
+    gap: 12px;
+  }
+  
+  .ticker-item {
+    font-size: 12px;
+    gap: 6px;
+    margin-right: 35px;
+  }
+  
+  .mobile-social {
+    gap: 8px;
+  }
+  
+  .mobile-social svg {
+    font-size: 13px;
+    padding: 3px;
+  }
+}
+
+/* Very Small Mobile (max-width: 360px) */
+@media (max-width: 360px) {
+  .mobile-layout {
+    padding: 5px 8px;
+    gap: 10px;
+  }
+  
+  .ticker-item {
+    font-size: 11px;
+    gap: 4px;
+    margin-right: 30px;
+  }
+  
+  .mobile-social {
+    gap: 6px;
+  }
+  
+  .mobile-social svg {
+    font-size: 12px;
+    padding: 2px;
+  }
 }

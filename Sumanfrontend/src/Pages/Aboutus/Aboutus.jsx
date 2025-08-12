@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { FaLeaf, FaHeart, FaLightbulb, FaUsers, FaUtensils, FaAward } from 'react-icons/fa';
-import './AboutUs.css';
+import './Aboutus.css';
 import Header from '../../Components/Header/Header';
+import Footer from '../../Components/Footer/Footer';
+import Banner from '../../Components/ShippingBanner/ShippingBanner';
 import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 
 const AboutUs = () => {
@@ -9,27 +11,27 @@ const AboutUs = () => {
 
   const teamMembers = [
     {
-      name: 'John Doe',
+      name: 'Ravi Kumar',
       role: 'Founder & CEO',
-      bio: 'With over 15 years in the industry, John leads our vision and strategy.',
+      bio: 'With over 15 years in traditional sweet making, Ravi leads our vision and strategy.',
       icon: <FaAward className="team-icon" />
     },
     {
-      name: 'Jane Smith',
+      name: 'Priya Sharma',
       role: 'Head Chef',
-      bio: 'Master chef specializing in traditional recipes with a modern twist.',
+      bio: 'Master chef specializing in authentic South Indian sweets and snacks.',
       icon: <FaUtensils className="team-icon" />
     },
     {
-      name: 'Mike Johnson',
+      name: 'Arjun Patel',
       role: 'Operations Manager',
-      bio: 'Ensures our products meet the highest quality standards.',
+      bio: 'Ensures our products meet the highest quality standards daily.',
       icon: <FaHeart className="team-icon" />
     },
     {
-      name: 'Sarah Williams',
+      name: 'Meera Singh',
       role: 'Customer Experience',
-      bio: 'Dedicated to making every customer interaction memorable.',
+      bio: 'Dedicated to making every customer interaction memorable and sweet.',
       icon: <FaUsers className="team-icon" />
     }
   ];
@@ -37,22 +39,22 @@ const AboutUs = () => {
   const coreValues = [
     {
       title: 'Authenticity',
-      description: 'We stay true to traditional recipes and cooking methods.',
+      description: 'We stay true to traditional South Indian recipes and cooking methods.',
       icon: <FaLeaf className="value-icon" />
     },
     {
       title: 'Quality',
-      description: 'Only the finest ingredients make it into our products.',
+      description: 'Only the finest ingredients make it into our sweets and snacks.',
       icon: <FaHeart className="value-icon" />
     },
     {
       title: 'Innovation',
-      description: 'We continuously improve while respecting tradition.',
+      description: 'We continuously improve while respecting time-honored traditions.',
       icon: <FaLightbulb className="value-icon" />
     },
     {
       title: 'Community',
-      description: 'We support local farmers and give back to our community.',
+      description: 'We support local suppliers and give back to our Toronto community.',
       icon: <FaUsers className="value-icon" />
     }
   ];
@@ -61,26 +63,33 @@ const AboutUs = () => {
     <>
       <LoadingSpinner 
         isLoading={loading} 
-        brandName="Sweet Delights" 
+        brandName="Iyappaa Sweets & Snacks" 
         loadingText="Loading delicious sweets..."
         progressColor="#3b82f6"
       />
-      <Header />
-    
-      <div className="about-us-page">
+      
+      {/* Header with Background */}
+      <div 
+        className="header-with-background"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80')`
+        }}
+      >
+        <Header />
+        
         {/* Hero Section */}
-        <section className="about-hero" style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), url('https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
-        }}>
+        <section className="about-hero">
           <div className="hero-content">
-            <h1>Our Story</h1>
-            <p className="hero-subtitle">Traditional flavors, modern passion</p>
+            <h1>Our Sweet Story</h1>
+            <p className="hero-subtitle">Bringing authentic South Indian flavors to Toronto since 2010</p>
           </div>
         </section>
-
+      </div>
+    
+      <div className="about-us-page">
         {/* Our Journey Section */}
         <section className="section journey-section" style={{
-          backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
+          backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
         }}>
           <div className="container">
             <div className="section-header">
@@ -90,15 +99,15 @@ const AboutUs = () => {
             <div className="journey-content">
               <div className="journey-text">
                 <p>
-                  Founded in 2010, our company began as a small family kitchen in Chennai, 
-                  dedicated to preserving authentic South Indian snack traditions. What started 
+                  Founded in 2010, Iyappaa Sweets & Snacks began as a small family kitchen in Toronto, 
+                  dedicated to preserving authentic South Indian sweet and snack traditions. What started 
                   as a passion project quickly grew as word spread about our unique flavors 
-                  and uncompromising quality.
+                  and uncompromising quality throughout the GTA.
                 </p>
                 <p>
-                  Today, we operate state-of-the-art facilities while maintaining the 
-                  handcrafted approach that made us special. Every product still carries 
-                  the love and care of our original recipes.
+                  Today, we operate from our state-of-the-art facility in Scarborough while maintaining the 
+                  handcrafted approach that made us special. Every laddu, every mixture, and every 
+                  sweet still carries the love and care of our original family recipes.
                 </p>
               </div>
               <div className="journey-icon">
@@ -110,7 +119,7 @@ const AboutUs = () => {
 
         {/* Mission Section */}
         <section className="section mission-section" style={{
-          backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
+          backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75)), url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
         }}>
           <div className="container">
             <div className="mission-content">
@@ -121,14 +130,15 @@ const AboutUs = () => {
                 <h2>Our Mission</h2>
                 <div className="divider"></div>
                 <p>
-                  To bring authentic South Indian flavors to the world while innovating 
-                  responsibly. We're committed to:
+                  To bring authentic South Indian flavors to Toronto while innovating 
+                  responsibly and building community. We're committed to:
                 </p>
                 <ul>
-                  <li>Preserving traditional recipes</li>
-                  <li>Using sustainable ingredients</li>
-                  <li>Supporting local farmers</li>
-                  <li>Delivering exceptional quality</li>
+                  <li>Preserving traditional family recipes</li>
+                  <li>Using only premium, fresh ingredients</li>
+                  <li>Supporting local Toronto businesses</li>
+                  <li>Delivering exceptional taste and quality</li>
+                  <li>Sharing our cultural heritage through food</li>
                 </ul>
               </div>
             </div>
@@ -137,7 +147,7 @@ const AboutUs = () => {
 
         {/* Values Section */}
         <section className="section values-section" style={{
-          backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
+          backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
         }}>
           <div className="container">
             <div className="section-header">
@@ -160,14 +170,14 @@ const AboutUs = () => {
 
         {/* Team Section */}
         <section className="section team-section" style={{
-          backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('https://images.unsplash.com/photo-1556911220-bff31c812dba?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
+          backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75)), url('https://images.unsplash.com/photo-1556911220-bff31c812dba?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
         }}>
           <div className="container">
             <div className="section-header">
               <h2>Meet Our Team</h2>
               <div className="divider"></div>
               <p className="section-subtitle">
-                The passionate people behind our delicious products
+                The passionate people behind our delicious sweets and snacks
               </p>
             </div>
             <div className="team-grid">
@@ -189,18 +199,20 @@ const AboutUs = () => {
 
         {/* CTA Section */}
         <section className="section cta-section" style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1499028344343-cd173ffc68a9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1499028344343-cd173ffc68a9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
         }}>
           <div className="container">
-            <h2>Experience the Difference</h2>
+            <h2>Experience the Authentic Taste</h2>
             <p>
               Taste the tradition and quality in every bite. Join our growing family 
-              of satisfied customers today.
+              of satisfied customers across Toronto and the GTA.
             </p>
             <button className="cta-button">Shop Our Products</button>
           </div>
         </section>
       </div>
+      <Banner/>
+      <Footer/>
     </>
   );
 };

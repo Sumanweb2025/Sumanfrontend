@@ -3,8 +3,71 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Cart.css';
 import Header from '../../Components/Header/Header';
+import Banner from '../../Components/ShippingBanner/ShippingBanner';
 import Footer from "../../Components/Footer/Footer";
 import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
+
+// Toast Component
+const Toast = ({ message, type, onClose }) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose();
+    }, 4000);
+
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  const getIcon = () => {
+    switch (type) {
+      case 'success':
+        return '✅';
+      case 'error':
+        return '❌';
+      case 'warning':
+        return '⚠️';
+      case 'info':
+        return 'ℹ️';
+      default:
+        return 'ℹ️';
+    }
+  };
+
+  return (
+    <div className={`toast toast-${type}`}>
+      <div className="toast-content">
+        <span className="toast-icon">{getIcon()}</span>
+        <span className="toast-message">{message}</span>
+        <button className="toast-close" onClick={onClose}>×</button>
+      </div>
+    </div>
+  );
+};
+
+// Confirmation Modal Component
+const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h3>{title}</h3>
+        </div>
+        <div className="modal-body">
+          <p>{message}</p>
+        </div>
+        <div className="modal-actions">
+          <button className="modal-btn cancel-btn" onClick={onClose}>
+            Cancel
+          </button>
+          <button className="modal-btn confirm-btn" onClick={onConfirm}>
+            Clear Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const CartPage = () => {
   const navigate = useNavigate();
@@ -12,12 +75,24 @@ const CartPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [updatingItems, setUpdatingItems] = useState(new Set());
+  const [toasts, setToasts] = useState([]);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   const API_URL = 'http://localhost:8000';
 
   useEffect(() => {
     fetchCart();
   }, []);
+
+  // Toast functions
+  const showToast = (message, type = 'info') => {
+    const id = Date.now();
+    setToasts(prev => [...prev, { id, message, type }]);
+  };
+
+  const removeToast = (id) => {
+    setToasts(prev => prev.filter(toast => toast.id !== id));
+  };
 
   const fetchCart = async () => {
     try {
@@ -38,6 +113,7 @@ const CartPage = () => {
     } catch (err) {
       console.error('Error fetching cart:', err);
       setError(err.response?.data?.message || 'Failed to load cart');
+      showToast('Failed to load cart items', 'error');
       setLoading(false);
     }
   };
@@ -100,9 +176,10 @@ const CartPage = () => {
 
       // Dispatch custom event to update header count
       window.dispatchEvent(new CustomEvent('cartUpdated'));
+      showToast('Cart updated successfully!', 'success');
     } catch (err) {
       console.error('Error updating quantity:', err);
-      alert('Failed to update quantity');
+      showToast('Failed to update quantity', 'error');
     } finally {
       setUpdatingItems(prev => {
         const newSet = new Set(prev);
@@ -115,6 +192,11 @@ const CartPage = () => {
   const handleRemoveFromCart = async (productId) => {
     const token = localStorage.getItem('token');
     if (!token) return;
+
+    // Get the product name for toast message
+    const productName = cartItems.find(item => 
+      (item.productId._id || item.productId) === productId
+    )?.productId?.name || 'Item';
 
     setUpdatingItems(prev => new Set(prev).add(productId));
 
@@ -136,9 +218,10 @@ const CartPage = () => {
 
       // Dispatch custom event to update header count
       window.dispatchEvent(new CustomEvent('cartUpdated'));
+      showToast(`${productName} removed from cart`, 'success');
     } catch (err) {
       console.error('Error removing from cart:', err);
-      alert('Failed to remove item from cart');
+      showToast('Failed to remove item from cart', 'error');
     } finally {
       setUpdatingItems(prev => {
         const newSet = new Set(prev);
@@ -152,22 +235,20 @@ const CartPage = () => {
     const token = localStorage.getItem('token');
     if (!token) return;
 
-    if (!window.confirm('Are you sure you want to clear your entire cart?')) {
-      return;
-    }
-
     try {
       await axios.delete(`${API_URL}/api/cart/`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
       setCartItems([]);
+      setShowClearConfirm(false);
 
       // Dispatch custom event to update header count
       window.dispatchEvent(new CustomEvent('cartUpdated'));
+      showToast('Cart cleared successfully!', 'success');
     } catch (err) {
       console.error('Error clearing cart:', err);
-      alert('Failed to clear cart');
+      showToast('Failed to clear cart', 'error');
     }
   };
 
@@ -186,14 +267,14 @@ const CartPage = () => {
     // Check if user is logged in
     const token = localStorage.getItem('token');
     if (!token) {
-      alert('Please sign in to continue with checkout');
+      showToast('Please sign in to continue with checkout', 'warning');
       navigate('/signin');
       return;
     }
 
     // Check if cart has items
     if (cartItems.length === 0) {
-      alert('Your cart is empty. Add some items before checkout.');
+      showToast('Your cart is empty. Add some items before checkout.', 'warning');
       return;
     }
 
@@ -242,25 +323,47 @@ const CartPage = () => {
         loadingText="Loading cart items..."
         progressColor="#3b82f6"
       />
+      
+      {/* Toast Container */}
+      <div className="toast-container">
+        {toasts.map((toast) => (
+          <Toast
+            key={toast.id}
+            message={toast.message}
+            type={toast.type}
+            onClose={() => removeToast(toast.id)}
+          />
+        ))}
+      </div>
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showClearConfirm}
+        onClose={() => setShowClearConfirm(false)}
+        onConfirm={handleClearCart}
+        title="Clear Cart"
+        message="Are you sure you want to clear your entire cart? This action cannot be undone."
+      />
+
       <Header />
       <div className="cart-page">
         <div className="cart-container">
           {/* Breadcrumb */}
           <div className="breadcrumb">
-            <span onClick={() => navigate('/')}>Home</span> /
-            <span className="current">Shopping Cart</span>
+            <span className="small-text text-animate" onClick={() => navigate('/')}>Home</span> /
+            <span className="small-text text-animate current">Shopping Cart</span>
           </div>
 
           <div className="cart-header">
-            <h1>Shopping Cart</h1>
-            <p>{getTotalItemCount()} item{getTotalItemCount() !== 1 ? 's' : ''}</p>
+            <h1 className='main-title text-animate'>Shopping Cart</h1>
+            <p className='sub-title text-animate'>{getTotalItemCount()} item{getTotalItemCount() !== 1 ? 's' : ''}</p>
           </div>
 
           {cartItems.length === 0 ? (
             <div className="empty-cart">
               <div className="empty-icon">🛒</div>
-              <h2>Your cart is empty</h2>
-              <p>Add items to your cart to see them here. Browse our products and find something you love!</p>
+              <h2 className='main-title text-animate'>Your cart is empty</h2>
+              <p className='sub-title text-animate'>Add items to your cart to see them here. Browse our products and find something you love!</p>
               <button
                 className="continue-shopping-btn"
                 onClick={handleContinueShopping}
@@ -275,7 +378,7 @@ const CartPage = () => {
                   <h2>Cart Items</h2>
                   <button
                     className="clear-cart-btn"
-                    onClick={handleClearCart}
+                    onClick={() => setShowClearConfirm(true)}
                   >
                     Clear Cart
                   </button>
@@ -322,7 +425,7 @@ const CartPage = () => {
 
                         <div className="item-details">
                           <h3
-                            className="item-name"
+                            className="card-title text-animate item-name"
                             onClick={() => handleProductClick(product)}
                           >
                             {product.name}
@@ -336,10 +439,10 @@ const CartPage = () => {
                             <p className="item-category">{product.category}</p>
                           )}
 
-                          <div className="item-price">${price.toFixed(2)}</div>
+                          <div className="price-text item-price">${price.toFixed(2)}</div>
 
                           {product.description && (
-                            <p className="item-description">
+                            <p className="small-text item-description">
                               {product.description.length > 80
                                 ? `${product.description.substring(0, 80)}...`
                                 : product.description
@@ -430,6 +533,7 @@ const CartPage = () => {
           )}
         </div>
       </div>
+      <Banner />
       <Footer />
     </>
   );

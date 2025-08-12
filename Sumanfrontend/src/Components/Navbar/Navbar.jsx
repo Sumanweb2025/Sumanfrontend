@@ -4,7 +4,8 @@ import {
   FaPhoneAlt, 
   FaChevronDown,
   FaStore,
-  FaBars
+  FaBars,
+  FaTimes
 } from 'react-icons/fa';
 import { 
   MdHome,
@@ -12,6 +13,7 @@ import {
   MdCake,
   MdFastfood,
   MdShoppingCart,
+  MdContactPhone,
   MdLocalGasStation
 } from 'react-icons/md';
 import { Link } from 'react-router-dom';
@@ -19,9 +21,11 @@ import { Link } from 'react-router-dom';
 const Navbar = () => {
   const [showBrands, setShowBrands] = useState(false);
   const [showBrandDropdown, setShowBrandDropdown] = useState(false);
+  const [showMobileNav, setShowMobileNav] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const dropdownRef = useRef();
   const brandDropdownRef = useRef();
+  const mobileNavRef = useRef();
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -30,6 +34,9 @@ const Navbar = () => {
       }
       if (brandDropdownRef.current && !brandDropdownRef.current.contains(event.target)) {
         setShowBrandDropdown(false);
+      }
+      if (mobileNavRef.current && !mobileNavRef.current.contains(event.target)) {
+        setShowMobileNav(false);
       }
     };
 
@@ -47,14 +54,13 @@ const Navbar = () => {
     };
   }, []);
 
-
   const categories = [
-    { name: 'HOME', icon: <MdHome style={{ color: '#000000' }} />, path: '/' },
-    { name: 'ABOUT US', icon: <MdPerson style={{ color: '#000000' }} />, path: '/about' },
+    { name: 'HOME', icon: <MdHome style={{ color: '#000000', marginTop: '7px' }} />, path: '/' },
+    { name: 'ABOUT US', icon: <MdPerson style={{ color: '#000000', marginTop: '5px' }} />, path: '/aboutus' },
     { name: 'SWEETS', icon: <MdCake style={{ color: '#000000' }} />, path: '/sweets' },
     { name: 'SNACKS', icon: <MdFastfood style={{ color: '#000000' }} />, path: '/snacks' },
     { name: 'GROCERIES', icon: <MdShoppingCart style={{ color: '#000000' }} />, path: '/groceries' },
-    // { name: 'OILS', icon: <MdLocalGasStation style={{ color: '#FFD700' }} />, path: '/oils' },
+    { name: 'CONTACT US', icon: <MdContactPhone style={{ color: '#000000' }} />, path: '/contact' },
   ];
 
   const allCategoriesItems = [
@@ -66,7 +72,6 @@ const Navbar = () => {
       icon: <FaStore style={{ color: '#000000' }} />, 
       isDropdown: true
     }
-
   ];
 
   const brandLinks = [
@@ -78,7 +83,7 @@ const Navbar = () => {
 
   return (
     <div className={`Header-navbar ${isScrolled ? 'navbar-fixed' : ''}`}>
-      {/* All Categories Dropdown */}
+      {/* All Categories Button - Always Visible */}
       <div className="all-categories-dropdown" ref={dropdownRef}>
         <button 
           className="all-categories-btn" 
@@ -126,8 +131,8 @@ const Navbar = () => {
         )}
       </div>
 
-      {/* Category Links */}
-      <div className="Header-nav-links">
+      {/* Desktop Category Links */}
+      <div className="Header-nav-links desktop-only">
         {categories.map((category) => (
           <Link key={category.name} to={category.path} className="category-link">
             <span className="category-icon">{category.icon}</span>
@@ -136,10 +141,37 @@ const Navbar = () => {
         ))}
       </div>
 
+      {/* Mobile Navigation Menu */}
+      <div className="mobile-nav-toggle mobile-tablet-only" ref={mobileNavRef}>
+        <button 
+          className="mobile-nav-btn" 
+          onClick={() => setShowMobileNav(!showMobileNav)}
+        >
+          {showMobileNav ? <FaTimes /> : <FaBars />}
+        </button>
+        
+        {/* Mobile Navigation Dropdown */}
+        {showMobileNav && (
+          <div className="mobile-nav-dropdown">
+            {categories.map((category) => (
+              <Link 
+                key={category.name} 
+                to={category.path} 
+                className="mobile-nav-item"
+                onClick={() => setShowMobileNav(false)}
+              >
+                <span className="category-icon">{category.icon}</span>
+                <span className="category-name">{category.name}</span>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Phone Info */}
       <div className="phone-info">
         <FaPhoneAlt />
-        <span>Call Us At</span>
+        <span className="call-text">Call Us At</span>
         <span className="phone-number">+1 647 573 6363</span>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Groceries.css';
 import Header from '../../Components/Header/Header';
+import Banner from '../../Components/ShippingBanner/ShippingBanner';
 import Footer from "../../Components/Footer/Footer";
 import WishlistPopup from '../../Components/WishlistPopup/WishlistPopup';
 import CartPopup from '../../Components/CartPopup/CartPopup';
@@ -311,7 +312,7 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         <div className="grocery-container">
           {/* Breadcrumb */}
           <div className="grocery-breadcrumb">
-            <span>Home</span> / <span>Products</span> / <span className="current">Grocery</span>
+            <span>Home</span> / <span className="current">Grocery</span>
           </div>
 
           <div className="grocery-page-content">
@@ -412,7 +413,7 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
             {/* Main Content */}
             <div className="grocery-main-content">
               <div className="grocery-page-header">
-                <h1>Grocery Items</h1>
+                <h1 className='main-title text-animate'>Grocery Items</h1>
                 <div className="grocery-sort-controls">
                   <select 
                     value={sortBy} 
@@ -463,7 +464,7 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                         </div>
 
                         <div className="grocery-product-info">
-                          <h3 className="grocery-product-name">{product.name}</h3>
+                          <h3 className="card-title grocery-product-name">{product.name}</h3>
                           <div className="grocery-product-brand">{product.brand}</div>
                           
                           <div className="grocery-product-rating">
@@ -472,7 +473,7 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                                 ★
                               </span>
                             ))}
-                            <span className="grocery-rating-text">({product.rating?.toFixed(1) || '0.0'})</span>
+                            <span className="price-text grocery-rating-text">({product.rating?.toFixed(1) || '0.0'})</span>
                           </div>
 
                           <div className="grocery-product-price">${product.price}</div>
@@ -544,7 +545,7 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         onContinueShopping={handleContinueShopping}
         onViewCart={handleViewCart}
       />
-      
+      <Banner/>
       <Footer />
     </>
   );

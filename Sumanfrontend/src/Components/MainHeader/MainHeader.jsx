@@ -6,16 +6,18 @@ import logoImage from '../../assets/logo.jpeg';
 import { 
   FaSearch, FaUser, FaHeart, FaShoppingCart, 
   FaChevronDown, FaSignOutAlt, FaUserCircle, FaSignInAlt,
-  FaTruck, FaTag
+  FaTruck, FaTag, FaBars, FaTimes
 } from 'react-icons/fa';
 
 const MainHeader = ({ onProfileClick, onLogout }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [wishlistCount, setWishlistCount] = useState(0);
   const [cartCount, setCartCount] = useState(0);
   const dropdownRef = useRef(null);
+  const mobileMenuRef = useRef(null);
 
   const API_URL = 'http://localhost:8000/';
 
@@ -31,6 +33,9 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowDropdown(false);
+      }
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
+        setShowMobileMenu(false);
       }
     };
 
@@ -95,6 +100,7 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
 
   const handleProfileClick = () => {
     setShowDropdown(false);
+    setShowMobileMenu(false);
     navigate('/profile');
   };
 
@@ -105,11 +111,13 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
     setWishlistCount(0);
     setCartCount(0);
     setShowDropdown(false);
+    setShowMobileMenu(false);
     if (onLogout) onLogout();
     navigate('/');
   };
 
   const handleLoginClick = () => {
+    setShowMobileMenu(false);
     navigate('/signin');
   };
 
@@ -119,6 +127,7 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
       navigate('/signin');
       return;
     }
+    setShowMobileMenu(false);
     navigate('/wishlist');
   };
 
@@ -128,115 +137,216 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
       navigate('/signin');
       return;
     }
+    setShowMobileMenu(false);
     navigate('/cart');
   };
 
   return (
     <div className="main-header">
-      {/* Logo */}
-      <img 
-        src={logoImage} 
-        alt="Logo" 
-        className="main-logo" 
-        width={280}
-        onClick={() => navigate('/')}
-        style={{ cursor: 'pointer' }}
-      />
+      <div className="header-top">
+        {/* Logo */}
+        <img 
+          src={logoImage} 
+          alt="Logo" 
+          className="main-logo" 
+          onClick={() => navigate('/')}
+          style={{ cursor: 'pointer' }}
+        />
 
-      {/* Search Bar */}
-      <div className="search-bar">
-        <input type="text" placeholder="Search products..." />
-        <FaSearch />
-      </div>
+        {/* Desktop Search Bar */}
+        <div className="search-bar desktop-search">
+          <input type="text" placeholder="Search products..." />
+          <FaSearch />
+        </div>
 
-      {/* Delivery & Offers */}
-      <div className="info-section">
-        <div className="info-item">
-          <FaTruck className="info-icon" />
-          <div className="info-text">
-            <div><strong>Free Delivery</strong></div>
-            <div>Details & restrictions</div>
+        {/* Delivery & Offers - Desktop Only */}
+        <div className="info-section">
+          <div className="info-item">
+            <FaTruck className="info-icon" />
+            <div className="info-text">
+              <div><strong>Free Delivery</strong></div>
+              <div>Details & restrictions</div>
+            </div>
+          </div>
+          <div className="info-item">
+            <FaTag className="info-icon" />
+            <div className="info-text">
+              <div><strong>Daily Offers</strong></div>
+              <div>Discount 20% off</div>
+            </div>
           </div>
         </div>
-        <div className="info-item">
-          <FaTag className="info-icon" />
-          <div className="info-text">
-            <div><strong>Daily Offers</strong></div>
-            <div>Discount 20% off</div>
-          </div>
-        </div>
-      </div>
 
-      {/* Icons */}
-      <div className="header-icons">
-        {/* User Icon with dropdown */}
-        <div className="user-profile-section" ref={dropdownRef}>
-          <div 
-            className="user-info"
-            onClick={() => setShowDropdown(!showDropdown)}
-          >
-            {user ? (
-              <>
-                <FaUserCircle className="user-avatar" />
-                <span className="user-name">{user.name}</span>
-              </>
-            ) : (
-              <FaUser className="header-login-icon" />
-            )}
-            <FaChevronDown className={`dropdown-arrow ${showDropdown ? 'rotated' : ''}`} />
-          </div>
-
-          {showDropdown && (
-            <div className="user-dropdown">
+        {/* Desktop Icons */}
+        <div className="header-icons desktop-icons">
+          {/* User Icon with dropdown */}
+          <div className="user-profile-section" ref={dropdownRef}>
+            <div 
+              className="user-info"
+              onClick={() => setShowDropdown(!showDropdown)}
+            >
               {user ? (
                 <>
-                  <div className="dropdown-item" onClick={handleProfileClick}>
+                  <FaUserCircle className="user-avatar" />
+                  <span className="user-name">{user.name}</span>
+                </>
+              ) : (
+                <FaUser className="header-login-icon" />
+              )}
+              <FaChevronDown className={`dropdown-arrow ${showDropdown ? 'rotated' : ''}`} />
+            </div>
+
+            {showDropdown && (
+              <div className="user-dropdown">
+                {user ? (
+                  <>
+                    <div className="dropdown-item" onClick={handleProfileClick}>
+                      <FaUser />
+                      <span>Profile</span>
+                    </div>
+                    <div className="dropdown-item logout" onClick={handleLogout}>
+                      <FaSignOutAlt />
+                      <span>Logout</span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="dropdown-item" onClick={handleLoginClick}>
+                    <FaSignInAlt />
+                    <span>Sign In</span>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Wishlist */}
+          <div
+            className="icon-wrapper"
+            onClick={handleWishlistClick}
+            title="Wishlist"
+          >
+            <div className="icon-container">
+              <FaHeart />
+              {wishlistCount > 0 && (
+                <span className="icon-badge">{wishlistCount > 99 ? '99+' : wishlistCount}</span>
+              )}
+            </div>
+          </div>
+
+          {/* Cart */}
+          <div
+            className="icon-wrapper"
+            onClick={handleCartClick}
+            title="Shopping Cart"
+          >
+            <div className="icon-container">
+              <FaShoppingCart />
+              {cartCount > 0 && (
+                <span className="icon-badge">{cartCount > 99 ? '99+' : cartCount}</span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Icons */}
+        <div className="mobile-icons">
+          <div
+            className="icon-wrapper mobile-cart"
+            onClick={handleCartClick}
+            title="Shopping Cart"
+          >
+            <div className="icon-container">
+              <FaShoppingCart />
+              {cartCount > 0 && (
+                <span className="icon-badge">{cartCount > 99 ? '99+' : cartCount}</span>
+              )}
+            </div>
+          </div>
+
+          <div 
+            className="mobile-menu-toggle"
+            onClick={() => setShowMobileMenu(!showMobileMenu)}
+          >
+            {showMobileMenu ? <FaTimes /> : <FaBars />}
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Search Bar */}
+      <div className="mobile-search">
+        <div className="search-bar">
+          <input type="text" placeholder="Search products..." />
+          <FaSearch />
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {showMobileMenu && (
+        <div className="mobile-menu" ref={mobileMenuRef}>
+          <div className="mobile-menu-content">
+            {/* User Section */}
+            <div className="mobile-user-section">
+              {user ? (
+                <div className="mobile-user-info">
+                  <FaUserCircle className="mobile-user-avatar" />
+                  <span className="mobile-user-name">{user.name}</span>
+                </div>
+              ) : (
+                <div className="mobile-login-prompt">
+                  <FaUser className="mobile-login-icon" />
+                  <span>Please sign in</span>
+                </div>
+              )}
+            </div>
+
+            {/* Menu Items */}
+            <div className="mobile-menu-items">
+              {user ? (
+                <>
+                  <div className="mobile-menu-item" onClick={handleProfileClick}>
                     <FaUser />
                     <span>Profile</span>
                   </div>
-                  <div className="dropdown-item logout" onClick={handleLogout}>
+                  <div className="mobile-menu-item" onClick={handleWishlistClick}>
+                    <FaHeart />
+                    <span>Wishlist</span>
+                    {wishlistCount > 0 && (
+                      <span className="mobile-menu-badge">{wishlistCount > 99 ? '99+' : wishlistCount}</span>
+                    )}
+                  </div>
+                  <div className="mobile-menu-item logout" onClick={handleLogout}>
                     <FaSignOutAlt />
                     <span>Logout</span>
                   </div>
                 </>
               ) : (
-                <div className="dropdown-item" onClick={handleLoginClick}>
+                <div className="mobile-menu-item" onClick={handleLoginClick}>
                   <FaSignInAlt />
                   <span>Sign In</span>
                 </div>
               )}
             </div>
-          )}
-        </div>
 
-        {/* Wishlist */}
-        <div
-          className="icon-wrapper"
-          onClick={handleWishlistClick}
-          title="Wishlist"
-        >
-          <div className="icon-container">
-            <FaHeart />
-            {wishlistCount > 0 && (
-              <span className="icon-badge">{wishlistCount > 99 ? '99+' : wishlistCount}</span>
-            )}
+            {/* Mobile Info Section */}
+            <div className="mobile-info-section">
+              <div className="mobile-info-item">
+                <FaTruck className="mobile-info-icon" />
+                <div className="mobile-info-text">
+                  <div><strong>Free Delivery</strong></div>
+                  <div>Details & restrictions</div>
+                </div>
+              </div>
+              <div className="mobile-info-item">
+                <FaTag className="mobile-info-icon" />
+                <div className="mobile-info-text">
+                  <div><strong>Daily Offers</strong></div>
+                  <div>Discount 20% off</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-
-        {/* Cart */}
-        <div
-          className="icon-wrapper"
-          onClick={handleCartClick}
-          title="Shopping Cart"
-        >
-          <div className="icon-container">
-            <FaShoppingCart />
-            {cartCount > 0 && (
-              <span className="icon-badge">{cartCount > 99 ? '99+' : cartCount}</span>
-            )}
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 };

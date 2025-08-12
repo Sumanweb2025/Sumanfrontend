@@ -15,17 +15,17 @@ const FeaturedProducts = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   // Wishlist and Cart states
   const [wishlistItems, setWishlistItems] = useState([]);
   const [cartItems, setCartItems] = useState([]);
   const [wishlistLoading, setWishlistLoading] = useState(false);
-  
+
   // Popup states
   const [showWishlistPopup, setShowWishlistPopup] = useState(false);
   const [showCartPopup, setShowCartPopup] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  
+
   const navigate = useNavigate();
 
   // API endpoints
@@ -50,7 +50,7 @@ const FeaturedProducts = () => {
 
       const data = await response.json();
       console.log(`${category} API Response:`, data);
-      
+
       if (data.products) {
         return data.products;
       } else if (Array.isArray(data)) {
@@ -73,7 +73,7 @@ const FeaturedProducts = () => {
     const loadAllData = async () => {
       setLoading(true);
       setError(null);
-      
+
       try {
         // Fetch both categories in parallel
         const [sweetsData, snacksData] = await Promise.all([
@@ -124,7 +124,7 @@ const FeaturedProducts = () => {
   const handleWishlistClick = async (product, e) => {
     e?.stopPropagation();
     if (!product || wishlistLoading) return;
-    
+
     const token = localStorage.getItem('token');
     if (!token) {
       alert('Please login to add items to your wishlist');
@@ -142,20 +142,20 @@ const FeaturedProducts = () => {
 
       const productId = product.product_id || product._id || product.id;
       const isInWishlist = wishlistItems.includes(productId);
-      
+
       if (isInWishlist) {
         await axios.delete(`${API_URL}/api/wishlist/${productId}`, config);
         setWishlistItems(prev => prev.filter(id => id !== productId));
-        
+
         // Dispatch custom event to update header count
         window.dispatchEvent(new CustomEvent('wishlistUpdated'));
       } else {
         await axios.post(`${API_URL}/api/wishlist`, { productId }, config);
         setWishlistItems(prev => [...prev, productId]);
-        
+
         // Dispatch custom event to update header count
         window.dispatchEvent(new CustomEvent('wishlistUpdated'));
-        
+
         // Show wishlist popup
         setSelectedProduct(product);
         setShowWishlistPopup(true);
@@ -187,7 +187,7 @@ const FeaturedProducts = () => {
 
       const productId = product.product_id || product._id || product.id;
       await axios.post(`${API_URL}/api/cart`, { productId, quantity: 1 }, config);
-      
+
       // Update cart items
       const cartResponse = await axios.get(`${API_URL}/api/cart`, config);
       const cartData = cartResponse.data?.data || cartResponse.data;
@@ -217,7 +217,7 @@ const FeaturedProducts = () => {
       };
 
       await axios.post(`${API_URL}/api/cart`, { productId, quantity: 1 }, config);
-      
+
       // Update cart items
       const cartResponse = await axios.get(`${API_URL}/api/cart`, config);
       const cartData = cartResponse.data?.data || cartResponse.data;
@@ -283,7 +283,7 @@ const FeaturedProducts = () => {
     return (
       <div className="error-container">
         <p className="error-message">{error}</p>
-        <button 
+        <button
           className="retry-button"
           onClick={() => window.location.reload()}
         >
@@ -299,19 +299,19 @@ const FeaturedProducts = () => {
         <div className="gud-container">
           {/* Header */}
           <div className="section-header">
-            <h3 className="section-subtitle">Our Products</h3>
-            <h1 className="section-title">What Special Today</h1>
+            <h3 className="sub-title text-center text-animate section-subtitle">Our Products</h3>
+            <h1 className="section-title text-animate text-center gud-section-title">What Special Today</h1>
           </div>
 
           {/* Category Tabs */}
           <div className="category-tabs">
-            <button 
+            <button
               className={`tab-button ${activeCategory === 'sweets' ? 'active' : ''}`}
               onClick={() => setActiveCategory('sweets')}
             >
               SWEETS
             </button>
-            <button 
+            <button
               className={`tab-button ${activeCategory === 'snacks' ? 'active' : ''}`}
               onClick={() => setActiveCategory('snacks')}
             >
@@ -327,8 +327,8 @@ const FeaturedProducts = () => {
                 if (!productId) return null;
 
                 return (
-                  <div 
-                    key={productId} 
+                  <div
+                    key={productId}
                     className="gud-product-card"
                     onClick={() => handleProductClick(productId)}
                   >
@@ -342,7 +342,7 @@ const FeaturedProducts = () => {
                           e.target.onerror = null;
                         }}
                       />
-                      
+
                       {/* Wishlist heart */}
                       <button
                         className={`wishlist-heart ${wishlistItems.includes(productId) ? 'active' : ''}`}
@@ -354,17 +354,17 @@ const FeaturedProducts = () => {
                       </button>
 
                       <div className="gud-product-info">
-                        <h3 className="product-name">{product.name}</h3>
-                        <span className="product-price">${(product.price || 0).toFixed(2)}</span>
-                        
+                        <h3 className="gud-product-name">{product.name}</h3>
+                        <span className="price-text text-animate gud-product-price">${(product.price || 0).toFixed(2)}</span>
+
                         <div className="product-footer">
-                          <button 
+                          <button
                             className="gudproduct-add-to-cart-btn"
                             onClick={(e) => handleAddToCart(product, e)}
                             title="Add to Cart"
                           >
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                              <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                              <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
                             </svg>
                           </button>
                         </div>
@@ -383,7 +383,7 @@ const FeaturedProducts = () => {
           {/* Shop Now Button */}
           {displayProducts.length > 0 && (
             <div className="shop-now-container">
-              <button className="shop-now-btn" onClick={handleShopNow}>
+              <button className="button-text shop-now-btn" onClick={handleShopNow}>
                 SHOP NOW
               </button>
             </div>
@@ -392,55 +392,58 @@ const FeaturedProducts = () => {
           {/* Featured Cards */}
           <div className="featured-cards">
             <div className="feature-card delicious-sweets">
-              <div className="card-content">
-                <span className="card-tag">Today's HeartBeat</span>
-                <h2 className="card-title">DELICIOUS SWEETS</h2>
-                <p className="card-description">The best options of the day in your town</p>
-                <button className="card-button" onClick={() => navigate('/sweets')}>
+              <div className="feature-card-content">
+                <span className="feature-card-tag">Today's HeartBeat</span>
+                <h2 className="card-title text-animate feature-card-title">DELICIOUS SWEETS</h2>
+                <p className="body-text feature-card-description">The best options of the day in your town</p>
+                <button className="button-text feature-card-button" onClick={() => navigate('/sweets')}>
                   SHOP NOW
                 </button>
               </div>
             </div>
 
             <div className="feature-card grocery">
-              <div className="card-content">
-                <span className="card-tag">Healthy & Delicious</span>
-                <h2 className="card-title">GROCERY</h2>
-                <p className="card-description">This weekend only</p>
-                <button className="card-button" onClick={() => navigate('/groceries')}>
+              <div className="feature-card-content">
+                <span className="feature-card-tag">Healthy & Delicious</span>
+                <h2 className="card-title text-animate feature-card-title">GROCERY</h2>
+                <p className="body-text feature-card-description">This weekend only</p>
+                <button className="button-text feature-card-button" onClick={() => navigate('/groceries')}>
                   SHOP NOW
                 </button>
               </div>
             </div>
 
             <div className="feature-card grab-snacks">
-              <div className="card-content">
-                <h2 className="card-title">GRAB YOUR SNACKS</h2>
-                <button className="card-button special" onClick={() => navigate('/snacks')}>
+              <div className="feature-card-content">
+                <h2 className="card-title text-animate feature-card-title">GRAB YOUR SNACKS</h2>
+                <button className="button-text feature-card-button special" onClick={() => navigate('/snacks')}>
                   SHOP NOW
                 </button>
               </div>
             </div>
           </div>
-
-          {/* Newsletter Section */}
-          <div className="newsletter-section">
-            <div className="newsletter-content">
-              <div className="newsletter-text">
-                <h2 className="newsletter-title">Newsletter</h2>
-                <h3 className="newsletter-subtitle">Get <span className="highlight">10% </span> off your order!</h3>
-                <p className="newsletter-description">
-                  Get E-mail updates about our latest shop and special offers.
-                </p>
-              </div>
-              <div className="newsletter-form">
+        </div>
+        {/* Newsletter Section */}
+        <div className="newsletter-section">
+          <div className="newsletter-content">
+            <div className="newsletter-text">
+              <h3 className="small-text text-animate newsletter-title">$20 discount for your first order</h3>
+              <h2 className="sub-title text-animate newsletter-subtitle">Join our newsletter and get...</h2>
+              <p className="body-text newsletter-description">
+                Join our email subscription now to get updates on
+                promotions and coupons.
+              </p>
+            </div>
+            <div className="newsletter-form">
+              <div className="newsletter-input-container">
+                <span className="newsletter-email-icon">📧</span>
                 <input
                   type="email"
                   placeholder="Enter your email"
                   className="newsletter-input"
                 />
-                <button className="newsletter-btn">SUBSCRIBE</button>
               </div>
+              <button className="newsletter-btn">SUBSCRIBE</button>
             </div>
           </div>
         </div>

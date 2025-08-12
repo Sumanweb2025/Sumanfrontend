@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './CheckOut.css';
 import Header from '../../Components/Header/Header';
+import Banner from '../../Components/ShippingBanner/ShippingBanner';
 import Footer from "../../Components/Footer/Footer";
 import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 
@@ -739,6 +740,7 @@ const CheckoutPage = () => {
           </div>
         </div>
       </div>
+      <Banner />
       <Footer />
     </>
   );

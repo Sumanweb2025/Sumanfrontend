@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './sweets.css';
 import Header from '../../Components/Header/Header';
+import Banner from '../../Components/ShippingBanner/ShippingBanner';
 import Footer from "../../Components/Footer/Footer";
 import WishlistPopup from '../../Components/WishlistPopup/WishlistPopup';
 import CartPopup from '../../Components/CartPopup/CartPopup';
@@ -310,7 +311,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         <div className="sweets-container">
           {/* Breadcrumb */}
           <div className="sweets-breadcrumb">
-            <span>Home</span> / <span>Products</span> / <span className="sweets-current">Sweets</span>
+            <span>Home</span> / <span className="sweets-current">Sweets</span>
           </div>
 
           <div className="sweets-page-content">
@@ -415,7 +416,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
             {/* Main Content */}
             <div className="sweets-main-content">
               <div className="sweets-page-header">
-                <h1>Sweets</h1>
+                <h1 className='main-title text-animate'>Sweets</h1>
                 <div className="sweets-sort-controls">
                   <select 
                     value={sortBy} 
@@ -466,7 +467,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                         </div>
 
                         <div className="sweets-product-info">
-                          <h3 className="sweets-product-name">{product.name}</h3>
+                          <h3 className="card-title sweets-product-name">{product.name}</h3>
                           <div className="sweets-product-brand">{product.brand}</div>
                           
                           <div className="sweets-product-rating">
@@ -479,7 +480,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                           </div>
 
 
-                          <div className="sweets-product-price">${product.price}</div>
+                          <div className="price-text sweets-product-price">${product.price}</div>
                            {/* Stock status based on piece count */}
                           {product.piece > 0 ? (
                             <div className="sweets-product-stock in-stock">
@@ -557,7 +558,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         onContinueShopping={handleContinueShopping}
         onViewCart={handleViewCart}
       />
-      
+      <Banner/>
       <Footer />
     </>
   );

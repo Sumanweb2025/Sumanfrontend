@@ -81,13 +81,15 @@
 
 .offer-button {
   background: #fcb900;
-  color: black;
+  color:#ffffff;
   border: none;
   padding: 12px 30px;
   border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
+ cursor: pointer;
   transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 

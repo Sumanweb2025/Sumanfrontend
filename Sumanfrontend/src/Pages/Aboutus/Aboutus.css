@@ -1,6 +1,5 @@
-/* Base Styles */
+
 .about-us-page {
-  font-family: 'Poppins', sans-serif;
   color: #333;
   line-height: 1.6;
 }
@@ -42,28 +41,40 @@
   font-size: 1.1rem;
 }
 
+/* Header with Background */
+.header-with-background {
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  min-height: 70vh;
+  position: relative;
+}
+
 /* Hero Section */
 .about-hero {
-  height: 60vh;
+  height: 50vh;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   color: white;
-  background-size: cover;
-  background-position: center;
+  position: relative;
 }
 
 .hero-content h1 {
   font-size: 4rem;
   margin-bottom: 10px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  font-weight: 700;
 }
 
 .hero-subtitle {
   font-size: 1.5rem;
   font-weight: 300;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 /* Icons */
@@ -100,6 +111,7 @@
 .journey-text p {
   margin-bottom: 20px;
   font-size: 1.1rem;
+  line-height: 1.8;
 }
 
 .journey-icon {
@@ -134,7 +146,9 @@
 }
 
 .mission-text li {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
 /* Values Section */
@@ -146,16 +160,18 @@
 }
 
 .value-card {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.85);
   padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   text-align: center;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  backdrop-filter: blur(5px);
 }
 
 .value-card:hover {
   transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 }
 
 .value-icon-container {
@@ -165,6 +181,12 @@
 .value-card h3 {
   color: #2c3e50;
   margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+.value-card p {
+  color: #555;
+  line-height: 1.6;
 }
 
 /* Team Section */
@@ -176,16 +198,18 @@
 }
 
 .team-card {
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 12px;
   padding: 30px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   text-align: center;
+  backdrop-filter: blur(5px);
 }
 
 .team-card:hover {
   transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 }
 
 .team-icon-container {
@@ -195,17 +219,20 @@
 .team-details h3 {
   color: #2c3e50;
   margin-bottom: 5px;
+  font-size: 1.3rem;
 }
 
 .role {
   color: #e74c3c;
   font-weight: 500;
   margin-bottom: 15px;
+  font-size: 1rem;
 }
 
 .bio {
-  color: #7f8c8d;
-  font-size: 0.9rem;
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 /* CTA Section */
@@ -219,29 +246,35 @@
 .cta-section h2 {
   font-size: 2.5rem;
   margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .cta-section p {
   max-width: 700px;
   margin: 0 auto 30px;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  line-height: 1.7;
 }
 
 .cta-button {
   background: #e74c3c;
   color: white;
   border: none;
-  padding: 15px 40px;
-  font-size: 1.1rem;
+  padding: 18px 45px;
+  font-size: 1.2rem;
   border-radius: 50px;
   cursor: pointer;
   transition: all 0.3s ease;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .cta-button:hover {
   background: #c0392b;
   transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
 
 /* Responsive Styles */
@@ -249,33 +282,96 @@
   .journey-content,
   .mission-content {
     flex-direction: column;
+    text-align: center;
   }
   
   .hero-content h1 {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.2rem;
+    padding: 0 20px;
   }
   
   .section {
     padding: 60px 0;
     background-attachment: scroll;
   }
+
+  .header-with-background {
+    background-attachment: scroll;
+    min-height: 60vh;
+  }
+
+  .about-hero {
+    height: 40vh;
+  }
   
   .section-main-icon {
     font-size: 5rem;
     margin-top: 30px;
   }
+
+  .section-header h2 {
+    font-size: 2rem;
+  }
+
+  .cta-section h2 {
+    font-size: 2rem;
+  }
+
+  .cta-section p {
+    font-size: 1.1rem;
+    padding: 0 20px;
+  }
+
+  .values-grid,
+  .team-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .value-card,
+  .team-card {
+    padding: 25px 20px;
+  }
 }
 
 @media (max-width: 480px) {
   .hero-content h1 {
-    font-size: 2rem;
+    font-size: 2.2rem;
   }
   
   .hero-subtitle {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
   
   .section-header h2 {
-    font-size: 2rem;
+    font-size: 1.8rem;
+  }
+
+  .cta-section h2 {
+    font-size: 1.8rem;
+  }
+
+  .mission-text li,
+  .journey-text p {
+    font-size: 0.95rem;
+  }
+
+  .value-card h3,
+  .team-details h3 {
+    font-size: 1.2rem;
+  }
+
+  .cta-button {
+    padding: 15px 35px;
+    font-size: 1rem;
+  }
+
+  .values-grid,
+  .team-grid {
+    grid-template-columns: 1fr;
   }
 }

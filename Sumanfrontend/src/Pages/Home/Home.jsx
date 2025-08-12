@@ -11,7 +11,7 @@ import Testimonials from '../../Components/Testimonials/Testimonial';
 import Footer from '../../Components/Footer/Footer';
 import './Home.css';
 import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
-import homeheader1 from '../../assets/iyappaa home header.png';
+import homeheader1 from '../../assets/iyappa home header1.png';
 import homeheader2 from '../../assets/Amirth home header.png';
 import homeheader3 from '../../assets/venba home header.png';
 import homeheader4 from '../../assets/little krishna home header.png';

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Snacks.css";
 import Header from "../../Components/Header/Header";
+import Banner from '../../Components/ShippingBanner/ShippingBanner';
 import Footer from "../../Components/Footer/Footer";
 import WishlistPopup from "../../Components/WishlistPopup/WishlistPopup";
 import CartPopup from "../../Components/CartPopup/CartPopup";
@@ -350,7 +351,7 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         <div className="snacks-container">
           {/* Breadcrumb */}
           <div className="snacks-breadcrumb">
-            <span>Home</span> / <span>Products</span> /{" "}
+            <span>Home</span> /{" "}
             <span className="current">Snacks</span>
           </div>
 
@@ -469,7 +470,7 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
             {/* Main Content */}
             <div className="snacks-main-content">
               <div className="snacks-page-header">
-                <h1>Snacks</h1>
+                <h1 className="main-title text-animate">Snacks</h1>
                 <div className="snacks-sort-controls">
                   <select
                     value={sortBy}
@@ -537,7 +538,7 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                         </div>
 
                         <div className="snacks-product-info">
-                          <h3 className="snacks-product-name">
+                          <h3 className="card-title snacks-product-name">
                             {product.name}
                           </h3>
                           <div className="snacks-product-brand">
@@ -563,7 +564,7 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                               ({product.rating?.toFixed(1) || "0.0"})
                             </span>
                           </div>
-                          <div className="snacks-product-price">
+                          <div className="price-text snacks-product-price">
                             ${product.price}
                           </div>
 
@@ -646,7 +647,7 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         onContinueShopping={handleContinueShopping}
         onViewCart={handleViewCart}
       />
-
+      <Banner/>
       <Footer />
     </>
   );

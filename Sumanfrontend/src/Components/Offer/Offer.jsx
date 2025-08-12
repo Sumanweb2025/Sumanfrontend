@@ -82,9 +82,9 @@ const SpecialOffer = () => {
       <div className="offer-container">
         <div className="offer-content">
           <div className="offer-text">
-            <h2 className="offer-subtitle">🎉 Limited Time</h2>
-            <h1 className="offer-title shimmer-text">Special Offer – {offer.discount}% OFF</h1>
-            <p className="offer-description">
+            <h2 className="sub-title text-animate offer-subtitle">🎉 Limited Time</h2>
+            <h1 className="card-title text-animate offer-title shimmer-text">Special Offer – {offer.discount}% OFF</h1>
+            <p className="body-text text-animate offer-description">
               Our sweetest deals are here! Grab {offer.title} at delicious discounts before time runs out.
             </p>
 
@@ -101,7 +101,7 @@ const SpecialOffer = () => {
             </div>
 
             <button
-              className="offer-button"
+              className="button-text offer-button"
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
               Shop Now

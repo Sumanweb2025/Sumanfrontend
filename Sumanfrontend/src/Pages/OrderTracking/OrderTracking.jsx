@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './OrderTracking.css';
 import Header from '../../Components/Header/Header';
+import Banner from '../../Components/ShippingBanner/ShippingBanner';
 import Footer from '../../Components/Footer/Footer';
 import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 
@@ -139,7 +140,7 @@ const OrderTracking = () => {
       <div className="order-tracking-page">
         {/* Header Section */}
         <div className="tracking-header">
-          <h1 className="main-title">Order Status Tracking</h1>
+          <h1 className="main-title text-animate">Order Status Tracking</h1>
           <div className="breadcrumb">
             <span>Home</span>
             <span className="separator">›</span>
@@ -326,6 +327,7 @@ const OrderTracking = () => {
           </div>
         </div>
       </div>
+      <Banner/>
       <Footer />
     </>
   );

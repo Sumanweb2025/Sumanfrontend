@@ -8,9 +8,8 @@
   margin: auto;
 }
 
-.my-orders-page-title {
-  font-size: 2rem;
-  font-weight: bold;
+.my-orders-container .my-orders-page-title {
+  font-size: 28px;
   margin-bottom: 1.5rem;
 }
 

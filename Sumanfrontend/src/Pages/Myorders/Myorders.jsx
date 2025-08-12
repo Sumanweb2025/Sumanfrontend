@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './Myorders.css';
 import Header from '../../Components/Header/Header';
+import Banner from '../../Components/ShippingBanner/ShippingBanner';
 import Footer from '../../Components/Footer/Footer';
 import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 
@@ -95,7 +96,7 @@ const MyOrders = () => {
       <Header />
       <div className="my-orders-page">
         <div className="my-orders-container">
-          <h1 className="my-orders-page-title">My Orders</h1>
+          <h1 className="main-title text-animate my-orders-page-title">My Orders</h1>
           {loading ? (
             <p className="loading-text">Loading your orders...</p>
           ) : orders.length === 0 ? (
@@ -157,6 +158,7 @@ const MyOrders = () => {
           )}
         </div>
       </div>
+      <Banner/>
       <Footer />
     </>
   );

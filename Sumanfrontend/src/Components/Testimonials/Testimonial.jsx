@@ -103,8 +103,8 @@ const Testimonials = () => {
     <div className="testimonials-section">
       <div className="testimonials-container">
         <div className="testimonials-header">
-          <h2 className="testimonials-title">What Our Customers Say</h2>
-          <p className="testimonials-subtitle">Real reviews from real customers</p>
+          <h2 className="section-title text-center text-animate testimonials-title">What Our Customers Say</h2>
+          <p className="sub-title text-center text-animate testimonials-subtitle">Real reviews from our customers</p>
         </div>
 
         <div className="testimonials-content">
