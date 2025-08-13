@@ -45,6 +45,7 @@ const FoodCategories = () => {
   return (
     <div className="our-container">
       <h2 className="section-title text-center text-animate our-section-title">Explore Our Product Categories</h2>
+      <div className="our-divider"></div>
       <div className="our-cards-grid">
         {categories.map((cat, idx) => (
           <div key={idx} className={`our-card our-${cat.className}`}>

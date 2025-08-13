@@ -271,6 +271,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
         <div className="iyappaa-carousel-container">
           <div className="iyappaa-section-header">
             <h2 className="section-title text-center text-animate iyappaa-main-title">Best Selling</h2>
+            <div className="iyappaa-divider"></div>
             {/* <h3 className="sub-title text-center  iyappaa-sub-title">Products</h3> */}
             {/* <div className="iyappaa-divider">-</div> */}
           </div>

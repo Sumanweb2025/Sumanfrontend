@@ -88,13 +88,13 @@ const AboutUs = () => {
     
       <div className="about-us-page">
         {/* Our Journey Section */}
-        <section className="section journey-section" style={{
+        <section className="about-section journey-section" style={{
           backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
         }}>
-          <div className="container">
-            <div className="section-header">
+          <div className="about-container">
+            <div className="about-section-header">
               <h2>Our Journey</h2>
-              <div className="divider"></div>
+              <div className="about-divider"></div>
             </div>
             <div className="journey-content">
               <div className="journey-text">
@@ -118,17 +118,19 @@ const AboutUs = () => {
         </section>
 
         {/* Mission Section */}
-        <section className="section mission-section" style={{
+        <section className="about-section mission-section" style={{
           backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75)), url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
         }}>
-          <div className="container">
+          <div className="about-container">
             <div className="mission-content">
               <div className="mission-icon">
                 <FaHeart className="section-main-icon" />
               </div>
               <div className="mission-text">
-                <h2>Our Mission</h2>
-                <div className="divider"></div>
+                <div className='about-section-header'>
+                  <h2>Our Mission</h2>
+                  <div className="about-divider"></div>
+                </div>
                 <p>
                   To bring authentic South Indian flavors to Toronto while innovating 
                   responsibly and building community. We're committed to:
@@ -146,13 +148,13 @@ const AboutUs = () => {
         </section>
 
         {/* Values Section */}
-        <section className="section values-section" style={{
+        <section className="about-section values-section" style={{
           backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
         }}>
-          <div className="container">
-            <div className="section-header">
+          <div className="about-container">
+            <div className="about-section-header">
               <h2>Our Core Values</h2>
-              <div className="divider"></div>
+              <div className="about-divider"></div>
             </div>
             <div className="values-grid">
               {coreValues.map((value, index) => (
@@ -169,14 +171,14 @@ const AboutUs = () => {
         </section>
 
         {/* Team Section */}
-        <section className="section team-section" style={{
+        <section className="about-section team-section" style={{
           backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75)), url('https://images.unsplash.com/photo-1556911220-bff31c812dba?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
         }}>
-          <div className="container">
-            <div className="section-header">
+          <div className="about-container">
+            <div className="about-section-header">
               <h2>Meet Our Team</h2>
-              <div className="divider"></div>
-              <p className="section-subtitle">
+              <div className="about-divider"></div>
+              <p className="about-section-subtitle">
                 The passionate people behind our delicious sweets and snacks
               </p>
             </div>
@@ -198,10 +200,10 @@ const AboutUs = () => {
         </section>
 
         {/* CTA Section */}
-        <section className="section cta-section" style={{
+        <section className="about-section cta-section" style={{
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1499028344343-cd173ffc68a9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
         }}>
-          <div className="container">
+          <div className="about-container">
             <h2>Experience the Authentic Taste</h2>
             <p>
               Taste the tradition and quality in every bite. Join our growing family 
