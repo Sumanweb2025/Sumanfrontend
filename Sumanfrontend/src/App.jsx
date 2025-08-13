@@ -14,6 +14,7 @@ import Groceries from './Pages/Groceries/Groceries';
 import Iyyapa from './Components/Iyyapa/Iyyapa';
 import Amirth from './Components/Amirth/Amirth';
 import Venba from './Components/Venba/Venba';
+import LittleKrishna from './Components/LittleKrishna/LittleKrishna';
 import SignUp from './Pages/Signup/Signup';
 import SignIn from './Pages/Signin/Signin';
 import Profile from './Pages/Profile/Profile';
@@ -44,6 +45,7 @@ const App = () => {
         <Route path="/brands/iyyappa" element={<Iyyapa />} />
         <Route path="/brands/amrith" element={<Amirth />} />
         <Route path="/brands/venba" element={<Venba />} />
+        <Route path="/brands/little-krishna" element={<LittleKrishna />} />
         <Route path="/signup" element={<SignUp />} />
          <Route path="/signin" element={<SignIn />} />
          <Route path="/profile" element={<Profile />} />

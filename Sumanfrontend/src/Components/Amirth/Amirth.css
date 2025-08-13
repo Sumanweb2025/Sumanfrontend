@@ -1,235 +1,869 @@
 /* Base Styles */
-.products-container {
-  width: 100%;
-  min-height: 100vh;
-  padding: 20px;
-  box-sizing: border-box; 
+.amirth-page {
   background-color: #ebe0c6;
+  min-height: 100vh;
 }
-.products-container h1{
+
+.amirth-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Hero Carousel Section */
+.amirth-hero-carousel {
+  width: 100%;
+  height: 400px;
+  position: relative;
+  margin-bottom: 40px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.amirth-carousel-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.amirth-carousel-wrapper {
+  display: flex;
+  width: 300%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.amirth-carousel-slide {
+  position: relative;
+  width: 33.333%;
+  height: 100%;
+  flex-shrink: 0;
+}
+
+.amirth-carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.amirth-carousel-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.amirth-carousel-content {
+  text-align: center;
+  color: white;
+  padding: 20px;
+  animation: slideInUp 0.8s ease-out;
+}
+
+.amirth-carousel-title {
+  font-size: 3.5rem;
+  font-weight: bold;
+  margin-bottom: 16px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(135deg, #fff, #4CAF50);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.amirth-carousel-subtitle {
+  font-size: 1.4rem;
+  margin-bottom: 30px;
+  opacity: 0.9;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.amirth-carousel-cta {
+  background: linear-gradient(135deg, #4CAF50, #388e3c);
+  color: white;
+  border: none;
+  padding: 15px 35px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 20px rgba(76, 175, 80, 0.3);
+}
+
+.amirth-carousel-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(76, 175, 80, 0.4);
+}
+
+/* Carousel Navigation */
+.amirth-carousel-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: none;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  color: white;
+  font-size: 1.5rem;
+  z-index: 10;
+}
+
+.amirth-carousel-nav:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.amirth-carousel-nav.prev {
+  left: 20px;
+}
+
+.amirth-carousel-nav.next {
+  right: 20px;
+}
+
+/* Carousel Indicators */
+.amirth-carousel-indicators {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 10;
+}
+
+.amirth-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.amirth-indicator.active {
+  background: white;
+  transform: scale(1.3);
+}
+
+/* Breadcrumb */
+.amirth-breadcrumb {
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #666;
+}
+
+.amirth-breadcrumb .amirth-current {
+  color: #333;
+  font-weight: 500;
+}
+
+/* Categories Section - New Design */
+.amirth-categories-section {
+  margin: 40px 0;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.categories-title {
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 30px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.amirth-categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 25px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.amirth-category-card {
+  background: white;
+  border-radius: 70px;
+  padding: 15px 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  border: 1px solid #e0e0e0;
+}
+
+.amirth-category-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.amirth-category-card.active {
+  border: 2px solid #4CAF50;
+  box-shadow: 0 8px 25px rgba(76, 175, 80, 0.2);
+}
+
+.amirth-category-image {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.amirth-category-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.amirth-category-name {
+  font-size: 0.9rem;
+  color: #555;
+  font-weight: 500;
+  margin-top: 10px;
+  transition: color 0.3s ease;
+}
+
+.amirth-category-card:hover .amirth-category-name,
+.amirth-category-card.active .amirth-category-name {
+  color: #4CAF50;
+}
+
+/* Page Layout */
+.amirth-page-content {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+.amirth-main-content .amirth-page-header{
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+/* Sidebar Styles */
+.amirth-sidebar {
+  width: 280px;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+  position: sticky;
+  top: 20px;
+}
+
+.amirth-filter-section {
+  margin-bottom: 30px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 20px;
+}
+
+.amirth-filter-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.amirth-filter-section h3 {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Search Input */
+.amirth-search-container {
+  position: relative;
+}
+
+.amirth-search-input {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.amirth-search-input:focus {
+  border-color: #4CAF50;
+}
+
+/* Filter Options */
+.amirth-filter-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.amirth-filter-option {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 14px;
+  color: #555;
+}
+
+.amirth-filter-option input[type="checkbox"] {
+  margin-right: 8px;
+  accent-color: #4CAF50;
+}
+
+.amirth-filter-option .count {
+  margin-left: auto;
+  color: #999;
+  font-size: 12px;
+}
+
+/* Price Range */
+.amirth-price-range {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.amirth-price-slider {
+  width: 100%;
+  accent-color: #4CAF50;
+}
+
+.amirth-price-values {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+/* Deal Items */
+.amirth-deal-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.amirth-deal-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.amirth-deal-item:hover {
+  background-color: #f5f5f5;
+}
+
+.amirth-deal-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.amirth-deal-info {
+  flex: 1;
+}
+
+.amirth-deal-name {
+  font-size: 13px;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.amirth-deal-price {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4CAF50;
+}
+
+/* Clear Filters Button */
+.amirth-clear-filters-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.amirth-clear-filters-btn:hover {
+  background-color: #388e3c;
+}
+
+/* Main Content */
+.amirth-main-content {
+  flex: 1;
+}
+
+/* Page Header */
+.amirth-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
 
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Increased card width */
-  gap: 30px;
+.amirth-page-header h1 {
+  margin: 0;
+  font-size: 28px;
+  color: #333;
 }
 
+.amirth-sort-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.amirth-sort-select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Results Info */
+.amirth-results-info {
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #666;
+}
+
+/* Products Grid */
+.amirth-products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+/* Product Card */
 .amirth-product-card {
-  width: 100%;
-  min-width: 300px; /* Minimum card width */
-  max-width: 350px; /* Maximum card width */
-  border: 1px solid #e0e0e0;
+  background: white;
   border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
-  background: white;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
-}
-
-.amirth-product-details {
-  flex: 1;
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
+  cursor: pointer;
+  position: relative;
+  border: 1px solid #e0e0e0;
 }
 
 .amirth-product-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
 }
 
-.product-image-container {
+.amirth-product-image-container {
+  position: relative;
   width: 100%;
-  height: 250px; /* Increased height */
+  height: 250px;
   overflow: hidden;
 }
 
-.product-image {
+.amirth-product-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
 }
 
-.product-image:hover {
+.amirth-product-card:hover .amirth-product-image {
   transform: scale(1.05);
 }
 
-.product-gram {
+.amirth-wishlist-btn {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
-  padding: 3px 8px;
-  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  z-index: 5;
+}
+
+.amirth-wishlist-btn:hover {
+  background: white;
+  transform: scale(1.2);
+}
+
+.amirth-wishlist-btn.active {
+  color: #e91e63;
+  background: white;
+}
+
+/* Stock Badge */
+.amirth-stock-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 4px 12px;
+  border-radius: 20px;
   font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 5;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.product-details {
+.amirth-stock-badge.in-stock {
+  background: rgba(76, 175, 80, 0.9);
+  color: white;
+  border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.amirth-stock-badge.out-of-stock {
+  background: rgba(244, 67, 54, 0.9);
+  color: white;
+  border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+/* Product Info */
+.amirth-product-info {
   padding: 15px;
+  display: flex;
+  flex-direction: column;
 }
 
-.product-name {
+.amirth-product-name {
+  margin: 0 0 8px 0;
   font-size: 18px;
-  margin: 0 0 5px 0;
   color: #333;
+  line-height: 1.3;
 }
 
-.product-brand, .product-category {
+.amirth-product-brand {
   font-size: 14px;
   color: #666;
-  margin: 5px 0;
+  margin-bottom: 5px;
 }
 
-.product-price {
+.amirth-product-category {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.amirth-product-rating {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 2px;
+}
+
+.star-filled {
+  color: #ffc107;
+  font-size: 14px;
+}
+
+.star-empty {
+  color: #ddd;
+  font-size: 14px;
+}
+
+.amirth-rating-text {
+  font-size: 12px;
+  color: #666;
+  margin-left: 5px;
+}
+
+.amirth-product-price {
   font-size: 20px;
   font-weight: bold;
   color: #2e7d32;
-  margin: 10px 0;
+  margin-bottom: 5px;
 }
 
-.product-piece {
+.amirth-product-piece {
   font-size: 14px;
   color: #666;
   margin-bottom: 10px;
 }
 
-.product-rating {
-  margin: 10px 0;
-  display: flex;
-  align-items: center;
-}
-
-.star-filled {
-  color: #ffc107;
-}
-
-.star-empty {
-  color: #ddd;
-}
-
-.product-description {
-  font-size: 14px;
-  color: #555;
-  margin: 10px 0;
-  line-height: 1.4;
-}
-
-.product-actions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 15px;
-}
-
-.add-to-cart {
+.amirth-add-to-cart-btn {
+  width: 100%;
+  padding: 10px 15px;
   background-color: #4CAF50;
   color: white;
   border: none;
-  padding: 8px 15px;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  margin-top: auto;
 }
 
-.add-to-cart:hover {
+.amirth-add-to-cart-btn:hover {
   background-color: #388e3c;
+  transform: translateY(-1px);
 }
 
-.wishlist {
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  transition: transform 0.3s;
-}
-
-.wishlist:hover {
-  transform: scale(1.2);
-}
-
-.wishlist.active {
-  color: #e91e63;
-}
-
-/* Search Bar Styles */
-.search-container {
-  margin: 20px 0;
+/* Pagination */
+.amirth-pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
+  gap: 5px;
+  margin-top: 30px;
 }
 
-.search-input {
-  width: 100%;
-  padding: 12px 20px;
+.amirth-pagination-btn {
+  padding: 8px 12px;
   border: 1px solid #ddd;
-  border-radius: 25px;
-  font-size: 16px;
-  outline: none;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  background: white;
+  color: #666;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
   transition: all 0.3s ease;
 }
 
-.search-input:focus {
-  border-color: #4CAF50;
-  box-shadow: 0 2px 10px rgba(76, 175, 80, 0.2);
+.amirth-pagination-btn:hover:not(:disabled) {
+  background-color: #f5f5f5;
+  border-color: #ccc;
 }
 
-.clear-search {
-  margin-left: 10px;
-  padding: 10px 15px;
-  background-color: #f44336;
+.amirth-pagination-btn.active {
+  background-color: #4CAF50;
   color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  border-color: #4CAF50;
 }
 
-.clear-search:hover {
-  background-color: #d32f2f;
+.amirth-pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Loading and Error States */
-.loading, .error, .empty {
+.loading,
+.error,
+.empty {
   text-align: center;
   padding: 50px;
   font-size: 18px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .error {
   color: #d32f2f;
 }
-/* Pagination Dots Styles */
-.pagination-dots {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
-  gap: 10px;
+
+.empty {
+  color: #666;
 }
 
-.pagination-dots .dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  border: none;
-  background-color: #ccc;
-  cursor: pointer;
-  transition: all 0.3s ease;
+/* Animation classes */
+.text-animate {
+  animation: fadeInUp 0.8s ease-out;
 }
 
-.pagination-dots .dot:hover {
-  background-color: #aaa;
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.pagination-dots .dot.active {
-  background-color: #333;
-  transform: scale(1.2);
+.card-title {
+  transition: color 0.3s ease;
+}
+
+.amirth-product-card:hover .card-title {
+  color: #4CAF50;
+}
+
+.price-text {
+  font-weight: bold;
+  color: #2e7d32;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .amirth-categories-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 15px;
+  }
+  
+  .categories-title {
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+  }
+  
+  .amirth-category-image {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 10px;
+  }
+  
+  .amirth-category-name {
+    font-size: 0.8rem;
+  }
+
+  .amirth-page-content {
+    flex-direction: column;
+  }
+  
+  .amirth-sidebar {
+    width: 100%;
+    position: static;
+    margin-bottom: 20px;
+  }
+  
+  .amirth-products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+  }
+  
+  .amirth-page-header {
+    text-align: center;
+  }
+
+  .amirth-sort-controls {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .amirth-categories-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 10px;
+  }
+  
+  .categories-title {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+  }
+  
+  .amirth-category-image {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .amirth-category-name {
+    font-size: 0.7rem;
+  }
+
+  .amirth-products-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .amirth-container {
+    padding: 10px;
+  }
+
+  .amirth-page-header h1 {
+    font-size: 24px;
+  }
+}
+
+/* Additional hover effects */
+.amirth-filter-option:hover {
+  background-color: rgba(76, 175, 80, 0.1);
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin: -4px -8px;
+}
+
+/* Focus states for accessibility */
+.amirth-search-input:focus,
+.amirth-sort-select:focus,
+.amirth-price-slider:focus {
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.amirth-filter-option input[type="checkbox"]:focus {
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+  border-radius: 2px;
+}
+
+/* Enhanced visual effects */
+.amirth-category-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.amirth-category-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: rotate(45deg);
+  transition: all 0.6s;
+  opacity: 0;
+}
+
+.amirth-category-card:hover::after {
+  animation: shine 0.6s ease-in-out;
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+    opacity: 0;
+  }
 }

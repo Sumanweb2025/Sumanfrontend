@@ -298,9 +298,10 @@ const FeaturedProducts = () => {
       <section className="special-today-section">
         <div className="gud-container">
           {/* Header */}
-          <div className="section-header">
+          <div className="gud-section-header">
             <h3 className="sub-title text-center text-animate section-subtitle">Our Products</h3>
             <h1 className="section-title text-animate text-center gud-section-title">What Special Today</h1>
+            <div className="gud-divider"></div>
           </div>
 
           {/* Category Tabs */}

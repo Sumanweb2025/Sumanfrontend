@@ -6,20 +6,15 @@
 
 .our-section-title {
   color: #2e7d32;
-  margin-bottom: 40px;
+  margin-bottom: 3px;
   text-align: center;
 }
 
-.our-section-title::after {
-  content: '';
-  position: absolute;
-  bottom: -6px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
+.our-divider {
+  width: 80px;
   height: 3px;
-  background: linear-gradient(45deg, #ff6b35, #f7931e);
-  border-radius: 2px;
+  background: linear-gradient(45deg, #ff6b35, #f7931e);;
+  margin: 0 auto 20px;
 }
 
 .our-cards-grid {
