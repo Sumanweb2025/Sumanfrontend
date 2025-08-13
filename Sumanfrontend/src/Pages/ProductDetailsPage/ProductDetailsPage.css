@@ -82,7 +82,26 @@
   cursor: not-allowed;
   transform: none;
 }
+.product-stock-info {
+  margin: 10px 0;
+}
 
+.product-stock {
+  font-size: 16px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.product-stock.in-stock {
+  color: #4CAF50;
+  background-color: rgba(76, 175, 80, 0.1);
+}
+
+.product-price-section {
+  margin: 15px 0;
+}
 /* Product Images */
 .product-images {
   display: flex;
@@ -160,11 +179,14 @@
   display: flex;
   align-items: center;
   gap: 5px;
+  margin: 10px 0;
 }
-
+.star {
+  font-size: 18px;
+  color: #ddd;
+}
 .star-filled {
   color: #ffc107;
-  font-size: 18px;
 }
 
 .star-empty {

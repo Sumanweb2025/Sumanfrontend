@@ -216,9 +216,21 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
     navigate('/cart');
   };
 
-  const handleProductClick = (productId) => {
+  // Fixed handleProductClick function
+  const handleProductClick = (product, e) => {
+    e?.stopPropagation();
+    
+    // Get product ID with multiple fallbacks
+    const productId = product.product_id || product._id || product.id;
+    
+    console.log('Product clicked:', product); // Debug log
+    console.log('Product ID:', productId); // Debug log
+    
     if (productId) {
-      navigate(`/products/${productId}`);
+      navigate(`/product/${productId}`); // Changed from /products/ to /product/
+    } else {
+      console.error('No valid product ID found:', product);
+      alert('Unable to view product details. Product ID not found.');
     }
   };
 
@@ -340,7 +352,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
 
                           <button 
                             className="iyappaa-view-details-btn"
-                            onClick={() => handleProductClick(productId)}
+                            onClick={(e) => handleProductClick(product, e)}
                           >
                             View Details →
                           </button>
