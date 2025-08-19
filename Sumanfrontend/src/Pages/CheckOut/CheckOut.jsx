@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './CheckOut.css';
 import Header from '../../Components/Header/Header';
-import Banner from '../../Components/ShippingBanner/ShippingBanner';
 import Footer from "../../Components/Footer/Footer";
 import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
+import StripePaymentComponent from '../../Components/Payments/StripePayments';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -30,9 +30,9 @@ const CheckoutPage = () => {
       address: '',
       apartment: '',
       city: '',
-      province: 'Ontario',
+      province: 'Tamil Nadu',
       postalCode: '',
-      country: 'Canada',
+      country: 'India',
       phone: ''
     },
     paymentMethod: 'card'
@@ -42,20 +42,45 @@ const CheckoutPage = () => {
 
   const API_URL = 'http://localhost:8000/';
 
-
   // Countries and their states/provinces
   const countriesData = {
     'India': ['Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Delhi', 'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jammu and Kashmir', 'Jharkhand', 'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal'],
-    'United States': ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'],
-    'Canada': ['Alberta', 'British Columbia', 'Manitoba', 'New Brunswick', 'Newfoundland and Labrador', 'Northwest Territories', 'Nova Scotia', 'Nunavut', 'Ontario', 'Prince Edward Island', 'Quebec', 'Saskatchewan', 'Yukon'],
-    'United Kingdom': ['England', 'Scotland', 'Wales', 'Northern Ireland'],
-    'Australia': ['Australian Capital Territory', 'New South Wales', 'Northern Territory', 'Queensland', 'South Australia', 'Tasmania', 'Victoria', 'Western Australia'],
-    'Germany': ['Baden-Württemberg', 'Bavaria', 'Berlin', 'Brandenburg', 'Bremen', 'Hamburg', 'Hesse', 'Lower Saxony', 'Mecklenburg-Vorpommern', 'North Rhine-Westphalia', 'Rhineland-Palatinate', 'Saarland', 'Saxony', 'Saxony-Anhalt', 'Schleswig-Holstein', 'Thuringia'],
-    'France': ['Auvergne-Rhône-Alpes', 'Bourgogne-Franche-Comté', 'Brittany', 'Centre-Val de Loire', 'Corsica', 'Grand Est', 'Hauts-de-France', 'Île-de-France', 'Normandy', 'Nouvelle-Aquitaine', 'Occitania', 'Pays de la Loire', 'Provence-Alpes-Côte d\'Azur'],
-    'Japan': ['Hokkaido', 'Aomori', 'Iwate', 'Miyagi', 'Akita', 'Yamagata', 'Fukushima', 'Ibaraki', 'Tochigi', 'Gunma', 'Saitama', 'Chiba', 'Tokyo', 'Kanagawa', 'Niigata', 'Toyama', 'Ishikawa', 'Fukui', 'Yamanashi', 'Nagano', 'Gifu', 'Shizuoka', 'Aichi', 'Mie', 'Shiga', 'Kyoto', 'Osaka', 'Hyogo', 'Nara', 'Wakayama', 'Tottori', 'Shimane', 'Okayama', 'Hiroshima', 'Yamaguchi', 'Tokushima', 'Kagawa', 'Ehime', 'Kochi', 'Fukuoka', 'Saga', 'Nagasaki', 'Kumamoto', 'Oita', 'Miyazaki', 'Kagoshima', 'Okinawa'],
-    'Brazil': ['Acre', 'Alagoas', 'Amapá', 'Amazonas', 'Bahia', 'Ceará', 'Distrito Federal', 'Espírito Santo', 'Goiás', 'Maranhão', 'Mato Grosso', 'Mato Grosso do Sul', 'Minas Gerais', 'Pará', 'Paraíba', 'Paraná', 'Pernambuco', 'Piauí', 'Rio de Janeiro', 'Rio Grande do Norte', 'Rio Grande do Sul', 'Rondônia', 'Roraima', 'Santa Catarina', 'São Paulo', 'Sergipe', 'Tocantins'],
-    'Mexico': ['Aguascalientes', 'Baja California', 'Baja California Sur', 'Campeche', 'Chiapas', 'Chihuahua', 'Coahuila', 'Colima', 'Durango', 'Guanajuato', 'Guerrero', 'Hidalgo', 'Jalisco', 'México', 'Michoacán', 'Morelos', 'Nayarit', 'Nuevo León', 'Oaxaca', 'Puebla', 'Querétaro', 'Quintana Roo', 'San Luis Potosí', 'Sinaloa', 'Sonora', 'Tabasco', 'Tamaulipas', 'Tlaxcala', 'Veracruz', 'Yucatán', 'Zacatecas']
+    'United States': ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming']
   };
+
+  // Payment methods configuration
+  const paymentMethods = [
+    {
+      id: 'card',
+      name: 'Credit/Debit Card',
+      description: 'Visa, Mastercard, RuPay - Secure payment via Stripe',
+      icon: '💳',
+      requiresStripe: true
+    },
+    {
+      id: 'upi',
+      name: 'UPI Payment',
+      description: 'Pay using any UPI app - GooglePay, PhonePe, Paytm',
+      icon: '📱',
+      requiresStripe: false,
+      isOnline: true
+    },
+    {
+      id: 'netbanking',
+      name: 'Net Banking',
+      description: 'Pay directly from your bank account',
+      icon: '🏦',
+      requiresStripe: false,
+      isOnline: true
+    },
+    {
+      id: 'cod',
+      name: 'Cash on Delivery',
+      description: 'Pay when you receive',
+      icon: '💰',
+      requiresStripe: false
+    }
+  ];
 
   useEffect(() => {
     fetchCheckoutData();
@@ -135,7 +160,7 @@ const CheckoutPage = () => {
 
       const couponData = response.data.data;
       setAppliedCoupon(couponData);
-
+      
       // Update order summary with discount
       setOrderSummary(prev => ({
         ...prev,
@@ -182,8 +207,8 @@ const CheckoutPage = () => {
 
     // Postal code validation based on country
     if (formData.billingAddress.postalCode) {
-      if (formData.billingAddress.country === 'Canada' && !/^[A-Za-z]\d[A-Za-z] ?\d[A-Za-z]\d$/.test(formData.billingAddress.postalCode)) {
-        newErrors['billingAddress.postalCode'] = 'Please enter a valid Canadian postal code (e.g., K1A 0A6)';
+      if (formData.billingAddress.country === 'India' && !/^\d{6}$/.test(formData.billingAddress.postalCode)) {
+        newErrors['billingAddress.postalCode'] = 'Please enter a valid 6-digit postal code';
       } else if (formData.billingAddress.country === 'United States' && !/^\d{5}(-\d{4})?$/.test(formData.billingAddress.postalCode)) {
         newErrors['billingAddress.postalCode'] = 'Please enter a valid ZIP code';
       }
@@ -198,9 +223,22 @@ const CheckoutPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handlePaymentSuccess = (orderData) => {
+    setOrderDetails(orderData);
+    setShowSuccess(true);
+    
+    // Dispatch cart update event
+    window.dispatchEvent(new CustomEvent('cartUpdated'));
+  };
 
+  const handlePaymentError = (errorMessage) => {
+    alert(errorMessage);
+    setSubmitting(false);
+  };
+
+  const handleNonCardPaymentSubmit = async (e) => {
+    e.preventDefault();
+    
     if (!validateForm()) {
       return;
     }
@@ -220,17 +258,27 @@ const CheckoutPage = () => {
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
 
-      setOrderDetails(response.data.data);
-      setShowSuccess(true);
-
-      // Dispatch cart update event
-      window.dispatchEvent(new CustomEvent('cartUpdated'));
+      handlePaymentSuccess(response.data.data);
     } catch (error) {
       console.error('Error placing order:', error);
-      alert(error.response?.data?.message || 'Failed to place order. Please try again.');
-    } finally {
-      setSubmitting(false);
+      handlePaymentError(error.response?.data?.message || 'Failed to place order. Please try again.');
     }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    setSubmitting(true);
+
+    // For non-card payments, handle directly
+    if (formData.paymentMethod !== 'card') {
+      handleNonCardPaymentSubmit(e);
+    }
+    // For card payments, validation is done, payment will be handled by StripePaymentComponent
   };
 
   const toggleApartmentField = () => {
@@ -242,16 +290,47 @@ const CheckoutPage = () => {
     }
   };
 
+  const getPaymentMethodIcon = (method) => {
+    const paymentMethod = paymentMethods.find(pm => pm.id === method);
+    return paymentMethod ? paymentMethod.icon : '💳';
+  };
+
+  const getPaymentStatusText = () => {
+    const method = paymentMethods.find(pm => pm.id === formData.paymentMethod);
+    if (!method) return 'Processing...';
+    
+    switch (method.id) {
+      case 'card':
+        return 'Payment Completed';
+      case 'upi':
+        return 'UPI Payment Completed';
+      case 'netbanking':
+        return 'Net Banking Payment Completed';
+      case 'cod':
+        return 'Order Confirmed - COD';
+      default:
+        return 'Order Confirmed';
+    }
+  };
+
+  if (loading) {
+    return (
+      <>
+        <LoadingSpinner 
+          isLoading={loading} 
+          brandName="Checkout" 
+          loadingText="Loading checkout..."
+          progressColor="#3b82f6"
+        />
+        <Header />
+        <Footer />
+      </>
+    );
+  }
 
   if (showSuccess) {
     return (
       <>
-        <LoadingSpinner
-          isLoading={loading}
-          brandName="Checkout"
-          loadingText="Loading checkout..."
-          progressColor="#3b82f6"
-        />
         <Header />
         <div className="checkout-page">
           <div className="success-modal-overlay">
@@ -259,13 +338,28 @@ const CheckoutPage = () => {
               <div className="success-content">
                 <div className="success-icon">🎉</div>
                 <h1 className="success-title">Order Placed Successfully!</h1>
-                <p className="success-message">Thank you for your order. We'll send you a confirmation email shortly.</p>
-
+                <p className="success-message">
+                  Thank you for your order. We've sent a confirmation email with detailed invoice to{' '}
+                  <strong>{formData.contactInfo.email}</strong>
+                </p>
+                
                 <div className="order-details">
                   <p className="order-label">Order Number</p>
                   <p className="order-number">{orderDetails?.orderNumber}</p>
                   <p className="order-label">Total Amount</p>
                   <p className="order-total">${orderDetails?.total}</p>
+                  {orderDetails?.paymentStatus === 'paid' && (
+                    <>
+                      <p className="order-label">Payment Status</p>
+                      <p className="payment-success">✅ {getPaymentStatusText()}</p>
+                    </>
+                  )}
+                  {formData.paymentMethod === 'cod' && (
+                    <>
+                      <p className="order-label">Payment Method</p>
+                      <p className="payment-cod">💰 Cash on Delivery</p>
+                    </>
+                  )}
                 </div>
 
                 <div className="success-actions">
@@ -315,7 +409,7 @@ const CheckoutPage = () => {
               <div className="checkout-section">
                 <h2 className="checkout-section-title">Contact information</h2>
                 <p className="checkout-section-description">We'll use this email to send you details and updates about your order.</p>
-
+                
                 <div className="form-group">
                   <input
                     type="email"
@@ -331,7 +425,7 @@ const CheckoutPage = () => {
                     </p>
                   )}
                 </div>
-
+                
                 <p className="guest-notice">You are currently checking out as a guest.</p>
               </div>
 
@@ -421,7 +515,7 @@ const CheckoutPage = () => {
                       value={formData.billingAddress.apartment}
                       onChange={(e) => handleInputChange('billingAddress', 'apartment', e.target.value)}
                       className="form-input apartment-field"
-                      style={{ display: 'none', marginTop: '0.75rem' }}
+                      style={{display: 'none', marginTop: '0.75rem'}}
                     />
                   </div>
 
@@ -489,162 +583,151 @@ const CheckoutPage = () => {
               {/* Payment Options */}
               <div className="checkout-section">
                 <h2 className="checkout-section-title">Payment options</h2>
-
+                
                 <div className="checkout-payment-methods">
-                  <label className="checkout-payment-method">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="card"
-                      checked={formData.paymentMethod === 'card'}
-                      onChange={(e) => setFormData(prev => ({ ...prev, paymentMethod: e.target.value }))}
-                      className="payment-radio"
-                    />
-                    <div className="checkout-payment-content">
-                      <div className="payment-icon">💳</div>
-                      <div className="payment-info">
-                        <div className="payment-name">Credit/Debit Card</div>
-                        <div className="payment-desc">Visa, Mastercard, RuPay</div>
+                  {paymentMethods.map((method) => (
+                    <label key={method.id} className="checkout-payment-method">
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value={method.id}
+                        checked={formData.paymentMethod === method.id}
+                        onChange={(e) => setFormData(prev => ({...prev, paymentMethod: e.target.value}))}
+                        className="payment-radio"
+                      />
+                      <div className="checkout-payment-content">
+                        <div className="payment-icon">{method.icon}</div>
+                        <div className="payment-info">
+                          <div className="payment-name">{method.name}</div>
+                          <div className="payment-desc">{method.description}</div>
+                          {method.isOnline && (
+                            <div className="payment-status" style={{color: '#059669', fontSize: '0.75rem'}}>
+                              ✅ Instant Payment
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </label>
-
-                  <label className="checkout-payment-method">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="upi"
-                      checked={formData.paymentMethod === 'upi'}
-                      onChange={(e) => setFormData(prev => ({ ...prev, paymentMethod: e.target.value }))}
-                      className="payment-radio"
-                    />
-                    <div className="checkout-payment-content">
-                      <div className="payment-icon">📱</div>
-                      <div className="payment-info">
-                        <div className="payment-name">UPI</div>
-                        <div className="payment-desc">Google Pay, PhonePe, Paytm</div>
-                      </div>
-                    </div>
-                  </label>
-
-                  <label className="checkout-payment-method">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="netbanking"
-                      checked={formData.paymentMethod === 'netbanking'}
-                      onChange={(e) => setFormData(prev => ({ ...prev, paymentMethod: e.target.value }))}
-                      className="payment-radio"
-                    />
-                    <div className="checkout-payment-content">
-                      <div className="payment-icon">🏦</div>
-                      <div className="payment-info">
-                        <div className="payment-name">Net Banking</div>
-                        <div className="payment-desc">All major banks</div>
-                      </div>
-                    </div>
-                  </label>
-
-                  <label className="checkout-payment-method">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="wallet"
-                      checked={formData.paymentMethod === 'wallet'}
-                      onChange={(e) => setFormData(prev => ({ ...prev, paymentMethod: e.target.value }))}
-                      className="payment-radio"
-                    />
-                    <div className="checkout-payment-content">
-                      <div className="payment-icon">👛</div>
-                      <div className="payment-info">
-                        <div className="payment-name">Digital Wallet</div>
-                        <div className="payment-desc">Paytm, Amazon Pay, Mobikwik</div>
-                      </div>
-                    </div>
-                  </label>
-
-                  <label className="checkout-payment-method">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="cod"
-                      checked={formData.paymentMethod === 'cod'}
-                      onChange={(e) => setFormData(prev => ({ ...prev, paymentMethod: e.target.value }))}
-                      className="payment-radio"
-                    />
-                    <div className="checkout-payment-content">
-                      <div className="payment-icon">💰</div>
-                      <div className="payment-info">
-                        <div className="payment-name">Cash on Delivery</div>
-                        <div className="payment-desc">Pay when you receive</div>
-                      </div>
-                    </div>
-                  </label>
+                    </label>
+                  ))}
                 </div>
 
-                <div className="checkout-order-note-section">
-                  <label className="checkbox-container">
-                    <input type="checkbox" className="checkbox-input" />
-                    <span className="checkbox-label">Add a note to your order</span>
-                  </label>
-                </div>
+                {/* Stripe Payment Form - Only show for card payments */}
+                {formData.paymentMethod === 'card' && (
+                  <StripePaymentComponent
+                    formData={formData}
+                    appliedCoupon={appliedCoupon}
+                    orderSummary={orderSummary}
+                    onSuccess={handlePaymentSuccess}
+                    onError={handlePaymentError}
+                    submitting={submitting}
+                    setSubmitting={setSubmitting}
+                  />
+                )}
 
-                <div className="checkout-terms-section">
-                  <p className="checkout-terms-text">
-                    By proceeding with your purchase you agree to our Terms and Conditions and{' '}
-                    <a href="#" className="privacy-link">Privacy Policy</a>
-                  </p>
-                </div>
+                {/* UPI Payment Instructions */}
+                {formData.paymentMethod === 'upi' && (
+                  <div className="payment-instructions">
+                    <div className="upi-payment-info">
+                      <h3 style={{color: '#059669', margin: '0 0 1rem 0'}}>📱 UPI Payment Instructions</h3>
+                      <div style={{background: '#f0fdf4', padding: '1rem', borderRadius: '0.5rem', marginBottom: '1rem'}}>
+                        <p style={{margin: '0 0 0.5rem 0', color: '#166534'}}>
+                          <strong>Step 1:</strong> Click "Place Order" to confirm your order
+                        </p>
+                        <p style={{margin: '0 0 0.5rem 0', color: '#166534'}}>
+                          <strong>Step 2:</strong> You'll receive UPI payment link via email
+                        </p>
+                        <p style={{margin: '0', color: '#166534'}}>
+                          <strong>Step 3:</strong> Complete payment using any UPI app
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
-                <button
-                  type="submit"
-                  onClick={handleSubmit}
-                  disabled={submitting}
-                  className="place-order-btn"
-                >
-                  {submitting && <span className="loading-spinner"></span>}
-                  {submitting ? 'Placing Order...' : 'PLACE ORDER'}
-                </button>
+                {/* Net Banking Instructions */}
+                {formData.paymentMethod === 'netbanking' && (
+                  <div className="payment-instructions">
+                    <div className="netbanking-payment-info">
+                      <h3 style={{color: '#1e40af', margin: '0 0 1rem 0'}}>🏦 Net Banking Instructions</h3>
+                      <div style={{background: '#f0f9ff', padding: '1rem', borderRadius: '0.5rem', marginBottom: '1rem'}}>
+                        <p style={{margin: '0 0 0.5rem 0', color: '#1e40af'}}>
+                          <strong>Step 1:</strong> Click "Place Order" to confirm your order
+                        </p>
+                        <p style={{margin: '0 0 0.5rem 0', color: '#1e40af'}}>
+                          <strong>Step 2:</strong> You'll be redirected to your bank's secure portal
+                        </p>
+                        <p style={{margin: '0', color: '#1e40af'}}>
+                          <strong>Step 3:</strong> Login and complete the payment
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Non-Card Payment Button */}
+                {formData.paymentMethod !== 'card' && (
+                  <>
+                    <div className="checkout-terms-section">
+                      <p className="checkout-terms-text">
+                        By proceeding with your purchase you agree to our Terms and Conditions and{' '}
+                        <a href="#" className="privacy-link">Privacy Policy</a>
+                      </p>
+                    </div>
+
+                    <button
+                      type="submit"
+                      onClick={handleNonCardPaymentSubmit}
+                      disabled={submitting}
+                      className="place-order-btn"
+                      style={{
+                        background: formData.paymentMethod === 'upi' ? 'linear-gradient(135deg, #059669 0%, #10b981 100%)' :
+                                   formData.paymentMethod === 'netbanking' ? 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)' :
+                                   'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)'
+                      }}
+                    >
+                      {submitting && <span className="loading-spinner"></span>}
+                      {submitting ? 'Processing...' : 
+                       formData.paymentMethod === 'upi' ? `Pay ₹${orderSummary.total} via UPI` :
+                       formData.paymentMethod === 'netbanking' ? `Pay ₹${orderSummary.total} via Net Banking` :
+                       `PLACE ORDER (₹${orderSummary.total} COD)`}
+                    </button>
+                  </>
+                )}
               </div>
             </div>
 
             {/* Right Side - Order Summary */}
             <div className="checkout-right">
-              <div className="order-summary">
-                <div className="summary-header">
-                  <h2 className="summary-title">Order summary</h2>
-                  <button className="collapse-btn">
-                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414L11.414 12l3.293 3.293a1 1 0 01-1.414 1.414L10 13.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 12 5.293 8.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
-                  </button>
+              <div className="checkout-order-summary">
+                <div className="checkout-summary-header">
+                  <h2 className="checkout-summary-title">Order summary</h2>
                 </div>
 
                 {/* Order Items */}
-                <div className="order-items">
+                <div className="checkout-order-items">
                   {orderItems.map((item) => (
-                    <div key={item.productId._id} className="order-item">
-                      <div className="item-image-container">
+                    <div key={item.productId._id} className="checkout-order-item">
+                      <div className="checkout-item-image-container">
                         <img
                           src={item.productId.imageUrl || `${API_URL}/uploads/${item.productId.image}`}
                           alt={item.productId.name}
-                          className="item-image"
+                          className="checkout-item-image"
                           onError={(e) => {
                             e.target.src = 'https://via.placeholder.com/64';
                           }}
                         />
-                        <span className="item-quantity-badge">
+                        <span className="checkout-item-quantity-badge">
                           {item.quantity}
                         </span>
                       </div>
-                      <div className="item-details">
-                        <h3 className="item-name">{item.productId.name}</h3>
-                        <p className="item-price">${item.productId.price}</p>
+                      <div className="checkout-item-details">
+                        <h3 className="checkout-item-name">{item.productId.name}</h3>
+                        <p className="checkout-item-price">${item.productId.price}</p>
                         {item.productId.brand && (
-                          <p className="item-brand">{item.productId.brand}</p>
+                          <p className="checkout-item-brand">{item.productId.brand}</p>
                         )}
                       </div>
-                      <div className="item-total">
+                      <div className="checkout-item-total">
                         <p>${(item.productId.price * item.quantity).toFixed(2)}</p>
                       </div>
                     </div>
@@ -664,7 +747,7 @@ const CheckoutPage = () => {
                           <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414L11.414 12l3.293 3.293a1 1 0 01-1.414 1.414L10 13.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 12 5.293 8.707a1 1 0 010-1.414z" clipRule="evenodd" />
                         </svg>
                       </button>
-
+                      
                       {showCouponInput && (
                         <div className="coupon-input-container">
                           <input
@@ -705,24 +788,24 @@ const CheckoutPage = () => {
                     <span>Subtotal</span>
                     <span>${orderSummary.subtotal}</span>
                   </div>
-
+                  
                   <div className="total-row">
-                    <span>Tax (HST 13%)</span> 
+                    <span>Tax (HST 13%)</span>
                     <span>${orderSummary.tax}</span>
                   </div>
-
+                  
                   <div className="total-row">
                     <span>Shipping</span>
                     <span>{parseFloat(orderSummary.shipping) === 0 ? 'FREE' : `$${orderSummary.shipping}`}</span>
                   </div>
-
+                  
                   {appliedCoupon && (
                     <div className="total-row discount-row">
                       <span>Discount ({appliedCoupon.code})</span>
-                      <span>-${appliedCoupon.discount}</span>
+                      <span>- ${appliedCoupon.discount}</span>
                     </div>
                   )}
-
+                  
                   {parseFloat(orderSummary.shipping) === 0 && (
                     <div className="free-shipping-notice">
                       🎉 You've earned free shipping!
@@ -740,7 +823,6 @@ const CheckoutPage = () => {
           </div>
         </div>
       </div>
-      <Banner />
       <Footer />
     </>
   );

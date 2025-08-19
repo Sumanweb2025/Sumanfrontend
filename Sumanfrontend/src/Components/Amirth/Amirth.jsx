@@ -5,6 +5,7 @@ import './Amirth.css';
 import Header from '../Header/Header';
 import Footer from "../Footer/Footer";
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
+import BgImage1 from '../../assets/amirth brand bg.jpeg';
 
 const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
 
   // Carousel images for hero section
   const carouselImages = [
-    'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
+    BgImage1,
     'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1980&q=80',
     'https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80'
   ];

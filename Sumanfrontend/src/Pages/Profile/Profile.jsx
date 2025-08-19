@@ -83,6 +83,7 @@ const getImageUrl = (imageUrl) => {
         console.log('✅ Profile data received:', data.data.user);
         setUser(data.data.user);
         
+
         // The backend now handles the priority logic and returns the correct URL in profileImage
         const imageUrl = data.data.user.profileImage;
         
@@ -101,6 +102,7 @@ const getImageUrl = (imageUrl) => {
           console.log('📷 No profile image found');
           setProfileImagePreview(null);
         }
+
         
         setFormData({
           name: data.data.user.name || '',
@@ -125,6 +127,7 @@ const getImageUrl = (imageUrl) => {
     }
   };
 
+
   // Check if current image is from Google - UPDATED
   const isGoogleProfileImage = () => {
     if (!user || !user.authProvider) return false;
@@ -144,10 +147,12 @@ const getImageUrl = (imageUrl) => {
     });
     
     return isGoogleUser && hasGoogleImage && currentImageIsGoogle && !profileImage;
+
   };
 
   // Handle profile image selection
   const handleImageSelect = (e) => {
+
     console.log('🖼️ File selection started');
     const file = e.target.files[0];
     
@@ -158,6 +163,7 @@ const getImageUrl = (imageUrl) => {
         type: file.type,
         sizeMB: (file.size / (1024 * 1024)).toFixed(2) + 'MB'
       });
+
 
       // Check file size (limit to 5MB)
       if (file.size > 5 * 1024 * 1024) {
@@ -171,12 +177,15 @@ const getImageUrl = (imageUrl) => {
         return;
       }
       
+
       console.log('✅ File validation passed');
+
       setProfileImage(file);
       
       // Create preview
       const reader = new FileReader();
       reader.onload = (e) => {
+
         console.log('✅ Preview created for new upload');
         setProfileImagePreview(e.target.result);
       };
@@ -184,9 +193,11 @@ const getImageUrl = (imageUrl) => {
         console.error('❌ FileReader error:', e);
         alert('Failed to create image preview');
       };
+
       reader.readAsDataURL(file);
     }
   };
+
 
   // Remove profile image - UPDATED
   const handleRemoveImage = () => {
@@ -203,6 +214,7 @@ const getImageUrl = (imageUrl) => {
       console.log('❌ Removing image completely');
       setProfileImagePreview(null);
     }
+
     
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
@@ -211,6 +223,7 @@ const getImageUrl = (imageUrl) => {
 
   // Upload profile image
   const uploadProfileImage = async () => {
+
     console.log('🚀 Starting image upload...');
     
     if (!profileImage) {
@@ -224,11 +237,13 @@ const getImageUrl = (imageUrl) => {
       formDataObj.append('profileImage', profileImage);
       
       console.log('📤 Uploading to backend...');
+
       const response = await fetch('http://localhost:8000/api/auth/upload-profile-image', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
         },
+
         body: formDataObj
       });
       
@@ -243,6 +258,7 @@ const getImageUrl = (imageUrl) => {
       throw new Error(data.message || 'Failed to upload image');
     } catch (error) {
       console.error('❌ Upload error:', error);
+
       throw error;
     }
   };
@@ -299,13 +315,16 @@ const getImageUrl = (imageUrl) => {
       // Upload image first if there's a new image
       let imageUrl = null;
       if (profileImage) {
+
         console.log('📸 Uploading new image...');
         imageUrl = await uploadProfileImage();
         console.log('✅ Image uploaded:', imageUrl);
+
       }
       
       // Prepare update data
       const updateData = { ...formData };
+
       
       // Clean phone number
       if (updateData.phone) {
@@ -325,12 +344,15 @@ const getImageUrl = (imageUrl) => {
         }
       }
       
+
       if (imageUrl) {
         updateData.profileImage = imageUrl;
       }
       
+
       console.log('📝 Update data being sent:', updateData);
       
+
       const response = await fetch('http://localhost:8000/api/auth/profile', {
         method: 'PUT',
         headers: {
@@ -384,6 +406,7 @@ const getImageUrl = (imageUrl) => {
     setIsEditing(false);
     setProfileImage(null);
     
+
     // Reset to original image from user data
     if (user?.profileImage) {
       const fullOriginalUrl = getImageUrl(user.profileImage);
@@ -393,7 +416,7 @@ const getImageUrl = (imageUrl) => {
       console.log('❌ No original image to reset to');
       setProfileImagePreview(null);
     }
-    
+
     // Reset form data to original user data
     if (user) {
       setFormData({
@@ -476,9 +499,11 @@ const getImageUrl = (imageUrl) => {
                       src={profileImagePreview} 
                       alt="Profile" 
                       className="profile-image"
+
                       onLoad={() => console.log('✅ Image loaded successfully:', profileImagePreview)}
                       onError={(e) => {
                         console.error('❌ Image failed to load:', e.target.src);
+
                         // Fallback to default avatar if image fails to load
                         e.target.style.display = 'none';
                         e.target.nextSibling.style.display = 'flex';
@@ -576,6 +601,7 @@ const getImageUrl = (imageUrl) => {
                     <FaPhone /> Phone
                   </label>
                   {isEditing ? (
+
                     <div className="phone-input-wrapper">
                       <input
                         type="tel"
@@ -601,6 +627,7 @@ const getImageUrl = (imageUrl) => {
                     <span className="profile-form-value">
                       {user.phone ? `+91 ${user.phone}` : 'Not provided'}
                     </span>
+
                   )}
                 </div>
               </div>
@@ -677,6 +704,7 @@ const getImageUrl = (imageUrl) => {
               {/* Account Information */}
               <div className="profile-form-section">
                 <h3>Account Information</h3>
+
                 
                 <div className="profile-form-group">
                   <label>Sign-in Method</label>
@@ -685,6 +713,7 @@ const getImageUrl = (imageUrl) => {
                   </span>
                 </div>
                 
+
                 <div className="profile-form-group">
                   <label>Member Since</label>
                   <span className="profile-form-value">
