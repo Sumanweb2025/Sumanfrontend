@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock, FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaPaperPlane } from 'react-icons/fa';
+import {
+  FaPhone,
+  FaEnvelope,
+  FaMapMarkerAlt,
+  FaClock,
+  FaFacebook,
+  FaTwitter,
+  FaInstagram,
+  FaLinkedin,
+  FaPaperPlane
+} from 'react-icons/fa';
 import './Contact.css';
 import Header from '../../Components/Header/Header';
 import Footer from '../../Components/Footer/Footer';
@@ -17,31 +27,43 @@ const Contact = () => {
   });
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1000);
+    const timer = setTimeout(() => setLoading(false), 1000);
     return () => clearTimeout(timer);
   }, []);
 
   const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Message sent! We'll get back to you soon.");
-    setFormData({ name: '', email: '', subject: '', message: '' });
+    try {
+      const response = await fetch('http://localhost:8000/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      const result = await response.json();
+
+      if (result.success) {
+        alert("Message sent successfully! We'll get back to you soon.");
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        alert(result.message || 'Something went wrong. Please try again.');
+      }
+    } catch (err) {
+      console.error('Contact form submission error:', err);
+      alert('Server error. Please try again later.');
+    }
   };
 
   const contactInfo = [
     {
       icon: <FaPhone className="contact-icon" />,
       title: 'Phone',
-      detail: '+1 6475736363',
-      subdetail: 'Mon - Fri, 9:30 AM - 6:30 PM'
+      detail: '+1 647-573-6363',
+      subdetail: 'Mon–Fri, 9:30 AM – 6:30 PM'
     },
     {
       icon: <FaEnvelope className="contact-icon" />,
@@ -58,27 +80,31 @@ const Contact = () => {
     {
       icon: <FaClock className="contact-icon" />,
       title: 'Working Hours',
-      detail: 'Mon - Fri: 9:30 AM - 6:30 PM',
+      detail: 'Mon–Fri: 9:30 AM – 6:30 PM',
       subdetail: 'Weekend: Closed'
     }
   ];
 
   return (
     <>
-      <LoadingSpinner 
-        isLoading={loading} 
-        brandName="Iyappaa Sweets & Snacks" 
+      <LoadingSpinner
+        isLoading={loading}
+        brandName="Iyappaa Sweets & Snacks"
         loadingText="Loading contact information..."
         progressColor="#3b82f6"
       />
+
       <Header />
-      
+
       <div className="contact-page">
         {/* Hero Section */}
-        <section 
+        <section
           className="contact-hero"
           style={{
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1423666639041-f56000c27a9a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
+            backgroundImage: `
+              linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+              url('https://images.unsplash.com/photo-1423666639041-f56000c27a9a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')
+            `
           }}
         >
           <div className="hero-content">
@@ -101,10 +127,13 @@ const Contact = () => {
         </section>
 
         {/* Contact Info Cards */}
-        <section 
+        <section
           className="contact-info-section"
           style={{
-            backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
+            backgroundImage: `
+              linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)),
+              url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')
+            `
           }}
         >
           <div className="contact-container">
@@ -114,18 +143,16 @@ const Contact = () => {
               <p className="contact-section-subtitle">Multiple ways to reach us</p>
             </div>
             <div className="contact-info-grid">
-              {contactInfo.map((info, index) => (
+              {contactInfo.map((info, idx) => (
                 <motion.div
-                  key={index}
+                  key={idx}
                   className="contact-info-card"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  transition={{ duration: 0.6, delay: idx * 0.1 }}
                   whileHover={{ y: -10 }}
                 >
-                  <div className="contact-icon-container">
-                    {info.icon}
-                  </div>
+                  <div className="contact-icon-container">{info.icon}</div>
                   <h3>{info.title}</h3>
                   <p className="detail">{info.detail}</p>
                   <p className="subdetail">{info.subdetail}</p>
@@ -136,10 +163,13 @@ const Contact = () => {
         </section>
 
         {/* Contact Form Section */}
-        <section 
+        <section
           className="contact-form-section"
           style={{
-            backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75)), url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
+            backgroundImage: `
+              linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75)),
+              url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')
+            `
           }}
         >
           <div className="container">
@@ -156,7 +186,7 @@ const Contact = () => {
                   <p>Have a question or want to work together? We'd love to hear from you.</p>
                 </div>
 
-                <div className="contact-form">
+                <form className="contact-form" onSubmit={handleSubmit}>
                   <div className="form-row">
                     <div className="form-group">
                       <input
@@ -200,7 +230,7 @@ const Contact = () => {
                     ></textarea>
                   </div>
                   <motion.button
-                    onClick={handleSubmit}
+                    type="submit"
                     className="submit-button"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -208,7 +238,7 @@ const Contact = () => {
                     <FaPaperPlane className="button-icon" />
                     Send Message
                   </motion.button>
-                </div>
+                </form>
               </motion.div>
 
               <motion.div
@@ -226,7 +256,6 @@ const Contact = () => {
                     <li>✓ Quality guaranteed</li>
                     <li>✓ Local Toronto business</li>
                   </ul>
-
                   <div className="social-section">
                     <h4>Follow Us</h4>
                     <div className="social-icons">
@@ -259,12 +288,13 @@ const Contact = () => {
                 allowFullScreen=""
                 loading="lazy"
                 title="Iyappaa Sweets & Snacks Location"
-              ></iframe>
+              />
             </div>
           </div>
         </section>
       </div>
-      <Banner/>
+
+      <Banner />
       <Footer />
     </>
   );

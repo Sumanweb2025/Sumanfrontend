@@ -26,12 +26,139 @@ const FeaturedProducts = () => {
   const [showCartPopup, setShowCartPopup] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
+  // Newsletter states
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterLoading, setNewsletterLoading] = useState(false);
+  const [newsletterMessage, setNewsletterMessage] = useState({ type: '', text: '' });
+
   const navigate = useNavigate();
 
   // API endpoints
   const API_ENDPOINTS = {
     sweets: `${API_URL}/api/products/search?category=sweets`,
     snacks: `${API_URL}/api/products/search?category=sweets`
+  };
+
+  // Show newsletter message
+  const showNewsletterMessage = (type, text) => {
+    setNewsletterMessage({ type, text });
+    setTimeout(() => setNewsletterMessage({ type: '', text: '' }), 5000);
+  };
+
+  // Newsletter subscription handler
+  const handleNewsletterSubscription = async (e) => {
+    e?.preventDefault();
+    
+    if (!newsletterEmail) {
+      showNewsletterMessage('error', 'Please enter your email address');
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newsletterEmail)) {
+      showNewsletterMessage('error', 'Please enter a valid email address');
+      return;
+    }
+
+    setNewsletterLoading(true);
+    
+    try {
+      // Get user token if available
+      const token = localStorage.getItem('token');
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+      
+      // Add auth header if user is logged in
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      // Prepare subscription data
+      const subscriptionData = {
+        email: newsletterEmail,
+        subscriptionType: 'newsletter',
+        source: 'website',
+        preferences: {
+          emailNotifications: true,
+          promotionalEmails: true,
+          weeklyDigest: true,
+          smsNotifications: false
+        }
+      };
+
+      // If user is logged in, we can add more details
+      if (token) {
+        try {
+          // Try to get user info for more personalized subscription
+          const userResponse = await axios.get(`${API_URL}/api/auth/profile`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          
+          if (userResponse.data && userResponse.data.name) {
+            subscriptionData.name = userResponse.data.name;
+          }
+          if (userResponse.data && userResponse.data.phone) {
+            subscriptionData.phone = userResponse.data.phone;
+          }
+        } catch (userError) {
+          console.log('Could not fetch user details:', userError);
+          // Continue without user details
+        }
+      }
+
+      // Make subscription API call
+      const response = await axios.post(`${API_URL}/api/subscription/subscribe`, subscriptionData, {
+        headers
+      });
+
+      if (response.data) {
+        showNewsletterMessage('success', 'Successfully subscribed! Check your email for verification. 🎉');
+        setNewsletterEmail('');
+        
+        // Optional: Track subscription event
+        if (window.gtag) {
+          window.gtag('event', 'newsletter_subscription', {
+            event_category: 'engagement',
+            event_label: 'newsletter_signup'
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Newsletter subscription error:', error);
+      
+      let errorMessage = 'Failed to subscribe. Please try again.';
+      
+      if (error.response) {
+        // Server responded with error status
+        if (error.response.status === 400) {
+          const errorData = error.response.data;
+          if (errorData.message) {
+            errorMessage = errorData.message;
+          } else if (errorData.errors && errorData.errors.length > 0) {
+            errorMessage = errorData.errors[0].msg;
+          }
+        } else if (error.response.status === 409) {
+          errorMessage = 'You are already subscribed to our newsletter!';
+        } else if (error.response.status >= 500) {
+          errorMessage = 'Server error. Please try again later.';
+        }
+      } else if (error.request) {
+        errorMessage = 'Network error. Please check your connection.';
+      }
+      
+      showNewsletterMessage('error', errorMessage);
+    } finally {
+      setNewsletterLoading(false);
+    }
+  };
+
+  // Handle Enter key press in newsletter input
+  const handleNewsletterKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleNewsletterSubscription(e);
+    }
   };
 
   // Fetch products from backend
@@ -424,30 +551,59 @@ const FeaturedProducts = () => {
             </div>
           </div>
         </div>
-        {/* Newsletter Section */}
-        <div className="newsletter-section">
-          <div className="newsletter-content">
-            <div className="newsletter-text">
-              <h3 className="small-text text-animate newsletter-title">$20 discount for your first order</h3>
-              <h2 className="sub-title text-animate newsletter-subtitle">Join our newsletter and get...</h2>
-              <p className="body-text newsletter-description">
-                Join our email subscription now to get updates on
-                promotions and coupons.
-              </p>
-            </div>
-            <div className="newsletter-form">
-              <div className="newsletter-input-container">
-                <span className="newsletter-email-icon">📧</span>
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="newsletter-input"
-                />
-              </div>
-              <button className="newsletter-btn">SUBSCRIBE</button>
-            </div>
+        
+{/* Enhanced Newsletter Section */}
+<div className="newsletter-section">
+  <div className="newsletter-content">
+    <div className="newsletter-text">
+      <h3 className="small-text text-animate newsletter-title">$20 discount for your first order</h3>
+      <h2 className="sub-title text-animate newsletter-subtitle">Join our newsletter and get...</h2>
+      <p className="body-text newsletter-description">
+        Join our email subscription now to get updates on
+        promotions and coupons.
+      </p>
+    </div>
+    
+    {/* Add this wrapper div */}
+    <div className="newsletter-form-wrapper">
+      <div className="newsletter-form">
+        {/* Newsletter Message */}
+        {newsletterMessage.text && (
+          <div className={`newsletter-message ${newsletterMessage.type === 'success' ? 'success' : 'error'}`}>
+            {newsletterMessage.text}
           </div>
+        )}
+        
+        <div className="newsletter-input-container">
+          <span className="newsletter-email-icon">📧</span>
+          <input
+            type="email"
+            placeholder="Enter your email"
+            className="newsletter-input"
+            value={newsletterEmail}
+            onChange={(e) => setNewsletterEmail(e.target.value)}
+            onKeyPress={handleNewsletterKeyPress}
+            disabled={newsletterLoading}
+          />
         </div>
+        <button 
+          className={`newsletter-btn ${newsletterLoading ? 'loading' : ''}`}
+          onClick={handleNewsletterSubscription}
+          disabled={newsletterLoading}
+        >
+          {newsletterLoading ? (
+            <>
+              <span className="newsletter-spinner"></span>
+              SUBSCRIBING...
+            </>
+          ) : (
+            'SUBSCRIBE'
+          )}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
       </section>
 
       {/* Wishlist Popup */}

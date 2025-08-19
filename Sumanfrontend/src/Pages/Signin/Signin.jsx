@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -59,7 +58,6 @@ const GoogleSignIn = ({ onSuccess, onError, loading }) => {
   );
 };
 
-
 const SignIn = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -70,6 +68,34 @@ const SignIn = () => {
     password: '',
     rememberMe: false
   });
+
+  // Helper function to safely store user data with image handling
+  const storeUserData = (user, token) => {
+    try {
+      // Create a cleaned user object for storage
+      const userDataToStore = {
+        ...user,
+        // Ensure profile image is properly formatted
+        profileImage: user.profileImage || user.picture || null
+      };
+
+      console.log('Storing user data:', {
+        name: userDataToStore.name,
+        email: userDataToStore.email,
+        hasProfileImage: !!userDataToStore.profileImage,
+        profileImageType: userDataToStore.profileImage ? 
+          (userDataToStore.profileImage.startsWith('data:') ? 'base64' : 'url') : 'none'
+      });
+
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(userDataToStore));
+      
+      return true;
+    } catch (error) {
+      console.error('Error storing user data:', error);
+      return false;
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -120,14 +146,27 @@ const SignIn = () => {
       });
 
       if (response.data.success) {
-        // Handle both data structures - with or without data wrapper
-        const token = response.data.token || response.data.data?.token;
-        const user = response.data.user || response.data.data?.user;
+        // Always use the nested data structure (consistent with backend)
+        const token = response.data.data.token;
+        const user = response.data.data.user;
         
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(user));
-        alert('Welcome back to Food Court!');
-        navigate('/', { replace: true });
+        console.log('Regular login - User data received:', {
+          name: user.name,
+          email: user.email,
+          profileImage: user.profileImage,
+          picture: user.picture,
+          authProvider: user.authProvider
+        });
+
+        // Store user data safely
+        const stored = storeUserData(user, token);
+        
+        if (stored) {
+          alert('Welcome back to Food Court!');
+          navigate('/', { replace: true });
+        } else {
+          setErrors({ api: 'Failed to save user data. Please try again.' });
+        }
       }
 
     } catch (error) {
@@ -157,25 +196,41 @@ const SignIn = () => {
     }
   };
 
-
   const handleGoogleSuccess = async (credential) => {
-
     setGoogleLoading(true);
     setErrors({});
 
     try {
-
+      console.log('Sending Google credential to backend...');
+      
       const response = await axios.post('http://localhost:8000/api/auth/google-auth', {
         credential
       });
 
+      console.log('Google auth response:', response.data);
+
       if (response.data.success) {
-        // Store user data and token
-        localStorage.setItem('token', response.data.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.data.user));
+        const { token, user } = response.data.data;
         
-        // Redirect to home page
-        navigate('/', { replace: true });
+        console.log('Google login - User data received:', {
+          name: user.name,
+          email: user.email,
+          profileImage: user.profileImage,
+          picture: user.picture,
+          googleProfileImage: user.googleProfileImage,
+          authProvider: user.authProvider,
+          profileImageInfo: user.profileImageInfo
+        });
+
+        // Store user data safely
+        const stored = storeUserData(user, token);
+        
+        if (stored) {
+          alert(`Welcome ${user.name}! Google sign-in successful.`);
+          navigate('/', { replace: true });
+        } else {
+          setErrors({ api: 'Failed to save user data. Please try again.' });
+        }
       }
 
     } catch (error) {
@@ -183,19 +238,18 @@ const SignIn = () => {
       
       if (error.response && error.response.data) {
         setErrors({ api: error.response.data.message || 'Google authentication failed' });
+      } else if (error.request) {
+        setErrors({ api: 'Network error. Please check your connection and try again.' });
       } else {
-        setErrors({ api: 'Network error. Please try again.' });
-
+        setErrors({ api: 'An unexpected error occurred. Please try again.' });
       }
     } finally {
       setGoogleLoading(false);
     }
   };
 
-
   const handleGoogleError = (errorMessage) => {
     setErrors({ api: errorMessage });
-
   };
 
   return (
@@ -211,8 +265,6 @@ const SignIn = () => {
         <h2 className="form-title">Sign In to Your Account</h2>
         <p className="form-subtitle">Continue your culinary journey</p>
 
-        
-        
         {errors.api && <div className="error-message">{errors.api}</div>}
         
         {/* Google Sign-In Button */}
@@ -236,7 +288,6 @@ const SignIn = () => {
         
         {/* Email/Password Form */}
         <form onSubmit={handleSubmit} className="signin-form">
-
           <div className="form-group">
             <input
               type="email"
@@ -285,17 +336,13 @@ const SignIn = () => {
 
           <div className="signin-btn-container">
             <button type="submit" className="signin-btn" disabled={loading || googleLoading}>
-            {loading ? (
-              <>
-                <span className="spinner"></span> Signing In...
-              </>
-            ) : 'Sign In'}
-          </button>
+              {loading ? (
+                <>
+                  <span className="spinner"></span> Signing In...
+                </>
+              ) : 'Sign In'}
+            </button>
           </div>
-
-          
-          
-
         </form>
 
         <div className="signin-footer">

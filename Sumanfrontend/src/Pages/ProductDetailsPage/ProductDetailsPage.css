@@ -1,6 +1,6 @@
 /* Product Details Page Styles */
 .product-details-page {
-  background-color: #f8f9fa;
+  background-color: rgba(17, 208, 23, 0.1);
   min-height: 100vh;
   padding: 20px 0;
 }
@@ -9,6 +9,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
+  position: relative; /* Added for wishlist positioning */
 }
 
 /* Breadcrumb */
@@ -42,15 +43,16 @@
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   margin-bottom: 40px;
+  position: relative; /* Added for wishlist positioning */
 }
 
-/* Wishlist Button - Top Right */
+/* Wishlist Button - Better positioned */
 .product-details-wishlist-btn {
   position: absolute;
-  top: 250px;
-  right: 80px;
-  width: 50px;
-  height: 50px;
+  top: 20px;
+  right: 20px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   border: 2px solid #ddd;
   background-color: white;
@@ -58,7 +60,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 20px;
   color: #666;
   transition: all 0.3s ease;
   z-index: 10;
@@ -69,6 +71,7 @@
   border-color: #ff9800;
   color: #ff9800;
   transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(255, 152, 0, 0.2);
 }
 
 .product-details-wishlist-btn.active {
@@ -77,11 +80,59 @@
   border-color: #e91e63;
 }
 
+.product-details-wishlist-btn.active:hover {
+  background-color: #c2185b;
+  border-color: #c2185b;
+}
+
 .product-details-wishlist-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
 }
+
+/* Alternative: Wishlist button in product info section */
+.product-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.product-title-section {
+  flex: 1;
+}
+
+.product-wishlist-inline {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  background-color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #666;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  margin-left: 15px;
+}
+
+.product-wishlist-inline:hover {
+  border-color: #ff9800;
+  color: #ff9800;
+  transform: scale(1.05);
+}
+
+.product-wishlist-inline.active {
+  background-color: #e91e63;
+  color: white;
+  border-color: #e91e63;
+}
+
 .product-stock-info {
   margin: 10px 0;
 }
@@ -102,11 +153,47 @@
 .product-price-section {
   margin: 15px 0;
 }
+
 /* Product Images */
 .product-images {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  position: relative; /* For image overlay wishlist */
+}
+
+/* Alternative: Wishlist overlay on image */
+.product-images .wishlist-overlay {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #666;
+  transition: all 0.3s ease;
+  z-index: 5;
+}
+
+.product-images .wishlist-overlay:hover {
+  background-color: white;
+  border-color: #ff9800;
+  color: #ff9800;
+  transform: scale(1.05);
+}
+
+.product-images .wishlist-overlay.active {
+  background-color: #e91e63;
+  color: white;
+  border-color: rgba(233, 30, 99, 0.8);
 }
 
 .main-image {
@@ -181,10 +268,12 @@
   gap: 5px;
   margin: 10px 0;
 }
+
 .star {
   font-size: 18px;
   color: #ddd;
 }
+
 .star-filled {
   color: #ffc107;
 }
@@ -309,6 +398,144 @@
   box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
 }
 
+/* Alternative: Wishlist as action button */
+.wishlist-action-btn {
+  flex: 1;
+  padding: 15px 25px;
+  background-color: white;
+  color: #e91e63;
+  border: 2px solid #e91e63;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.wishlist-action-btn:hover {
+  background-color: #e91e63;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+}
+
+.wishlist-action-btn.active {
+  background-color: #e91e63;
+  color: white;
+}
+
+.wishlist-action-btn.active:hover {
+  background-color: #c2185b;
+  border-color: #c2185b;
+}
+
+/* Responsive Design Updates */
+@media (max-width: 768px) {
+  .product-details-content {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding: 20px;
+  }
+  
+  .product-details-wishlist-btn {
+    top: 15px;
+    right: 15px;
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+  
+  .product-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+  
+  .product-wishlist-inline {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    margin-left: 0;
+    margin-top: 10px;
+    align-self: flex-end;
+  }
+  
+  .product-images .wishlist-overlay {
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+  
+  .main-image {
+    height: 300px;
+  }
+  
+  .product-title {
+    font-size: 24px;
+  }
+  
+  .current-price {
+    font-size: 28px;
+  }
+  
+  .details-action-buttons {
+    flex-direction: column;
+  }
+  
+  .wishlist-action-btn {
+    order: -1; /* Place wishlist button above cart button */
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 10px;
+  }
+  
+  .product-details-content {
+    padding: 15px;
+  }
+  
+  .product-details-wishlist-btn {
+    top: 10px;
+    right: 10px;
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
+  }
+  
+  .product-wishlist-inline {
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
+  }
+  
+  .product-images .wishlist-overlay {
+    top: 8px;
+    right: 8px;
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
+  }
+  
+  .main-image {
+    height: 250px;
+  }
+  
+  .product-title {
+    font-size: 20px;
+  }
+  
+  .current-price {
+    font-size: 24px;
+  }
+}
 /* Product Tabs Section */
 .product-tabs-section {
   background: white;
