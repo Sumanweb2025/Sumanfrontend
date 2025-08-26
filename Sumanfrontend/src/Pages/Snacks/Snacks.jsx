@@ -46,7 +46,7 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
       try {
         // Change this to fetch snacks category instead of sweets
         const productsResponse = await axios.get(
-          `${API_URL}api/products/search?category=sweets`
+          `${API_URL}api/products/search?category=snacks`
         );
         const productsData =
           productsResponse.data?.data ||
@@ -366,7 +366,7 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                     placeholder="Search products..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="search-input"
+                    className="snacks-search-input"
                   />
                 </div>
               </div>

@@ -36,7 +36,7 @@
 
 .venba-carousel-slide {
   position: relative;
-  width: 33.333%;
+  width: calc(100% / 3);
   height: 100%;
   flex-shrink: 0;
 }

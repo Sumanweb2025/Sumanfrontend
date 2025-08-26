@@ -256,14 +256,14 @@ const SignIn = () => {
     <div className="signin-wrapper">
       <div className="signin-left">
         <div className="promo-text">
-          <h1>Welcome Back to Food Court</h1>
-          <p>Best Asian food under one roof<br />Takeaway | Dining | Delivery</p>
+          <h1>Welcome Back to Iyappaa Sweets & Snacks</h1>
+          <p>Best Sweets and Snacks under one roof<br />Takeaway | Dining | Delivery</p>
         </div>
       </div>
 
       <div className="signin-right">
         <h2 className="form-title">Sign In to Your Account</h2>
-        <p className="form-subtitle">Continue your culinary journey</p>
+        <p className="form-subtitle">Continue your journey</p>
 
         {errors.api && <div className="error-message">{errors.api}</div>}
         

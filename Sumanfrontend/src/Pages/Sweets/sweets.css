@@ -427,16 +427,30 @@
   color: #666;
 }
 .sweets-product-stock {
-  font-size: 14px;
-  margin: 5px 0;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 5;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .sweets-product-stock.in-stock {
-  color: #28a745; /* Green for in stock */
+  background: rgba(76, 175, 80, 0.9);
+  color: white;
+  border: 1px solid rgba(76, 175, 80, 0.3);
 }
 
 .sweets-product-stock.out-of-stock {
-  color: #dc3545; /* Red for out of stock */
+  background: rgba(244, 67, 54, 0.9);
+  color: white;
+  border: 1px solid rgba(244, 67, 54, 0.3);
 }
 
 /* Responsive Design */

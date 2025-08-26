@@ -235,7 +235,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
   };
 
   const handleViewAllProducts = () => {
-    navigate('/products');
+    navigate('/sweets');
   };
 
   const nextSlide = () => {

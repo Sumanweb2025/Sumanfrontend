@@ -310,7 +310,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         {/* Hero Carousel Section */}
         <div className="venba-hero-carousel">
           <div className="venba-carousel-container">
-            <div className="venba-carousel-wrapper" style={{ transform: `translateX(-${currentCarouselIndex * 100}%)` }}>
+            <div className="venba-carousel-wrapper" style={{ transform: `translateX(-${currentCarouselIndex * (100/3)}%)` }}>
               {carouselImages.map((image, index) => (
                 <div key={index} className="venba-carousel-slide">
                   <img src={image} alt={`Venba Foods ${index + 1}`} />
@@ -550,8 +550,6 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                           </div>
 
                           <div className="price-text venba-product-price">${product.price}</div>
-
-                          {product.piece && <div className="venba-product-piece">{product.piece} pieces</div>}
 
                           <button
                             className="venba-add-to-cart-btn"

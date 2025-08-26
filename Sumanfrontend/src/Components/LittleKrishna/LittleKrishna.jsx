@@ -310,7 +310,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         {/* Hero Carousel Section */}
         <div className="little-krishna-hero-carousel">
           <div className="little-krishna-carousel-container">
-            <div className="little-krishna-carousel-wrapper" style={{ transform: `translateX(-${currentCarouselIndex * 100}%)` }}>
+            <div className="little-krishna-carousel-wrapper" style={{ transform: `translateX(-${currentCarouselIndex * (100/3)}%)` }}>
               {carouselImages.map((image, index) => (
                 <div key={index} className="little-krishna-carousel-slide">
                   <img src={image} alt={`Little Krishna Foods ${index + 1}`} />
@@ -550,8 +550,6 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                           </div>
 
                           <div className="price-text little-krishna-product-price">${product.price}</div>
-
-                          {product.piece && <div className="little-krishna-product-piece">{product.piece} pieces</div>}
 
                           <button
                             className="little-krishna-add-to-cart-btn"

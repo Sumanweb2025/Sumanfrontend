@@ -108,7 +108,35 @@ const CartPage = () => {
 
       const cartData = response.data?.data || response.data;
       console.log('Cart data received:', cartData); // Debug log
-      setCartItems(cartData.items || []);
+      
+      // Filter out items with null or invalid product references
+      const validCartItems = (cartData.items || []).filter(item => {
+        const isValid = item && item.productId && (
+          typeof item.productId === 'object' 
+            ? item.productId._id || item.productId.id || item.productId.product_id
+            : item.productId
+        );
+        
+        if (!isValid) {
+          console.warn('Invalid cart item found:', item);
+        }
+        
+        return isValid;
+      });
+
+      setCartItems(validCartItems);
+      
+      // If we filtered out invalid items, show a notification
+      if (validCartItems.length < (cartData.items || []).length) {
+        const removedCount = (cartData.items || []).length - validCartItems.length;
+        showToast(`${removedCount} invalid item(s) removed from cart`, 'warning');
+        
+        // Optionally clean up the cart on the server
+        if (validCartItems.length === 0) {
+          handleClearCart();
+        }
+      }
+      
       setLoading(false);
     } catch (err) {
       console.error('Error fetching cart:', err);
@@ -121,12 +149,12 @@ const CartPage = () => {
   // Helper function to get correct image URL
   const getImageUrl = (product) => {
     // First priority: imageUrl from backend (now added by cart controller)
-    if (product.imageUrl) {
+    if (product?.imageUrl) {
       return product.imageUrl;
     }
 
     // Second priority: construct from image field using Products path
-    if (product.image) {
+    if (product?.image) {
       return `${API_URL}/images/Products/${product.image}`;
     }
 
@@ -145,9 +173,30 @@ const CartPage = () => {
     return isNaN(parsed) ? 0 : parsed;
   };
 
+  // Helper function to get product ID safely
+  const getProductId = (item) => {
+    if (!item || !item.productId) return null;
+    
+    const product = item.productId;
+    return product._id || product.id || product.product_id || null;
+  };
+
+  // Helper function to get product data safely
+  const getProductData = (item) => {
+    if (!item || !item.productId) return null;
+    
+    // If productId is populated object, return it
+    if (typeof item.productId === 'object' && item.productId !== null) {
+      return item.productId;
+    }
+    
+    // If it's just an ID string, we can't display much
+    return null;
+  };
+
   const updateQuantity = async (productId, newQuantity) => {
     const token = localStorage.getItem('token');
-    if (!token || newQuantity < 1) return;
+    if (!token || newQuantity < 1 || !productId) return;
 
     setUpdatingItems(prev => new Set(prev).add(productId));
 
@@ -160,12 +209,16 @@ const CartPage = () => {
       // Update with response data to ensure consistency
       const updatedCartData = response.data?.data;
       if (updatedCartData && updatedCartData.items) {
-        setCartItems(updatedCartData.items);
+        // Filter valid items again after update
+        const validItems = updatedCartData.items.filter(item => 
+          item && item.productId && getProductId(item)
+        );
+        setCartItems(validItems);
       } else {
         // Fallback to local update
         setCartItems(prev =>
           prev.map(item => {
-            const itemProductId = item.productId._id || item.productId;
+            const itemProductId = getProductId(item);
             if (itemProductId === productId) {
               return { ...item, quantity: newQuantity };
             }
@@ -191,12 +244,12 @@ const CartPage = () => {
 
   const handleRemoveFromCart = async (productId) => {
     const token = localStorage.getItem('token');
-    if (!token) return;
+    if (!token || !productId) return;
 
     // Get the product name for toast message
-    const productName = cartItems.find(item => 
-      (item.productId._id || item.productId) === productId
-    )?.productId?.name || 'Item';
+    const item = cartItems.find(item => getProductId(item) === productId);
+    const product = getProductData(item);
+    const productName = product?.name || product?.Name || 'Item';
 
     setUpdatingItems(prev => new Set(prev).add(productId));
 
@@ -208,11 +261,14 @@ const CartPage = () => {
       // Update with response data to ensure consistency
       const updatedCartData = response.data?.data;
       if (updatedCartData && updatedCartData.items) {
-        setCartItems(updatedCartData.items);
+        const validItems = updatedCartData.items.filter(item => 
+          item && item.productId && getProductId(item)
+        );
+        setCartItems(validItems);
       } else {
         // Fallback to local update
         setCartItems(prev =>
-          prev.filter(item => (item.productId._id || item.productId) !== productId)
+          prev.filter(item => getProductId(item) !== productId)
         );
       }
 
@@ -253,10 +309,14 @@ const CartPage = () => {
   };
 
   const handleProductClick = (product) => {
-    const productData = product.productId || product;
-    navigate(`/product/${productData.product_id || productData._id}`, {
-      state: { product: productData }
-    });
+    if (!product) return;
+    
+    const productId = product._id || product.id || product.product_id;
+    if (productId) {
+      navigate(`/product/${productId}`, {
+        state: { product: product }
+      });
+    }
   };
 
   const handleContinueShopping = () => {
@@ -284,9 +344,12 @@ const CartPage = () => {
 
   const calculateSubtotal = () => {
     return cartItems.reduce((total, item) => {
-      const price = safeParseFloat(item.productId?.price);
+      const product = getProductData(item);
+      if (!product) return total;
+      
+      const price = safeParseFloat(product.price || product.Price);
       const quantity = safeParseInt(item.quantity);
-      console.log(`Item: ${item.productId?.name}, Price: ${price}, Quantity: ${quantity}`); // Debug log
+      console.log(`Item: ${product.name || product.Name}, Price: ${price}, Quantity: ${quantity}`); // Debug log
       return total + (price * quantity);
     }, 0);
   };
@@ -385,16 +448,27 @@ const CartPage = () => {
                 </div>
 
                 <div className="cart-items">
-                  {cartItems.map((item) => {
-                    const product = item.productId;
-                    const productId = product._id || product.id;
+                  {cartItems.map((item, index) => {
+                    const product = getProductData(item);
+                    const productId = getProductId(item);
+                    
+                    // Skip items with invalid product data
+                    if (!product || !productId) {
+                      console.warn('Skipping invalid cart item:', item);
+                      return null;
+                    }
+                    
                     const isUpdating = updatingItems.has(productId);
                     const imageUrl = getImageUrl(product);
-                    const price = safeParseFloat(product.price);
+                    const price = safeParseFloat(product.price || product.Price);
                     const quantity = safeParseInt(item.quantity);
+                    const productName = product.name || product.Name || 'Unknown Product';
+                    const productBrand = product.brand || product.Brand;
+                    const productCategory = product.category || product.Category;
+                    const productDescription = product.description || product.Description;
 
                     return (
-                      <div key={productId} className={`cart-item ${isUpdating ? 'updating' : ''}`}>
+                      <div key={`${productId}-${index}`} className={`cart-item ${isUpdating ? 'updating' : ''}`}>
                         <button
                           className="remove-btn"
                           onClick={() => handleRemoveFromCart(productId)}
@@ -410,7 +484,7 @@ const CartPage = () => {
                         >
                           <img
                             src={imageUrl}
-                            alt={product.name || 'Product'}
+                            alt={productName}
                             className="product-image"
                             onError={(e) => {
                               console.log('Image failed to load:', e.target.src);
@@ -428,24 +502,24 @@ const CartPage = () => {
                             className="card-title text-animate item-name"
                             onClick={() => handleProductClick(product)}
                           >
-                            {product.name}
+                            {productName}
                           </h3>
 
-                          {product.brand && (
-                            <p className="item-brand">{product.brand}</p>
+                          {productBrand && (
+                            <p className="item-brand">{productBrand}</p>
                           )}
 
-                          {product.category && (
-                            <p className="item-category">{product.category}</p>
+                          {productCategory && (
+                            <p className="item-category">{productCategory}</p>
                           )}
 
                           <div className="price-text item-price">${price.toFixed(2)}</div>
 
-                          {product.description && (
+                          {productDescription && (
                             <p className="small-text item-description">
-                              {product.description.length > 80
-                                ? `${product.description.substring(0, 80)}...`
-                                : product.description
+                              {productDescription.length > 80
+                                ? `${productDescription.substring(0, 80)}...`
+                                : productDescription
                               }
                             </p>
                           )}

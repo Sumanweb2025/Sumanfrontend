@@ -1,4 +1,4 @@
-// SignUp.jsx - Enhanced with debugging and error handling
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -114,7 +114,7 @@ const SignUp = () => {
           localStorage.setItem('user', JSON.stringify(response.data.data.user));
         }
         
-        alert('Welcome to Food Court! Your account has been created successfully.');
+        alert('Welcome to Iyappaa Sweets & Snacks! Your account has been created successfully.');
         navigate('/', { replace: true });
       } else {
         // Handle case where response doesn't have expected structure
@@ -171,14 +171,15 @@ const SignUp = () => {
     <div className="signup-wrapper">
       <div className="signup-left">
         <div className="promo-text">
-          <h1>Join Food Court Today</h1>
-          <p>Best Asian food under one roof<br />Takeaway | Dining | Delivery</p>
+          <h1>Join Iyappaa Sweets & Snacks Today</h1>
+          <p>Best Sweets and Snacks under one roof<br />Takeaway | Dining | Delivery</p>
         </div>
       </div>
 
       <div className="signup-right">
+        <div className="signup-content">
         <h2 className="form-title">Create Your Account</h2>
-        <p className="form-subtitle">Start your culinary journey</p>
+        <p className="form-subtitle">Start your journey</p>
 
         <form onSubmit={handleSubmit} className="signup-form">
           {/* API Error Display */}
@@ -277,7 +278,7 @@ const SignUp = () => {
                 required
               />
               <label htmlFor="agreeToTerms">
-                I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer">Terms & Conditions</a>
+                     I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer">Terms & Conditions</a>
               </label>
             </div>
             {errors.agreeToTerms && (
@@ -301,6 +302,7 @@ const SignUp = () => {
 
         <div className="signup-footer">
           <p>Already have an account? <a href="/signin">Sign In</a></p>
+        </div>
         </div>
       </div>
     </div>

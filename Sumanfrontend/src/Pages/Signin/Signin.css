@@ -35,14 +35,14 @@
 /* Right Section - Form */
 .signin-right {
   flex: 1;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(190, 172, 172, 0.637);
   border-radius: 20px;
   padding: 40px 30px;
   margin: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  /* border: 1px solid rgba(255, 255, 255, 0.3); */
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  /* backdrop-filter: blur(12px); */
+  /* -webkit-backdrop-filter: blur(12px); */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -70,7 +70,7 @@
 
 .form-subtitle {
   font-size: 0.95rem;
-  color: #666;
+  color: #dad4d4;
   margin-bottom: 24px;
   text-align: center;
   width: 350px;
@@ -128,8 +128,8 @@
   flex-direction: column;
   width: 100%;
   position: relative;
-  min-height: 70px; /* Force minimum height */
-  max-height: 70px; /* Force maximum height */
+  min-height: 70px; 
+  max-height: 70px; 
 }
 
 .signin-form input {
@@ -205,7 +205,7 @@
 }
 
 .forgot-password a {
-  color: #00A149;
+  color: #04d663;
   text-decoration: none;
   font-size: 0.9rem;
   white-space: nowrap;

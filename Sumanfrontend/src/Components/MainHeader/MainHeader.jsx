@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './MainHeader.css';
 import logoImage from '../../assets/logo.jpeg';
-import { 
-  FaSearch, FaUser, FaHeart, FaShoppingCart, 
+import {
+  FaSearch, FaUser, FaHeart, FaShoppingCart,
   FaChevronDown, FaSignOutAlt, FaUserCircle, FaSignInAlt,
-  FaTruck, FaTag, FaBars, FaTimes
+  FaTruck, FaTag, FaBars, FaTimes, FaAward
 } from 'react-icons/fa';
 
 const MainHeader = ({ onProfileClick, onLogout }) => {
@@ -24,7 +24,7 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
-    
+
     if (token && userData) {
       setUser(JSON.parse(userData));
       fetchCounts();
@@ -145,12 +145,12 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
     <div className="main-header">
       <div className="header-top">
         {/* Logo */}
-        <img 
-          src={logoImage} 
-          alt="Logo" 
-          className="main-logo" 
+        <img
+          src={logoImage}
+          alt="Logo"
+          className="main-logo"
           onClick={() => navigate('/')}
-          style={{ cursor: 'pointer' }}
+          style={{ cursor: 'pointer', height: "130px" , width: "300px" }}
         />
 
         {/* Desktop Search Bar */}
@@ -162,10 +162,10 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
         {/* Delivery & Offers - Desktop Only */}
         <div className="info-section">
           <div className="info-item">
-            <FaTruck className="info-icon" />
+            <FaAward className="info-icon" />
             <div className="info-text">
-              <div><strong>Free Delivery</strong></div>
-              <div>Details & restrictions</div>
+              <div><strong>Quality Products</strong></div>
+              <div>100% authentic items</div>
             </div>
           </div>
           <div className="info-item">
@@ -181,7 +181,7 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
         <div className="header-icons desktop-icons">
           {/* User Icon with dropdown */}
           <div className="user-profile-section" ref={dropdownRef}>
-            <div 
+            <div
               className="user-info"
               onClick={() => setShowDropdown(!showDropdown)}
             >
@@ -263,7 +263,7 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
             </div>
           </div>
 
-          <div 
+          <div
             className="mobile-menu-toggle"
             onClick={() => setShowMobileMenu(!showMobileMenu)}
           >
@@ -330,10 +330,10 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
             {/* Mobile Info Section */}
             <div className="mobile-info-section">
               <div className="mobile-info-item">
-                <FaTruck className="mobile-info-icon" />
+                <FaAward className="mobile-info-icon" />
                 <div className="mobile-info-text">
-                  <div><strong>Free Delivery</strong></div>
-                  <div>Details & restrictions</div>
+                  <div><strong>Quality Products</strong></div>
+                  <div>100% authentic items</div>
                 </div>
               </div>
               <div className="mobile-info-item">

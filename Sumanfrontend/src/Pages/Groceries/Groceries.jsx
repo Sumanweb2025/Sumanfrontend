@@ -477,7 +477,16 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                           </div>
 
                           <div className="grocery-product-price">${product.price}</div>
-                          {product.piece && <div className="grocery-product-piece">{product.piece} pieces</div>}
+                          {/* Stock status based on piece count */}
+                          {product.piece > 0 ? (
+                            <div className="grocery-product-stock in-stock">
+                              In Stock
+                            </div>
+                          ) : (
+                            <div className="grocery-product-stock out-of-stock">
+                              Out of Stock
+                            </div>
+                          )}
 
                           <button 
                             className="grocery-add-to-cart-btn"

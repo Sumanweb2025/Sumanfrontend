@@ -4,8 +4,12 @@ import axios from 'axios';
 import './Amirth.css';
 import Header from '../Header/Header';
 import Footer from "../Footer/Footer";
+import WishlistPopup from '../WishlistPopup/WishlistPopup';
+import CartPopup from '../CartPopup/CartPopup';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import BgImage1 from '../../assets/amirth brand bg.jpeg';
+import BgImage2 from '../../assets/Amirth home header.png';
+import BgImage3 from '../../assets/venba home header.png';
 
 const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const navigate = useNavigate();
@@ -23,17 +27,31 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [currentCarouselIndex, setCurrentCarouselIndex] = useState(0);
 
+  // Popup states
+  const [showWishlistPopup, setShowWishlistPopup] = useState(false);
+  const [showCartPopup, setShowCartPopup] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [cartItems, setCartItems] = useState([]);
+
   const API_URL = 'http://localhost:8000/';
 
   // Carousel images for hero section
-  const carouselImages = [
+  const amirthCarouselImages = [
     BgImage1,
-    'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1980&q=80',
-    'https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80'
+    BgImage2,
+    BgImage3
   ];
 
   // Get unique categories for filters
-  const uniqueCategories = ['Snacks', 'Groceries']; // Only these two categories for Amirth
+  const uniqueCategories = [...new Set(products.map(product => product.category).filter(Boolean))];
+
+  // Carousel auto-slide effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentCarouselIndex(prev => (prev + 1) % amirthCarouselImages.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [amirthCarouselImages.length]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,12 +63,14 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         const token = localStorage.getItem('token');
         if (token) {
           try {
+            // Fetch wishlist
             const wishlistResponse = await axios.get(`${API_URL}api/wishlist`, {
               headers: { 'Authorization': `Bearer ${token}` }
             });
             const wishlistData = wishlistResponse.data?.data || wishlistResponse.data;
             setWishlistItems(wishlistData.products?.map(item => item.productId._id || item.productId) || []);
 
+            // Fetch cart
             const cartResponse = await axios.get(`${API_URL}api/cart`, {
               headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -121,6 +141,14 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     setCurrentPage(1);
   }, [products, selectedCategories, priceRange, searchTerm, sortBy]);
 
+  const handleCategoryChange = (category) => {
+    setSelectedCategories(prev =>
+      prev.includes(category)
+        ? prev.filter(c => c !== category)
+        : [...prev, category]
+    );
+  };
+
   const handleCategoryClick = (category) => {
     setSelectedCategories([category]);
     setSearchTerm('');
@@ -140,13 +168,16 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleProductClick = (product) => {
-    navigate(`/product/${product.product_id || product.id}`, { state: { product } });
+    setLoading(true);
+    setTimeout(() => {
+      navigate(`/product/${product.product_id || product.id}`, { state: { product } });
+    }, 1000);
   };
 
   const handleWishlistClick = async (e, product) => {
     e.stopPropagation();
     if (!product || wishlistLoading) return;
-    
+
     const token = localStorage.getItem('token');
     if (!token) {
       alert('Please login to add items to your wishlist');
@@ -164,19 +195,48 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
 
       const productId = product.product_id || product._id || product.id;
       const isInWishlist = wishlistItems.includes(productId);
-      
+
       if (isInWishlist) {
         await axios.delete(`${API_URL}api/wishlist/${productId}`, config);
         setWishlistItems(prev => prev.filter(id => id !== productId));
+        window.dispatchEvent(new CustomEvent('wishlistUpdated'));
       } else {
         await axios.post(`${API_URL}api/wishlist`, { productId }, config);
         setWishlistItems(prev => [...prev, productId]);
+        window.dispatchEvent(new CustomEvent('wishlistUpdated'));
+
+        setSelectedProduct(product);
+        setShowWishlistPopup(true);
       }
     } catch (err) {
       console.error('Wishlist error:', err);
       alert(err.response?.data?.message || 'Failed to update wishlist');
     } finally {
       setWishlistLoading(false);
+    }
+  };
+
+  const handleAddToCartFromWishlist = async (productId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      };
+
+      await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
+
+      const cartResponse = await axios.get(`${API_URL}api/cart`, config);
+      const cartData = cartResponse.data?.data || cartResponse.data;
+      setCartItems(cartData.items || []);
+
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
+      return true;
+    } catch (err) {
+      console.error('Add to cart error:', err);
+      throw err;
     }
   };
 
@@ -189,22 +249,54 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         return;
       }
 
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      };
+
       const productId = product.product_id || product._id || product.id;
-      await addToCart(product);
+      await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
+
+      const cartResponse = await axios.get(`${API_URL}api/cart`, config);
+      const cartData = cartResponse.data?.data || cartResponse.data;
+      setCartItems(cartData.items || []);
+
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
+
+      setSelectedProduct(product);
+      setShowCartPopup(true);
     } catch (err) {
       console.error('Add to cart error:', err);
       alert(err.response?.data?.message || 'Failed to add to cart');
     }
   };
 
+  const handleContinueShopping = () => {
+    setShowWishlistPopup(false);
+    setShowCartPopup(false);
+    setSelectedProduct(null);
+  };
+
+  const handleOpenWishlistPage = () => {
+    setShowWishlistPopup(false);
+    navigate('/wishlist');
+  };
+
+  const handleViewCart = () => {
+    setShowCartPopup(false);
+    navigate('/cart');
+  };
+
   const handlePrevCarousel = () => {
     setCurrentCarouselIndex(prev =>
-      prev === 0 ? carouselImages.length - 1 : prev - 1
+      prev === 0 ? amirthCarouselImages.length - 1 : prev - 1
     );
   };
 
   const handleNextCarousel = () => {
-    setCurrentCarouselIndex(prev => (prev + 1) % carouselImages.length);
+    setCurrentCarouselIndex(prev => (prev + 1) % amirthCarouselImages.length);
   };
 
   return (
@@ -218,39 +310,40 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
       <Header />
       <div className="amirth-page">
         {/* Hero Carousel Section */}
-        <div className="iyyapa-hero-carousel">
-          <div className="iyyapa-carousel-container">
-            <div className="iyyapa-carousel-wrapper" style={{ transform: `translateX(-${currentCarouselIndex * 100}%)` }}>
-              {carouselImages.map((image, index) => (
-                <div key={index} className="iyyapa-carousel-slide">
-                  <img src={image} alt={`Iyyapa Foods ${index + 1}`} />
-                  <div className="iyyapa-carousel-overlay">
-                    <div className="iyyapa-carousel-content">
-                      <h1 className="iyyapa-carousel-title">Iyyapa Foods</h1>
-                      <p className="iyyapa-carousel-subtitle">Premium Quality Traditional Foods</p>
-                      <button className="iyyapa-carousel-cta">Explore Products</button>
+        <div className="amirth-hero-carousel">
+          <div className="amirth-carousel-container">
+            <div className="amirth-carousel-wrapper" style={{ transform: `translateX(-${currentCarouselIndex * (100/3)}%)` }}>
+              {amirthCarouselImages.map((image, index) => (
+                <div key={index} className="amirth-carousel-slide">
+                  <img src={image} alt={`Amirth Foods ${index + 1}`} />
+                  <div className="amirth-carousel-overlay">
+                    <div className="amirth-carousel-content">
+                      <h1 className="amirth-carousel-title">Amirth Foods</h1>
+                      <p className="amirth-carousel-subtitle">Premium Quality Traditional Foods</p>
+                      <button className="amirth-carousel-cta">Explore Products</button>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
-            <button className="iyyapa-carousel-nav prev" onClick={handlePrevCarousel}>
+            <button className="amirth-carousel-nav prev" onClick={handlePrevCarousel}>
               <span>❮</span>
             </button>
-            <button className="iyyapa-carousel-nav next" onClick={handleNextCarousel}>
+            <button className="amirth-carousel-nav next" onClick={handleNextCarousel}>
               <span>❯</span>
             </button>
-            <div className="iyyapa-carousel-indicators">
-              {carouselImages.map((_, index) => (
+            <div className="amirth-carousel-indicators">
+              {amirthCarouselImages.map((_, index) => (
                 <button
                   key={index}
-                  className={`iyyapa-indicator ${index === currentCarouselIndex ? 'active' : ''}`}
+                  className={`amirth-indicator ${index === currentCarouselIndex ? 'active' : ''}`}
                   onClick={() => setCurrentCarouselIndex(index)}
                 />
               ))}
             </div>
           </div>
         </div>
+        
         <div className="amirth-container">
           {/* Breadcrumb */}
           <div className="amirth-breadcrumb">
@@ -276,10 +369,12 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
               {uniqueCategories.map(category => {
                 const getCategoryImage = () => {
                   switch(category.toLowerCase()) {
-                    case 'snacks':
-                      return 'https://cdn-icons-png.flaticon.com/512/3081/3081863.png';
+                    case 'sweets':
+                      return 'https://cdn-icons-png.flaticon.com/512/3081/3081985.png';
                     case 'groceries':
                       return 'https://cdn-icons-png.flaticon.com/512/884/884039.png';
+                    case 'snacks':
+                      return 'https://cdn-icons-png.flaticon.com/512/3081/3081863.png';
                     default:
                       return 'https://cdn-icons-png.flaticon.com/512/3737/3737726.png';
                   }
@@ -325,7 +420,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                       <input
                         type="checkbox"
                         checked={selectedCategories.includes(category)}
-                        onChange={() => handleCategoryClick(category)}
+                        onChange={() => handleCategoryChange(category)}
                       />
                       <span>{category}</span>
                       <span className="count">
@@ -353,19 +448,19 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                 </div>
               </div>
 
-              <div className="iyyapa-filter-section">
+              <div className="amirth-filter-section">
                 <h3>Best Deals</h3>
-                <div className="iyyapa-deal-items">
+                <div className="amirth-deal-items">
                   {products.slice(0, 3).map(product => (
-                    <div key={product.product_id || product.id} className="iyyapa-deal-item">
+                    <div key={product.product_id || product.id} className="amirth-deal-item">
                       <img
                         src={product.imageUrl || `${API_URL}/uploads/${product.image}`}
                         alt={product.name}
-                        className="iyyapa-deal-image"
+                        className="amirth-deal-image"
                       />
-                      <div className="iyyapa-deal-info">
-                        <div className="iyyapa-deal-name">{product.name}</div>
-                        <div className="iyyapa-deal-price">${product.price}</div>
+                      <div className="amirth-deal-info">
+                        <div className="amirth-deal-name">{product.name}</div>
+                        <div className="amirth-deal-price">${product.price}</div>
                       </div>
                     </div>
                   ))}
@@ -456,8 +551,6 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                           </div>
 
                           <div className="price-text amirth-product-price">${product.price}</div>
-                          
-                          {product.piece && <div className="amirth-product-piece">{product.piece} pieces</div>}
 
                           <button 
                             className="amirth-add-to-cart-btn"
@@ -505,6 +598,27 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
           </div>
         </div>
       </div>
+
+      {/* Wishlist Popup */}
+      <WishlistPopup
+        isOpen={showWishlistPopup}
+        onClose={() => setShowWishlistPopup(false)}
+        product={selectedProduct}
+        onAddToCart={handleAddToCartFromWishlist}
+        onContinueShopping={handleContinueShopping}
+        onOpenWishlistPage={handleOpenWishlistPage}
+      />
+
+      {/* Cart Popup */}
+      <CartPopup
+        isOpen={showCartPopup}
+        onClose={() => setShowCartPopup(false)}
+        product={selectedProduct}
+        cartItems={cartItems}
+        onContinueShopping={handleContinueShopping}
+        onViewCart={handleViewCart}
+      />
+
       <Footer />
     </>
   );

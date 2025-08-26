@@ -35,6 +35,76 @@ const MyOrders = () => {
     }
   };
 
+  const canCancelOrder = (order) => {
+    // Check if order status allows cancellation
+    const cancellableStatuses = ['pending', 'confirmed', 'processing'];
+    if (!cancellableStatuses.includes(order.status)) {
+      return false;
+    }
+
+    // Check 48-hour time limit
+    const orderTime = new Date(order.createdAt);
+    const currentTime = new Date();
+    const timeDifference = currentTime - orderTime;
+    const hoursDifference = timeDifference / (1000 * 60 * 60);
+
+    return hoursDifference <= 48;
+  };
+
+  // Add this function for handling cancel order
+  const handleCancelOrder = async (orderId, orderPaymentMethod, orderAmount) => {
+    // Get cancellation reason from user
+    const reason = prompt('Please provide a reason for cancelling this order (optional):');
+
+    // Show different confirmation messages based on payment method
+    let confirmMessage = 'Are you sure you want to cancel this order?';
+    if (orderPaymentMethod === 'card') {
+      confirmMessage += `\n\nRefund of $${orderAmount.toFixed(2)} will be initiated and processed within 3-5 business days.`;
+    }
+
+    if (!window.confirm(confirmMessage)) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+
+      // Send reason in request body
+      const response = await axios.put(
+        `${API_URL}/api/orders/${orderId}/cancel`,
+        {
+          reason: reason || 'Customer requested cancellation'
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+
+      if (response.data.success) {
+        // Show different success messages based on payment method
+        let successMessage = 'Order cancelled successfully!';
+
+        if (orderPaymentMethod === 'card') {
+          successMessage += `\n\nRefund Details:
+        • Amount: $${orderAmount.toFixed(2)} CAD
+        • Status: Processing
+        • Expected in your account: 3-5 business days
+        
+        You will receive a confirmation email with refund details.`;
+        } else if (orderPaymentMethod === 'cod') {
+          successMessage += '\n\nSince this was a COD order, no refund processing is needed.';
+        }
+
+        alert(successMessage);
+        fetchOrders(); // Refresh the orders list
+      }
+    } catch (error) {
+      console.error('Error cancelling order:', error);
+      const errorMessage = error.response?.data?.message || 'Failed to cancel order. Please try again or contact customer service.';
+      alert(errorMessage);
+    }
+  };
+
   // Helper function to get the correct image URL
   const getImageUrl = (item) => {
     // Priority order based on your backend logic:
@@ -132,6 +202,35 @@ const MyOrders = () => {
                       <span className="my-order-label">Status:</span>
                       <span className={`my-order-status ${order.status}`}>{order.status}</span>
                     </div>
+                    {/* ADD THIS NEW REFUND STATUS DISPLAY */}
+                    {order.status === 'cancelled' && order.paymentMethod === 'card' && order.refundStatus && order.refundStatus !== 'none' && (
+                      <div>
+                        <span className="my-order-label">Refund:</span>
+                        <span className={`my-order-refund-status ${order.refundStatus}`}>
+                          {order.refundStatus.charAt(0).toUpperCase() + order.refundStatus.slice(1)}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* ADD CANCELLATION REASON DISPLAY */}
+                    {order.status === 'cancelled' && order.cancellationReason && (
+                      <div style={{ marginTop: '10px', fontSize: '14px', color: '#666' }}>
+                        <span className="my-order-label">Reason:</span>
+                        <span>{order.cancellationReason}</span>
+                      </div>
+                    )}
+
+                    {/* UPDATE THE CANCEL BUTTON CALL */}
+                    {canCancelOrder(order) && (
+                      <div>
+                        <button
+                          className="cancel-order-btn"
+                          onClick={() => handleCancelOrder(order._id, order.paymentMethod, order.orderSummary?.total ?? order.total)}
+                        >
+                          Cancel Order
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   <div className="my-order-items">
@@ -158,7 +257,7 @@ const MyOrders = () => {
           )}
         </div>
       </div>
-      <Banner/>
+      <Banner />
       <Footer />
     </>
   );

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import {
@@ -71,7 +70,7 @@ const PaymentForm = ({
       
       // Step 1: Create Payment Intent
       const paymentIntentResponse = await axios.post(
-        `${API_URL}api/orders/create-payment-intent`,
+        `${API_URL}api/payments/create-intent`,
         { appliedCoupon },
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
@@ -91,7 +90,7 @@ const PaymentForm = ({
               city: formData.billingAddress.city,
               state: formData.billingAddress.province,
               postal_code: formData.billingAddress.postalCode,
-              country: formData.billingAddress.country === 'India' ? 'IN' : 'US',
+              country: 'CA', // Canada country code
             },
             phone: formData.billingAddress.phone || '',
           },
@@ -108,7 +107,7 @@ const PaymentForm = ({
       // Step 3: Confirm payment success and create order
       if (paymentIntent.status === 'succeeded') {
         const confirmResponse = await axios.post(
-          `${API_URL}api/orders/confirm-payment`,
+          `${API_URL}api/payments/confirm-payment`,
           {
             paymentIntentId: paymentIntent.id,
             contactInfo: formData.contactInfo,
@@ -142,7 +141,7 @@ const PaymentForm = ({
         </div>
         {cardError && (
           <div className="card-error">
-            <span className="error-icon">⚠</span>
+            <span className="error-icon">⚠ </span>
             {cardError}
           </div>
         )}
@@ -153,6 +152,7 @@ const PaymentForm = ({
           <span>🔒</span>
         </div>
         <p>Your payment information is encrypted and secure</p>
+        <p style={{fontSize: '0.75rem', color: '#666'}}>All prices shown in Canadian Dollars (CAD)</p>
       </div>
 
       <button
@@ -164,7 +164,7 @@ const PaymentForm = ({
         {processingPayment && <span className="loading-spinner"></span>}
         {processingPayment 
           ? 'Processing Payment...' 
-          : `Pay $${orderSummary.total} Now`
+          : `Pay $${orderSummary.total} CAD Now`
         }
       </button>
     </div>

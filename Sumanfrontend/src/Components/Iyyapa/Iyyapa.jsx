@@ -54,7 +54,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const productsResponse = await axios.get(`${API_URL}api/products/search?brand=iyyapa`);
+        const productsResponse = await axios.get(`${API_URL}api/products/search?brand=Iyappaa`);
         const productsData = productsResponse.data?.data || productsResponse.data?.products || productsResponse.data;
         setProducts(productsData);
 
@@ -310,7 +310,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         {/* Hero Carousel Section */}
         <div className="iyyapa-hero-carousel">
           <div className="iyyapa-carousel-container">
-            <div className="iyyapa-carousel-wrapper" style={{ transform: `translateX(-${currentCarouselIndex * 100}%)` }}>
+            <div className="iyyapa-carousel-wrapper" style={{ transform: `translateX(-${currentCarouselIndex * (100/3)}%)` }}>
               {carouselImages.map((image, index) => (
                 <div key={index} className="iyyapa-carousel-slide">
                   <img src={image} alt={`Iyyapa Foods ${index + 1}`} />
@@ -550,8 +550,6 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                           </div>
 
                           <div className="price-text iyyapa-product-price">${product.price}</div>
-
-                          {product.piece && <div className="iyyapa-product-piece">{product.piece} pieces</div>}
 
                           <button
                             className="iyyapa-add-to-cart-btn"

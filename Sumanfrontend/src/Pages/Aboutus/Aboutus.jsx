@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaLeaf, FaHeart, FaLightbulb, FaUsers, FaUtensils, FaAward } from 'react-icons/fa';
 import './Aboutus.css';
 import Header from '../../Components/Header/Header';
@@ -7,7 +7,14 @@ import Banner from '../../Components/ShippingBanner/ShippingBanner';
 import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 
 const AboutUs = () => {
-  const [loading] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+   useEffect(() => {
+      const timer = setTimeout(() => {
+        setLoading(false);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }, []);
 
   const teamMembers = [
     {
@@ -61,22 +68,20 @@ const AboutUs = () => {
 
   return (
     <>
-      <LoadingSpinner 
-        isLoading={loading} 
-        brandName="Iyappaa Sweets & Snacks" 
-        loadingText="Loading delicious sweets..."
+      <LoadingSpinner
+        isLoading={loading}
+        brandName="Iyappaa Sweets & Snacks"
+        loadingText="Loading our story..."
         progressColor="#3b82f6"
       />
-      
+
+      <Header />
+
       {/* Header with Background */}
-      <div 
+      <div
         className="header-with-background"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80')`
-        }}
       >
-        <Header />
-        
+
         {/* Hero Section */}
         <section className="about-hero">
           <div className="hero-content">
@@ -85,7 +90,7 @@ const AboutUs = () => {
           </div>
         </section>
       </div>
-    
+
       <div className="about-us-page">
         {/* Our Journey Section */}
         <section className="about-section journey-section" style={{
@@ -99,14 +104,14 @@ const AboutUs = () => {
             <div className="journey-content">
               <div className="journey-text">
                 <p>
-                  Founded in 2010, Iyappaa Sweets & Snacks began as a small family kitchen in Toronto, 
-                  dedicated to preserving authentic South Indian sweet and snack traditions. What started 
-                  as a passion project quickly grew as word spread about our unique flavors 
+                  Founded in 2010, Iyappaa Sweets & Snacks began as a small family kitchen in Toronto,
+                  dedicated to preserving authentic South Indian sweet and snack traditions. What started
+                  as a passion project quickly grew as word spread about our unique flavors
                   and uncompromising quality throughout the GTA.
                 </p>
                 <p>
-                  Today, we operate from our state-of-the-art facility in Scarborough while maintaining the 
-                  handcrafted approach that made us special. Every laddu, every mixture, and every 
+                  Today, we operate from our state-of-the-art facility in Scarborough while maintaining the
+                  handcrafted approach that made us special. Every laddu, every mixture, and every
                   sweet still carries the love and care of our original family recipes.
                 </p>
               </div>
@@ -132,7 +137,7 @@ const AboutUs = () => {
                   <div className="about-divider"></div>
                 </div>
                 <p>
-                  To bring authentic South Indian flavors to Toronto while innovating 
+                  To bring authentic South Indian flavors to Toronto while innovating
                   responsibly and building community. We're committed to:
                 </p>
                 <ul>
@@ -206,15 +211,15 @@ const AboutUs = () => {
           <div className="about-container">
             <h2>Experience the Authentic Taste</h2>
             <p>
-              Taste the tradition and quality in every bite. Join our growing family 
+              Taste the tradition and quality in every bite. Join our growing family
               of satisfied customers across Toronto and the GTA.
             </p>
             <button className="cta-button">Shop Our Products</button>
           </div>
         </section>
       </div>
-      <Banner/>
-      <Footer/>
+      <Banner />
+      <Footer />
     </>
   );
 };

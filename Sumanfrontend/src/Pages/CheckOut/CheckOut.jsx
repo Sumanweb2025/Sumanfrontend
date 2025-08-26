@@ -30,9 +30,9 @@ const CheckoutPage = () => {
       address: '',
       apartment: '',
       city: '',
-      province: 'Tamil Nadu',
+      province: 'Ontario',
       postalCode: '',
-      country: 'India',
+      country: 'Canada',
       phone: ''
     },
     paymentMethod: 'card'
@@ -42,41 +42,41 @@ const CheckoutPage = () => {
 
   const API_URL = 'http://localhost:8000/';
 
-  // Countries and their states/provinces
+  // Canadian provinces and territories
   const countriesData = {
-    'India': ['Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Delhi', 'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jammu and Kashmir', 'Jharkhand', 'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal'],
-    'United States': ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming']
+    'Canada': [
+      'Alberta', 'British Columbia', 'Manitoba', 'New Brunswick', 
+      'Newfoundland and Labrador', 'Northwest Territories', 'Nova Scotia', 
+      'Nunavut', 'Ontario', 'Prince Edward Island', 'Quebec', 
+      'Saskatchewan', 'Yukon'
+    ],
+    'United States': [
+      'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 
+      'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 
+      'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 
+      'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 
+      'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 
+      'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 
+      'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 
+      'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 
+      'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 
+      'West Virginia', 'Wisconsin', 'Wyoming'
+    ]
   };
 
-  // Payment methods configuration
+  // Payment methods configuration (removed UPI and NetBanking)
   const paymentMethods = [
     {
       id: 'card',
       name: 'Credit/Debit Card',
-      description: 'Visa, Mastercard, RuPay - Secure payment via Stripe',
+      description: 'Visa, Mastercard, American Express - Secure payment via Stripe',
       icon: '💳',
       requiresStripe: true
     },
     {
-      id: 'upi',
-      name: 'UPI Payment',
-      description: 'Pay using any UPI app - GooglePay, PhonePe, Paytm',
-      icon: '📱',
-      requiresStripe: false,
-      isOnline: true
-    },
-    {
-      id: 'netbanking',
-      name: 'Net Banking',
-      description: 'Pay directly from your bank account',
-      icon: '🏦',
-      requiresStripe: false,
-      isOnline: true
-    },
-    {
       id: 'cod',
       name: 'Cash on Delivery',
-      description: 'Pay when you receive',
+      description: 'Pay when you receive your order',
       icon: '💰',
       requiresStripe: false
     }
@@ -207,8 +207,8 @@ const CheckoutPage = () => {
 
     // Postal code validation based on country
     if (formData.billingAddress.postalCode) {
-      if (formData.billingAddress.country === 'India' && !/^\d{6}$/.test(formData.billingAddress.postalCode)) {
-        newErrors['billingAddress.postalCode'] = 'Please enter a valid 6-digit postal code';
+      if (formData.billingAddress.country === 'Canada' && !/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(formData.billingAddress.postalCode)) {
+        newErrors['billingAddress.postalCode'] = 'Please enter a valid Canadian postal code (e.g., K1A 0A6)';
       } else if (formData.billingAddress.country === 'United States' && !/^\d{5}(-\d{4})?$/.test(formData.billingAddress.postalCode)) {
         newErrors['billingAddress.postalCode'] = 'Please enter a valid ZIP code';
       }
@@ -236,7 +236,7 @@ const CheckoutPage = () => {
     setSubmitting(false);
   };
 
-  const handleNonCardPaymentSubmit = async (e) => {
+  const handleCODSubmit = async (e) => {
     e.preventDefault();
     
     if (!validateForm()) {
@@ -253,14 +253,14 @@ const CheckoutPage = () => {
       };
 
       const response = await axios.post(
-        `${API_URL}api/orders`,
+        `${API_URL}api/payments/cod`,
         orderData,
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
 
       handlePaymentSuccess(response.data.data);
     } catch (error) {
-      console.error('Error placing order:', error);
+      console.error('Error placing COD order:', error);
       handlePaymentError(error.response?.data?.message || 'Failed to place order. Please try again.');
     }
   };
@@ -274,9 +274,9 @@ const CheckoutPage = () => {
 
     setSubmitting(true);
 
-    // For non-card payments, handle directly
-    if (formData.paymentMethod !== 'card') {
-      handleNonCardPaymentSubmit(e);
+    // For COD payments, handle directly
+    if (formData.paymentMethod === 'cod') {
+      handleCODSubmit(e);
     }
     // For card payments, validation is done, payment will be handled by StripePaymentComponent
   };
@@ -302,10 +302,6 @@ const CheckoutPage = () => {
     switch (method.id) {
       case 'card':
         return 'Payment Completed';
-      case 'upi':
-        return 'UPI Payment Completed';
-      case 'netbanking':
-        return 'Net Banking Payment Completed';
       case 'cod':
         return 'Order Confirmed - COD';
       default:
@@ -347,7 +343,7 @@ const CheckoutPage = () => {
                   <p className="order-label">Order Number</p>
                   <p className="order-number">{orderDetails?.orderNumber}</p>
                   <p className="order-label">Total Amount</p>
-                  <p className="order-total">${orderDetails?.total}</p>
+                  <p className="order-total">${orderDetails?.total} CAD</p>
                   {orderDetails?.paymentStatus === 'paid' && (
                     <>
                       <p className="order-label">Payment Status</p>
@@ -420,7 +416,7 @@ const CheckoutPage = () => {
                   />
                   {errors['contactInfo.email'] && (
                     <p className="error-message">
-                      <span className="error-icon">⚠</span>
+                      <span className="error-icon">⚠ </span>
                       {errors['contactInfo.email']}
                     </p>
                   )}
@@ -460,7 +456,7 @@ const CheckoutPage = () => {
                       />
                       {errors['billingAddress.firstName'] && (
                         <p className="error-message">
-                          <span className="error-icon">⚠</span>
+                          <span className="error-icon">⚠ </span>
                           {errors['billingAddress.firstName']}
                         </p>
                       )}
@@ -475,7 +471,7 @@ const CheckoutPage = () => {
                       />
                       {errors['billingAddress.lastName'] && (
                         <p className="error-message">
-                          <span className="error-icon">⚠</span>
+                          <span className="error-icon">⚠ </span>
                           {errors['billingAddress.lastName']}
                         </p>
                       )}
@@ -493,7 +489,7 @@ const CheckoutPage = () => {
                     />
                     {errors['billingAddress.address'] && (
                       <p className="error-message">
-                        <span className="error-icon">⚠</span>
+                        <span className="error-icon">⚠ </span>
                         {errors['billingAddress.address']}
                       </p>
                     )}
@@ -531,7 +527,7 @@ const CheckoutPage = () => {
                       />
                       {errors['billingAddress.city'] && (
                         <p className="error-message">
-                          <span className="error-icon">⚠</span>
+                          <span className="error-icon">⚠ </span>
                           {errors['billingAddress.city']}
                         </p>
                       )}
@@ -542,7 +538,7 @@ const CheckoutPage = () => {
                         onChange={(e) => handleInputChange('billingAddress', 'province', e.target.value)}
                         className="form-input"
                       >
-                        <option value="">Select State/Province</option>
+                        <option value="">Select Province/State</option>
                         {(countriesData[formData.billingAddress.country] || []).map(province => (
                           <option key={province} value={province}>{province}</option>
                         ))}
@@ -555,14 +551,14 @@ const CheckoutPage = () => {
                     <div className="form-group">
                       <input
                         type="text"
-                        placeholder="Postal code"
+                        placeholder={formData.billingAddress.country === 'Canada' ? 'Postal code' : 'ZIP code'}
                         value={formData.billingAddress.postalCode}
                         onChange={(e) => handleInputChange('billingAddress', 'postalCode', e.target.value)}
                         className={`form-input ${errors['billingAddress.postalCode'] ? 'error' : ''}`}
                       />
                       {errors['billingAddress.postalCode'] && (
                         <p className="error-message">
-                          <span className="error-icon">⚠</span>
+                          <span className="error-icon">⚠ </span>
                           {errors['billingAddress.postalCode']}
                         </p>
                       )}
@@ -600,11 +596,6 @@ const CheckoutPage = () => {
                         <div className="payment-info">
                           <div className="payment-name">{method.name}</div>
                           <div className="payment-desc">{method.description}</div>
-                          {method.isOnline && (
-                            <div className="payment-status" style={{color: '#059669', fontSize: '0.75rem'}}>
-                              ✅ Instant Payment
-                            </div>
-                          )}
                         </div>
                       </div>
                     </label>
@@ -624,48 +615,8 @@ const CheckoutPage = () => {
                   />
                 )}
 
-                {/* UPI Payment Instructions */}
-                {formData.paymentMethod === 'upi' && (
-                  <div className="payment-instructions">
-                    <div className="upi-payment-info">
-                      <h3 style={{color: '#059669', margin: '0 0 1rem 0'}}>📱 UPI Payment Instructions</h3>
-                      <div style={{background: '#f0fdf4', padding: '1rem', borderRadius: '0.5rem', marginBottom: '1rem'}}>
-                        <p style={{margin: '0 0 0.5rem 0', color: '#166534'}}>
-                          <strong>Step 1:</strong> Click "Place Order" to confirm your order
-                        </p>
-                        <p style={{margin: '0 0 0.5rem 0', color: '#166534'}}>
-                          <strong>Step 2:</strong> You'll receive UPI payment link via email
-                        </p>
-                        <p style={{margin: '0', color: '#166534'}}>
-                          <strong>Step 3:</strong> Complete payment using any UPI app
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Net Banking Instructions */}
-                {formData.paymentMethod === 'netbanking' && (
-                  <div className="payment-instructions">
-                    <div className="netbanking-payment-info">
-                      <h3 style={{color: '#1e40af', margin: '0 0 1rem 0'}}>🏦 Net Banking Instructions</h3>
-                      <div style={{background: '#f0f9ff', padding: '1rem', borderRadius: '0.5rem', marginBottom: '1rem'}}>
-                        <p style={{margin: '0 0 0.5rem 0', color: '#1e40af'}}>
-                          <strong>Step 1:</strong> Click "Place Order" to confirm your order
-                        </p>
-                        <p style={{margin: '0 0 0.5rem 0', color: '#1e40af'}}>
-                          <strong>Step 2:</strong> You'll be redirected to your bank's secure portal
-                        </p>
-                        <p style={{margin: '0', color: '#1e40af'}}>
-                          <strong>Step 3:</strong> Login and complete the payment
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Non-Card Payment Button */}
-                {formData.paymentMethod !== 'card' && (
+                {/* COD Payment Button */}
+                {formData.paymentMethod === 'cod' && (
                   <>
                     <div className="checkout-terms-section">
                       <p className="checkout-terms-text">
@@ -676,20 +627,15 @@ const CheckoutPage = () => {
 
                     <button
                       type="submit"
-                      onClick={handleNonCardPaymentSubmit}
+                      onClick={handleCODSubmit}
                       disabled={submitting}
                       className="place-order-btn"
                       style={{
-                        background: formData.paymentMethod === 'upi' ? 'linear-gradient(135deg, #059669 0%, #10b981 100%)' :
-                                   formData.paymentMethod === 'netbanking' ? 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)' :
-                                   'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)'
+                        background: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)'
                       }}
                     >
                       {submitting && <span className="loading-spinner"></span>}
-                      {submitting ? 'Processing...' : 
-                       formData.paymentMethod === 'upi' ? `Pay ₹${orderSummary.total} via UPI` :
-                       formData.paymentMethod === 'netbanking' ? `Pay ₹${orderSummary.total} via Net Banking` :
-                       `PLACE ORDER (₹${orderSummary.total} COD)`}
+                      {submitting ? 'Processing...' : `PLACE ORDER ($${orderSummary.total})`}
                     </button>
                   </>
                 )}

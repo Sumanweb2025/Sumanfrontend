@@ -1,9 +1,6 @@
-/* SignUp.css - Fixed Alignment Layout */
 
-/* Wrapper */
 .signup-wrapper {
   display: flex;
-  height: 100vh;
   background: url('../../assets/log.jpg') center center / cover no-repeat;
   overflow: hidden;
 }
@@ -36,19 +33,27 @@
 /* Right Section - Form */
 .signup-right {
   flex: 1;
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(190, 172, 172, 0.637);
   border-radius: 20px;
   padding: 40px 30px;
   margin: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  /* border: 1px solid rgba(255, 255, 255, 0.3); */
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  /* backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px); */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   position: relative;
+}
+
+.signup-content{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+
 }
 
 .form-title {
