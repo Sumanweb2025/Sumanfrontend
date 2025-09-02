@@ -701,33 +701,6 @@ const getImageUrl = (imageUrl) => {
                 </div>
               </div>
 
-              {/* Account Information */}
-              <div className="profile-form-section">
-                <h3>Account Information</h3>
-
-                
-                <div className="profile-form-group">
-                  <label>Sign-in Method</label>
-                  <span className="profile-form-value">
-                    {user.authProvider === 'google' ? '🔍 Google Account' : '📧 Email & Password'}
-                  </span>
-                </div>
-                
-
-                <div className="profile-form-group">
-                  <label>Member Since</label>
-                  <span className="profile-form-value">
-                    {new Date(user.createdAt).toLocaleDateString('en-IN')}
-                  </span>
-                </div>
-                <div className="profile-form-group">
-                  <label>Last Login</label>
-                  <span className="profile-form-value">
-                    {user.lastLogin ? new Date(user.lastLogin).toLocaleDateString('en-IN') : 'Never'}
-                  </span>
-                </div>
-              </div>
-
               {/* Action Buttons */}
               {isEditing && (
                 <div className="profile-form-actions">

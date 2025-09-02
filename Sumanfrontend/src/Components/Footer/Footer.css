@@ -1,6 +1,6 @@
 .iyappaa-footer {
   background: white;
-  padding: 60px 40px 30px;
+  padding: 40px 30px 20px;
   font-family: 'Segoe UI', sans-serif;
   color: #000;
 }
@@ -8,28 +8,29 @@
 .footer-main {
   display: flex;
   flex-wrap: wrap;
-  gap: 40px;
+  gap: 30px;
   justify-content: space-between;
 }
 
 .footer-left {
-  flex: 1 1 240px;
+  flex: 1 1 200px;
+  min-width: 180px;
 }
 
 .footer-logo {
-  width: 140px;
-  margin-bottom: 10px;
+  width: 120px;
+  margin-bottom: 8px;
 }
 
 .footer-tagline {
-  font-size: 14px;
+  font-size: 13px;
   color: gray;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 
 .footer-contact {
-  font-size: 14px;
-  margin-bottom: 5px;
+  font-size: 13px;
+  margin-bottom: 3px;
 }
 
 .red-text {
@@ -37,19 +38,36 @@
 }
 
 .footer-column {
-  flex: 1 1 200px;
+  flex: 1 1 160px;
+  min-width: 140px;
 }
 
-.footer-column p{
-  margin: 8px 0;
+.footer-column h4 {
+  margin-bottom: 8px;
+  font-size: 15px;
+  font-weight: 600;
 }
+
+.footer-column p {
+  margin: 4px 0;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.footer-column ul {
+  padding: 0;
+  margin: 0;
+}
+
 .footer-column ul li {
   list-style: none;
-  margin: 8px 0;
+  margin: 4px 0;
 }
+
 .footer-column ul li a {
   text-decoration: none;
   color: gray;
+  font-size: 13px;
   transition: color 0.3s;
 }
 
@@ -58,49 +76,80 @@
 }
 
 .footer-bottom {
-  margin-top: 40px;
+  margin-top: 30px;
   border-top: 1px solid #ccc;
-  padding-top: 20px;
-  text-align: center;
+  padding-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
 .footer-social {
   display: flex;
-  justify-content:flex-start;
-  gap: 20px;
-  font-size: 20px;
-  margin-top: 10px;
+  gap: 15px;
+  font-size: 18px;
 }
 
 .footer-social svg {
   color: #555;
   transition: color 0.3s;
+  cursor: pointer;
 }
 
 .footer-social svg:hover {
   color: #d40000;
 }
 
-.footer-policies {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  font-size: 14px;
-  color: #d40000;
-  margin-bottom: 10px;
-  text-align: start;
+.footer-copyright {
+  font-size: 11px;
+  color: #777;
+  text-align: center;
+  flex: 1;
 }
 
-.footer-payments{
-  display:flex;
-  justify-content: end;
+.footer-payments {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .footer-payments img {
-  width: 150px;
+  width: 130px;
 }
 
-.footer-copyright {
-  font-size: 12px;
-  color: #777;
+/* Responsive Design */
+@media (max-width: 768px) {
+  .iyappaa-footer {
+    padding: 30px 20px 15px;
+  }
+  
+  .footer-main {
+    gap: 25px;
+  }
+  
+  .footer-column {
+    flex: 1 1 120px;
+  }
+  
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+  
+  .footer-payments {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-main {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .footer-left, .footer-column {
+    flex: none;
+  }
 }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Add this import
 import { FaLeaf, FaHeart, FaLightbulb, FaUsers, FaUtensils, FaAward } from 'react-icons/fa';
 import './Aboutus.css';
 import Header from '../../Components/Header/Header';
@@ -8,13 +9,20 @@ import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 
 const AboutUs = () => {
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate(); // Add this hook
 
-   useEffect(() => {
-      const timer = setTimeout(() => {
-        setLoading(false);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Add this function to handle navigation
+  const handleShopProducts = () => {
+    navigate('/brands/iyyappa'); // Replace with your actual route
+    // Or use: navigate('/products'); or navigate('/shop');
+  };
 
   const teamMembers = [
     {
@@ -78,10 +86,7 @@ const AboutUs = () => {
       <Header />
 
       {/* Header with Background */}
-      <div
-        className="header-with-background"
-      >
-
+      <div className="header-with-background">
         {/* Hero Section */}
         <section className="about-hero">
           <div className="hero-content">
@@ -214,7 +219,9 @@ const AboutUs = () => {
               Taste the tradition and quality in every bite. Join our growing family
               of satisfied customers across Toronto and the GTA.
             </p>
-            <button className="cta-button">Shop Our Products</button>
+            <button className="cta-button" onClick={handleShopProducts}>
+              Shop Our Products
+            </button>
           </div>
         </section>
       </div>
