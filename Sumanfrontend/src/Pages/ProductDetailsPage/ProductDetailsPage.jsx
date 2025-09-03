@@ -259,59 +259,75 @@ const ProductDetailsPage = ({ addToCart }) => {
   };
 
   const handleReviewSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("Please login to submit a review");
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Please login to submit a review");
+    return;
+  }
+
+  if (!reviewForm.rating || !reviewForm.comment.trim()) {
+    alert("Please provide both rating and comment");
+    return;
+  }
+
+  if (userReview) {
+    alert("You have already reviewed this product");
+    return;
+  }
+
+  setReviewLoading(true);
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    // Get the correct product ID
+    const productId = product.product_id || product._id || product.id;
+    
+    if (!productId) {
+      alert("Product ID not found");
       return;
     }
 
-    if (!reviewForm.rating || !reviewForm.comment.trim()) {
-      alert("Please provide both rating and comment");
-      return;
-    }
+    console.log('Submitting review for product:', productId);
+    console.log('Review data:', reviewForm);
 
-    if (userReview) {
-      alert("You have already reviewed this product");
-      return;
-    }
+    const response = await axios.post(
+      `${API_URL}api/reviews/product/${productId}`,
+      { 
+        rating: parseInt(reviewForm.rating),
+        comment: reviewForm.comment.trim()
+      },
+      config
+    );
 
-    setReviewLoading(true);
-    try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      };
+    alert("Review submitted successfully!");
 
-      const response = await axios.post(
-        `${API_URL}api/reviews/product/${product.product_id || product.id}`,
-        reviewForm,
-        config
-      );
+    // Refresh product data and reviews
+    const productResponse = await axios.get(`${API_URL}api/products/${id}`);
+    setProduct(productResponse.data?.data || productResponse.data);
 
-      alert("Review submitted successfully!");
+    const reviewsResponse = await axios.get(
+      `${API_URL}api/reviews/product/${productId}`
+    );
+    setReviews(reviewsResponse.data?.data?.reviews || []);
 
-      // Refresh product data and reviews
-      const productResponse = await axios.get(`${API_URL}api/products/${id}`);
-      setProduct(productResponse.data?.data || productResponse.data);
-
-      const reviewsResponse = await axios.get(
-        `${API_URL}api/reviews/product/${product.product_id || product.id}`
-      );
-      setReviews(reviewsResponse.data?.data?.reviews || []);
-
-      setUserReview(response.data.data);
-      setReviewForm({ rating: 0, comment: "" });
-    } catch (err) {
-      console.error("Review submit error:", err);
-      alert(err.response?.data?.message || "Failed to submit review");
-    } finally {
-      setReviewLoading(false);
-    }
-  };
+    setUserReview(response.data.data);
+    setReviewForm({ rating: 0, comment: "" });
+    setHoveredRating(0);
+  } catch (err) {
+    console.error("Review submit error:", err);
+    console.error("Error response:", err.response?.data);
+    alert(err.response?.data?.message || "Failed to submit review");
+  } finally {
+    setReviewLoading(false);
+  }
+};
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {

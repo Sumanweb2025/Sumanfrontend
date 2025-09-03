@@ -1,0 +1,561 @@
+/* Header Component Styles */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.admin-header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin-mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.admin-mobile-menu-btn:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.admin-mobile-menu-btn .admin-icon {
+  width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 1024px) {
+  .admin-mobile-menu-btn {
+    display: block;
+  }
+}
+
+.admin-header-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .admin-header-title {
+    font-size: 20px;
+  }
+}
+
+.admin-header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin-header-btn {
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #6b7280;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.admin-header-btn:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.admin-header-btn .admin-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.admin-refresh-btn .admin-icon.spinning {
+  animation: spin 1s linear infinite;
+}
+
+/* Sound Toggle Button */
+.admin-sound-btn.sound-enabled {
+  color: #22c55e;
+}
+
+.admin-sound-btn.sound-enabled:hover {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.admin-sound-btn.sound-disabled {
+  color: #dc2626;
+}
+
+.admin-sound-btn.sound-disabled:hover {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* Keyframes for spinning animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Pulse animation for notification button when new notification arrives */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.admin-notification-btn.new-notification {
+  animation: pulse 2s infinite;
+}
+
+/* Notifications */
+.admin-notification-container {
+  position: relative;
+}
+
+.admin-notification-btn {
+  position: relative;
+}
+
+.admin-notification-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ef4444;
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 16px;
+  text-align: center;
+  line-height: 1.2;
+  animation: pulse 2s infinite;
+}
+
+.admin-notification-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  width: 360px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e5e7eb;
+  z-index: 1000;
+  max-height: 480px;
+  overflow: hidden;
+}
+
+@media (max-width: 480px) {
+  .admin-notification-dropdown {
+    width: 320px;
+    right: -40px;
+  }
+}
+
+.admin-notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.admin-notification-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.admin-notification-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-notification-count {
+  font-size: 12px;
+  color: #6b7280;
+  background: #e5e7eb;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.admin-sound-toggle-small {
+  background: none;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.admin-sound-toggle-small:hover {
+  background: #e5e7eb;
+}
+
+.admin-notification-list {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.admin-notification-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f3f4f6;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.admin-notification-item:hover {
+  background: #f9fafb;
+}
+
+.admin-notification-item:last-child {
+  border-bottom: none;
+}
+
+.admin-notification-item.new-item {
+  background: linear-gradient(90deg, #ecfdf5, #ffffff);
+  border-left: 3px solid #22c55e;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.admin-notification-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.admin-notification-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-notification-content h4 {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2937;
+  margin: 0 0 4px 0;
+}
+
+.admin-notification-content p {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0 0 4px 0;
+  line-height: 1.4;
+}
+
+.admin-notification-time {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.admin-no-notifications {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 20px;
+  color: #9ca3af;
+  text-align: center;
+}
+
+.admin-no-notifications .admin-icon {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 8px;
+  opacity: 0.5;
+}
+
+.admin-no-notifications p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.admin-notification-footer {
+  padding: 12px 20px;
+  border-top: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.admin-view-all-btn {
+  width: 100%;
+  background: none;
+  border: none;
+  color: #22c55e;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.admin-view-all-btn:hover {
+  background: #e5f7e9;
+}
+
+/* Profile */
+.admin-profile-container {
+  position: relative;
+}
+
+.admin-profile-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  padding: 4px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.admin-profile-btn:hover {
+  background: #f3f4f6;
+}
+
+.admin-profile-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.admin-profile-avatar.large {
+  width: 48px;
+  height: 48px;
+}
+
+.admin-profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-profile-avatar .admin-icon {
+  width: 16px;
+  height: 16px;
+  color: #6b7280;
+}
+
+.admin-profile-avatar.large .admin-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.admin-profile-name {
+  font-size: 14px;
+  color: #374151;
+  font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  .admin-profile-name {
+    display: none;
+  }
+}
+
+.admin-profile-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  width: 280px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e5e7eb;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+@media (max-width: 480px) {
+  .admin-profile-dropdown {
+    width: 260px;
+    right: -20px;
+  }
+}
+
+.admin-profile-info {
+  padding: 20px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.admin-profile-details h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 8px 0 4px 0;
+}
+
+.admin-profile-details p {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0 0 8px 0;
+}
+
+.admin-role-badge {
+  display: inline-block;
+  background: #22c55e;
+  color: white;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-profile-actions {
+  padding: 8px 0;
+}
+
+.admin-profile-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 12px 20px;
+  color: #374151;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-align: left;
+}
+
+.admin-profile-action-btn:hover {
+  background: #f3f4f6;
+}
+
+.admin-profile-action-btn.logout {
+  color: #dc2626;
+}
+
+.admin-profile-action-btn.logout:hover {
+  background: #fef2f2;
+}
+
+.admin-profile-action-btn .admin-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .admin-header {
+    padding: 12px 16px;
+  }
+
+  .admin-header-right {
+    gap: 12px;
+  }
+
+  .admin-sound-btn {
+    padding: 6px;
+  }
+}
+
+/* Additional animations for visual feedback */
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.admin-notification-badge.new-badge {
+  animation: bounceIn 0.5s ease-out;
+}
+
+/* Toast notification styles for visual feedback */
+.admin-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #22c55e;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10000;
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

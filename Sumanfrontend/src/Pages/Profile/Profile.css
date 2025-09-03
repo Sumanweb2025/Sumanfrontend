@@ -1,7 +1,6 @@
-/* Profile.css */
+
 
 .profile-acc-page {
-  /* Gradient background */
   background:
     radial-gradient(60% 80% at 100% 0%, rgba(0,0,0,.06), transparent 60%),
     radial-gradient(80% 60% at 0% 100%, rgba(0,0,0,.06), transparent 60%),
@@ -15,7 +14,7 @@
   overflow: hidden;
 }
 
-/* Optional: Add bubble decoration (remove if not needed) */
+
 .profile-acc-page::before {
   content: '';
   position: absolute;
@@ -39,14 +38,9 @@
 }
 
 .profile-acc-container {
-  /* Glass morphism effect */
   background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-  
+  border: 1px solid rgba(88, 85, 85, 0.3);
   width: 100%;
   max-width: 900px;
   padding: 40px;
@@ -60,7 +54,7 @@
   align-items: center;
   margin-bottom: 30px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #eaeef5;
+  border-bottom: 1px solid #a5a6a8;
 }
 
 .profile-acc-header h1 {
@@ -73,7 +67,7 @@
 .back-button {
   background: transparent;
   border: none;
-  color: #4c51bf;
+  color: #ffd700;
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -83,12 +77,12 @@
 }
 
 .back-button:hover {
-  color: #434190;
+  color: #ffd700;
   transform: translateX(-3px);
 }
 
 .edit-button {
-  background: linear-gradient(to right, #4f46e5, #7c3aed);
+  background: linear-gradient(to right, #ffd700, #ffd700);
   color: #fff;
   border: none;
   padding: 10px 18px;
