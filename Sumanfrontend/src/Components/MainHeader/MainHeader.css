@@ -81,7 +81,7 @@
 }
 
 /* Header Icons */
-.header-icons {
+.main-header-icons {
   display: flex;
   gap: 20px;
   font-size: 18px;
@@ -141,12 +141,12 @@
 }
 
 /* User Profile Section */
-.user-profile-section {
+.main-user-profile-section {
   position: relative;
   
 }
 
-.user-info {
+.main-user-info {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -157,26 +157,26 @@
   transition: all 0.3s ease;
 }
 
-.user-info:hover {
+.main-user-info:hover {
   background-color: #ff0000;
   border-color: #ff0000;
 }
 
-.user-info:hover .user-avatar,
-.user-info:hover .header-login-icon,
-.user-info:hover .user-name,
-.user-info:hover .dropdown-arrow {
+.main-user-info:hover .main-user-avatar,
+.main-user-info:hover .main-header-login-icon,
+.main-user-info:hover .main-user-name,
+.main-user-info:hover .dropdown-arrow {
   color: white;
 }
 
-.user-avatar,
-.header-login-icon {
+.main-user-avatar,
+.main-header-login-icon {
   font-size: 20px;
   color: #ff6b35;
   transition: color 0.3s ease;
 }
 
-.user-name {
+.main-user-name {
   font-size: 14px;
   font-weight: 500;
   color: #333;

@@ -178,20 +178,20 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
         </div>
 
         {/* Desktop Icons */}
-        <div className="header-icons desktop-icons">
+        <div className="main-header-icons desktop-icons">
           {/* User Icon with dropdown */}
-          <div className="user-profile-section" ref={dropdownRef}>
+          <div className="main-user-profile-section" ref={dropdownRef}>
             <div
-              className="user-info"
+              className="main-user-info"
               onClick={() => setShowDropdown(!showDropdown)}
             >
               {user ? (
                 <>
-                  <FaUserCircle className="user-avatar" />
-                  <span className="user-name">{user.name}</span>
+                  <FaUserCircle className="main-user-avatar" />
+                  <span className="main-user-name">{user.name}</span>
                 </>
               ) : (
-                <FaUser className="header-login-icon" />
+                <FaUser className="main-header-login-icon" />
               )}
               <FaChevronDown className={`dropdown-arrow ${showDropdown ? 'rotated' : ''}`} />
             </div>

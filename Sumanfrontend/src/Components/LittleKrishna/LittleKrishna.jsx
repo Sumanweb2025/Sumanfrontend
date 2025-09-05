@@ -98,9 +98,15 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     }
 
     // Price range filter
-    result = result.filter(product =>
-      product.price >= priceRange[0] && product.price <= priceRange[1]
-    );
+    // result = result.filter(product =>
+    //   product.price >= priceRange[0] && product.price <= priceRange[1]
+    // );
+
+    // New Price range filter
+    result = result.filter(product => {
+      const price = product.price || 0; // Treat missing price as 0
+      return price >= priceRange[0] && price <= priceRange[1];
+    });
 
     // Search filter
     if (searchTerm.trim()) {
@@ -310,7 +316,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         {/* Hero Carousel Section */}
         <div className="little-krishna-hero-carousel">
           <div className="little-krishna-carousel-container">
-            <div className="little-krishna-carousel-wrapper" style={{ transform: `translateX(-${currentCarouselIndex * (100/3)}%)` }}>
+            <div className="little-krishna-carousel-wrapper" style={{ transform: `translateX(-${currentCarouselIndex * (100 / 3)}%)` }}>
               {carouselImages.map((image, index) => (
                 <div key={index} className="little-krishna-carousel-slide">
                   <img src={image} alt={`Little Krishna Foods ${index + 1}`} />
@@ -549,7 +555,10 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                             <span className="little-krishna-rating-text">({product.rating?.toFixed(1) || '0.0'})</span>
                           </div>
 
-                          <div className="price-text little-krishna-product-price">${product.price}</div>
+                          <div className="price-text little-krishna-product-price">{product.price !== undefined && product.price !== null
+                            ? `$${product.price}`
+                            : <span style={{ color: '#999', fontSize: "0.9rem" }}>$0 (Price not fixed)</span>
+                          }</div>
 
                           <button
                             className="little-krishna-add-to-cart-btn"

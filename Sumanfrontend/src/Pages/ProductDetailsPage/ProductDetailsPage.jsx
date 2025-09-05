@@ -98,8 +98,8 @@ const ProductDetailsPage = ({ addToCart }) => {
             wishlistData.products?.map(
               (item) => item.productId._id || item.productId
             ) ||
-              wishlistData.map((item) => item.product_id || item.productId) ||
-              []
+            wishlistData.map((item) => item.product_id || item.productId) ||
+            []
           );
 
           // Fetch cart
@@ -111,8 +111,7 @@ const ProductDetailsPage = ({ addToCart }) => {
           if (product) {
             try {
               const reviewResponse = await axios.get(
-                `${API_URL}api/reviews/product/${
-                  product.product_id || product.id
+                `${API_URL}api/reviews/product/${product.product_id || product.id
                 }/user`,
                 config
               );
@@ -259,75 +258,75 @@ const ProductDetailsPage = ({ addToCart }) => {
   };
 
   const handleReviewSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const token = localStorage.getItem("token");
-  if (!token) {
-    alert("Please login to submit a review");
-    return;
-  }
-
-  if (!reviewForm.rating || !reviewForm.comment.trim()) {
-    alert("Please provide both rating and comment");
-    return;
-  }
-
-  if (userReview) {
-    alert("You have already reviewed this product");
-    return;
-  }
-
-  setReviewLoading(true);
-  try {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    };
-
-    // Get the correct product ID
-    const productId = product.product_id || product._id || product.id;
-    
-    if (!productId) {
-      alert("Product ID not found");
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please login to submit a review");
       return;
     }
 
-    console.log('Submitting review for product:', productId);
-    console.log('Review data:', reviewForm);
+    if (!reviewForm.rating || !reviewForm.comment.trim()) {
+      alert("Please provide both rating and comment");
+      return;
+    }
 
-    const response = await axios.post(
-      `${API_URL}api/reviews/product/${productId}`,
-      { 
-        rating: parseInt(reviewForm.rating),
-        comment: reviewForm.comment.trim()
-      },
-      config
-    );
+    if (userReview) {
+      alert("You have already reviewed this product");
+      return;
+    }
 
-    alert("Review submitted successfully!");
+    setReviewLoading(true);
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      };
 
-    // Refresh product data and reviews
-    const productResponse = await axios.get(`${API_URL}api/products/${id}`);
-    setProduct(productResponse.data?.data || productResponse.data);
+      // Get the correct product ID
+      const productId = product.product_id || product._id || product.id;
 
-    const reviewsResponse = await axios.get(
-      `${API_URL}api/reviews/product/${productId}`
-    );
-    setReviews(reviewsResponse.data?.data?.reviews || []);
+      if (!productId) {
+        alert("Product ID not found");
+        return;
+      }
 
-    setUserReview(response.data.data);
-    setReviewForm({ rating: 0, comment: "" });
-    setHoveredRating(0);
-  } catch (err) {
-    console.error("Review submit error:", err);
-    console.error("Error response:", err.response?.data);
-    alert(err.response?.data?.message || "Failed to submit review");
-  } finally {
-    setReviewLoading(false);
-  }
-};
+      console.log('Submitting review for product:', productId);
+      console.log('Review data:', reviewForm);
+
+      const response = await axios.post(
+        `${API_URL}api/reviews/product/${productId}`,
+        {
+          rating: parseInt(reviewForm.rating),
+          comment: reviewForm.comment.trim()
+        },
+        config
+      );
+
+      alert("Review submitted successfully!");
+
+      // Refresh product data and reviews
+      const productResponse = await axios.get(`${API_URL}api/products/${id}`);
+      setProduct(productResponse.data?.data || productResponse.data);
+
+      const reviewsResponse = await axios.get(
+        `${API_URL}api/reviews/product/${productId}`
+      );
+      setReviews(reviewsResponse.data?.data?.reviews || []);
+
+      setUserReview(response.data.data);
+      setReviewForm({ rating: 0, comment: "" });
+      setHoveredRating(0);
+    } catch (err) {
+      console.error("Review submit error:", err);
+      console.error("Error response:", err.response?.data);
+      alert(err.response?.data?.message || "Failed to submit review");
+    } finally {
+      setReviewLoading(false);
+    }
+  };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -349,9 +348,8 @@ const ProductDetailsPage = ({ addToCart }) => {
       .map((_, i) => (
         <span
           key={i}
-          className={`star ${interactive ? "interactive" : ""} ${
-            i < rating ? "star-filled" : "star-empty"
-          }`}
+          className={`star ${interactive ? "interactive" : ""} ${i < rating ? "star-filled" : "star-empty"
+            }`}
           onClick={interactive ? () => onClick(i + 1) : undefined}
           onMouseEnter={interactive ? () => onHover?.(i + 1) : undefined}
           onMouseLeave={interactive ? onLeave : undefined}
@@ -428,14 +426,14 @@ const ProductDetailsPage = ({ addToCart }) => {
             </td>
             <td>{product.sku || product.product_id || product.id || "N/A"}</td>
           </tr> */}
-          {product.piece && (
+          {/* {product.piece && (
             <tr>
               <td>
                 <strong>Quantity per Pack</strong>
               </td>
               <td>{product.piece} pieces</td>
             </tr>
-          )}
+          )} */}
           {/* <tr>
             <td>
               <strong>Weight</strong>
@@ -448,6 +446,12 @@ const ProductDetailsPage = ({ addToCart }) => {
             </td>
             <td>{product.color || "N/A"}</td>
           </tr> */}
+          <tr>
+            <td>
+              <strong>Ingredients</strong>
+            </td>
+            <td>{product.ingredients || "N/A"}</td>
+          </tr>
           <tr>
             <td>
               <strong>Warranty</strong>
@@ -465,114 +469,151 @@ const ProductDetailsPage = ({ addToCart }) => {
     </div>
   );
 
-  const renderReviews = () => (
-    <div className="tab-content-reviews">
-      <div className="reviews-summary">
-        <h3>Customer Reviews</h3>
-        <div className="rating-summary">
-          <div className="overall-rating">
-            <span className="rating-number">
-              {product.rating?.toFixed(1) || "0.0"}
-            </span>
-            <div className="rating-stars">
-              {renderRatingStars(Math.floor(product.rating || 0))}
+  const renderReviews = () => {
+    const totalRatings = reviews.length;
+
+    const breakdownMap = [
+      { star: 5, label: "Excellent", className: "fill-excellent" },
+      { star: 4, label: "Very Good", className: "fill-verygood" },
+      { star: 3, label: "Good", className: "fill-good" },
+      { star: 2, label: "Average", className: "fill-average" },
+      { star: 1, label: "Poor", className: "fill-poor" },
+    ];
+
+    const ratingCounts = breakdownMap.map(({ star, label, className }) => ({
+      star,
+      label,
+      className,
+      count: reviews.filter((r) => r.rating === star).length,
+    }));
+
+    return (
+      <div className="tab-content-reviews">
+        <div className="reviews-summary">
+          <h3>Customer Reviews</h3>
+
+          <div className="reviews-breakdown">
+            {/* Left side (overall rating) */}
+            <div className="reviews-left">
+              <div className="rating-badge-big">
+                {product.rating?.toFixed(1) || "0.0"} ★
+              </div>
+              <div className="rating-stats">
+                {(product.rating_count || totalRatings) || 0} Ratings,{" "}
+                {(product.review_count || totalRatings) || 0} Reviews
+              </div>
             </div>
-            <span className="rating-count">
-              Based on {product.review_count || 0}{" "}
-              {(product.review_count || 0) === 1 ? "review" : "reviews"}
-            </span>
+
+            {/* Right side (distribution bars) */}
+            <div className="reviews-right">
+              {ratingCounts.map(({ star, label, count, className }) => (
+                <div key={star} className="breakdown-row">
+                  <span className="breakdown-label">{label}</span>
+                  <div className="breakdown-bar">
+                    <div
+                      className={`breakdown-fill ${className}`}
+                      style={{
+                        width: totalRatings
+                          ? `${(count / totalRatings) * 100}%`
+                          : "0%",
+                      }}
+                    />
+                  </div>
+                  <span className="breakdown-count">{count}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
+
+        {/* Write Review Form */}
+        {!userReview && (
+          <div className="write-review-form">
+            <h4>Write a Review</h4>
+            <form onSubmit={handleReviewSubmit}>
+              <div className="rating-input">
+                <label>Rating:</label>
+                <div className="stars-input">
+                  {renderRatingStars(
+                    hoveredRating || reviewForm.rating,
+                    true,
+                    handleRatingClick,
+                    setHoveredRating,
+                    () => setHoveredRating(0)
+                  )}
+                </div>
+              </div>
+
+              <div className="comment-input">
+                <label>Your Review:</label>
+                <textarea
+                  value={reviewForm.comment}
+                  onChange={(e) =>
+                    setReviewForm((prev) => ({
+                      ...prev,
+                      comment: e.target.value,
+                    }))
+                  }
+                  placeholder="Share your thoughts about this product..."
+                  maxLength="500"
+                  rows="4"
+                  required
+                />
+                <small className="char-count">
+                  {reviewForm.comment.length}/500 characters
+                </small>
+              </div>
+
+              <button
+                type="submit"
+                className="submit-review-btn"
+                disabled={reviewLoading}
+              >
+                {reviewLoading ? "Submitting..." : "Submit Review"}
+              </button>
+            </form>
+          </div>
+        )}
+
+        {userReview && (
+          <div className="user-review-notice">
+            <p>
+              ✅ You have already reviewed this product. Thank you for your
+              feedback!
+            </p>
+          </div>
+        )}
+
+        {/* Display Reviews */}
+        {reviews.length > 0 ? (
+          <div className="reviews-list">
+            <h4>All Reviews ({reviews.length})</h4>
+            {reviews.map((review) => (
+              <div key={review._id} className="review-item">
+                <div className="review-header">
+                  <span className="reviewer-name">{review.user_name}</span>
+                  <span className="review-date">
+                    {formatDate(review.createdAt)}
+                  </span>
+                </div>
+
+                <div className="review-rating">
+                  {renderRatingStars(review.rating)}
+                  <span className="rating-text">({review.rating}/5)</span>
+                </div>
+
+                <p className="review-comment">{review.comment}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="no-reviews">
+            <p>No reviews yet. Be the first to review this product!</p>
+          </div>
+        )}
       </div>
-
-      {/* Write Review Form */}
-      {!userReview && (
-        <div className="write-review-form">
-          <h4>Write a Review</h4>
-          <form onSubmit={handleReviewSubmit}>
-            <div className="rating-input">
-              <label>Rating:</label>
-              <div className="stars-input">
-                {renderRatingStars(
-                  hoveredRating || reviewForm.rating,
-                  true,
-                  handleRatingClick,
-                  setHoveredRating,
-                  () => setHoveredRating(0)
-                )}
-              </div>
-            </div>
-
-            <div className="comment-input">
-              <label>Your Review:</label>
-              <textarea
-                value={reviewForm.comment}
-                onChange={(e) =>
-                  setReviewForm((prev) => ({
-                    ...prev,
-                    comment: e.target.value,
-                  }))
-                }
-                placeholder="Share your thoughts about this product..."
-                maxLength="500"
-                rows="4"
-                required
-              />
-              <small className="char-count">
-                {reviewForm.comment.length}/500 characters
-              </small>
-            </div>
-
-            <button
-              type="submit"
-              className="submit-review-btn"
-              disabled={reviewLoading}
-            >
-              {reviewLoading ? "Submitting..." : "Submit Review"}
-            </button>
-          </form>
-        </div>
-      )}
-
-      {userReview && (
-        <div className="user-review-notice">
-          <p>
-            ✅ You have already reviewed this product. Thank you for your
-            feedback!
-          </p>
-        </div>
-      )}
-
-      {/* Display Reviews */}
-      {reviews.length > 0 ? (
-        <div className="reviews-list">
-          <h4>All Reviews ({reviews.length})</h4>
-          {reviews.map((review) => (
-            <div key={review._id} className="review-item">
-              <div className="review-header">
-                <span className="reviewer-name">{review.user_name}</span>
-                <span className="review-date">
-                  {formatDate(review.createdAt)}
-                </span>
-              </div>
-
-              <div className="review-rating">
-                {renderRatingStars(review.rating)}
-                <span className="rating-text">({review.rating}/5)</span>
-              </div>
-
-              <p className="review-comment">{review.comment}</p>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="no-reviews">
-          <p>No reviews yet. Be the first to review this product!</p>
-        </div>
-      )}
-    </div>
-  );
-
+    );
+  };
   if (loading) {
     return (
       <LoadingSpinner
@@ -618,9 +659,8 @@ const ProductDetailsPage = ({ addToCart }) => {
           <div className="product-details-content">
             {/* Wishlist Button - Top Right */}
             <button
-              className={`product-details-wishlist-btn ${
-                isInWishlist ? "active" : ""
-              }`}
+              className={`product-details-wishlist-btn ${isInWishlist ? "active" : ""
+                }`}
               onClick={handleWishlistClick}
               disabled={wishlistLoading}
             >
@@ -659,36 +699,34 @@ const ProductDetailsPage = ({ addToCart }) => {
             </div>
 
             {/* Product Info */}
-            <div className="product-info">
-              <h1 className="product-title">{product.name}</h1>
-              <div className="product-brand">Brand: {product.brand}</div>
-              <div className="product-category">
+            <div className="product-details-info">
+              <h1 className="product-details-title">{product.name}</h1>
+              <div className="product-details-brand">Brand: {product.brand}</div>
+              <div className="product-details-category">
                 Category: {product.category}
               </div>
 
-              <div className="product-rating">
-                {renderRatingStars(Math.floor(product.rating || 0))}
-                <span className="rating-text">
-                  ({product.rating?.toFixed(1) || "0.0"})
-                  {product.review_count
-                    ? ` - ${product.review_count} ${
-                        product.review_count === 1 ? "Review" : "Reviews"
-                      }`
-                    : " "}
-                </span>
+              <div className="product-details-rating">
+                <div className="rating-badge">
+                  {product.rating?.toFixed(1) || "0.0"} ★
+                </div>
+                <div className="rating-stats">
+                  {(product.rating_count || reviews.length) || 0} Ratings,{" "}
+                  {(product.review_count || reviews.length) || 0} Reviews
+                </div>
               </div>
 
-              <div className="product-price">
-                <span className="current-price">
+              <div className="product-details-price">
+                <span className="product-details-current-price">
                   ${(product.price * quantity).toFixed(2)}
                 </span>
                 {product.originalPrice && (
-                  <span className="original-price">
+                  <span className="product-details-original-price">
                     ${(product.originalPrice * quantity).toFixed(2)}
                   </span>
                 )}
                 {quantity > 1 && (
-                  <span className="price-per-unit">
+                  <span className="product-details-price-per-unit">
                     ${product.price} per unit
                   </span>
                 )}
@@ -741,17 +779,15 @@ const ProductDetailsPage = ({ addToCart }) => {
           <div className="product-tabs-section">
             <div className="tabs-navigation">
               <button
-                className={`tab-btn ${
-                  activeTab === "description" ? "active" : ""
-                }`}
+                className={`tab-btn ${activeTab === "description" ? "active" : ""
+                  }`}
                 onClick={() => setActiveTab("description")}
               >
                 Description
               </button>
               <button
-                className={`tab-btn ${
-                  activeTab === "additional" ? "active" : ""
-                }`}
+                className={`tab-btn ${activeTab === "additional" ? "active" : ""
+                  }`}
                 onClick={() => setActiveTab("additional")}
               >
                 Additional Information
