@@ -1,14 +1,45 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import './Signup.css';
 
+// Toast Component
+const Toast = ({ message, type, isVisible, onClose }) => {
+  useEffect(() => {
+    if (isVisible) {
+      const timer = setTimeout(() => {
+        onClose();
+      }, 5000); // Auto close after 5 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [isVisible, onClose]);
+
+  if (!isVisible) return null;
+
+  return (
+    <div className={`signup-toast signup-toast-${type}`}>
+      <div className="toast-content">
+        <div className="toast-icon">
+          {type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ'}
+        </div>
+        <div className="toast-message">{message}</div>
+        <button className="toast-close" onClick={onClose}>×</button>
+      </div>
+    </div>
+  );
+};
+
 const SignUp = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [toast, setToast] = useState({
+    message: '',
+    type: 'info',
+    isVisible: false
+  });
   const [signupData, setSignupData] = useState({
     name: '',
     email: '',
@@ -16,6 +47,19 @@ const SignUp = () => {
     confirmPassword: '',
     agreeToTerms: false
   });
+
+  // Toast helper functions
+  const showToast = (message, type = 'info') => {
+    setToast({
+      message,
+      type,
+      isVisible: true
+    });
+  };
+
+  const closeToast = () => {
+    setToast(prev => ({ ...prev, isVisible: false }));
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -80,6 +124,7 @@ const SignUp = () => {
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       console.log('Validation errors:', validationErrors);
+      showToast('Please fix the form errors before submitting', 'error');
       return;
     }
 
@@ -114,12 +159,17 @@ const SignUp = () => {
           localStorage.setItem('user', JSON.stringify(response.data.data.user));
         }
         
-        alert('Welcome to Iyappaa Sweets & Snacks! Your account has been created successfully.');
-        navigate('/', { replace: true });
+        showToast(`Welcome to Iyappaa Sweets & Snacks, ${signupData.name}! Your account has been created successfully.`, 'success');
+        
+        // Navigate after showing toast for a moment
+        setTimeout(() => {
+          navigate('/', { replace: true });
+        }, 2000);
       } else {
         // Handle case where response doesn't have expected structure
         console.error('Unexpected response structure:', response.data);
         setErrors({ api: 'Account creation failed. Please try again.' });
+        showToast('Account creation failed. Please try again.', 'error');
       }
 
     } catch (error) {
@@ -140,27 +190,36 @@ const SignUp = () => {
             formattedErrors[field] = err.msg || err.message;
           });
           setErrors(formattedErrors);
+          showToast('Please fix the form errors and try again', 'error');
         } else if (status === 409) {
           // Handle duplicate email
           setErrors({ email: 'An account with this email already exists' });
+          showToast('An account with this email already exists', 'error');
         } else if (data.message) {
           setErrors({ api: data.message });
+          showToast(data.message, 'error');
         } else {
-          setErrors({ api: `Server error (${status}). Please try again.` });
+          const errorMsg = `Server error (${status}). Please try again.`;
+          setErrors({ api: errorMsg });
+          showToast(errorMsg, 'error');
         }
       } else if (error.request) {
         // Network error
         console.error('Network error:', error.request);
-        setErrors({ 
-          api: 'Cannot connect to server. Please check if the backend is running on http://localhost:8000' 
-        });
+        const errorMsg = 'Cannot connect to server. Please check if the backend is running on http://localhost:8000';
+        setErrors({ api: errorMsg });
+        showToast(errorMsg, 'error');
       } else if (error.code === 'ECONNABORTED') {
         // Timeout error
-        setErrors({ api: 'Request timed out. Please try again.' });
+        const errorMsg = 'Request timed out. Please try again.';
+        setErrors({ api: errorMsg });
+        showToast(errorMsg, 'error');
       } else {
         // Other error
         console.error('Unexpected error:', error.message);
-        setErrors({ api: 'An unexpected error occurred. Please try again.' });
+        const errorMsg = 'An unexpected error occurred. Please try again.';
+        setErrors({ api: errorMsg });
+        showToast(errorMsg, 'error');
       }
     } finally {
       setLoading(false);
@@ -169,6 +228,14 @@ const SignUp = () => {
 
   return (
     <div className="signup-wrapper">
+      {/* Toast Notification */}
+      <Toast 
+        message={toast.message}
+        type={toast.type}
+        isVisible={toast.isVisible}
+        onClose={closeToast}
+      />
+
       <div className="signup-left">
         <div className="promo-text">
           <h1>Join Iyappaa Sweets & Snacks Today</h1>

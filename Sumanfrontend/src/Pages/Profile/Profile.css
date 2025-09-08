@@ -1,11 +1,23 @@
 /* Profile.css */
 
 .profile-acc-page {
-  /* Gradient background */
+  /* Background with beautiful Unsplash image and overlays */
   background:
-    radial-gradient(60% 80% at 100% 0%, rgba(0,0,0,.06), transparent 60%),
-    radial-gradient(80% 60% at 0% 100%, rgba(0,0,0,.06), transparent 60%),
-    linear-gradient(180deg, #f7f7fb, #eef1f7 40%, #e9edf5);
+    /* Dark overlay for better text readability */
+    linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(124, 58, 237, 0.1)),
+    /* Subtle gradient overlay */
+    radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.1), transparent 50%),
+    radial-gradient(circle at 70% 80%, rgba(59, 130, 246, 0.1), transparent 50%),
+    /* Beautiful abstract background from Unsplash */
+    url('https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80'),
+    /* Fallback gradient */
+    linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  
+  background-size: cover, cover, cover, cover, cover;
+  background-position: center, center, center, center, center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  
   min-height: 100vh;
   padding: 40px 20px;
   display: flex;
@@ -15,43 +27,80 @@
   overflow: hidden;
 }
 
-/* Optional: Add bubble decoration (remove if not needed) */
+/* Enhanced floating background elements */
 .profile-acc-page::before {
   content: '';
   position: absolute;
-  width: 300px;
-  height: 300px;
-  background: rgba(255, 255, 255, 0.1);
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.15), transparent 70%);
   border-radius: 50%;
-  top: -100px;
-  right: -100px;
+  top: -200px;
+  right: -200px;
+  animation: floatBackground 20s ease-in-out infinite;
 }
 
 .profile-acc-page::after {
   content: '';
   position: absolute;
-  width: 200px;
-  height: 200px;
-  background: rgba(255, 255, 255, 0.08);
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.12), transparent 70%);
   border-radius: 50%;
-  bottom: -50px;
-  left: -50px;
+  bottom: -150px;
+  left: -150px;
+  animation: floatBackground 25s ease-in-out infinite reverse;
+}
+
+@keyframes floatBackground {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0.1;
+  }
+  25% {
+    transform: translate(20px, -30px) rotate(90deg);
+    opacity: 0.15;
+  }
+  50% {
+    transform: translate(-10px, -50px) rotate(180deg);
+    opacity: 0.08;
+  }
+  75% {
+    transform: translate(-30px, -20px) rotate(270deg);
+    opacity: 0.12;
+  }
 }
 
 .profile-acc-container {
-  /* Glass morphism effect */
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  /* Enhanced glass morphism effect */
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.1),
+    0 8px 32px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
   
   width: 100%;
   max-width: 900px;
   padding: 40px;
-  animation: fadeIn 0.4s ease-out;
-  z-index: 1;
+  animation: containerFadeIn 0.8s ease-out;
+  z-index: 10;
+  position: relative;
+}
+
+/* Enhanced container entrance animation */
+@keyframes containerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .profile-acc-header {
@@ -60,7 +109,7 @@
   align-items: center;
   margin-bottom: 30px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #eaeef5;
+  border-bottom: 1px solid rgba(234, 238, 245, 0.3);
 }
 
 .profile-acc-header h1 {
@@ -119,38 +168,84 @@
   flex-direction: column;
   align-items: center;
   margin-bottom: 2rem;
+  animation: float 6s ease-in-out infinite;
 }
+
 .avatar-container {
   position: relative;
   width: 150px;
   height: 150px;
   border-radius: 50%;
   overflow: hidden;
-  border: 4px solid #e5e7eb;
-  background-color: #f9fafb;
+  border: 4px solid rgba(255, 255, 255, 0.4);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.1),
+    0 4px 15px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
+
+.avatar-container:hover {
+  transform: scale(1.05);
+  border-color: rgba(139, 92, 246, 0.4);
+  box-shadow: 
+    0 15px 40px rgba(139, 92, 246, 0.2),
+    0 8px 20px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
 .profile-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
 }
+
+.profile-acc-icon {
+  font-size: 60px;
+  color: rgba(139, 92, 246, 0.6);
+}
+
+.avatar-actions {
+  position: absolute;
+  bottom: -10px;
+  right: -10px;
+  display: flex;
+  gap: 8px;
+}
+
+.avatar-action-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
 .upload-btn {
-  
+  background: rgba(107, 114, 128, 0.9);
   color: white;
 }
 
 .upload-btn:hover {
-  background-color: #828386;
+  background-color: #6b7280;
   transform: scale(1.1);
 }
 
 .remove-btn {
-  background-color: #ef4444;
+  background: rgba(239, 68, 68, 0.9);
   color: white;
 }
 
@@ -169,24 +264,32 @@
   font-size: 0.75rem;
 }
 
-
 .profile-acc-form {
   width: 100%;
   max-width: 800px;
 }
 
 .profile-form-section {
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 25px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 28px;
   margin-bottom: 25px;
-  border: 1px solid #e2e8f0;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.4s ease;
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.08),
+    0 3px 10px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .profile-form-section:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+  transform: translateY(-5px);
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.12),
+    0 8px 20px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  border-color: rgba(139, 92, 246, 0.2);
 }
 
 .profile-form-section h3 {
@@ -209,6 +312,9 @@
   font-weight: 500;
   color: #4a5568;
   margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .profile-form-group small {
@@ -221,16 +327,17 @@
 .profile-form-value {
   display: block;
   padding: 12px 15px;
-  background-color: #f8fafc;
+  background-color: rgba(248, 250, 252, 0.8);
   border-radius: 10px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(226, 232, 240, 0.5);
   color: #2d3748;
   font-size: 0.95rem;
   transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
 }
 
 .profile-form-value.readonly {
-  background-color: #f8fafc;
+  background-color: rgba(248, 250, 252, 0.5);
   color: #718096;
 }
 
@@ -238,10 +345,11 @@
   width: 100%;
   padding: 12px 15px;
   border-radius: 10px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(226, 232, 240, 0.5);
   font-size: 0.95rem;
   color: #2d3748;
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(5px);
   transition: all 0.3s ease;
 }
 
@@ -249,6 +357,11 @@
   border-color: #818cf8;
   box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2);
   outline: none;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.phone-input-wrapper {
+  position: relative;
 }
 
 .profile-form-row {
@@ -289,6 +402,11 @@
   box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3);
 }
 
+.save-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .cancel-button {
   background: linear-gradient(to right, #ef4444, #f87171);
   color: #fff;
@@ -309,6 +427,11 @@
   box-shadow: 0 6px 12px rgba(239, 68, 68, 0.3);
 }
 
+.cancel-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .loading {
   text-align: center;
   font-size: 1.2rem;
@@ -320,17 +443,6 @@
   gap: 15px;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 /* Add some subtle animations */
 @keyframes float {
   0% { transform: translateY(0px); }
@@ -338,6 +450,72 @@
   100% { transform: translateY(0px); }
 }
 
-.profile-acc-avatar {
-  animation: float 6s ease-in-out infinite;
+/* Responsive Design with enhanced background handling */
+@media (max-width: 768px) {
+  .profile-acc-page {
+    padding: 20px 15px;
+    background-attachment: scroll; /* Better performance on mobile */
+  }
+  
+  .profile-acc-container {
+    padding: 25px 20px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.18);
+  }
+  
+  .profile-acc-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .avatar-container {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .profile-form-row {
+    flex-direction: column;
+  }
+  
+  .profile-form-actions {
+    flex-direction: column;
+  }
+  
+  .save-button, .cancel-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-acc-page {
+    padding: 15px 10px;
+    background-size: cover, cover, cover, 120% auto, cover;
+  }
+  
+  .profile-acc-container {
+    padding: 20px 15px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(15px);
+  }
+  
+  .profile-acc-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .avatar-container {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .profile-acc-icon {
+    font-size: 40px;
+  }
+  
+  .profile-form-section {
+    padding: 20px 15px;
+    margin-bottom: 20px;
+  }
 }

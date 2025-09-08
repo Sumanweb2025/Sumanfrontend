@@ -41,7 +41,7 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     const fetchData = async () => {
       try {
         // Fetch groceries category
-        const productsResponse = await axios.get(`${API_URL}api/products/search?category=groceries`);
+        const productsResponse = await axios.get(`${API_URL}api/products/search?category=grocery`);
         const productsData = productsResponse.data?.data || productsResponse.data?.products || productsResponse.data;
         setProducts(productsData);
 
@@ -466,7 +466,13 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                         <div className="grocery-product-info">
                           <h3 className="card-title grocery-product-name">{product.name}</h3>
                           <div className="grocery-product-brand">{product.brand}</div>
-                          
+                           {/* Weight/Gram Display */}
+                          {(product.gram || product.weight) && (
+                            <div className="snacks-product-weight">
+                              {product.gram || product.weight}
+                            </div>
+                          )}
+
                           <div className="grocery-product-rating">
                             {Array(5).fill().map((_, i) => (
                               <span key={i} className={i < Math.floor(product.rating || 0) ? 'grocery-star-filled' : 'grocery-star-empty'}>

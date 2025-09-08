@@ -3,6 +3,33 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Signin.css';
 
+// Toast Component
+const Toast = ({ message, type, isVisible, onClose }) => {
+  useEffect(() => {
+    if (isVisible) {
+      const timer = setTimeout(() => {
+        onClose();
+      }, 5000); // Auto close after 4 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [isVisible, onClose]);
+
+  if (!isVisible) return null;
+
+  return (
+    <div className={`signin-toast signin-toast-${type}`}>
+      <div className="toast-content">
+        <div className="toast-icon">
+          {type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ'}
+        </div>
+        <div className="toast-message">{message}</div>
+        <button className="toast-close" onClick={onClose}>×</button>
+      </div>
+    </div>
+  );
+};
+
 // Google Sign-In Component
 const GoogleSignIn = ({ onSuccess, onError, loading }) => {
   useEffect(() => {
@@ -63,11 +90,29 @@ const SignIn = () => {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [toast, setToast] = useState({
+    message: '',
+    type: 'info',
+    isVisible: false
+  });
   const [signinData, setSigninData] = useState({
     email: '',
     password: '',
     rememberMe: false
   });
+
+  // Toast helper functions
+  const showToast = (message, type = 'info') => {
+    setToast({
+      message,
+      type,
+      isVisible: true
+    });
+  };
+
+  const closeToast = () => {
+    setToast(prev => ({ ...prev, isVisible: false }));
+  };
 
   // Helper function to safely store user data with image handling
   const storeUserData = (user, token) => {
@@ -162,10 +207,15 @@ const SignIn = () => {
         const stored = storeUserData(user, token);
         
         if (stored) {
-          alert('Welcome back to Food Court!');
-          navigate('/', { replace: true });
+          showToast(`Welcome back, ${user.name}! `, 'success');
+          
+          // Navigate after showing toast for a moment
+          setTimeout(() => {
+            navigate('/', { replace: true });
+          }, 1500);
         } else {
           setErrors({ api: 'Failed to save user data. Please try again.' });
+          showToast('Failed to save user data. Please try again.', 'error');
         }
       }
 
@@ -183,13 +233,19 @@ const SignIn = () => {
           setErrors(formattedErrors);
         } else if (data.message) {
           setErrors({ api: data.message });
+          showToast(data.message, 'error');
         } else {
           setErrors({ api: 'Sign in failed. Please try again.' });
+          showToast('Sign in failed. Please try again.', 'error');
         }
       } else if (error.request) {
-        setErrors({ api: 'Network error. Please check your connection and try again.' });
+        const errorMsg = 'Network error. Please check your connection and try again.';
+        setErrors({ api: errorMsg });
+        showToast(errorMsg, 'error');
       } else {
-        setErrors({ api: 'An unexpected error occurred. Please try again.' });
+        const errorMsg = 'An unexpected error occurred. Please try again.';
+        setErrors({ api: errorMsg });
+        showToast(errorMsg, 'error');
       }
     } finally {
       setLoading(false);
@@ -226,23 +282,34 @@ const SignIn = () => {
         const stored = storeUserData(user, token);
         
         if (stored) {
-          alert(`Welcome ${user.name}! Google sign-in successful.`);
-          navigate('/', { replace: true });
+          showToast(`Welcome ${user.name}! Google sign-in successful 🚀`, 'success');
+          
+          // Navigate after showing toast for a moment
+          setTimeout(() => {
+            navigate('/', { replace: true });
+          }, 1500);
         } else {
-          setErrors({ api: 'Failed to save user data. Please try again.' });
+          const errorMsg = 'Failed to save user data. Please try again.';
+          setErrors({ api: errorMsg });
+          showToast(errorMsg, 'error');
         }
       }
 
     } catch (error) {
       console.error('Google auth error:', error);
       
+      let errorMsg = 'Google authentication failed';
       if (error.response && error.response.data) {
-        setErrors({ api: error.response.data.message || 'Google authentication failed' });
+        errorMsg = error.response.data.message || errorMsg;
+        setErrors({ api: errorMsg });
       } else if (error.request) {
-        setErrors({ api: 'Network error. Please check your connection and try again.' });
+        errorMsg = 'Network error. Please check your connection and try again.';
+        setErrors({ api: errorMsg });
       } else {
-        setErrors({ api: 'An unexpected error occurred. Please try again.' });
+        errorMsg = 'An unexpected error occurred. Please try again.';
+        setErrors({ api: errorMsg });
       }
+      showToast(errorMsg, 'error');
     } finally {
       setGoogleLoading(false);
     }
@@ -250,10 +317,21 @@ const SignIn = () => {
 
   const handleGoogleError = (errorMessage) => {
     setErrors({ api: errorMessage });
+    showToast(errorMessage, 'error');
   };
 
   return (
     <div className="signin-wrapper">
+      
+      {/* Toast Notification */}
+      <Toast 
+        message={toast.message}
+        type={toast.type}
+        isVisible={toast.isVisible}
+        onClose={closeToast}
+      />
+      
+
       <div className="signin-left">
         <div className="promo-text">
           <h1>Welcome Back to Iyappaa Sweets & Snacks</h1>
@@ -317,6 +395,7 @@ const SignIn = () => {
               <span className="error-text">{errors.password || ''}</span>
             </div>
           </div>
+          
 
           <div className="form-options">
             <div className="remember-me">
