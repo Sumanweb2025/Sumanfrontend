@@ -724,34 +724,34 @@
   line-height: 1.5;
 }
 
-.order-details {
+.checkout-order-details {
   background-color: #f9fafb;
   border-radius: 0.5rem;
   padding: 1rem;
   margin-bottom: 1.5rem;
 }
 
-.order-label {
+.checkout-order-label {
   font-size: 0.875rem;
   color: #6b7280;
   margin: 0 0 0.25rem 0;
 }
 
-.order-number {
+.checkout-order-number {
   font-size: 1.125rem;
   font-weight: 600;
   color: #1f2937;
   margin: 0 0 0.75rem 0;
 }
 
-.order-total {
+.checkout-order-total {
   font-size: 1.125rem;
   font-weight: 600;
   color: #059669;
   margin: 0;
 }
 
-.payment-success {
+.checkout-payment-success {
   font-size: 1rem;
   font-weight: 600;
   color: #059669;

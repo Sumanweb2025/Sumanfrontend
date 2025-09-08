@@ -24,7 +24,7 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  
+
   // Popup states
   const [showWishlistPopup, setShowWishlistPopup] = useState(false);
   const [showCartPopup, setShowCartPopup] = useState(false);
@@ -78,22 +78,28 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
 
   useEffect(() => {
     let result = [...products];
-    
+
     // Brand filter
     if (selectedBrands.length > 0) {
       result = result.filter(product => selectedBrands.includes(product.brand));
     }
-    
+
     // Category filter
     if (selectedCategories.length > 0) {
       result = result.filter(product => selectedCategories.includes(product.category));
     }
-    
+
     // Price range filter
-    result = result.filter(product => 
-      product.price >= priceRange[0] && product.price <= priceRange[1]
-    );
-    
+    // result = result.filter(product => 
+    //   product.price >= priceRange[0] && product.price <= priceRange[1]
+    // );
+
+    // New Price range filter
+    result = result.filter(product => {
+      const price = product.price || 0; // Treat missing price as 0
+      return price >= priceRange[0] && price <= priceRange[1];
+    });
+
     // Search filter
     if (searchTerm.trim()) {
       const searchTerms = searchTerm.toLowerCase().split(' ').filter(term => term.length > 0);
@@ -108,7 +114,7 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         return searchTerms.every(term => productFields.includes(term));
       });
     }
-    
+
     // Sorting
     switch (sortBy) {
       case 'price-low':
@@ -126,22 +132,22 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
       default:
         break;
     }
-    
+
     setFilteredProducts(result);
     setCurrentPage(1);
   }, [products, selectedBrands, selectedCategories, priceRange, searchTerm, sortBy]);
 
   const handleBrandChange = (brand) => {
-    setSelectedBrands(prev => 
-      prev.includes(brand) 
+    setSelectedBrands(prev =>
+      prev.includes(brand)
         ? prev.filter(b => b !== brand)
         : [...prev, brand]
     );
   };
 
   const handleCategoryChange = (category) => {
-    setSelectedCategories(prev => 
-      prev.includes(category) 
+    setSelectedCategories(prev =>
+      prev.includes(category)
         ? prev.filter(c => c !== category)
         : [...prev, category]
     );
@@ -164,7 +170,7 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const handleProductClick = (product) => {
     // Show existing loading spinner when navigating to product details
     setLoading(true);
-    
+
     // Small delay to show the loading spinner before navigation
     setTimeout(() => {
       // Navigate to product details page
@@ -175,7 +181,7 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const handleWishlistClick = async (e, product) => {
     e.stopPropagation(); // Prevent card click
     if (!product || wishlistLoading) return;
-    
+
     const token = localStorage.getItem('token');
     if (!token) {
       alert('Please login to add items to your wishlist');
@@ -193,20 +199,20 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
 
       const productId = product.product_id || product._id || product.id;
       const isInWishlist = wishlistItems.includes(productId);
-      
+
       if (isInWishlist) {
         await axios.delete(`${API_URL}api/wishlist/${productId}`, config);
         setWishlistItems(prev => prev.filter(id => id !== productId));
-        
+
         // Dispatch custom event to update header count
         window.dispatchEvent(new CustomEvent('wishlistUpdated'));
       } else {
         await axios.post(`${API_URL}api/wishlist`, { productId }, config);
         setWishlistItems(prev => [...prev, productId]);
-        
+
         // Dispatch custom event to update header count
         window.dispatchEvent(new CustomEvent('wishlistUpdated'));
-        
+
         // Show wishlist popup
         setSelectedProduct(product);
         setShowWishlistPopup(true);
@@ -230,7 +236,7 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
       };
 
       await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
-      
+
       // Update cart items
       const cartResponse = await axios.get(`${API_URL}api/cart`, config);
       const cartData = cartResponse.data?.data || cartResponse.data;
@@ -264,7 +270,7 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
 
       const productId = product.product_id || product._id || product.id;
       await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
-      
+
       // Update cart items
       const cartResponse = await axios.get(`${API_URL}api/cart`, config);
       const cartData = cartResponse.data?.data || cartResponse.data;
@@ -301,12 +307,12 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
 
   return (
     <>
-       <LoadingSpinner 
-                  isLoading={loading} 
-                  brandName="Groceries" 
-                  loadingText="Loading grocery items..."
-                  progressColor="#3b82f6"
-                />
+      <LoadingSpinner
+        isLoading={loading}
+        brandName="Groceries"
+        loadingText="Loading grocery items..."
+        progressColor="#3b82f6"
+      />
       <Header />
       <div className="grocery-page">
         <div className="grocery-container">
@@ -391,7 +397,7 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                 <div className="grocery-deal-items">
                   {products.slice(0, 3).map(product => (
                     <div key={product.product_id || product.id} className="grocery-deal-item">
-                      <img 
+                      <img
                         src={product.imageUrl || `${API_URL}/uploads/${product.image}`}
                         alt={product.name}
                         className="grocery-deal-image"
@@ -415,8 +421,8 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
               <div className="grocery-page-header">
                 <h1 className='main-title text-animate'>Grocery Items</h1>
                 <div className="grocery-sort-controls">
-                  <select 
-                    value={sortBy} 
+                  <select
+                    value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
                     className="grocery-sort-select"
                   >
@@ -439,8 +445,8 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                 <>
                   <div className="grocery-products-grid">
                     {currentProducts.map((product) => (
-                      <div 
-                        key={product.product_id || product.id} 
+                      <div
+                        key={product.product_id || product.id}
                         className="grocery-product-card"
                         onClick={() => handleProductClick(product)}
                       >
@@ -466,12 +472,14 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                         <div className="grocery-product-info">
                           <h3 className="card-title grocery-product-name">{product.name}</h3>
                           <div className="grocery-product-brand">{product.brand}</div>
+
                            {/* Weight/Gram Display */}
                           {(product.gram || product.weight) && (
                             <div className="snacks-product-weight">
                               {product.gram || product.weight}
                             </div>
                           )}
+
 
                           <div className="grocery-product-rating">
                             {Array(5).fill().map((_, i) => (
@@ -482,7 +490,10 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                             <span className="price-text grocery-rating-text">({product.rating?.toFixed(1) || '0.0'})</span>
                           </div>
 
-                          <div className="grocery-product-price">${product.price}</div>
+                          <div className="grocery-product-price">{product.price !== undefined && product.price !== null
+                            ? `$${product.price}`
+                            : <span style={{ color: '#999', fontSize:"0.9rem" }}>$0 (Price not fixed)</span>
+                          }</div>
                           {/* Stock status based on piece count */}
                           {product.piece > 0 ? (
                             <div className="grocery-product-stock in-stock">
@@ -494,7 +505,7 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                             </div>
                           )}
 
-                          <button 
+                          <button
                             className="grocery-add-to-cart-btn"
                             onClick={(e) => handleAddToCart(e, product)}
                           >
@@ -507,14 +518,14 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
 
                   {totalPages > 1 && (
                     <div className="grocery-pagination">
-                      <button 
+                      <button
                         onClick={() => paginate(currentPage - 1)}
                         disabled={currentPage === 1}
                         className="grocery-pagination-btn"
                       >
                         Previous
                       </button>
-                      
+
                       {Array.from({ length: totalPages }, (_, i) => (
                         <button
                           key={i + 1}
@@ -524,8 +535,8 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                           {i + 1}
                         </button>
                       ))}
-                      
-                      <button 
+
+                      <button
                         onClick={() => paginate(currentPage + 1)}
                         disabled={currentPage === totalPages}
                         className="grocery-pagination-btn"
@@ -540,7 +551,7 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
           </div>
         </div>
       </div>
-      
+
       {/* Wishlist Popup */}
       <WishlistPopup
         isOpen={showWishlistPopup}
@@ -560,7 +571,7 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         onContinueShopping={handleContinueShopping}
         onViewCart={handleViewCart}
       />
-      <Banner/>
+      <Banner />
       <Footer />
     </>
   );

@@ -93,17 +93,23 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
 
   useEffect(() => {
     let result = [...products];
-    
+
     // Category filter
     if (selectedCategories.length > 0) {
       result = result.filter(product => selectedCategories.includes(product.category));
     }
-    
+
     // Price range filter
-    result = result.filter(product => 
-      product.price >= priceRange[0] && product.price <= priceRange[1]
-    );
-    
+    // result = result.filter(product =>
+    //   product.price >= priceRange[0] && product.price <= priceRange[1]
+    // );
+
+    // New Price range filter
+    result = result.filter(product => {
+      const price = product.price || 0; // Treat missing price as 0
+      return price >= priceRange[0] && price <= priceRange[1];
+    });
+
     // Search filter
     if (searchTerm.trim()) {
       const searchTerms = searchTerm.toLowerCase().split(' ').filter(term => term.length > 0);
@@ -118,7 +124,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         return searchTerms.every(term => productFields.includes(term));
       });
     }
-    
+
     // Sorting
     switch (sortBy) {
       case 'price-low':
@@ -136,7 +142,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
       default:
         break;
     }
-    
+
     setFilteredProducts(result);
     setCurrentPage(1);
   }, [products, selectedCategories, priceRange, searchTerm, sortBy]);
@@ -312,7 +318,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         {/* Hero Carousel Section */}
         <div className="amirth-hero-carousel">
           <div className="amirth-carousel-container">
-            <div className="amirth-carousel-wrapper" style={{ transform: `translateX(-${currentCarouselIndex * (100/3)}%)` }}>
+            <div className="amirth-carousel-wrapper" style={{ transform: `translateX(-${currentCarouselIndex * (100 / 3)}%)` }}>
               {amirthCarouselImages.map((image, index) => (
                 <div key={index} className="amirth-carousel-slide">
                   <img src={image} alt={`Amirth Foods ${index + 1}`} />
@@ -343,7 +349,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
             </div>
           </div>
         </div>
-        
+
         <div className="amirth-container">
           {/* Breadcrumb */}
           <div className="amirth-breadcrumb">
@@ -368,7 +374,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
               {/* Dynamic Categories */}
               {uniqueCategories.map(category => {
                 const getCategoryImage = () => {
-                  switch(category.toLowerCase()) {
+                  switch (category.toLowerCase()) {
                     case 'sweets':
                       return 'https://cdn-icons-png.flaticon.com/512/3081/3081985.png';
                     case 'groceries':
@@ -477,8 +483,8 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
               <div className="amirth-page-header">
                 <h1 className='main-title text-animate'>Our Products</h1>
                 <div className="amirth-sort-controls">
-                  <select 
-                    value={sortBy} 
+                  <select
+                    value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
                     className="amirth-sort-select"
                   >
@@ -501,8 +507,8 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                 <>
                   <div className="amirth-products-grid">
                     {currentProducts.map((product) => (
-                      <div 
-                        key={product.product_id || product.id} 
+                      <div
+                        key={product.product_id || product.id}
                         className="amirth-product-card"
                         onClick={() => handleProductClick(product)}
                       >
@@ -523,7 +529,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                           >
                             {wishlistItems.includes(product.product_id || product._id || product.id) ? '❤️' : '♡'}
                           </button>
-                          
+
                           {/* Stock Badge */}
                           {product.piece > 0 ? (
                             <div className="amirth-stock-badge in-stock">
@@ -540,7 +546,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                           <h3 className="card-title amirth-product-name">{product.name}</h3>
                           <div className="amirth-product-brand">{product.brand}</div>
                           <div className="amirth-product-category">{product.category}</div>
-                          
+
                           <div className="amirth-product-rating">
                             {Array(5).fill().map((_, i) => (
                               <span key={i} className={i < Math.floor(product.rating || 0) ? 'star-filled' : 'star-empty'}>
@@ -550,9 +556,12 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                             <span className="amirth-rating-text">({product.rating?.toFixed(1) || '0.0'})</span>
                           </div>
 
-                          <div className="price-text amirth-product-price">${product.price}</div>
+                          <div className="price-text amirth-product-price">{product.price !== undefined && product.price !== null
+                            ? `$${product.price}`
+                            : <span style={{ color: '#999', fontSize: "0.9rem" }}>$0 (Price not fixed)</span>
+                          }</div>
 
-                          <button 
+                          <button
                             className="amirth-add-to-cart-btn"
                             onClick={(e) => handleAddToCart(e, product)}
                           >
@@ -565,14 +574,14 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
 
                   {totalPages > 1 && (
                     <div className="amirth-pagination">
-                      <button 
+                      <button
                         onClick={() => paginate(currentPage - 1)}
                         disabled={currentPage === 1}
                         className="amirth-pagination-btn"
                       >
                         Previous
                       </button>
-                      
+
                       {Array.from({ length: totalPages }, (_, i) => (
                         <button
                           key={i + 1}
@@ -582,8 +591,8 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                           {i + 1}
                         </button>
                       ))}
-                      
-                      <button 
+
+                      <button
                         onClick={() => paginate(currentPage + 1)}
                         disabled={currentPage === totalPages}
                         className="amirth-pagination-btn"

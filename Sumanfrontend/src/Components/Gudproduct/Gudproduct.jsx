@@ -36,7 +36,7 @@ const FeaturedProducts = () => {
   // API endpoints
   const API_ENDPOINTS = {
     sweets: `${API_URL}/api/products/search?category=sweets`,
-    snacks: `${API_URL}/api/products/search?category=sweets`
+    snacks: `${API_URL}/api/products/search?category=snacks`
   };
 
   // Show newsletter message

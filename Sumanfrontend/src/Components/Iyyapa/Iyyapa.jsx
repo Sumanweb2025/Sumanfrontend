@@ -98,9 +98,15 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     }
 
     // Price range filter
-    result = result.filter(product =>
-      product.price >= priceRange[0] && product.price <= priceRange[1]
-    );
+    // result = result.filter(product =>
+    //   product.price >= priceRange[0] && product.price <= priceRange[1]
+    // );
+
+    // New Price range filter
+    result = result.filter(product => {
+      const price = product.price || 0; // Treat missing price as 0
+      return price >= priceRange[0] && price <= priceRange[1];
+    });
 
     // Search filter
     if (searchTerm.trim()) {
@@ -310,13 +316,13 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         {/* Hero Carousel Section */}
         <div className="iyyapa-hero-carousel">
           <div className="iyyapa-carousel-container">
-            <div className="iyyapa-carousel-wrapper" style={{ transform: `translateX(-${currentCarouselIndex * (100/3)}%)` }}>
+            <div className="iyyapa-carousel-wrapper" style={{ transform: `translateX(-${currentCarouselIndex * (100 / 3)}%)` }}>
               {carouselImages.map((image, index) => (
                 <div key={index} className="iyyapa-carousel-slide">
                   <img src={image} alt={`Iyyapa Foods ${index + 1}`} />
                   <div className="iyyapa-carousel-overlay">
                     <div className="iyyapa-carousel-content">
-                      <h1 className="iyyapa-carousel-title">Iyyapa Foods</h1>
+                      <h1 className="iyyapa-carousel-title">Test Foods</h1>
                       <p className="iyyapa-carousel-subtitle">Premium Quality Traditional Foods</p>
                       <button className="iyyapa-carousel-cta">Explore Products</button>
                     </div>
@@ -345,7 +351,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         <div className="iyyapa-container">
           {/* Breadcrumb */}
           <div className="iyyapa-breadcrumb">
-            <span>Home</span> / <span>Brands</span> / <span className="iyyapa-current">Iyyapa</span>
+            <span>Home</span> / <span>Brands</span> / <span className="iyyapa-current">Iyappaa</span>
           </div>
 
           {/* Categories Section */}
@@ -549,7 +555,10 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                             <span className="iyyapa-rating-text">({product.rating?.toFixed(1) || '0.0'})</span>
                           </div>
 
-                          <div className="price-text iyyapa-product-price">${product.price}</div>
+                          <div className="price-text iyyapa-product-price">{product.price !== undefined && product.price !== null
+                            ? `$${product.price}`
+                            : <span style={{ color: '#999', fontSize:"0.9rem" }}>$0 (Price not fixed)</span>
+                          }</div>
 
                           <button
                             className="iyyapa-add-to-cart-btn"

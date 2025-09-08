@@ -339,21 +339,21 @@ const CheckoutPage = () => {
                   <strong>{formData.contactInfo.email}</strong>
                 </p>
                 
-                <div className="order-details">
-                  <p className="order-label">Order Number</p>
-                  <p className="order-number">{orderDetails?.orderNumber}</p>
-                  <p className="order-label">Total Amount</p>
-                  <p className="order-total">${orderDetails?.total} CAD</p>
+                <div className="checkout-order-details">
+                  <p className="checkout-order-label">Order Number</p>
+                  <p className="checkout-order-number">{orderDetails?.orderNumber}</p>
+                  <p className="checkout-order-label">Total Amount</p>
+                  <p className="checkout-order-total">${orderDetails?.total} CAD</p>
                   {orderDetails?.paymentStatus === 'paid' && (
                     <>
-                      <p className="order-label">Payment Status</p>
-                      <p className="payment-success">✅ {getPaymentStatusText()}</p>
+                      <p className="checkout-order-label">Payment Status</p>
+                      <p className="checkout-payment-success">✅ {getPaymentStatusText()}</p>
                     </>
                   )}
                   {formData.paymentMethod === 'cod' && (
                     <>
-                      <p className="order-label">Payment Method</p>
-                      <p className="payment-cod">💰 Cash on Delivery</p>
+                      <p className="checkout-order-label">Payment Method</p>
+                      <p className="checkout-payment-cod">💰 Cash on Delivery</p>
                     </>
                   )}
                 </div>

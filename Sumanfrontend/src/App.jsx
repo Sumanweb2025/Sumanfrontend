@@ -26,6 +26,8 @@ import CheckoutPage from './Pages/CheckOut/CheckOut';
 import MyOrders from './Pages/Myorders/Myorders';
 import OrderTrackingPage from './Pages/OrderTracking/OrderTracking';
 import AboutUs from './Pages/Aboutus/Aboutus';
+import AdminDashboard from './Pages/AdminDashboard/AdminDashboard';
+import AdminLogin from './Pages/AdminLogin/AdminLogin';
 
 const App = () => {
   return (
@@ -57,6 +59,8 @@ const App = () => {
          <Route path='/myorders' element={<MyOrders/>} />
          <Route path="/track-order" element={<OrderTrackingPage />} />
          <Route path='/aboutus' element={<AboutUs/>} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
 
       </Routes>
     </Router>

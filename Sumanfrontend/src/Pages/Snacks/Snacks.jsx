@@ -108,10 +108,16 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     }
 
     // Price range filter
-    result = result.filter(
-      (product) =>
-        product.price >= priceRange[0] && product.price <= priceRange[1]
-    );
+    // result = result.filter(
+    //   (product) =>
+    //     product.price >= priceRange[0] && product.price <= priceRange[1]
+    // );
+
+    //New Price range filter
+    result = result.filter(product => {
+      const price = product.price || 0; // Treat missing price as 0
+      return price >= priceRange[0] && price <= priceRange[1];
+    });
 
     // Search filter
     if (searchTerm.trim()) {
@@ -519,13 +525,12 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                             }}
                           />
                           <button
-                            className={`snacks-wishlist-btn ${
-                              wishlistItems.includes(
-                                product.product_id || product._id || product.id
-                              )
-                                ? "active"
-                                : ""
-                            }`}
+                            className={`snacks-wishlist-btn ${wishlistItems.includes(
+                              product.product_id || product._id || product.id
+                            )
+                              ? "active"
+                              : ""
+                              }`}
                             onClick={(e) => handleWishlistClick(e, product)}
                             disabled={wishlistLoading}
                           >
@@ -571,7 +576,10 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                             </span>
                           </div>
                           <div className="price-text snacks-product-price">
-                            ${product.price}
+                            {product.price !== undefined && product.price !== null
+                              ? `$${product.price}`
+                              : <span style={{ color: '#999', fontSize:"0.9rem" }}>$0 (Price not fixed)</span>
+                            }
                           </div>
 
                           {/* Stock status based on piece count */}
@@ -609,9 +617,8 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                       {Array.from({ length: totalPages }, (_, i) => (
                         <button
                           key={i + 1}
-                          className={`snacks-pagination-btn ${
-                            currentPage === i + 1 ? "active" : ""
-                          }`}
+                          className={`snacks-pagination-btn ${currentPage === i + 1 ? "active" : ""
+                            }`}
                           onClick={() => paginate(i + 1)}
                         >
                           {i + 1}
@@ -653,7 +660,7 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         onContinueShopping={handleContinueShopping}
         onViewCart={handleViewCart}
       />
-      <Banner/>
+      <Banner />
       <Footer />
     </>
   );
