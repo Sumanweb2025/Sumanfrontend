@@ -41,6 +41,11 @@ const ProductDetailsPage = ({ addToCart }) => {
   const [showCartPopup, setShowCartPopup] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
+  // Add new state variables after existing useState declarations:
+  const [productVariants, setProductVariants] = useState([]);
+  const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
+  const [allProducts, setAllProducts] = useState([]);
+
   const API_URL = "http://localhost:8000/";
 
   useEffect(() => {
@@ -48,14 +53,50 @@ const ProductDetailsPage = ({ addToCart }) => {
       if (!product) {
         try {
           setLoading(true);
-          const response = await axios.get(`${API_URL}api/products/${id}`);
-          setProduct(response.data?.data || response.data);
+
+          // Get the product name from URL params
+          const productName = decodeURIComponent(id);
+
+          // Fetch all products to find variants
+          const allProductsResponse = await axios.get(`${API_URL}api/products`);
+          const allProductsData = allProductsResponse.data?.data || allProductsResponse.data?.products || allProductsResponse.data;
+          setAllProducts(allProductsData);
+
+          // Filter products by name to get all variants
+          const matchingProducts = allProductsData.filter(
+            p => (p.name || p.Name) === productName
+          );
+
+          if (matchingProducts.length > 0) {
+            // Sort variants by gram size
+            const sortedVariants = matchingProducts.sort((a, b) => {
+              const aGram = parseFloat((a.gram || a.Gram || '0').replace(/[^\d.]/g, ''));
+              const bGram = parseFloat((b.gram || b.Gram || '0').replace(/[^\d.]/g, ''));
+              return aGram - bGram;
+            });
+
+            setProductVariants(sortedVariants);
+            setProduct(sortedVariants[0]); // Set first variant as main product
+          } else {
+            setError('Product not found');
+          }
         } catch (err) {
           console.error("Error fetching product:", err);
           setError(err.response?.data?.message || "Product not found");
         } finally {
           setLoading(false);
         }
+      } else if (location.state?.variants) {
+        // If variants passed from listing page
+        setProductVariants(location.state.variants.map(variant => ({
+          ...product,
+          product_id: variant.productId,
+          gram: variant.gram,
+          Gram: variant.gram,
+          price: variant.price,
+          piece: variant.piece,
+          Piece: variant.piece
+        })));
       }
     };
 
@@ -145,6 +186,21 @@ const ProductDetailsPage = ({ addToCart }) => {
     fetchReviews();
   }, [id, product, API_URL]);
 
+  // Add this new function to handle variant selection:
+  const handleVariantChange = (variantIndex) => {
+    setSelectedVariantIndex(variantIndex);
+    setQuantity(1); // Reset quantity when variant changes
+  };
+
+  // 1. Add this helper function to get current variant price
+  const getCurrentVariant = () => {
+    if (productVariants.length > 0 && selectedVariantIndex < productVariants.length) {
+      return productVariants[selectedVariantIndex];
+    }
+    return product || { price: 0 };
+  };
+
+
   const handleWishlistClick = async () => {
     if (!product || wishlistLoading) return;
 
@@ -228,7 +284,10 @@ const ProductDetailsPage = ({ addToCart }) => {
         },
       };
 
-      const productId = product.product_id || product._id || product.id;
+      // Use the current selected variant
+      const currentVariant = getCurrentVariant();
+      const productId = currentVariant.product_id || currentVariant._id || currentVariant.id;
+
       await axios.post(`${API_URL}api/cart`, { productId, quantity }, config);
 
       const cartResponse = await axios.get(`${API_URL}api/cart`, config);
@@ -237,7 +296,7 @@ const ProductDetailsPage = ({ addToCart }) => {
 
       window.dispatchEvent(new CustomEvent("cartUpdated"));
 
-      setSelectedProduct(product);
+      setSelectedProduct(currentVariant);
       setShowCartPopup(true);
     } catch (err) {
       console.error("Add to cart error:", err);
@@ -760,19 +819,43 @@ const ProductDetailsPage = ({ addToCart }) => {
 
               <div className="product-details-price">
                 <span className="product-details-current-price">
-                  ${(product.price * quantity).toFixed(2)}
+                  ${(getCurrentVariant().price * quantity).toFixed(2)}
                 </span>
-                {product.originalPrice && (
+                {getCurrentVariant().originalPrice && (
                   <span className="product-details-original-price">
-                    ${(product.originalPrice * quantity).toFixed(2)}
+                    ${(getCurrentVariant().originalPrice * quantity).toFixed(2)}
                   </span>
                 )}
                 {quantity > 1 && (
                   <span className="product-details-price-per-unit">
-                    ${product.price} per unit
+                    ${getCurrentVariant().price} per unit
                   </span>
                 )}
               </div>
+
+              {/* Add Gram/Variant Selection */}
+              {productVariants.length > 1 ? (
+                <div className="variant-options">
+                  <label className="variant-label">Select Size:</label>
+                  <div className="variant-buttons">
+                    {productVariants.map((variant, index) => (
+                      <button
+                        key={variant.product_id || variant.id}
+                        className={`variant-button ${selectedVariantIndex === index ? 'selected' : ''}`}
+                        onClick={() => handleVariantChange(index)}
+                      >
+                        <span className="variant-gram">{variant.gram || variant.Gram}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : productVariants.length === 1 ? (
+                <div className="product-details-single-variant">
+                  <span className="product-details-gram-display">
+                    Size: <span className="single-variant-gram">{product.gram || product.Gram || 'Standard'}</span>
+                  </span>
+                </div>
+              ) : null}
 
               {/* Stock status section */}
               <div className="product-stock-info">

@@ -108,35 +108,35 @@ const CartPage = () => {
 
       const cartData = response.data?.data || response.data;
       console.log('Cart data received:', cartData); // Debug log
-      
+
       // Filter out items with null or invalid product references
       const validCartItems = (cartData.items || []).filter(item => {
         const isValid = item && item.productId && (
-          typeof item.productId === 'object' 
+          typeof item.productId === 'object'
             ? item.productId._id || item.productId.id || item.productId.product_id
             : item.productId
         );
-        
+
         if (!isValid) {
           console.warn('Invalid cart item found:', item);
         }
-        
+
         return isValid;
       });
 
       setCartItems(validCartItems);
-      
+
       // If we filtered out invalid items, show a notification
       if (validCartItems.length < (cartData.items || []).length) {
         const removedCount = (cartData.items || []).length - validCartItems.length;
         showToast(`${removedCount} invalid item(s) removed from cart`, 'warning');
-        
+
         // Optionally clean up the cart on the server
         if (validCartItems.length === 0) {
           handleClearCart();
         }
       }
-      
+
       setLoading(false);
     } catch (err) {
       console.error('Error fetching cart:', err);
@@ -144,6 +144,11 @@ const CartPage = () => {
       showToast('Failed to load cart items', 'error');
       setLoading(false);
     }
+  };
+
+  // Add this helper function to get gram information
+  const getProductGram = (product) => {
+    return product?.gram || product?.Gram || null;
   };
 
   // Helper function to get correct image URL
@@ -176,7 +181,7 @@ const CartPage = () => {
   // Helper function to get product ID safely
   const getProductId = (item) => {
     if (!item || !item.productId) return null;
-    
+
     const product = item.productId;
     return product._id || product.id || product.product_id || null;
   };
@@ -184,12 +189,12 @@ const CartPage = () => {
   // Helper function to get product data safely
   const getProductData = (item) => {
     if (!item || !item.productId) return null;
-    
+
     // If productId is populated object, return it
     if (typeof item.productId === 'object' && item.productId !== null) {
       return item.productId;
     }
-    
+
     // If it's just an ID string, we can't display much
     return null;
   };
@@ -210,7 +215,7 @@ const CartPage = () => {
       const updatedCartData = response.data?.data;
       if (updatedCartData && updatedCartData.items) {
         // Filter valid items again after update
-        const validItems = updatedCartData.items.filter(item => 
+        const validItems = updatedCartData.items.filter(item =>
           item && item.productId && getProductId(item)
         );
         setCartItems(validItems);
@@ -261,7 +266,7 @@ const CartPage = () => {
       // Update with response data to ensure consistency
       const updatedCartData = response.data?.data;
       if (updatedCartData && updatedCartData.items) {
-        const validItems = updatedCartData.items.filter(item => 
+        const validItems = updatedCartData.items.filter(item =>
           item && item.productId && getProductId(item)
         );
         setCartItems(validItems);
@@ -309,15 +314,20 @@ const CartPage = () => {
   };
 
   const handleProductClick = (product) => {
-    if (!product) return;
-    
-    const productId = product._id || product.id || product.product_id;
-    if (productId) {
-      navigate(`/product/${productId}`, {
-        state: { product: product }
-      });
-    }
-  };
+  if (!product) return;
+  
+  const productId = product._id || product.id || product.product_id;
+  if (productId) {
+    // Navigate using product ID, but pass gram info for context
+    navigate(`/product/${productId}`, {
+      state: { 
+        product: product,
+        fromCart: true,
+        selectedGram: product.gram || product.Gram // Pass the current gram
+      }
+    });
+  }
+};
 
   const handleContinueShopping = () => {
     navigate('/sweets');
@@ -346,7 +356,7 @@ const CartPage = () => {
     return cartItems.reduce((total, item) => {
       const product = getProductData(item);
       if (!product) return total;
-      
+
       const price = safeParseFloat(product.price || product.Price);
       const quantity = safeParseInt(item.quantity);
       console.log(`Item: ${product.name || product.Name}, Price: ${price}, Quantity: ${quantity}`); // Debug log
@@ -359,7 +369,7 @@ const CartPage = () => {
   };
 
   const calculateShipping = (subtotal) => {
-    return subtotal > 75 ? 0 : 15; // Free shipping above $75 CAD
+    return subtotal >= 75 ? 0 : 9.99;
   };
 
   const calculateTotal = () => {
@@ -376,7 +386,7 @@ const CartPage = () => {
   const subtotal = calculateSubtotal();
   const tax = calculateTax(subtotal);
   const shipping = calculateShipping(subtotal);
-  const total = calculateTotal();
+  const total = subtotal + tax + shipping;
 
   return (
     <>
@@ -386,7 +396,7 @@ const CartPage = () => {
         loadingText="Loading cart items..."
         progressColor="#3b82f6"
       />
-      
+
       {/* Toast Container */}
       <div className="toast-container">
         {toasts.map((toast) => (
@@ -451,13 +461,13 @@ const CartPage = () => {
                   {cartItems.map((item, index) => {
                     const product = getProductData(item);
                     const productId = getProductId(item);
-                    
+
                     // Skip items with invalid product data
                     if (!product || !productId) {
                       console.warn('Skipping invalid cart item:', item);
                       return null;
                     }
-                    
+
                     const isUpdating = updatingItems.has(productId);
                     const imageUrl = getImageUrl(product);
                     const price = safeParseFloat(product.price || product.Price);
@@ -511,6 +521,14 @@ const CartPage = () => {
 
                           {productCategory && (
                             <p className="item-category">{productCategory}</p>
+                          )}
+
+                          {/* Add Gram Display */}
+                          {getProductGram(product) && (
+                            <div className="item-gram">
+                              <span className="gram-label">Size:</span>
+                              <span className="gram-value">{getProductGram(product)}</span>
+                            </div>
                           )}
 
                           <div className="price-text item-price">${price.toFixed(2)}</div>
