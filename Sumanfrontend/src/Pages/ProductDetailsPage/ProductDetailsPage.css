@@ -1007,6 +1007,115 @@
   color: #d32f2f;
 }
 
+/* Variant Options Styles */
+.variant-options {
+  margin: 2px 0;
+}
+
+.variant-label {
+  display: block;
+  font-weight: 600;
+  font-size: 16px;
+  color: #333;
+  letter-spacing: 0.5px;
+}
+
+.variant-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.variant-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 7px 7px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 80px;
+  position: relative;
+}
+
+.variant-button:hover {
+  border-color: #00c853;
+  transform: translateY(-2px);
+}
+
+.variant-button.selected {
+  border-color: #00c853;
+  background-color: #e8f5e8;
+}
+
+.variant-button.selected::after {
+  content: '✓';
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  background-color: #00c853;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.variant-gram {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.variant-button.selected .variant-gram {
+  color: #00c853;
+}
+
+/* Single Variant Display */
+.product-details-single-variant {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border:none;
+}
+
+.gram-label {
+  font-weight: 600;
+  font-size: 16px;
+  color: #333;
+  letter-spacing: 0.5px;
+}
+
+.product-details-gram-display{
+  font-weight: 500;
+  font-size: 16px;
+  padding: 8px 12px;
+}
+
+.single-variant-gram{
+  padding: 7px 7px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  min-width: 80px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+.single-variant-gram:hover {
+ color: #00c853;
+  border-color: #00c853;
+}
+
 /* Responsive Design */
 @media (max-width: 992px) {
   .reviews-breakdown {
@@ -1056,6 +1165,32 @@
     margin-left: 0;
     margin-top: 10px;
     align-self: flex-end;
+  }
+
+  .variant-buttons {
+    gap: 10px;
+  }
+  
+  .variant-button {
+    padding: 10px 14px;
+    min-width: 70px;
+  }
+  
+  .variant-gram {
+    font-size: 13px;
+  }
+  
+  .variant-price {
+    font-size: 12px;
+  }
+  
+  .variant-label,
+  .gram-label {
+    font-size: 15px;
+  }
+  
+  .gram-display {
+    font-size: 15px;
   }
   
   .product-images .wishlist-overlay {
@@ -1170,7 +1305,36 @@
     height: 35px;
     font-size: 16px;
   }
+  .single-variant {
+    margin: 15px 0;
+    padding: 10px;
+  }
   
+  .variant-buttons {
+    gap: 8px;
+  }
+  
+  .variant-button {
+    padding: 8px 12px;
+    min-width: 60px;
+  }
+  
+  .variant-gram {
+    font-size: 12px;
+  }
+  
+  .variant-price {
+    font-size: 11px;
+  }
+  
+  .variant-button.selected::after {
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+    top: -6px;
+    right: -6px;
+  }
+
   .main-image {
     height: 250px;
   }

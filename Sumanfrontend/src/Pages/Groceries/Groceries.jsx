@@ -31,11 +31,69 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [cartItems, setCartItems] = useState([]);
 
+  const [selectedVariants, setSelectedVariants] = useState({}); // Track selected variant for each product
+
   const API_URL = 'http://localhost:8000/';
 
   // Get unique brands and categories for filters
   const uniqueBrands = [...new Set(products.map(product => product.brand).filter(Boolean))];
   const uniqueCategories = [...new Set(products.map(product => product.category).filter(Boolean))];
+
+  const groupProductsByName = (productsData) => {
+    const grouped = {};
+
+    productsData.forEach(product => {
+      const productName = product.name || product.Name;
+
+      if (!grouped[productName]) {
+        // Create group with first product as base
+        grouped[productName] = {
+          ...product,
+          variants: [],
+          minPrice: product.price || 0,
+          hasMultipleVariants: false
+        };
+      }
+
+      // Add variant to group
+      grouped[productName].variants.push({
+        productId: product.product_id || product.id,
+        gram: product.gram || product.Gram,
+        price: product.price || 0,
+        piece: product.piece || product.Piece
+      });
+
+      // Update minimum price for display
+      if ((product.price || 0) < grouped[productName].minPrice) {
+        grouped[productName].minPrice = product.price || 0;
+        grouped[productName].price = product.price || 0; // Update display price
+      }
+    });
+
+    // Convert to array and mark multiple variants
+    const groupedArray = Object.values(grouped).map(product => {
+      product.hasMultipleVariants = product.variants.length > 1;
+      return product;
+    });
+
+    return groupedArray;
+  };
+
+  // Add helper function to get selected variant for a product:
+  const getSelectedVariant = (product) => {
+    const productKey = product.name;
+    return selectedVariants[productKey] || 0; // Default to first variant
+  };
+
+  // Add function to handle variant selection:
+  const handleVariantSelect = (product, variantIndex, e) => {
+    e.stopPropagation(); // Prevent card click
+    const productKey = product.name;
+    setSelectedVariants(prev => ({
+      ...prev,
+      [productKey]: variantIndex
+    }));
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,7 +101,11 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         // Fetch groceries category
         const productsResponse = await axios.get(`${API_URL}api/products/search?category=grocery`);
         const productsData = productsResponse.data?.data || productsResponse.data?.products || productsResponse.data;
-        setProducts(productsData);
+        
+        // Group products by name
+        const groupedProducts = groupProductsByName(productsData);
+        setProducts(groupedProducts);
+
 
         const token = localStorage.getItem('token');
         if (token) {
@@ -174,7 +236,21 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     // Small delay to show the loading spinner before navigation
     setTimeout(() => {
       // Navigate to product details page
-      navigate(`/product/${product.product_id || product.id}`, { state: { product } });
+      const selectedIndex = getSelectedVariant(product);
+      const selectedVariant = product.variants[selectedIndex] || product.variants[0];
+
+      // Use selected variant's product ID for navigation
+      const productId = selectedVariant.productId;
+
+      navigate(`/product/${productId}`, {
+        state: {
+          product,
+          productName: product.name,
+          variants: product.variants,
+          isGrouped: product.hasMultipleVariants,
+          selectedVariantId: selectedVariant.productId
+        }
+      });
     }, 1000);
   };
 
@@ -252,7 +328,7 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     }
   };
 
-  const handleAddToCart = async (e, product) => {
+  const handleAddToCart = async (e, productData) => {
     e.stopPropagation(); // Prevent card click
     try {
       const token = localStorage.getItem('token');
@@ -268,7 +344,8 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         }
       };
 
-      const productId = product.product_id || product._id || product.id;
+      // Use the specific variant's product ID
+      const productId = productData.productId || productData.product_id || productData._id || productData.id;
       await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
 
       // Update cart items
@@ -279,8 +356,8 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
       // Dispatch custom event to update header count
       window.dispatchEvent(new CustomEvent('cartUpdated'));
 
-      // Show cart popup
-      setSelectedProduct(product);
+      // Show cart popup with the specific variant
+      setSelectedProduct(productData);
       setShowCartPopup(true);
     } catch (err) {
       console.error('Add to cart error:', err);
@@ -318,7 +395,7 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         <div className="grocery-container">
           {/* Breadcrumb */}
           <div className="grocery-breadcrumb">
-            <span>Home</span> / <span className="current">Grocery</span>
+            <span>Home</span> / <span className="current">Groceries</span>
           </div>
 
           <div className="grocery-page-content">
@@ -490,27 +567,80 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                             <span className="price-text grocery-rating-text">({product.rating?.toFixed(1) || '0.0'})</span>
                           </div>
 
-                          <div className="grocery-product-price">{product.price !== undefined && product.price !== null
-                            ? `$${product.price}`
-                            : <span style={{ color: '#999', fontSize:"0.9rem" }}>$0 (Price not fixed)</span>
-                          }</div>
-                          {/* Stock status based on piece count */}
-                          {product.piece > 0 ? (
-                            <div className="grocery-product-stock in-stock">
-                              In Stock
+                          <div className="grocery-product-price"> {(() => {
+                              const selectedIndex = getSelectedVariant(product);
+                              const selectedVariant = product.variants[selectedIndex] || product.variants[0];
+                              const price = selectedVariant.price;
+
+                              return price !== undefined && price !== null
+                                ? `$${price}`
+                                : <span style={{ color: '#999', fontSize: "0.9rem" }}>$0 (Price not fixed)</span>;
+                            })()}</div>
+
+                            {/* Gram Variants Display */}
+                          {product.hasMultipleVariants ? (
+                            <div className="grocery-gram-variants">
+                              {product.variants.map((variant, index) => {
+                                const selectedIndex = getSelectedVariant(product);
+                                const isSelected = selectedIndex === index;
+                                const isOutOfStock = (variant.piece || 0) <= 0;
+
+                                return (
+                                  <button
+                                    key={variant.productId}
+                                    className={`grocery-gram-button ${isSelected ? 'selected' : ''} ${isOutOfStock ? 'out-of-stock' : ''}`}
+                                    onClick={(e) => handleVariantSelect(product, index, e)}
+                                    disabled={isOutOfStock}
+                                  >
+                                    {variant.gram}
+                                  </button>
+                                );
+                              })}
                             </div>
                           ) : (
-                            <div className="grocery-product-stock out-of-stock">
-                              Out of Stock
+                            <div className="grocery-single-gram">
+                              <span className="grocery-gram-display">{product.variants[0]?.gram || 'Standard'}</span>
                             </div>
                           )}
+                          {/* Stock Status */}
+                          {(() => {
+                            const selectedIndex = getSelectedVariant(product);
+                            const selectedVariant = product.variants[selectedIndex] || product.variants[0];
+                            const stock = selectedVariant.piece || 0;
 
-                          <button
-                            className="grocery-add-to-cart-btn"
-                            onClick={(e) => handleAddToCart(e, product)}
-                          >
-                            Add to Cart
-                          </button>
+                            return stock > 0 ? (
+                              <div className="grocery-product-stock in-stock">
+                                In Stock
+                              </div>
+                            ) : (
+                              <div className="grocery-product-stock out-of-stock">
+                                Out of Stock
+                              </div>
+                            );
+                          })()}
+
+                          {/* Add to Cart Button */}
+                          {(() => {
+                            const selectedIndex = getSelectedVariant(product);
+                            const selectedVariant = product.variants[selectedIndex] || product.variants[0];
+                            const stock = selectedVariant.piece || 0;
+
+                            return stock > 0 ? (
+                              <button
+                                className="grocery-add-to-cart-btn"
+                                onClick={(e) => handleAddToCart(e, { ...product, ...selectedVariant })}
+                              >
+                                Add to Cart
+                              </button>
+                            ) : (
+                              <button
+                                className="grocery-add-to-cart-btn sold-out-btn"
+                                disabled
+                              >
+                                Sold Out
+                              </button>
+                            );
+                          })()}
                         </div>
                       </div>
                     ))}

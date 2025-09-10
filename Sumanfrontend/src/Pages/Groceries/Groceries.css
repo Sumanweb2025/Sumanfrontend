@@ -398,6 +398,83 @@
   transform: translateY(-1px);
 }
 
+.grocery-add-to-cart-btn.sold-out-btn {
+  background: #6c757d;
+  color: white;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.grocery-add-to-cart-btn.sold-out-btn:hover {
+  background: #6c757d;
+  transform: none;
+}
+
+/* Gram Variants Display */
+.grocery-gram-variants {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+  justify-content: flex-start;
+}
+
+.grocery-gram-button {
+  padding: 4px 10px;
+  border: 2px solid #ddd;
+  border-radius: 16px;
+  background: white;
+  color: #333;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 45px;
+  text-align: center;
+}
+
+.grocery-gram-button:hover:not(:disabled) {
+  border-color: #f59e0b;
+  background: #f0f7ff;
+  color: #f59e0b;
+  transform: translateY(-1px);
+}
+
+.grocery-gram-button.selected {
+  background: #f59e0b;
+  border-color: #f59e0b;
+  color: white;
+  font-weight: 600;
+}
+
+.grocery-gram-button.out-of-stock {
+  background: #f8f9fa;
+  border-color: #dc3545;
+  color: #dc3545;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.grocery-gram-button.out-of-stock:hover {
+  transform: none;
+}
+
+/* Single Gram Display */
+.grocery-single-gram {
+  margin: 8px 0;
+}
+
+.grocery-gram-display {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #e9ecef;
+  border: 1px solid #ced4da;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #495057;
+}
+
 /* Pagination */
 .grocery-pagination {
   display: flex;
@@ -476,6 +553,15 @@
     gap: 15px;
     text-align: center;
   }
+  .grocery-gram-button {
+    padding: 3px 8px;
+    font-size: 10px;
+    min-width: 40px;
+  }
+  
+  .grocery-gram-variants {
+    gap: 4px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -485,5 +571,10 @@
   
   .grocery-container {
     padding: 10px;
+  }
+  .grocery-gram-button {
+    padding: 2px 6px;
+    font-size: 9px;
+    min-width: 35px;
   }
 }
