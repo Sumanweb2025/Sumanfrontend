@@ -1,18 +1,22 @@
 import './Ourproduct.css';
+import Sweetimg from "../../assets/glukarosa.png";
+import Snacksimg from "../../assets/hot_mixture.png";
 import { Link } from 'react-router-dom';
 
 const categories = [
   {
     title: 'SWEETS',
     
-    img: 'https://images.unsplash.com/photo-1582716401301-b2407dc7563d?w=200&h=200&fit=crop&crop=center',
+    // img: 'https://images.unsplash.com/photo-1582716401301-b2407dc7563d?w=200&h=200&fit=crop&crop=center',
+    img: Sweetimg,
     alt: 'Indian Sweets',
     className: 'sweets',
     link: '/sweets',
   },
   {
     title: 'SNACKS',
-    img: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=200&h=200&fit=crop&crop=center',
+    // img: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=200&h=200&fit=crop&crop=center',
+    img: Snacksimg,
     alt: 'Indian Snacks',
     className: 'snacks',
     link: '/snacks',

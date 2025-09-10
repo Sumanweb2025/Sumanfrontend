@@ -422,91 +422,26 @@ const ProductDetailsPage = ({ addToCart }) => {
           </tr>
           <tr>
             <td>
-              <strong>Weight (Grams)</strong>
+              <strong>Weight </strong>
             </td>
 
             <td>{product.gram || product.weight || "N/A"}</td>
           </tr>
+
           <tr>
             <td>
               <strong>Ingredients</strong>
             </td>
             <td>{product.ingredients || "N/A"}</td>
           </tr>
+          
           <tr>
             <td>
               <strong>Storage Conditions</strong>
             </td>
             <td>{product.storageCondition || product.storage_condition || "Store in a cool, dry place"}</td>
           </tr>
-<tr>
-          <td>
-            <strong>SKU</strong>
-          </td>
-            <td>{product.sku || product.product_id || product.id || "N/A"}</td>
-          </tr> 
-
-          {/* {product.piece && (
-            <tr>
-              <td>
-                <strong>Quantity per Pack</strong>
-              </td>
-              <td>{product.piece} pieces</td>
-            </tr>
-
-          )}
-
-          )} */}
-          {/* <tr>
-            <td>
-              <strong>Weight</strong>
-            </td>
-            <td>{product.weight || "N/A"}</td>
-          </tr> */}
-          {/* <tr>
-            <td>
-              <strong>Color</strong>
-            </td>
-            <td>{product.color || "N/A"}</td>
-          </tr> */}
-
-          <tr>
-            <td>
-              <strong>Ingredients</strong>
-            </td>
-            <td>{product.ingredients || "N/A"}</td>
-          </tr>
-          <tr>
-            <td>
-              <strong>Warranty</strong>
-            </td>
-            <td>{product.warranty || "Standard manufacturer warranty"}</td>
-          </tr> 
-          {product.sku && (
-            <tr>
-              <td>
-                <strong>SKU</strong>
-              </td>
-              <td>{product.sku}</td>
-            </tr>
-          )}
-          {product.color && (
-            <tr>
-              <td>
-                <strong>Color</strong>
-            </td>
-              <td>{product.color}</td>
-            </tr>
-          )}
-          {product.country && (
-            <tr>
-              <td>
-                <strong>Country of Origin</strong>
-              </td>
-              <td>{product.country}</td>
-            </tr>
-          )}
-        </tbody>
+</tbody>
       </table>
     </div>
   );

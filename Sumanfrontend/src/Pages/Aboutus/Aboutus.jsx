@@ -185,7 +185,7 @@ const AboutUs = () => {
         </section>
 
         {/* Team Section */}
-        <section className="about-section team-section" style={{
+        {/* <section className="about-section team-section" style={{
           backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75)), url('https://images.unsplash.com/photo-1556911220-bff31c812dba?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
         }}>
           <div className="about-container">
@@ -211,7 +211,7 @@ const AboutUs = () => {
               ))}
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* CTA Section */}
         <section className="about-section cta-section" style={{
