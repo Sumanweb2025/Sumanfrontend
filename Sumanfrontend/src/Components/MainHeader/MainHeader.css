@@ -361,44 +361,123 @@
   font-size: 14px;
 }
 
-/* Tablet Styles (768px - 1024px) */
-@media (max-width: 1024px) and (min-width: 769px) {
+/* Large Desktop Styles (1200px+) */
+@media (min-width: 1200px) {
+  .header-top {
+    padding: 15px 30px;
+  }
+  
+  .search-bar {
+    margin: 0 30px;
+    max-width: 500px;
+  }
+  
+  .info-section {
+    gap: 25px;
+    font-size: 14px;
+  }
+  
+  .main-header-icons {
+    gap: 20px;
+  }
+}
+
+/* Desktop Styles (1024px - 1199px) */
+@media (max-width: 1199px) and (min-width: 1025px) {
+  .header-top {
+    padding: 12px 25px;
+  }
+  
   .main-logo {
-    height: 80px;
+    height: 75px;
+    max-width: 240px;
   }
   
   .search-bar {
     margin: 0 20px;
-    max-width: 400px;
+    max-width: 350px;
+    min-width: 200px;
   }
   
   .info-section {
-    gap: 20px;
+    gap: 18px;
     font-size: 13px;
   }
   
-  .header-icons {
-    gap: 15px;
+  .info-icon {
+    font-size: 16px;
+  }
+  
+  .main-header-icons {
+    gap: 12px;
   }
   
   .icon-wrapper,
-  .user-info {
-    padding: 6px 10px;
+  .main-user-info {
+    padding: 8px 10px;
+    min-width: 40px;
+    min-height: 40px;
   }
   
-  .user-name {
+  .main-user-name {
+    max-width: 100px;
+    font-size: 13px;
+  }
+}
+
+/* Tablet Styles (768px - 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .header-top {
+    padding: 10px 20px;
+  }
+  
+  .main-logo {
+    height: 70px;
+    max-width: 200px;
+  }
+  
+  .search-bar {
+    margin: 0 15px;
+    max-width: 300px;
+    min-width: 180px;
+  }
+  
+  .info-section {
+    gap: 15px;
+    font-size: 12px;
+  }
+  
+  .info-icon {
+    font-size: 16px;
+  }
+  
+  .main-header-icons {
+    gap: 10px;
+  }
+  
+  .icon-wrapper,
+  .main-user-info {
+    padding: 6px 8px;
+    min-width: 36px;
+    min-height: 36px;
+  }
+  
+  .main-user-name {
     max-width: 80px;
+    font-size: 12px;
   }
 }
 
 /* Mobile Styles (max-width: 768px) */
 @media (max-width: 768px) {
   .header-top {
-    padding: 10px 15px;
+    padding: 8px 15px;
+    min-height: 60px;
   }
   
   .main-logo {
-    height: 60px;
+    height: 50px;
+    max-width: 150px;
   }
   
   /* Hide desktop elements */
@@ -417,52 +496,127 @@
     display: block;
   }
   
+  .mobile-cart {
+    padding: 8px;
+    min-width: 40px;
+    min-height: 40px;
+  }
+  
   .mobile-cart .icon-container {
-    font-size: 20px;
+    font-size: 18px;
   }
   
   .mobile-cart .icon-badge {
-    top: -15px;
-    right: -15px;
+    top: -12px;
+    right: -12px;
     font-size: 10px;
     min-width: 16px;
-    padding: 1px 1px;
+    padding: 2px 4px;
+  }
+  
+  .mobile-menu-toggle {
+    padding: 8px;
+    min-width: 40px;
+    min-height: 40px;
+    font-size: 16px;
   }
 }
 
 /* Small Mobile Styles (max-width: 480px) */
 @media (max-width: 480px) {
   .header-top {
-    padding: 8px 10px;
+    padding: 6px 10px;
+    min-height: 55px;
   }
   
   .main-logo {
-    height: 50px;
+    height: 45px;
+    max-width: 200px;
   }
   
   .mobile-search {
-    padding: 8px 10px;
+    padding: 6px 10px;
+  }
+  
+  .mobile-search .search-bar {
+    padding: 6px 12px;
+  }
+  
+  .mobile-cart,
+  .mobile-menu-toggle {
+    padding: 6px;
+    min-width: 36px;
+    min-height: 36px;
+  }
+  
+  .mobile-cart .icon-container {
+    font-size: 16px;
+  }
+  
+  .mobile-menu-toggle {
+    font-size: 14px;
   }
   
   .mobile-menu-content {
-    padding: 15px;
+    padding: 12px;
   }
   
   .mobile-user-section {
-    padding: 12px;
-    margin-bottom: 15px;
+    padding: 10px;
+    margin-bottom: 12px;
   }
   
   .mobile-menu-item {
-    padding: 12px 8px;
-    font-size: 15px;
+    padding: 10px 6px;
+    font-size: 14px;
   }
   
   .mobile-info-item {
-    padding: 8px 0;
+    padding: 6px 0;
   }
   
   .mobile-info-text {
+    font-size: 12px;
+  }
+}
+
+/* Extra Small Mobile Styles (max-width: 360px) */
+@media (max-width: 360px) {
+  .header-top {
+    padding: 5px 8px;
+    min-height: 50px;
+  }
+  
+  .main-logo {
+    height: 40px;
+    max-width: 110px;
+  }
+  
+  .mobile-search {
+    padding: 5px 8px;
+  }
+  
+  .mobile-search .search-bar {
+    padding: 5px 10px;
+  }
+  
+  .mobile-search .search-bar input {
+    font-size: 13px;
+    padding: 6px;
+  }
+  
+  .mobile-cart,
+  .mobile-menu-toggle {
+    padding: 5px;
+    min-width: 32px;
+    min-height: 32px;
+  }
+  
+  .mobile-cart .icon-container {
+    font-size: 14px;
+  }
+  
+  .mobile-menu-toggle {
     font-size: 13px;
   }
 }
