@@ -45,7 +45,7 @@ const PaymentForm = ({
   const [cardError, setCardError] = useState(null);
   const [processingPayment, setProcessingPayment] = useState(false);
 
-  const API_URL = 'http://localhost:8000/';
+  const API_URL = import.meta.env.VITE_APP_API_URL;
 
   const handleCardChange = (event) => {
     setCardError(event.error ? event.error.message : null);

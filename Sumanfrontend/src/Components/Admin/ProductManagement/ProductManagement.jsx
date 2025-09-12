@@ -18,7 +18,7 @@ import {
 import './ProductManagement.css';
 
 // API configuration
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = import.meta.env.VITE_APP_API_URL;
 
 const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiError }) => {
   const [products, setProducts] = useState([]);
@@ -29,6 +29,8 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
   const [brandFilter, setBrandFilter] = useState('');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showImportPopup, setShowImportPopup] = useState(false);
+  const [importStatus, setImportStatus] = useState({ loading: false, message: '', type: '' });
   const [showImportModal, setShowImportModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [importFile, setImportFile] = useState(null);
@@ -287,45 +289,139 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
     }
   };
 
+  // Enhanced CSV parsing function
+  const parseCSV = (content) => {
+    const lines = content.split('\n').filter(line => line.trim());
+    if (lines.length < 2) throw new Error('CSV file must have at least a header and one data row');
+    
+    const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g, '').trim());
+    const data = [];
+    
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      
+      // Handle CSV with quoted values containing commas
+      const values = [];
+      let current = '';
+      let inQuotes = false;
+      
+      for (let j = 0; j < line.length; j++) {
+        const char = line[j];
+        if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+          values.push(current.trim());
+          current = '';
+        } else {
+          current += char;
+        }
+      }
+      values.push(current.trim());
+      
+      const obj = {};
+      headers.forEach((header, index) => {
+        obj[header] = values[index] ? values[index].replace(/^"|"$/g, '') : '';
+      });
+      data.push(obj);
+    }
+    
+    return data;
+  };
+
   // Import CSV/JSON File Handler
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setImportFile(file);
-      
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        try {
-          const content = event.target.result;
-          let parsedData = [];
-          
-          if (file.name.endsWith('.csv')) {
-            const lines = content.split('\n');
-            const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
-            
-            for (let i = 1; i < lines.length; i++) {
-              if (lines[i].trim()) {
-                const values = lines[i].split(',').map(v => v.replace(/"/g, '').trim());
-                const obj = {};
-                headers.forEach((header, index) => {
-                  obj[header] = values[index] || '';
-                });
-                parsedData.push(obj);
-              }
-            }
-          } else if (file.name.endsWith('.json')) {
-            parsedData = JSON.parse(content);
-          }
-          
-          setImportPreview(parsedData.slice(0, 5)); // Show first 5 rows for preview
-        } catch (error) {
-          alert('Error reading file. Please check the format.');
-          setImportFile(null);
-          setImportPreview([]);
-        }
-      };
-      reader.readAsText(file);
+    if (!file) return;
+
+    // Validate file type
+    const validTypes = ['.csv', '.json'];
+    const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+    
+    if (!validTypes.includes(fileExtension)) {
+      alert('Please select a CSV or JSON file.');
+      e.target.value = '';
+      return;
     }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File size must be less than 5MB.');
+      e.target.value = '';
+      return;
+    }
+
+    setImportFile(file);
+    
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const content = event.target.result;
+        let parsedData = [];
+        
+        if (fileExtension === '.csv') {
+          parsedData = parseCSV(content);
+        } else if (fileExtension === '.json') {
+          const jsonData = JSON.parse(content);
+          parsedData = Array.isArray(jsonData) ? jsonData : [jsonData];
+        }
+        
+        // Normalize data to handle different field name formats
+        const normalizedData = parsedData.map(item => ({
+          name: item.name || item.Name,
+          product_id: item.product_id || item.Product_id,
+          brand: item.brand || item.Brand,
+          category: item.category || item.Category,
+          price: item.price || item.Price,
+          piece: item.piece || item.Piece,
+          gram: item.gram || item.Gram,
+          description: item.description || item.Description,
+          ingredients: item.ingredients || item.Ingredients,
+          storage_condition: item.storage_condition || item['Storage Condition'],
+          image: item.image,
+          rating: item.rating || item.Rating,
+          sub_category: item.sub_category || item['Sub-category']
+        }));
+
+        // Validate required fields in preview
+        const validData = normalizedData.filter(item => 
+          item.name && (item.price !== undefined && item.price !== '') && (item.piece !== undefined && item.piece !== '')
+        );
+        
+        console.log('Original data:', parsedData);
+        console.log('Normalized data:', normalizedData);
+        console.log('Valid data:', validData);
+        console.log('Sample item:', normalizedData[0]);
+        
+        if (validData.length === 0) {
+          console.error('No valid products found. Sample data structure:', normalizedData[0]);
+          throw new Error('No valid products found. Please ensure your file contains name/Name, price/Price, and piece/Piece fields.');
+        }
+        
+        // Store normalized data for import
+        setImportPreview(normalizedData.slice(0, 5));
+        
+        if (validData.length < normalizedData.length) {
+          alert(`Warning: ${normalizedData.length - validData.length} rows will be skipped due to missing required fields (name, price, piece).`);
+        }
+        
+      } catch (error) {
+        console.error('File parsing error:', error);
+        alert(`Error reading file: ${error.message}`);
+        setImportFile(null);
+        setImportPreview([]);
+        e.target.value = '';
+      }
+    };
+    
+    reader.onerror = () => {
+      alert('Error reading file. Please try again.');
+      setImportFile(null);
+      setImportPreview([]);
+      e.target.value = '';
+    };
+    
+    reader.readAsText(file);
   };
 
   // Import Products
@@ -340,80 +436,101 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
         try {
           const content = event.target.result;
           let productsToImport = [];
+          const fileExtension = '.' + importFile.name.split('.').pop().toLowerCase();
           
-          if (importFile.name.endsWith('.csv')) {
-            const lines = content.split('\n');
-            const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
-            
-            for (let i = 1; i < lines.length; i++) {
-              if (lines[i].trim()) {
-                const values = lines[i].split(',').map(v => v.replace(/"/g, '').trim());
-                const obj = {};
-                headers.forEach((header, index) => {
-                  obj[header] = values[index] || '';
-                });
-                
-                // Ensure required fields
-                if (obj.name && obj.price && obj.piece) {
-                  obj.product_id = obj.product_id || generateProductId();
-                  obj.price = parseFloat(obj.price) || 0;
-                  obj.piece = parseInt(obj.piece) || 0;
-                  obj.gram = parseFloat(obj.gram) || 0;
-                  productsToImport.push(obj);
-                }
-              }
-            }
-          } else if (importFile.name.endsWith('.json')) {
+          if (fileExtension === '.csv') {
+            productsToImport = parseCSV(content);
+          } else if (fileExtension === '.json') {
             const jsonData = JSON.parse(content);
-            productsToImport = jsonData.filter(item => item.name && item.price && item.piece);
-            
-            // Ensure data types and required fields
-            productsToImport = productsToImport.map(item => ({
-              ...item,
-              product_id: item.product_id || generateProductId(),
-              price: parseFloat(item.price) || 0,
-              piece: parseInt(item.piece) || 0,
-              gram: parseFloat(item.gram) || 0
-            }));
+            productsToImport = Array.isArray(jsonData) ? jsonData : [jsonData];
           }
 
-          if (productsToImport.length === 0) {
-            alert('No valid products found in the file.');
+          // Normalize data to handle different field name formats - preserve original values
+          const normalizedProducts = productsToImport.map(item => ({
+            name: item.name || item.Name,
+            product_id: item.product_id || item.Product_id,
+            brand: item.brand || item.Brand,
+            category: item.category || item.Category,
+            price: item.price || item.Price,
+            piece: item.piece || item.Piece,
+            gram: item.gram || item.Gram, // Keep original format (500G, 1KG, etc.)
+            description: item.description || item.Description,
+            ingredients: item.ingredients || item.Ingredients,
+            storage_condition: item.storage_condition || item['Storage Condition'],
+            image: item.image,
+            rating: item.rating || item.Rating, // Keep original rating value
+            sub_category: item.sub_category || item['Sub-category']
+          }));
+
+          // Filter and validate products
+          const filteredProducts = normalizedProducts.filter(item => {
+            return item.name && item.price && item.piece;
+          });
+
+          const validProducts = filteredProducts.map(item => {
+            // Only generate product_id if it doesn't exist
+            const productId = item.product_id ? item.product_id.trim() : generateProductId();
+            
+            return {
+              ...item,
+              product_id: productId,
+              price: parseFloat(item.price) || 0,
+              piece: parseInt(item.piece) || 0,
+              gram: item.gram, // Keep original format from data
+              brand: item.brand || 'Unknown',
+              category: item.category || 'General',
+              description: item.description || item.name,
+              ingredients: item.ingredients || '',
+              storage_condition: item.storage_condition || '',
+              rating: item.rating, // Keep original rating value from data
+              sub_category: item.sub_category || ''
+            };
+          });
+
+          if (validProducts.length === 0) {
+            setImportStatus({ loading: false, message: 'No valid products found in the file. Please ensure your file contains name, price, and piece columns.', type: 'error' });
+            setShowImportPopup(true);
             return;
           }
+
+          // Show processing status
+          setImportStatus({ loading: true, message: 'Processing import...', type: 'loading' });
+          setShowImportPopup(true);
 
           // Send to backend
           const response = await fetch(`${API_BASE_URL}/admin/products/bulk-import`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${adminToken}`,
+              'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
             },
-            body: JSON.stringify({ products: productsToImport }),
+            body: JSON.stringify({ products: validProducts })
           });
 
           const result = await response.json();
-          
-          if (response.ok && result.success) {
-            setProducts(prev => [...prev, ...result.data]);
-            setShowImportModal(false);
+
+          if (result.success) {
+            setImportStatus({ 
+              loading: false, 
+              message: `Import completed successfully! ${result.data.imported} products imported.${result.data.skipped > 0 ? ` ${result.data.skipped} products were skipped.` : ''}`, 
+              type: 'success' 
+            });
+            fetchProducts(); // Refresh the product list
             setImportFile(null);
-            setImportPreview([]);
-            fetchProductStats();
-            alert(`${result.data.length} products imported successfully!`);
+            setShowImportModal(false);
           } else {
-            throw new Error(result.message || 'Failed to import products');
+            setImportStatus({ loading: false, message: `Import failed: ${result.message}`, type: 'error' });
           }
+
         } catch (error) {
-          alert('Error processing file: ' + error.message);
+          setImportStatus({ loading: false, message: 'An error occurred during import. Please try again.', type: 'error' });
         }
       };
-      
+
       reader.readAsText(importFile);
     } catch (error) {
-      handleApiError(error);
-    } finally {
-      setIsLoading(false);
+      setImportStatus({ loading: false, message: 'Error reading file. Please try again.', type: 'error' });
+      setShowImportPopup(true);
     }
   };
 
@@ -466,7 +583,7 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
             className="admin-btn admin-btn-outline"
           >
             <Upload className="icon" />
-            Import CSV
+            Import Data
           </button>
           <div className="export-dropdown">
             <button 
@@ -677,7 +794,7 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
                           <span className="stock-status">{stockStatus.text}</span>
                         </div>
                       </td>
-                      <td className="weight">{product.gram}g</td>
+                      <td className="weight">{product.gram}</td>
                       <td>
                         <div className="action-buttons">
                           <button
@@ -1094,6 +1211,43 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Import Status Popup */}
+      {showImportPopup && (
+        <div className="import-popup-overlay">
+          <div className="import-popup">
+            <div className="import-popup-header">
+              <h3>{importStatus.loading ? 'Processing' : importStatus.type === 'success' ? 'Success' : 'Error'}</h3>
+              {!importStatus.loading && (
+                <button 
+                  className="import-popup-close"
+                  onClick={() => setShowImportPopup(false)}
+                >
+                  ×
+                </button>
+              )}
+            </div>
+            <div className="import-popup-content">
+              {importStatus.loading && (
+                <div className="import-loading">
+                  <div className="import-spinner"></div>
+                </div>
+              )}
+              <p className={`import-message ${importStatus.type}`}>{importStatus.message}</p>
+            </div>
+            {!importStatus.loading && (
+              <div className="import-popup-footer">
+                <button 
+                  className="admin-btn admin-btn-primary"
+                  onClick={() => setShowImportPopup(false)}
+                >
+                  OK
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -78,7 +78,7 @@ const CartPage = () => {
   const [toasts, setToasts] = useState([]);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
 
-  const API_URL = 'http://localhost:8000';
+  const API_URL = import.meta.env.VITE_APP_API_URL;
 
   useEffect(() => {
     fetchCart();
@@ -102,7 +102,7 @@ const CartPage = () => {
         return;
       }
 
-      const response = await axios.get(`${API_URL}/api/cart`, {
+      const response = await axios.get(`${API_URL}api/cart`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -206,7 +206,7 @@ const CartPage = () => {
     setUpdatingItems(prev => new Set(prev).add(productId));
 
     try {
-      const response = await axios.put(`${API_URL}/api/cart/${productId}`,
+      const response = await axios.put(`${API_URL}api/cart/${productId}`,
         { quantity: newQuantity },
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
@@ -259,7 +259,7 @@ const CartPage = () => {
     setUpdatingItems(prev => new Set(prev).add(productId));
 
     try {
-      const response = await axios.delete(`${API_URL}/api/cart/${productId}`, {
+      const response = await axios.delete(`${API_URL}api/cart/${productId}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -297,7 +297,7 @@ const CartPage = () => {
     if (!token) return;
 
     try {
-      await axios.delete(`${API_URL}/api/cart/`, {
+      await axios.delete(`${API_URL}api/cart/`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 

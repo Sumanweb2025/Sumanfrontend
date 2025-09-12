@@ -9,7 +9,7 @@ import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 const MyOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const API_URL = 'http://localhost:8000';
+  const API_URL = import.meta.env.VITE_APP_API_URL;
 
   useEffect(() => {
     fetchOrders();

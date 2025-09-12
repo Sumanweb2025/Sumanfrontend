@@ -33,7 +33,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
 
    const [selectedVariants, setSelectedVariants] = useState({}); // Track selected variant for each product
 
-  const API_URL = 'http://localhost:8000/';
+  const API_URL = import.meta.env.VITE_APP_API_URL;
 
   // Get unique brands and categories for filters
   const uniqueBrands = [...new Set(products.map(product => product.brand).filter(Boolean))];
@@ -551,13 +551,6 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                         <div className="sweets-product-info">
                           <h3 className="card-title sweets-product-name">{product.name}</h3>
                           <div className="sweets-product-brand">{product.brand}</div>
-
-                          {/* Weight/Gram Display */}
-                          {(product.gram || product.weight) && (
-                            <div className="sweets-product-weight">
-                            {product.gram || product.weight}
-                            </div>
-                          )}
                           
 
                           <div className="sweets-product-rating">

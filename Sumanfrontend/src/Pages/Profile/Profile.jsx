@@ -21,6 +21,8 @@ const ProfilePage = ({ onBack }) => {
       country: 'India'
     }
   });
+
+  const API_URL = import.meta.env.VITE_APP_API_URL;
   
   useEffect(() => {
     fetchUserProfile();
@@ -49,15 +51,15 @@ const getImageUrl = (imageUrl) => {
   
   // For local uploaded images (starts with /uploads/), prepend server URL
   if (imageUrl.startsWith('/uploads/')) {
-    const fullUrl = `http://localhost:8000${imageUrl}`;
+    const fullUrl = `${API_URL}${imageUrl}`;
     console.log('🏠 Local image URL created:', fullUrl);
     return fullUrl;
   }
   
   // Fallback: if it doesn't start with /, assume it's a relative path and add server URL
   const fullUrl = imageUrl.startsWith('/') ? 
-    `http://localhost:8000${imageUrl}` : 
-    `http://localhost:8000/${imageUrl}`;
+    `${API_URL}${imageUrl}` : 
+    `${API_URL}/${imageUrl}`;
   console.log('🔧 Fallback URL created:', fullUrl);
   return fullUrl;
 };
@@ -70,7 +72,7 @@ const getImageUrl = (imageUrl) => {
         return;
       }
 
-      const response = await fetch('http://localhost:8000/api/auth/profile', {
+      const response = await fetch(`${API_URL}api/auth/profile`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -238,7 +240,7 @@ const getImageUrl = (imageUrl) => {
       
       console.log('📤 Uploading to backend...');
 
-      const response = await fetch('http://localhost:8000/api/auth/upload-profile-image', {
+      const response = await fetch(`${API_URL}api/auth/upload-profile-image`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`

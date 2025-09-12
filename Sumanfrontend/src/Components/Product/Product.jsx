@@ -5,7 +5,7 @@ import './Product.css';
 import WishlistPopup from '../../Components/WishlistPopup/WishlistPopup';
 import CartPopup from '../../Components/CartPopup/CartPopup';
 
-const API_URL = 'http://localhost:8000';
+const API_URL = import.meta.env.VITE_APP_API_URL;
 
 const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) => {
   const [products, setProducts] = useState([]);

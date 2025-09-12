@@ -11,7 +11,7 @@ const OrderTracking = () => {
   const [orderData, setOrderData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const API_URL = 'http://localhost:8000';
+  const API_URL = import.meta.env.VITE_APP_API_URL;
 
   const handleTrackOrder = async () => {
     if (!orderId.trim() || !billingEmail.trim()) {

@@ -44,7 +44,7 @@ const Footer = () => {
           <h4>My Account</h4>
           <ul>
             <li><Link to="/profile">Profile</Link></li>
-            <li><Link to="/orders">Order History</Link></li>
+            <li><Link to="/myorders">Order History</Link></li>
             <li><Link to="/wishlist">Wishlist</Link></li>
             <li><Link to="/track-order">Order Tracking</Link></li>
             <li><Link to="/cart">Cart</Link></li>

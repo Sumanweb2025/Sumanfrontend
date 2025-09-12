@@ -33,7 +33,7 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
 
   const [selectedVariants, setSelectedVariants] = useState({}); // Track selected variant for each product
 
-  const API_URL = "http://localhost:8000/";
+  const API_URL = import.meta.env.VITE_APP_API_URL;
 
   // Get unique brands and categories for filters
   const uniqueBrands = [
@@ -618,12 +618,7 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                           <div className="snacks-product-brand">
                             {product.brand}
                           </div>
-                          {/* Weight/Gram Display */}
-                          {(product.gram || product.weight) && (
-                            <div className="snacks-product-weight">
-                              {product.gram || product.weight}
-                            </div>
-                          )}
+                        
 
                           <div className="snacks-product-rating">
                             {Array(5)

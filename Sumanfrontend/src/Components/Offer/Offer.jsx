@@ -7,10 +7,12 @@ const SpecialOffer = () => {
   const [offer, setOffer] = useState(null);
   const [isActive, setIsActive] = useState(false);
 
+  const API_URL = import.meta.env.VITE_APP_API_URL;
+
   useEffect(() => {
     const fetchOffer = async () => {
       try {
-        const res = await fetch('http://localhost:8000/api/offers/active');
+        const res = await fetch(`${API_URL}api/offers/active`);
         const data = await res.json();
 
         // If backend says there's no offer

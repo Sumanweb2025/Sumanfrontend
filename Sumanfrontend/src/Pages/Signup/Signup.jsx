@@ -48,6 +48,8 @@ const SignUp = () => {
     agreeToTerms: false
   });
 
+  const API_URL = import.meta.env.VITE_APP_API_URL;
+
   // Toast helper functions
   const showToast = (message, type = 'info') => {
     setToast({
@@ -137,7 +139,7 @@ const SignUp = () => {
         password: '***hidden***'
       });
 
-      const response = await axios.post('http://localhost:8000/api/auth/signup', {
+      const response = await axios.post(`${API_URL}api/auth/signup`, {
         name: signupData.name.trim(),
         email: signupData.email.toLowerCase().trim(),
         password: signupData.password

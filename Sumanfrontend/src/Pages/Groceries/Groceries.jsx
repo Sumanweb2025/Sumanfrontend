@@ -33,7 +33,7 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
 
   const [selectedVariants, setSelectedVariants] = useState({}); // Track selected variant for each product
 
-  const API_URL = 'http://localhost:8000/';
+  const API_URL = import.meta.env.VITE_APP_API_URL;
 
   // Get unique brands and categories for filters
   const uniqueBrands = [...new Set(products.map(product => product.brand).filter(Boolean))];
@@ -549,14 +549,6 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                         <div className="grocery-product-info">
                           <h3 className="card-title grocery-product-name">{product.name}</h3>
                           <div className="grocery-product-brand">{product.brand}</div>
-
-                           {/* Weight/Gram Display */}
-                          {(product.gram || product.weight) && (
-                            <div className="snacks-product-weight">
-                              {product.gram || product.weight}
-                            </div>
-                          )}
-
 
                           <div className="grocery-product-rating">
                             {Array(5).fill().map((_, i) => (

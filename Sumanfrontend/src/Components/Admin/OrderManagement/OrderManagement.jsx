@@ -1,25 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { 
   ShoppingBag, 
-  Eye, 
+  ExternalLink, 
   Edit, 
   Search, 
   Filter,
   Calendar,
   DollarSign,
   Package,
-  Truck,
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Clock,
   CheckCircle,
   XCircle,
-  Clock,
+  AlertCircle,
   FileText,
+  ChevronLeft,
+  ChevronRight,
   Download,
-  Mail
+  Truck,
+  Eye
 } from 'lucide-react';
 import './OrderManagement.css';
 
 // API configuration
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = import.meta.env.VITE_APP_API_URL;
 
 const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiError }) => {
   const [orders, setOrders] = useState([]);
@@ -120,9 +127,9 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
     }
   };
 
-  const downloadOrderPDF = async (orderId, type = 'invoice') => {
+  const downloadOrderPDF = async (orderId, paymentMethod) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/admin/orders/${orderId}/pdf/${type}`, {
+      const response = await fetch(`${API_BASE_URL}/invoices/download-invoice/${orderId}`, {
         headers: {
           'Authorization': `Bearer ${adminToken}`,
         },
@@ -133,12 +140,39 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `${type}-${orderId}.pdf`;
+        const pdfType = paymentMethod === 'cod' ? 'Bill' : 'Invoice';
+        a.download = `${pdfType}-${orderId}.pdf`;
         a.click();
         window.URL.revokeObjectURL(url);
+      } else {
+        console.error('Failed to download PDF:', response.status, response.statusText);
       }
     } catch (error) {
       console.error('Error downloading PDF:', error);
+    }
+  };
+
+  const viewOrderPDF = async (orderId, paymentMethod) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/invoices/download-invoice/${orderId}`, {
+        headers: {
+          'Authorization': `Bearer ${adminToken}`,
+        },
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        // Clean up the URL after a delay to ensure the PDF loads
+        setTimeout(() => {
+          window.URL.revokeObjectURL(url);
+        }, 1000);
+      } else {
+        console.error('Failed to view PDF:', response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error('Error viewing PDF:', error);
     }
   };
 
@@ -386,11 +420,18 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
                           <Edit className="icon" />
                         </button>
                         <button
-                          onClick={() => downloadOrderPDF(order._id, 'invoice')}
+                          onClick={() => downloadOrderPDF(order._id, order.paymentMethod)}
                           className="admin-btn admin-btn-secondary"
-                          title="Download invoice"
+                          title={`Download ${order.paymentMethod === 'cod' ? 'Bill' : 'Paid Invoice'}`}
                         >
                           <FileText className="icon" />
+                        </button>
+                        <button
+                          onClick={() => viewOrderPDF(order._id, order.paymentMethod)}
+                          className="admin-btn admin-btn-outline"
+                          title={`View ${order.paymentMethod === 'cod' ? 'Bill' : 'Paid Invoice'}`}
+                        >
+                          <ExternalLink className="icon" />
                         </button>
                       </div>
                     </td>
@@ -561,10 +602,17 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
               </button>
               <button 
                 className="admin-btn admin-btn-secondary"
-                onClick={() => downloadOrderPDF(selectedOrder._id, 'invoice')}
+                onClick={() => downloadOrderPDF(selectedOrder._id, selectedOrder.paymentMethod)}
               >
                 <FileText className="icon" />
-                Download Invoice
+                Download {selectedOrder.paymentMethod === 'cod' ? 'Bill' : 'Paid Invoice'}
+              </button>
+              <button 
+                className="admin-btn admin-btn-outline"
+                onClick={() => viewOrderPDF(selectedOrder._id, selectedOrder.paymentMethod)}
+              >
+                <ExternalLink className="icon" />
+                View {selectedOrder.paymentMethod === 'cod' ? 'Bill' : 'Paid Invoice'}
               </button>
               <button 
                 className="admin-btn admin-btn-primary"
