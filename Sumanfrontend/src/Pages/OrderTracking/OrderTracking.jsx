@@ -24,7 +24,7 @@ const OrderTracking = () => {
     setOrderData(null);
 
     try {
-      const response = await fetch(`${API_URL}/api/orders/track-order`, {
+      const response = await fetch(`${API_URL}api/orders/track-order`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
