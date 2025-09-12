@@ -31,7 +31,7 @@ const PaymentManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
   const [showPaymentDetails, setShowPaymentDetails] = useState(false);
 
   // API configuration
-  const API_BASE_URL = 'http://localhost:8000/api';
+  const API_BASE_URL = import.meta.env.VITE_APP_API_URL;
 
   useEffect(() => {
     fetchPaymentData();

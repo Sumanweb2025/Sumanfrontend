@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Signin.css';
 
+
 // Toast Component
 const Toast = ({ message, type, isVisible, onClose }) => {
   useEffect(() => {
@@ -101,6 +102,8 @@ const SignIn = () => {
     rememberMe: false
   });
 
+  const API_URL = import.meta.env.VITE_APP_API_URL;
+
   // Toast helper functions
   const showToast = (message, type = 'info') => {
     setToast({
@@ -185,7 +188,7 @@ const SignIn = () => {
     setErrors({});
 
     try {
-      const response = await axios.post('http://localhost:8000/api/auth/login', {
+      const response = await axios.post(`${API_URL}api/auth/login`, {
         email: signinData.email.toLowerCase().trim(),
         password: signinData.password
       });
@@ -258,8 +261,8 @@ const SignIn = () => {
 
     try {
       console.log('Sending Google credential to backend...');
-      
-      const response = await axios.post('http://localhost:8000/api/auth/google-auth', {
+
+      const response = await axios.post(`${API_URL}api/auth/google-auth`, {
         credential
       });
 

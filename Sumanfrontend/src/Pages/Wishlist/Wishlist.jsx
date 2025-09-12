@@ -18,7 +18,7 @@ const WishlistPage = () => {
   const [removingItems, setRemovingItems] = useState(new Set());
   const [addingToCart, setAddingToCart] = useState(new Set());
 
-  const API_URL = 'http://localhost:8000';
+  const API_URL = import.meta.env.VITE_APP_API_URL;
 
   useEffect(() => {
     fetchWishlist();
@@ -32,7 +32,7 @@ const WishlistPage = () => {
         return;
       }
 
-      const response = await axios.get(`${API_URL}/api/wishlist`, {
+      const response = await axios.get(`${API_URL}api/wishlist`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -69,7 +69,7 @@ const WishlistPage = () => {
     setRemovingItems(prev => new Set(prev).add(productId));
 
     try {
-      await axios.delete(`${API_URL}/api/wishlist/${productId}`, {
+      await axios.delete(`${API_URL}api/wishlist/${productId}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -118,13 +118,13 @@ const WishlistPage = () => {
 
   try {
     // Add to cart
-    await axios.post(`${API_URL}/api/cart`,
+    await axios.post(`${API_URL}api/cart`,
       { productId, quantity: 1 },
       { headers: { 'Authorization': `Bearer ${token}` } }
     );
 
     // Remove from wishlist after successful cart addition
-    await axios.delete(`${API_URL}/api/wishlist/${productId}`, {
+    await axios.delete(`${API_URL}api/wishlist/${productId}`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
 

@@ -46,7 +46,7 @@ const ProductDetailsPage = ({ addToCart }) => {
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
   const [allProducts, setAllProducts] = useState([]);
 
-  const API_URL = "http://localhost:8000/";
+  const API_URL = import.meta.env.VITE_APP_API_URL;
 
   useEffect(() => {
     const fetchProductDetails = async () => {

@@ -19,7 +19,7 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
   const dropdownRef = useRef(null);
   const mobileMenuRef = useRef(null);
 
-  const API_URL = 'http://localhost:8000/';
+  const API_URL = import.meta.env.VITE_APP_API_URL;
 
   useEffect(() => {
     const token = localStorage.getItem('token');

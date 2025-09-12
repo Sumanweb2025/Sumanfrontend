@@ -35,7 +35,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
 
   const [selectedVariants, setSelectedVariants] = useState({}); // Track selected variant for each product
 
-  const API_URL = 'http://localhost:8000/';
+  const API_URL = import.meta.env.VITE_APP_API_URL;
 
   // Carousel images for hero section
   const amirthCarouselImages = [

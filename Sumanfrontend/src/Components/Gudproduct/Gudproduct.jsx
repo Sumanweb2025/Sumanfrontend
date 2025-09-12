@@ -5,7 +5,7 @@ import './Gudproduct.css';
 import WishlistPopup from '../../Components/WishlistPopup/WishlistPopup';
 import CartPopup from '../../Components/CartPopup/CartPopup';
 
-const API_URL = 'http://localhost:8000';
+const API_URL = import.meta.env.VITE_APP_API_URL;
 
 const FeaturedProducts = () => {
   const [activeCategory, setActiveCategory] = useState('sweets');

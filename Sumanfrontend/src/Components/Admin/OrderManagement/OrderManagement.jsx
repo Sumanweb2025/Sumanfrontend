@@ -26,7 +26,7 @@ import {
 import './OrderManagement.css';
 
 // API configuration
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = import.meta.env.VITE_APP_API_URL;
 
 const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiError }) => {
   const [orders, setOrders] = useState([]);
