@@ -35,8 +35,8 @@ const FeaturedProducts = () => {
 
   // API endpoints
   const API_ENDPOINTS = {
-    sweets: `${API_URL}/api/products/search?category=sweets`,
-    snacks: `${API_URL}/api/products/search?category=snacks`
+    sweets: `${API_URL}api/products/search?category=sweets`,
+    snacks: `${API_URL}api/products/search?category=snacks`
   };
 
   // Show newsletter message
@@ -92,7 +92,7 @@ const FeaturedProducts = () => {
       if (token) {
         try {
           // Try to get user info for more personalized subscription
-          const userResponse = await axios.get(`${API_URL}/api/auth/profile`, {
+          const userResponse = await axios.get(`${API_URL}api/auth/profile`, {
             headers: { 'Authorization': `Bearer ${token}` }
           });
           
@@ -109,7 +109,7 @@ const FeaturedProducts = () => {
       }
 
       // Make subscription API call
-      const response = await axios.post(`${API_URL}/api/subscription/subscribe`, subscriptionData, {
+      const response = await axios.post(`${API_URL}api/subscription/subscribe`, subscriptionData, {
         headers
       });
 
@@ -218,14 +218,14 @@ const FeaturedProducts = () => {
         if (token) {
           try {
             // Fetch wishlist
-            const wishlistResponse = await axios.get(`${API_URL}/api/wishlist`, {
+            const wishlistResponse = await axios.get(`${API_URL}api/wishlist`, {
               headers: { 'Authorization': `Bearer ${token}` }
             });
             const wishlistData = wishlistResponse.data?.data || wishlistResponse.data;
             setWishlistItems(wishlistData.products?.map(item => item.productId._id || item.productId) || []);
 
             // Fetch cart
-            const cartResponse = await axios.get(`${API_URL}/api/cart`, {
+            const cartResponse = await axios.get(`${API_URL}api/cart`, {
               headers: { 'Authorization': `Bearer ${token}` }
             });
             const cartData = cartResponse.data?.data || cartResponse.data;
@@ -271,13 +271,13 @@ const FeaturedProducts = () => {
       const isInWishlist = wishlistItems.includes(productId);
 
       if (isInWishlist) {
-        await axios.delete(`${API_URL}/api/wishlist/${productId}`, config);
+        await axios.delete(`${API_URL}api/wishlist/${productId}`, config);
         setWishlistItems(prev => prev.filter(id => id !== productId));
 
         // Dispatch custom event to update header count
         window.dispatchEvent(new CustomEvent('wishlistUpdated'));
       } else {
-        await axios.post(`${API_URL}/api/wishlist`, { productId }, config);
+        await axios.post(`${API_URL}api/wishlist`, { productId }, config);
         setWishlistItems(prev => [...prev, productId]);
 
         // Dispatch custom event to update header count
@@ -313,10 +313,10 @@ const FeaturedProducts = () => {
       };
 
       const productId = product.product_id || product._id || product.id;
-      await axios.post(`${API_URL}/api/cart`, { productId, quantity: 1 }, config);
+      await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
 
       // Update cart items
-      const cartResponse = await axios.get(`${API_URL}/api/cart`, config);
+      const cartResponse = await axios.get(`${API_URL}api/cart`, config);
       const cartData = cartResponse.data?.data || cartResponse.data;
       setCartItems(cartData.items || []);
 
@@ -343,10 +343,10 @@ const FeaturedProducts = () => {
         }
       };
 
-      await axios.post(`${API_URL}/api/cart`, { productId, quantity: 1 }, config);
+      await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
 
       // Update cart items
-      const cartResponse = await axios.get(`${API_URL}/api/cart`, config);
+      const cartResponse = await axios.get(`${API_URL}api/cart`, config);
       const cartData = cartResponse.data?.data || cartResponse.data;
       setCartItems(cartData.items || []);
 

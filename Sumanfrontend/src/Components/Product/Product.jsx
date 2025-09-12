@@ -43,7 +43,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
         setLoading(true);
         setError(null);
 
-        const productsResponse = await axios.get(`${API_URL}/api/products`);
+        const productsResponse = await axios.get(`${API_URL}api/products`);
         let productsData = [];
 
         if (productsResponse.data?.data) {
@@ -61,14 +61,14 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
         if (token) {
           try {
             // Fetch wishlist
-            const wishlistResponse = await axios.get(`${API_URL}/api/wishlist`, {
+            const wishlistResponse = await axios.get(`${API_URL}api/wishlist`, {
               headers: { 'Authorization': `Bearer ${token}` }
             });
             const wishlistData = wishlistResponse.data?.data || wishlistResponse.data;
             setWishlistItems(wishlistData.products?.map(item => item.productId._id || item.productId) || []);
 
             // Fetch cart
-            const cartResponse = await axios.get(`${API_URL}/api/cart`, {
+            const cartResponse = await axios.get(`${API_URL}api/cart`, {
               headers: { 'Authorization': `Bearer ${token}` }
             });
             const cartData = cartResponse.data?.data || cartResponse.data;
@@ -121,12 +121,12 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
       const isInWishlist = wishlistItems.includes(productId);
       
       if (isInWishlist) {
-        await axios.delete(`${API_URL}/api/wishlist/${productId}`, config);
+        await axios.delete(`${API_URL}api/wishlist/${productId}`, config);
         setWishlistItems(prev => prev.filter(id => id !== productId));
         
         window.dispatchEvent(new CustomEvent('wishlistUpdated'));
       } else {
-        await axios.post(`${API_URL}/api/wishlist`, { productId }, config);
+        await axios.post(`${API_URL}api/wishlist`, { productId }, config);
         setWishlistItems(prev => [...prev, productId]);
         
         window.dispatchEvent(new CustomEvent('wishlistUpdated'));
@@ -152,9 +152,9 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
         }
       };
 
-      await axios.post(`${API_URL}/api/cart`, { productId, quantity: 1 }, config);
+      await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
       
-      const cartResponse = await axios.get(`${API_URL}/api/cart`, config);
+      const cartResponse = await axios.get(`${API_URL}api/cart`, config);
       const cartData = cartResponse.data?.data || cartResponse.data;
       setCartItems(cartData.items || []);
 
@@ -184,9 +184,9 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
       };
 
       const productId = product.product_id || product._id || product.id;
-      await axios.post(`${API_URL}/api/cart`, { productId, quantity: 1 }, config);
+      await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
       
-      const cartResponse = await axios.get(`${API_URL}/api/cart`, config);
+      const cartResponse = await axios.get(`${API_URL}api/cart`, config);
       const cartData = cartResponse.data?.data || cartResponse.data;
       setCartItems(cartData.items || []);
 
