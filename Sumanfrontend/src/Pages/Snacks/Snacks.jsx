@@ -618,12 +618,7 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                           <div className="snacks-product-brand">
                             {product.brand}
                           </div>
-                          {/* Weight/Gram Display */}
-                          {(product.gram || product.weight) && (
-                            <div className="snacks-product-weight">
-                              {product.gram || product.weight}
-                            </div>
-                          )}
+                        
 
                           <div className="snacks-product-rating">
                             {Array(5)

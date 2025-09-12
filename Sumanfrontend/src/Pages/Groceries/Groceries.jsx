@@ -550,14 +550,6 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                           <h3 className="card-title grocery-product-name">{product.name}</h3>
                           <div className="grocery-product-brand">{product.brand}</div>
 
-                           {/* Weight/Gram Display */}
-                          {(product.gram || product.weight) && (
-                            <div className="snacks-product-weight">
-                              {product.gram || product.weight}
-                            </div>
-                          )}
-
-
                           <div className="grocery-product-rating">
                             {Array(5).fill().map((_, i) => (
                               <span key={i} className={i < Math.floor(product.rating || 0) ? 'grocery-star-filled' : 'grocery-star-empty'}>

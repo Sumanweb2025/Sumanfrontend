@@ -551,13 +551,6 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                         <div className="sweets-product-info">
                           <h3 className="card-title sweets-product-name">{product.name}</h3>
                           <div className="sweets-product-brand">{product.brand}</div>
-
-                          {/* Weight/Gram Display */}
-                          {(product.gram || product.weight) && (
-                            <div className="sweets-product-weight">
-                            {product.gram || product.weight}
-                            </div>
-                          )}
                           
 
                           <div className="sweets-product-rating">
