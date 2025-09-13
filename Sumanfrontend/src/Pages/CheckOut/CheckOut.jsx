@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { GetCountries, GetState, GetCity } from 'react-country-state-city';
 import './CheckOut.css';
 import Header from '../../Components/Header/Header';
 import Footer from "../../Components/Footer/Footer";
@@ -20,6 +21,13 @@ const CheckoutPage = () => {
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponLoading, setCouponLoading] = useState(false);
 
+  // Dynamic country-state-city data
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [selectedState, setSelectedState] = useState(null);
+
   const [formData, setFormData] = useState({
     contactInfo: {
       email: ''
@@ -30,9 +38,9 @@ const CheckoutPage = () => {
       address: '',
       apartment: '',
       city: '',
-      province: 'Ontario',
+      province: '',
       postalCode: '',
-      country: 'Canada',
+      country: '',
       phone: ''
     },
     paymentMethod: 'card'
@@ -42,29 +50,7 @@ const CheckoutPage = () => {
 
   const API_URL = import.meta.env.VITE_APP_API_URL;
 
-  // Canadian provinces and territories
-  const countriesData = {
-    'Canada': [
-      'Alberta', 'British Columbia', 'Manitoba', 'New Brunswick', 
-      'Newfoundland and Labrador', 'Northwest Territories', 'Nova Scotia', 
-      'Nunavut', 'Ontario', 'Prince Edward Island', 'Quebec', 
-      'Saskatchewan', 'Yukon'
-    ],
-    'United States': [
-      'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 
-      'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 
-      'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 
-      'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 
-      'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 
-      'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 
-      'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 
-      'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 
-      'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 
-      'West Virginia', 'Wisconsin', 'Wyoming'
-    ]
-  };
-
-  // Payment methods configuration (removed UPI and NetBanking)
+  // Payment methods configuration
   const paymentMethods = [
     {
       id: 'card',
@@ -86,21 +72,71 @@ const CheckoutPage = () => {
     fetchCheckoutData();
   }, []);
 
+  // Fetch countries on component mount
   useEffect(() => {
-    // Reset province when country changes
-    if (formData.billingAddress.country) {
-      const provinces = countriesData[formData.billingAddress.country] || [];
-      if (provinces.length > 0 && !provinces.includes(formData.billingAddress.province)) {
+    GetCountries().then((result) => {
+      setCountries(result);
+      // Set Canada as default
+      const canada = result.find(country => country.name === 'Canada');
+      if (canada) {
+        setSelectedCountry(canada);
         setFormData(prev => ({
           ...prev,
           billingAddress: {
             ...prev.billingAddress,
-            province: provinces[0] || ''
+            country: canada.name
           }
         }));
       }
+    });
+  }, []);
+
+  // Update states when country changes
+  useEffect(() => {
+    if (selectedCountry) {
+      GetState(selectedCountry.id).then((result) => {
+        setStates(result);
+        setCities([]); // Clear cities when country changes
+        setSelectedState(null);
+        
+        // Set default state based on country
+        let defaultState = null;
+        if (selectedCountry.name === 'Canada') {
+          defaultState = result.find(state => state.name === 'Ontario');
+        } else if (selectedCountry.name === 'United States') {
+          defaultState = result.find(state => state.name === 'California');
+        }
+        
+        if (defaultState) {
+          setSelectedState(defaultState);
+          setFormData(prev => ({
+            ...prev,
+            billingAddress: {
+              ...prev.billingAddress,
+              province: defaultState.name,
+              city: '' // Clear city when state changes
+            }
+          }));
+        }
+      });
     }
-  }, [formData.billingAddress.country]);
+  }, [selectedCountry]);
+
+  // Update cities when state changes
+  useEffect(() => {
+    if (selectedState) {
+      GetCity(selectedCountry.id, selectedState.id).then((result) => {
+        setCities(result);
+        setFormData(prev => ({
+          ...prev,
+          billingAddress: {
+            ...prev.billingAddress,
+            city: '' // Clear city when state changes
+          }
+        }));
+      });
+    }
+  }, [selectedState]);
 
   const fetchCheckoutData = async () => {
     try {
@@ -135,6 +171,18 @@ const CheckoutPage = () => {
         [field]: value
       }
     }));
+
+    // Handle country change
+    if (section === 'billingAddress' && field === 'country') {
+      const country = countries.find(c => c.name === value);
+      setSelectedCountry(country);
+    }
+
+    // Handle state change
+    if (section === 'billingAddress' && field === 'province') {
+      const state = states.find(s => s.name === value);
+      setSelectedState(state);
+    }
 
     // Clear error when user starts typing
     if (errors[`${section}.${field}`]) {
@@ -436,10 +484,13 @@ const CheckoutPage = () => {
                     <select
                       value={formData.billingAddress.country}
                       onChange={(e) => handleInputChange('billingAddress', 'country', e.target.value)}
-                      className="form-input"
+                      className="form-input country-select"
                     >
-                      {Object.keys(countriesData).map(country => (
-                        <option key={country} value={country}>{country}</option>
+                      <option value="">Select Country</option>
+                      {countries.map(country => (
+                        <option key={country.id} value={country.name}>
+                          {country.name}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -518,13 +569,19 @@ const CheckoutPage = () => {
                   {/* City and Province */}
                   <div className="form-row">
                     <div className="form-group">
-                      <input
-                        type="text"
-                        placeholder="City"
+                      <select
                         value={formData.billingAddress.city}
                         onChange={(e) => handleInputChange('billingAddress', 'city', e.target.value)}
-                        className={`form-input ${errors['billingAddress.city'] ? 'error' : ''}`}
-                      />
+                        className={`form-input city-select ${errors['billingAddress.city'] ? 'error' : ''}`}
+                        disabled={!selectedState}
+                      >
+                        <option value="">Select City</option>
+                        {cities.map(city => (
+                          <option key={city.id} value={city.name}>
+                            {city.name}
+                          </option>
+                        ))}
+                      </select>
                       {errors['billingAddress.city'] && (
                         <p className="error-message">
                           <span className="error-icon">⚠ </span>
@@ -536,11 +593,14 @@ const CheckoutPage = () => {
                       <select
                         value={formData.billingAddress.province}
                         onChange={(e) => handleInputChange('billingAddress', 'province', e.target.value)}
-                        className="form-input"
+                        className="form-input state-select"
+                        disabled={!selectedCountry}
                       >
-                        <option value="">Select Province/State</option>
-                        {(countriesData[formData.billingAddress.country] || []).map(province => (
-                          <option key={province} value={province}>{province}</option>
+                        <option value="">Select State/Province</option>
+                        {states.map(state => (
+                          <option key={state.id} value={state.name}>
+                            {state.name}
+                          </option>
                         ))}
                       </select>
                     </div>

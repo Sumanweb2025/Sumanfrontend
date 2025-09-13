@@ -69,6 +69,218 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message }) => {
   );
 };
 
+// Mobile Cart Item Component
+const MobileCartItem = ({ 
+  item, 
+  product, 
+  productId, 
+  isUpdating, 
+  onUpdateQuantity, 
+  onRemove, 
+  onProductClick,
+  getImageUrl,
+  getProductGram,
+  safeParseFloat,
+  safeParseInt
+}) => {
+  const price = safeParseFloat(product.price || product.Price);
+  const quantity = safeParseInt(item.quantity);
+  const productName = product.name || product.Name || 'Unknown Product';
+  const productBrand = product.brand || product.Brand;
+  const productCategory = product.category || product.Category;
+  const imageUrl = getImageUrl(product);
+
+  return (
+    <div className={`cart-item ${isUpdating ? 'updating' : ''}`}>
+      <button
+        className="cart-remove-btn"
+        onClick={() => onRemove(productId)}
+        disabled={isUpdating}
+        title="Remove from cart"
+      >
+        {isUpdating ? '⏳' : '×'}
+      </button>
+
+      <div className="mobile-item-header">
+        <div
+          className="item-image-container"
+          onClick={() => onProductClick(product)}
+        >
+          <img
+            src={imageUrl}
+            alt={productName}
+            className="product-image"
+            onError={(e) => {
+              e.target.src = 'https://via.placeholder.com/300x300?text=No+Image';
+              e.target.onerror = null;
+            }}
+          />
+        </div>
+
+        <div className="mobile-item-info">
+          <h3
+            className="item-name"
+            onClick={() => onProductClick(product)}
+          >
+            {productName}
+          </h3>
+
+          {productBrand && (
+            <p className="item-brand">{productBrand}</p>
+          )}
+
+          {productCategory && (
+            <p className="item-category">{productCategory}</p>
+          )}
+
+          <div className="item-price">${price.toFixed(2)}</div>
+
+          {/* Add Gram Display */}
+          {getProductGram(product) && (
+            <div className="cart-item-gram">
+              <span className="cart-gram-label">Size:</span>
+              <span className="cart-gram-value">{getProductGram(product)}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="mobile-controls">
+        <div className="quantity-controls">
+          <button
+            className="quantity-btn"
+            onClick={() => onUpdateQuantity(productId, quantity - 1)}
+            disabled={quantity <= 1 || isUpdating}
+          >
+            -
+          </button>
+          <span className="quantity">{quantity}</span>
+          <button
+            className="quantity-btn"
+            onClick={() => onUpdateQuantity(productId, quantity + 1)}
+            disabled={isUpdating}
+          >
+            +
+          </button>
+        </div>
+
+        <div className="item-total">
+          ${(price * quantity).toFixed(2)}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Desktop Cart Item Component
+const DesktopCartItem = ({ 
+  item, 
+  product, 
+  productId, 
+  isUpdating, 
+  onUpdateQuantity, 
+  onRemove, 
+  onProductClick,
+  getImageUrl,
+  getProductGram,
+  safeParseFloat,
+  safeParseInt
+}) => {
+  const price = safeParseFloat(product.price || product.Price);
+  const quantity = safeParseInt(item.quantity);
+  const productName = product.name || product.Name || 'Unknown Product';
+  const productBrand = product.brand || product.Brand;
+  const productCategory = product.category || product.Category;
+  const productDescription = product.description || product.Description;
+  const imageUrl = getImageUrl(product);
+
+  return (
+    <div className={`cart-item ${isUpdating ? 'updating' : ''}`}>
+      <button
+        className="cart-remove-btn"
+        onClick={() => onRemove(productId)}
+        disabled={isUpdating}
+        title="Remove from cart"
+      >
+        {isUpdating ? '⏳' : '×'}
+      </button>
+
+      <div
+        className="item-image-container"
+        onClick={() => onProductClick(product)}
+      >
+        <img
+          src={imageUrl}
+          alt={productName}
+          className="product-image"
+          onError={(e) => {
+            e.target.src = 'https://via.placeholder.com/300x300?text=No+Image';
+            e.target.onerror = null;
+          }}
+        />
+      </div>
+
+      <div className="item-details">
+        <h3
+          className="card-title text-animate item-name"
+          onClick={() => onProductClick(product)}
+        >
+          {productName}
+        </h3>
+
+        {productBrand && (
+          <p className="item-brand">{productBrand}</p>
+        )}
+
+        {productCategory && (
+          <p className="item-category">{productCategory}</p>
+        )}
+
+        {/* Add Gram Display */}
+        {getProductGram(product) && (
+          <div className="cart-item-gram">
+            <span className="cart-gram-label">Size:</span>
+            <span className="cart-gram-value">{getProductGram(product)}</span>
+          </div>
+        )}
+
+        <div className="price-text item-price">${price.toFixed(2)}</div>
+
+        {productDescription && (
+          <p className="small-text item-description">
+            {productDescription.length > 80
+              ? `${productDescription.substring(0, 80)}...`
+              : productDescription
+            }
+          </p>
+        )}
+      </div>
+
+      <div className="quantity-controls">
+        <button
+          className="quantity-btn"
+          onClick={() => onUpdateQuantity(productId, quantity - 1)}
+          disabled={quantity <= 1 || isUpdating}
+        >
+          -
+        </button>
+        <span className="quantity">{quantity}</span>
+        <button
+          className="quantity-btn"
+          onClick={() => onUpdateQuantity(productId, quantity + 1)}
+          disabled={isUpdating}
+        >
+          +
+        </button>
+      </div>
+
+      <div className="item-total">
+        ${(price * quantity).toFixed(2)}
+      </div>
+    </div>
+  );
+};
+
 const CartPage = () => {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
@@ -77,11 +289,20 @@ const CartPage = () => {
   const [updatingItems, setUpdatingItems] = useState(new Set());
   const [toasts, setToasts] = useState([]);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   const API_URL = import.meta.env.VITE_APP_API_URL;
 
   useEffect(() => {
     fetchCart();
+
+    // Add resize listener
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   // Toast functions
@@ -107,7 +328,6 @@ const CartPage = () => {
       });
 
       const cartData = response.data?.data || response.data;
-      console.log('Cart data received:', cartData); // Debug log
 
       // Filter out items with null or invalid product references
       const validCartItems = (cartData.items || []).filter(item => {
@@ -146,28 +366,21 @@ const CartPage = () => {
     }
   };
 
-  // Add this helper function to get gram information
+  // Helper functions
   const getProductGram = (product) => {
     return product?.gram || product?.Gram || null;
   };
 
-  // Helper function to get correct image URL
   const getImageUrl = (product) => {
-    // First priority: imageUrl from backend (now added by cart controller)
     if (product?.imageUrl) {
       return product.imageUrl;
     }
-
-    // Second priority: construct from image field using Products path
     if (product?.image) {
       return `${API_URL}/images/Products/${product.image}`;
     }
-
-    // Fallback: placeholder
     return 'https://via.placeholder.com/300x300?text=No+Image';
   };
 
-  // Helper function to safely parse numbers
   const safeParseFloat = (value) => {
     const parsed = parseFloat(value);
     return isNaN(parsed) ? 0 : parsed;
@@ -178,24 +391,17 @@ const CartPage = () => {
     return isNaN(parsed) ? 0 : parsed;
   };
 
-  // Helper function to get product ID safely
   const getProductId = (item) => {
     if (!item || !item.productId) return null;
-
     const product = item.productId;
     return product._id || product.id || product.product_id || null;
   };
 
-  // Helper function to get product data safely
   const getProductData = (item) => {
     if (!item || !item.productId) return null;
-
-    // If productId is populated object, return it
     if (typeof item.productId === 'object' && item.productId !== null) {
       return item.productId;
     }
-
-    // If it's just an ID string, we can't display much
     return null;
   };
 
@@ -211,16 +417,13 @@ const CartPage = () => {
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
 
-      // Update with response data to ensure consistency
       const updatedCartData = response.data?.data;
       if (updatedCartData && updatedCartData.items) {
-        // Filter valid items again after update
         const validItems = updatedCartData.items.filter(item =>
           item && item.productId && getProductId(item)
         );
         setCartItems(validItems);
       } else {
-        // Fallback to local update
         setCartItems(prev =>
           prev.map(item => {
             const itemProductId = getProductId(item);
@@ -232,7 +435,6 @@ const CartPage = () => {
         );
       }
 
-      // Dispatch custom event to update header count
       window.dispatchEvent(new CustomEvent('cartUpdated'));
       showToast('Cart updated successfully!', 'success');
     } catch (err) {
@@ -251,7 +453,6 @@ const CartPage = () => {
     const token = localStorage.getItem('token');
     if (!token || !productId) return;
 
-    // Get the product name for toast message
     const item = cartItems.find(item => getProductId(item) === productId);
     const product = getProductData(item);
     const productName = product?.name || product?.Name || 'Item';
@@ -263,7 +464,6 @@ const CartPage = () => {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
-      // Update with response data to ensure consistency
       const updatedCartData = response.data?.data;
       if (updatedCartData && updatedCartData.items) {
         const validItems = updatedCartData.items.filter(item =>
@@ -271,13 +471,11 @@ const CartPage = () => {
         );
         setCartItems(validItems);
       } else {
-        // Fallback to local update
         setCartItems(prev =>
           prev.filter(item => getProductId(item) !== productId)
         );
       }
 
-      // Dispatch custom event to update header count
       window.dispatchEvent(new CustomEvent('cartUpdated'));
       showToast(`${productName} removed from cart`, 'success');
     } catch (err) {
@@ -303,8 +501,6 @@ const CartPage = () => {
 
       setCartItems([]);
       setShowClearConfirm(false);
-
-      // Dispatch custom event to update header count
       window.dispatchEvent(new CustomEvent('cartUpdated'));
       showToast('Cart cleared successfully!', 'success');
     } catch (err) {
@@ -314,27 +510,25 @@ const CartPage = () => {
   };
 
   const handleProductClick = (product) => {
-  if (!product) return;
-  
-  const productId = product._id || product.id || product.product_id;
-  if (productId) {
-    // Navigate using product ID, but pass gram info for context
-    navigate(`/product/${productId}`, {
-      state: { 
-        product: product,
-        fromCart: true,
-        selectedGram: product.gram || product.Gram // Pass the current gram
-      }
-    });
-  }
-};
+    if (!product) return;
+    
+    const productId = product._id || product.id || product.product_id;
+    if (productId) {
+      navigate(`/product/${productId}`, {
+        state: { 
+          product: product,
+          fromCart: true,
+          selectedGram: product.gram || product.Gram
+        }
+      });
+    }
+  };
 
   const handleContinueShopping = () => {
     navigate('/sweets');
   };
 
   const handleCheckout = () => {
-    // Check if user is logged in
     const token = localStorage.getItem('token');
     if (!token) {
       showToast('Please sign in to continue with checkout', 'warning');
@@ -342,13 +536,11 @@ const CartPage = () => {
       return;
     }
 
-    // Check if cart has items
     if (cartItems.length === 0) {
       showToast('Your cart is empty. Add some items before checkout.', 'warning');
       return;
     }
 
-    // Navigate to checkout page
     navigate('/checkout');
   };
 
@@ -359,24 +551,16 @@ const CartPage = () => {
 
       const price = safeParseFloat(product.price || product.Price);
       const quantity = safeParseInt(item.quantity);
-      console.log(`Item: ${product.name || product.Name}, Price: ${price}, Quantity: ${quantity}`); // Debug log
       return total + (price * quantity);
     }, 0);
   };
 
   const calculateTax = (subtotal) => {
-    return subtotal * 0.13; // 13% HST (common Canadian rate)
+    return subtotal * 0.13; // 13% HST
   };
 
   const calculateShipping = (subtotal) => {
     return subtotal >= 75 ? 0 : 9.99;
-  };
-
-  const calculateTotal = () => {
-    const subtotal = calculateSubtotal();
-    const tax = calculateTax(subtotal);
-    const shipping = calculateShipping(subtotal);
-    return subtotal + tax + shipping;
   };
 
   const getTotalItemCount = () => {
@@ -462,109 +646,31 @@ const CartPage = () => {
                     const product = getProductData(item);
                     const productId = getProductId(item);
 
-                    // Skip items with invalid product data
                     if (!product || !productId) {
                       console.warn('Skipping invalid cart item:', item);
                       return null;
                     }
 
                     const isUpdating = updatingItems.has(productId);
-                    const imageUrl = getImageUrl(product);
-                    const price = safeParseFloat(product.price || product.Price);
-                    const quantity = safeParseInt(item.quantity);
-                    const productName = product.name || product.Name || 'Unknown Product';
-                    const productBrand = product.brand || product.Brand;
-                    const productCategory = product.category || product.Category;
-                    const productDescription = product.description || product.Description;
+
+                    // Use different components for mobile and desktop
+                    const CartItemComponent = isMobile ? MobileCartItem : DesktopCartItem;
 
                     return (
-                      <div key={`${productId}-${index}`} className={`cart-item ${isUpdating ? 'updating' : ''}`}>
-                        <button
-                          className="remove-btn"
-                          onClick={() => handleRemoveFromCart(productId)}
-                          disabled={isUpdating}
-                          title="Remove from cart"
-                        >
-                          {isUpdating ? '⏳' : '×'}
-                        </button>
-
-                        <div
-                          className="item-image-container"
-                          onClick={() => handleProductClick(product)}
-                        >
-                          <img
-                            src={imageUrl}
-                            alt={productName}
-                            className="product-image"
-                            onError={(e) => {
-                              console.log('Image failed to load:', e.target.src);
-                              e.target.src = 'https://via.placeholder.com/300x300?text=No+Image';
-                              e.target.onerror = null;
-                            }}
-                            onLoad={() => {
-                              console.log('Image loaded successfully:', imageUrl);
-                            }}
-                          />
-                        </div>
-
-                        <div className="item-details">
-                          <h3
-                            className="card-title text-animate item-name"
-                            onClick={() => handleProductClick(product)}
-                          >
-                            {productName}
-                          </h3>
-
-                          {productBrand && (
-                            <p className="item-brand">{productBrand}</p>
-                          )}
-
-                          {productCategory && (
-                            <p className="item-category">{productCategory}</p>
-                          )}
-
-                          {/* Add Gram Display */}
-                          {getProductGram(product) && (
-                            <div className="item-gram">
-                              <span className="gram-label">Size:</span>
-                              <span className="gram-value">{getProductGram(product)}</span>
-                            </div>
-                          )}
-
-                          <div className="price-text item-price">${price.toFixed(2)}</div>
-
-                          {productDescription && (
-                            <p className="small-text item-description">
-                              {productDescription.length > 80
-                                ? `${productDescription.substring(0, 80)}...`
-                                : productDescription
-                              }
-                            </p>
-                          )}
-                        </div>
-
-                        <div className="quantity-controls">
-                          <button
-                            className="quantity-btn"
-                            onClick={() => updateQuantity(productId, quantity - 1)}
-                            disabled={quantity <= 1 || isUpdating}
-                          >
-                            -
-                          </button>
-                          <span className="quantity">{quantity}</span>
-                          <button
-                            className="quantity-btn"
-                            onClick={() => updateQuantity(productId, quantity + 1)}
-                            disabled={isUpdating}
-                          >
-                            +
-                          </button>
-                        </div>
-
-                        <div className="item-total">
-                          ${(price * quantity).toFixed(2)}
-                        </div>
-                      </div>
+                      <CartItemComponent
+                        key={`${productId}-${index}`}
+                        item={item}
+                        product={product}
+                        productId={productId}
+                        isUpdating={isUpdating}
+                        onUpdateQuantity={updateQuantity}
+                        onRemove={handleRemoveFromCart}
+                        onProductClick={handleProductClick}
+                        getImageUrl={getImageUrl}
+                        getProductGram={getProductGram}
+                        safeParseFloat={safeParseFloat}
+                        safeParseInt={safeParseInt}
+                      />
                     );
                   })}
                 </div>
@@ -586,7 +692,7 @@ const CartPage = () => {
 
                   <div className="summary-row">
                     <span>Shipping:</span>
-                    <span>{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span>
+                    <span>{shipping === 0 ? 'FREE' : `${shipping.toFixed(2)}`}</span>
                   </div>
 
                   {shipping === 0 && (
