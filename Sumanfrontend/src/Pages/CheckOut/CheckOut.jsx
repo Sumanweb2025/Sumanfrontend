@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { GetCountries, GetState, GetCity } from 'react-country-state-city';
+import { FaChevronDown } from 'react-icons/fa';
+import { FaCircleCheck } from "react-icons/fa6";
 import './CheckOut.css';
 import Header from '../../Components/Header/Header';
 import Footer from "../../Components/Footer/Footer";
@@ -47,6 +49,11 @@ const CheckoutPage = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [dropdownStates, setDropdownStates] = useState({
+    country: false,
+    state: false,
+    city: false
+  });
 
   const API_URL = import.meta.env.VITE_APP_API_URL;
 
@@ -71,6 +78,21 @@ const CheckoutPage = () => {
   useEffect(() => {
     fetchCheckoutData();
   }, []);
+
+  // Add these handler functions:
+  const handleDropdownFocus = (dropdown) => {
+    setDropdownStates(prev => ({
+      ...prev,
+      [dropdown]: true
+    }));
+  };
+
+  const handleDropdownBlur = (dropdown) => {
+    setDropdownStates(prev => ({
+      ...prev,
+      [dropdown]: false
+    }));
+  };
 
   // Fetch countries on component mount
   useEffect(() => {
@@ -98,7 +120,7 @@ const CheckoutPage = () => {
         setStates(result);
         setCities([]); // Clear cities when country changes
         setSelectedState(null);
-        
+
         // Set default state based on country
         let defaultState = null;
         if (selectedCountry.name === 'Canada') {
@@ -106,7 +128,7 @@ const CheckoutPage = () => {
         } else if (selectedCountry.name === 'United States') {
           defaultState = result.find(state => state.name === 'California');
         }
-        
+
         if (defaultState) {
           setSelectedState(defaultState);
           setFormData(prev => ({
@@ -208,7 +230,7 @@ const CheckoutPage = () => {
 
       const couponData = response.data.data;
       setAppliedCoupon(couponData);
-      
+
       // Update order summary with discount
       setOrderSummary(prev => ({
         ...prev,
@@ -274,7 +296,7 @@ const CheckoutPage = () => {
   const handlePaymentSuccess = (orderData) => {
     setOrderDetails(orderData);
     setShowSuccess(true);
-    
+
     // Dispatch cart update event
     window.dispatchEvent(new CustomEvent('cartUpdated'));
   };
@@ -286,7 +308,7 @@ const CheckoutPage = () => {
 
   const handleCODSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -315,7 +337,7 @@ const CheckoutPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -346,7 +368,7 @@ const CheckoutPage = () => {
   const getPaymentStatusText = () => {
     const method = paymentMethods.find(pm => pm.id === formData.paymentMethod);
     if (!method) return 'Processing...';
-    
+
     switch (method.id) {
       case 'card':
         return 'Payment Completed';
@@ -360,9 +382,9 @@ const CheckoutPage = () => {
   if (loading) {
     return (
       <>
-        <LoadingSpinner 
-          isLoading={loading} 
-          brandName="Checkout" 
+        <LoadingSpinner
+          isLoading={loading}
+          brandName="Checkout"
           loadingText="Loading checkout..."
           progressColor="#3b82f6"
         />
@@ -380,13 +402,13 @@ const CheckoutPage = () => {
           <div className="success-modal-overlay">
             <div className="success-modal">
               <div className="success-content">
-                <div className="success-icon">🎉</div>
+                <div className="success-icon"><FaCircleCheck /></div>
                 <h1 className="success-title">Order Placed Successfully!</h1>
                 <p className="success-message">
                   Thank you for your order. We've sent a confirmation email with detailed invoice to{' '}
                   <strong>{formData.contactInfo.email}</strong>
                 </p>
-                
+
                 <div className="checkout-order-details">
                   <p className="checkout-order-label">Order Number</p>
                   <p className="checkout-order-number">{orderDetails?.orderNumber}</p>
@@ -453,7 +475,7 @@ const CheckoutPage = () => {
               <div className="checkout-section">
                 <h2 className="checkout-section-title">Contact information</h2>
                 <p className="checkout-section-description">We'll use this email to send you details and updates about your order.</p>
-                
+
                 <div className="form-group">
                   <input
                     type="email"
@@ -469,7 +491,7 @@ const CheckoutPage = () => {
                     </p>
                   )}
                 </div>
-                
+
                 <p className="guest-notice">You are currently checking out as a guest.</p>
               </div>
 
@@ -484,6 +506,8 @@ const CheckoutPage = () => {
                     <select
                       value={formData.billingAddress.country}
                       onChange={(e) => handleInputChange('billingAddress', 'country', e.target.value)}
+                      onFocus={() => handleDropdownFocus('country')}
+                      onBlur={() => handleDropdownBlur('country')}
                       className="form-input country-select"
                     >
                       <option value="">Select Country</option>
@@ -493,6 +517,9 @@ const CheckoutPage = () => {
                         </option>
                       ))}
                     </select>
+                    <div className={`dropdown-icon ${dropdownStates.country ? 'rotated' : ''}`}>
+                      <FaChevronDown />
+                    </div>
                   </div>
 
                   {/* Name fields */}
@@ -562,7 +589,7 @@ const CheckoutPage = () => {
                       value={formData.billingAddress.apartment}
                       onChange={(e) => handleInputChange('billingAddress', 'apartment', e.target.value)}
                       className="form-input apartment-field"
-                      style={{display: 'none', marginTop: '0.75rem'}}
+                      style={{ display: 'none', marginTop: '0.75rem', marginBottom: '10px' }}
                     />
                   </div>
 
@@ -572,6 +599,8 @@ const CheckoutPage = () => {
                       <select
                         value={formData.billingAddress.city}
                         onChange={(e) => handleInputChange('billingAddress', 'city', e.target.value)}
+                        onFocus={() => handleDropdownFocus('city')}
+                        onBlur={() => handleDropdownBlur('city')}
                         className={`form-input city-select ${errors['billingAddress.city'] ? 'error' : ''}`}
                         disabled={!selectedState}
                       >
@@ -582,6 +611,9 @@ const CheckoutPage = () => {
                           </option>
                         ))}
                       </select>
+                      <div className={`dropdown-icon ${dropdownStates.city ? 'rotated' : ''}`}>
+                        <FaChevronDown />
+                      </div>
                       {errors['billingAddress.city'] && (
                         <p className="error-message">
                           <span className="error-icon">⚠ </span>
@@ -593,6 +625,8 @@ const CheckoutPage = () => {
                       <select
                         value={formData.billingAddress.province}
                         onChange={(e) => handleInputChange('billingAddress', 'province', e.target.value)}
+                        onFocus={() => handleDropdownFocus('state')}
+                        onBlur={() => handleDropdownBlur('state')}
                         className="form-input state-select"
                         disabled={!selectedCountry}
                       >
@@ -603,6 +637,9 @@ const CheckoutPage = () => {
                           </option>
                         ))}
                       </select>
+                      <div className={`dropdown-icon ${dropdownStates.state ? 'rotated' : ''}`}>
+                        <FaChevronDown />
+                      </div>
                     </div>
                   </div>
 
@@ -639,7 +676,7 @@ const CheckoutPage = () => {
               {/* Payment Options */}
               <div className="checkout-section">
                 <h2 className="checkout-section-title">Payment options</h2>
-                
+
                 <div className="checkout-payment-methods">
                   {paymentMethods.map((method) => (
                     <label key={method.id} className="checkout-payment-method">
@@ -648,7 +685,7 @@ const CheckoutPage = () => {
                         name="paymentMethod"
                         value={method.id}
                         checked={formData.paymentMethod === method.id}
-                        onChange={(e) => setFormData(prev => ({...prev, paymentMethod: e.target.value}))}
+                        onChange={(e) => setFormData(prev => ({ ...prev, paymentMethod: e.target.value }))}
                         className="payment-radio"
                       />
                       <div className="checkout-payment-content">
@@ -753,7 +790,7 @@ const CheckoutPage = () => {
                           <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414L11.414 12l3.293 3.293a1 1 0 01-1.414 1.414L10 13.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 12 5.293 8.707a1 1 0 010-1.414z" clipRule="evenodd" />
                         </svg>
                       </button>
-                      
+
                       {showCouponInput && (
                         <div className="coupon-input-container">
                           <input
@@ -794,24 +831,24 @@ const CheckoutPage = () => {
                     <span>Subtotal</span>
                     <span>${orderSummary.subtotal}</span>
                   </div>
-                  
+
                   <div className="total-row">
                     <span>Tax (HST 13%)</span>
                     <span>${orderSummary.tax}</span>
                   </div>
-                  
+
                   <div className="total-row">
                     <span>Shipping</span>
                     <span>{parseFloat(orderSummary.shipping) === 0 ? 'FREE' : `$${orderSummary.shipping}`}</span>
                   </div>
-                  
+
                   {appliedCoupon && (
                     <div className="total-row discount-row">
                       <span>Discount ({appliedCoupon.code})</span>
                       <span>- ${appliedCoupon.discount}</span>
                     </div>
                   )}
-                  
+
                   {parseFloat(orderSummary.shipping) === 0 && (
                     <div className="free-shipping-notice">
                       🎉 You've earned free shipping!

@@ -118,8 +118,8 @@
 
 .form-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  gap: 5px;
 }
 
 .error-message {
@@ -197,23 +197,44 @@
   cursor: not-allowed;
 }
 
-/* Add dropdown arrow using pseudo-element */
-.form-group {
+.select-wrapper {
   position: relative;
+  display: inline-block;
+  width: 100%;
 }
-
-.form-group:has(.country-select)::after,
-.form-group:has(.state-select)::after,
-.form-group:has(.city-select)::after {
-  content: "▼";
+/* Animated dropdown icon */
+.dropdown-icon {
   position: absolute;
   right: 0.75rem;
-  top: 35%;
+  top: 40%;
   transform: translateY(-50%);
   pointer-events: none;
   color: #6b7280;
   font-size: 0.875rem;
+  transition: transform 0.2s ease, color 0.2s ease;
   z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Rotate icon when dropdown is open */
+.dropdown-icon.rotated {
+  transform: translateY(-50%) rotate(180deg);
+  color: #ffd700;
+}
+
+/* Disabled state for dropdown icon */
+.select-wrapper:has(.country-select:disabled) .dropdown-icon,
+.select-wrapper:has(.state-select:disabled) .dropdown-icon,
+.select-wrapper:has(.city-select:disabled) .dropdown-icon {
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Focus state for dropdown icon */
+.select-wrapper:focus-within .dropdown-icon {
+  color: #ffd700;
 }
 
 /* Payment Methods */
@@ -776,20 +797,33 @@
 .success-message {
   color: #6b7280;
   margin-bottom: 1.5rem;
-  line-height: 1.5;
+  line-height: 1.6;
+  text-align: center;
+  padding: 0 0.5rem;
+  font-size: 0.95rem;
+}
+
+.success-message strong {
+  color: #1f2937;
+  font-weight: 600;
+  word-break: break-all;
+  display: block;
+  margin-top: 0.25rem;
 }
 
 .checkout-order-details {
   background-color: #f9fafb;
   border-radius: 0.5rem;
-  padding: 1rem;
+  padding: 1.25rem;
   margin-bottom: 1.5rem;
+  text-align: center;
 }
 
 .checkout-order-label {
   font-size: 0.875rem;
   color: #6b7280;
   margin: 0 0 0.25rem 0;
+  text-align: center;
 }
 
 .checkout-order-number {
@@ -797,20 +831,24 @@
   font-weight: 600;
   color: #1f2937;
   margin: 0 0 0.75rem 0;
+  word-break: break-all;
+  text-align: center;
 }
 
 .checkout-order-total {
   font-size: 1.125rem;
   font-weight: 600;
   color: #059669;
-  margin: 0;
+  margin: 0 0 0.75rem 0;
+  text-align: center;
 }
 
 .checkout-payment-success {
   font-size: 1rem;
   font-weight: 600;
   color: #059669;
-  margin: 0;
+  margin: 0 0 0.75rem 0;
+  text-align: center;
 }
 
 .checkout-payment-cod {
@@ -818,6 +856,7 @@
   font-weight: 600;
   color: #f59e0b;
   margin: 0;
+  text-align: center;
 }
 
 .success-actions {
@@ -909,10 +948,7 @@
     padding-right: 3.5rem;
   }
   
-  .form-group:has(.country-select)::after,
-  .form-group:has(.state-select)::after,
-  .form-group:has(.city-select)::after,
-  .select-wrapper::after {
+  .dropdown-icon {
     right: 1rem;
     font-size: 1rem;
   }
@@ -1000,10 +1036,7 @@
     padding-right: 3rem;
   }
   
-  .form-group:has(.country-select)::after,
-  .form-group:has(.state-select)::after,
-  .form-group:has(.city-select)::after,
-  .select-wrapper::after {
+   .dropdown-icon {
     right: 0.75rem;
     font-size: 0.875rem;
   }
@@ -1098,6 +1131,21 @@
   
   .success-message {
     font-size: 0.875rem;
+    line-height: 1.5;
+    padding: 0 0.25rem;
+  }
+  
+  .checkout-order-details {
+    padding: 1rem;
+  }
+  
+  .checkout-order-number {
+    font-size: 1rem;
+    line-height: 1.3;
+  }
+  
+  .checkout-order-total {
+    font-size: 1rem;
   }
 }
 
@@ -1124,6 +1172,10 @@
   .city-select {
     padding-right: 2.5rem;
     background-position: right 0.5rem center;
+  }
+
+   .dropdown-icon {
+    right: 0.625rem;
   }
   
   .checkout-payment-method {
@@ -1155,6 +1207,14 @@
   .checkout-item-price,
   .checkout-item-brand {
     font-size: 0.75rem;
+  }
+
+  .success-message {
+    font-size: 0.8125rem;
+  }
+  
+  .checkout-order-number {
+    font-size: 0.9375rem;
   }
 }
 
