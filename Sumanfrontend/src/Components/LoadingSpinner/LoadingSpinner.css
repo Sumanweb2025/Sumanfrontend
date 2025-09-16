@@ -1,5 +1,5 @@
 /* Professional Loading Spinner Styles */
-.loading-overlay {
+.loading-spinner-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -13,13 +13,13 @@
   -webkit-backdrop-filter: blur(3px);
 }
 
-.loading-container {
+.loading-spinner-container {
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  padding: 32px;
+  /* gap: 16px;
+  padding: 32px; */
   max-width: 280px;
   width: 90%;
   animation: fadeInUp 0.4s ease-out;
@@ -36,75 +36,13 @@
   }
 }
 
-/* Logo with Spinner Ring */
-.logo-spinner-container {
-  position: relative;
-  width: 80px;
-  height: 80px;
+/* FadeLoader Container */
+.fade-loader-container {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.spinner-ring {
-  position: absolute;
-  width: 80px;
+  /* margin-bottom: 20px; */
   height: 80px;
-  border: 3px solid rgba(231, 30, 36, 0.1);
-  border-top: 3px solid #e31e24;
-  border-radius: 50%;
-  animation: spinRing 1.2s linear infinite;
-}
-
-.spinner-ring-inner {
-  position: absolute;
-  top: 6px;
-  left: 6px;
-  width: 64px;
-  height: 64px;
-  border: 2px solid rgba(231, 30, 36, 0.1);
-  border-top: 2px solid #e31e24;
-  border-radius: 50%;
-  animation: spinRingInner 0.8s linear infinite reverse;
-}
-
-.company-logo {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  object-fit: cover;
-  z-index: 2;
-  position: relative;
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
-}
-
-/* Professional Spinner (fallback) */
-.professional-spinner {
-  position: relative;
-  width: 60px;
-  height: 60px;
-}
-
-.spinner-circle {
-  position: absolute;
-  width: 60px;
-  height: 60px;
-  border: 3px solid rgba(231, 30, 36, 0.1);
-  border-top: 3px solid #e31e24;
-  border-radius: 50%;
-  animation: spinRing 1.2s linear infinite;
-}
-
-.spinner-circle-inner {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  width: 40px;
-  height: 40px;
-  border: 2px solid rgba(231, 30, 36, 0.1);
-  border-top: 2px solid #e31e24;
-  border-radius: 50%;
-  animation: spinRingInner 0.8s linear infinite reverse;
 }
 
 @keyframes spinRing {
@@ -126,14 +64,14 @@
 }
 
 /* Loading Content */
-.loading-content {
+.loading-spinner-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
 }
 
-.loading-brand-name {
+.loading-spinner-brand-name {
   margin: 0;
   font-size: 20px;
   font-weight: 600;
@@ -142,7 +80,7 @@
   letter-spacing: 0.5px;
 }
 
-.loading-text {
+.loading-spinner-text {
   margin: 0;
   color: #64748b;
   font-size: 14px;
@@ -150,43 +88,6 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 }
 
-/* Progress Dots */
-.progress-dots {
-  display: flex;
-  gap: 6px;
-  margin-top: 4px;
-}
-
-.progress-dots .dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: #e31e24;
-  animation: dotWave 1.4s ease-in-out infinite;
-}
-
-.progress-dots .dot:nth-child(1) {
-  animation-delay: 0s;
-}
-
-.progress-dots .dot:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.progress-dots .dot:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-@keyframes dotWave {
-  0%, 60%, 100% {
-    opacity: 0.4;
-    transform: scale(0.8);
-  }
-  30% {
-    opacity: 1;
-    transform: scale(1.2);
-  }
-}
 
 /* Dark mode support - removed since no background */
 
@@ -194,317 +95,106 @@
 
 /* Large Desktop (1200px and above) */
 @media (min-width: 1200px) {
-  .loading-container {
+  .loading-spinner-container {
     max-width: 320px;
     padding: 40px;
     gap: 20px;
   }
   
-  .logo-spinner-container {
-    width: 100px;
+  .fade-loader-container {
     height: 100px;
   }
   
-  .spinner-ring {
-    width: 100px;
-    height: 100px;
-  }
-  
-  .spinner-ring-inner {
-    width: 80px;
-    height: 80px;
-    top: 7px;
-    left: 7px;
-  }
-  
-  .company-logo {
-    width: 60px;
-    height: 60px;
-  }
-  
-  .professional-spinner {
-    width: 80px;
-    height: 80px;
-  }
-  
-  .spinner-circle {
-    width: 80px;
-    height: 80px;
-  }
-  
-  .spinner-circle-inner {
-    width: 56px;
-    height: 56px;
-    top: 9px;
-    left: 9px;
-  }
-  
-  .loading-brand-name {
+  .loading-spinner-brand-name {
     font-size: 24px;
   }
   
-  .loading-text {
+  .loading-spinner-text {
     font-size: 16px;
   }
   
-  .progress-dots .dot {
-    width: 8px;
-    height: 8px;
-  }
 }
 
 /* Desktop/Laptop (992px - 1199px) */
 @media (min-width: 992px) and (max-width: 1199px) {
-  .loading-container {
+  .loading-spinner-container {
     max-width: 300px;
     padding: 36px;
     gap: 18px;
   }
   
-  .logo-spinner-container {
-    width: 90px;
+  .fade-loader-container {
     height: 90px;
   }
-  
-  .spinner-ring {
-    width: 90px;
-    height: 90px;
-  }
-  
-  .spinner-ring-inner {
-    width: 72px;
-    height: 72px;
-    top: 6px;
-    left: 6px;
-  }
-  
-  .company-logo {
-    width: 54px;
-    height: 54px;
-  }
-  
-  .professional-spinner {
-    width: 70px;
-    height: 70px;
-  }
-  
-  .spinner-circle {
-    width: 70px;
-    height: 70px;
-  }
-  
-  .spinner-circle-inner {
-    width: 50px;
-    height: 50px;
-    top: 8px;
-    left: 8px;
-  }
-  
-  .loading-brand-name {
+
+  .loading-spinner-brand-name {
     font-size: 22px;
   }
-  
-  .loading-text {
+
+  .loading-spinner-text {
     font-size: 15px;
-  }
-  
-  .progress-dots .dot {
-    width: 7px;
-    height: 7px;
   }
 }
 
 /* Tablet (768px - 991px) */
 @media (min-width: 768px) and (max-width: 991px) {
-  .loading-container {
+  .loading-spinner-container {
     max-width: 260px;
     padding: 28px;
     gap: 14px;
   }
   
-  .logo-spinner-container {
-    width: 76px;
+  .fade-loader-container {
     height: 76px;
   }
-  
-  .spinner-ring {
-    width: 76px;
-    height: 76px;
-  }
-  
-  .spinner-ring-inner {
-    width: 60px;
-    height: 60px;
-    top: 5px;
-    left: 5px;
-  }
-  
-  .company-logo {
-    width: 46px;
-    height: 46px;
-    border-radius: 11px;
-  }
-  
-  .professional-spinner {
-    width: 58px;
-    height: 58px;
-  }
-  
-  .spinner-circle {
-    width: 58px;
-    height: 58px;
-  }
-  
-  .spinner-circle-inner {
-    width: 42px;
-    height: 42px;
-    top: 6px;
-    left: 6px;
-  }
-  
-  .loading-brand-name {
+
+  .loading-spinner-brand-name {
     font-size: 19px;
   }
-  
-  .loading-text {
+
+  .loading-spinner-text {
     font-size: 14px;
-  }
-  
-  .progress-dots .dot {
-    width: 6px;
-    height: 6px;
-    gap: 5px;
   }
 }
 
 /* Mobile Large (481px - 767px) */
 @media (min-width: 481px) and (max-width: 767px) {
-  .loading-container {
+  .loading-spinner-container {
     max-width: 220px;
     padding: 24px;
     gap: 12px;
   }
   
-  .logo-spinner-container {
-    width: 68px;
+  .fade-loader-container {
     height: 68px;
   }
-  
-  .spinner-ring {
-    width: 68px;
-    height: 68px;
-  }
-  
-  .spinner-ring-inner {
-    width: 52px;
-    height: 52px;
-    top: 5px;
-    left: 5px;
-  }
-  
-  .company-logo {
-    width: 42px;
-    height: 42px;
-    border-radius: 10px;
-  }
-  
-  .professional-spinner {
-    width: 52px;
-    height: 52px;
-  }
-  
-  .spinner-circle {
-    width: 52px;
-    height: 52px;
-  }
-  
-  .spinner-circle-inner {
-    width: 36px;
-    height: 36px;
-    top: 6px;
-    left: 6px;
-  }
-  
-  .loading-brand-name {
+
+  .loading-spinner-brand-name {
     font-size: 17px;
   }
-  
-  .loading-text {
+
+  .loading-spinner-text {
     font-size: 13px;
-  }
-  
-  .progress-dots {
-    gap: 5px;
-  }
-  
-  .progress-dots .dot {
-    width: 5px;
-    height: 5px;
   }
 }
 
 /* Mobile Small (480px and below) */
 @media (max-width: 480px) {
-  .loading-container {
+  .loading-spinner-container {
     padding: 20px;
     gap: 10px;
     max-width: 200px;
   }
   
-  .logo-spinner-container {
-    width: 60px;
+  .fade-loader-container {
     height: 60px;
   }
-  
-  .spinner-ring {
-    width: 60px;
-    height: 60px;
-  }
-  
-  .spinner-ring-inner {
-    width: 44px;
-    height: 44px;
-    top: 5px;
-    left: 5px;
-  }
-  
-  .company-logo {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-  }
-  
-  .professional-spinner {
-    width: 46px;
-    height: 46px;
-  }
-  
-  .spinner-circle {
-    width: 46px;
-    height: 46px;
-  }
-  
-  .spinner-circle-inner {
-    width: 32px;
-    height: 32px;
-    top: 5px;
-    left: 5px;
-  }
-  
-  .loading-brand-name {
+
+  .loading-spinner-brand-name {
     font-size: 16px;
   }
-  
-  .loading-text {
+
+  .loading-spinner-text {
     font-size: 12px;
-  }
-  
-  .progress-dots {
-    gap: 4px;
-  }
-  
-  .progress-dots .dot {
-    width: 4px;
-    height: 4px;
   }
 }

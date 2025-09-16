@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Profile.css';
-import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaEdit, FaSave, FaTimes, FaArrowLeft, FaCamera, FaTrash } from 'react-icons/fa';
+import axios from 'axios';
+import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaEdit, FaSave, FaTimes, FaArrowLeft, FaCamera, FaTrash, FaShoppingBag, FaSignOutAlt, FaUserTimes, FaEye, FaCalendarAlt } from 'react-icons/fa';
 import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
+import { useNavigate } from 'react-router-dom';
 
 const ProfilePage = ({ onBack }) => {
   const [user, setUser] = useState(null);
@@ -9,7 +11,11 @@ const ProfilePage = ({ onBack }) => {
   const [loading, setLoading] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
   const [profileImagePreview, setProfileImagePreview] = useState(null);
+  const [activeSection, setActiveSection] = useState('profile');
+  const [orders, setOrders] = useState([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
   const fileInputRef = useRef(null);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -27,6 +33,92 @@ const ProfilePage = ({ onBack }) => {
   useEffect(() => {
     fetchUserProfile();
   }, []);
+
+  // Fetch user orders
+  const fetchUserOrders = async () => {
+    try {
+          const token = localStorage.getItem('token');
+          if (!token) {
+            window.location.href = '/signin';
+            return;
+          }
+    
+          const response = await axios.get(`${API_URL}api/orders`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+    
+          setOrders(response.data.data);
+          setLoading(false);
+        } catch (error) {
+          console.error('Error fetching orders:', error);
+          setLoading(false);
+        }
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    if (window.confirm('Are you sure you want to logout?')) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      navigate('/signin');
+    }
+  };
+
+  // Handle delete account
+  const handleDeleteAccount = async () => {
+    const confirmMessage = 'Are you sure you want to delete your account? This action cannot be undone and will permanently remove all your data including orders and wishlist.';
+    
+    if (window.confirm(confirmMessage)) {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem('token');
+        
+        const response = await fetch(`${API_URL}api/auth/account`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          alert('Account deleted successfully');
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          navigate('/login');
+        } else {
+          alert('Failed to delete account: ' + data.message);
+        }
+      } catch (error) {
+        console.error('Error deleting account:', error);
+        alert('Error deleting account: ' + error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  // Format date
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-IN', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  // Get status color
+  const getStatusColor = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'pending': return '#f59e0b';
+      case 'confirmed': return '#3b82f6';
+      case 'shipped': return '#8b5cf6';
+      case 'delivered': return '#10b981';
+      case 'cancelled': return '#ef4444';
+      default: return '#6b7280';
+    }
+  };
 
  // Helper function to get full image URL - COMPLETE FIXED VERSION
 const getImageUrl = (imageUrl) => {
@@ -68,7 +160,7 @@ const getImageUrl = (imageUrl) => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-        window.location.href = '/login';
+        window.location.href = '/signin';
         return;
       }
 
@@ -121,7 +213,7 @@ const getImageUrl = (imageUrl) => {
         console.error('Failed to fetch profile:', data.message);
         if (data.message?.includes('token')) {
           localStorage.removeItem('token');
-          window.location.href = '/login';
+          window.location.href = '/signin';
         }
       }
     } catch (error) {
@@ -355,7 +447,7 @@ const getImageUrl = (imageUrl) => {
       console.log('📝 Update data being sent:', updateData);
       
 
-      const response = await fetch('http://localhost:8000/api/auth/profile', {
+      const response = await fetch(`${API_URL}api/auth/profile`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -460,20 +552,28 @@ const getImageUrl = (imageUrl) => {
   };
 
   if (!user) {
-    return <div className="loading">Loading...</div>;
+    return (
+      <div className="profile-page">
+        <LoadingSpinner 
+          isLoading={true} 
+          brandName="Profile" 
+          loadingText="Loading your profile..."
+        />
+      </div>
+    );
   }
 
   return (
     <>
       <LoadingSpinner 
         isLoading={loading} 
-        brandName="My Profile" 
-        loadingText="Loading your profile..."
-        progressColor="#3b82f6"
+        brandName="Profile" 
+        loadingText="Processing..."
       />
-      <div className="profile-acc-page">
-        <div className="profile-acc-container">
-          <div className="profile-acc-header">
+      <div className="profile-page">
+        <div className="profile-container">
+          {/* Header */}
+          <div className="profile-header">
             <button 
               className="back-button" 
               onClick={handleBack}
@@ -481,245 +581,336 @@ const getImageUrl = (imageUrl) => {
             >
               <FaArrowLeft /> Back
             </button>
-            <h1>My Profile</h1>
-            {!isEditing && (
-              <button 
-                className="edit-button"
-                onClick={() => setIsEditing(true)}
-              >
-                <FaEdit /> Edit
-              </button>
-            )}
+            <h1>My Account</h1>
           </div>
 
-          <div className="profile-acc-content">
-            <div className="profile-acc-avatar">
-              <div className="avatar-container">
-                {profileImagePreview ? (
-                  <div className="profile-image-wrapper">
+          <div className="profile-content">
+            {/* Sidebar */}
+            <div className="profile-sidebar">
+              <div className="profile-user-info">
+                <div className="profile-avatar">
+                  {profileImagePreview ? (
                     <img 
                       src={profileImagePreview} 
                       alt="Profile" 
-                      className="profile-image"
-
-                      onLoad={() => console.log('✅ Image loaded successfully:', profileImagePreview)}
-                      onError={(e) => {
-                        console.error('❌ Image failed to load:', e.target.src);
-
-                        // Fallback to default avatar if image fails to load
-                        e.target.style.display = 'none';
-                        e.target.nextSibling.style.display = 'flex';
-                      }}
+                      className="profile-avatar-img"
                     />
-                    <div className="profile-image-fallback" style={{ display: 'none' }}>
-                      <FaUser className='profile-acc-icon'/>
-                    </div>
-                  </div>
-                ) : (
-                  <FaUser className='profile-acc-icon'/>
-                )}
-                
-                {isEditing && (
-                  <div className="avatar-actions">
-                    <button
-                      type="button"
-                      className="avatar-action-btn upload-btn"
-                      onClick={() => fileInputRef.current?.click()}
-                      title="Upload Photo"
-                    >
-                      <FaCamera />
-                    </button>
-                    {profileImagePreview && !isGoogleProfileImage() && (
-                      <button
-                        type="button"
-                        className="avatar-action-btn remove-btn"
-                        onClick={handleRemoveImage}
-                        title="Remove Photo"
+                  ) : (
+                    <FaUser className="profile-avatar-icon" />
+                  )}
+                </div>
+                <h3>{user.name}</h3>
+                <p>{user.email}</p>
+              </div>
+
+              <nav className="profile-nav">
+                <button 
+                  className={`profile-nav-item ${activeSection === 'profile' ? 'active' : ''}`}
+                  onClick={() => setActiveSection('profile')}
+                >
+                  <FaUser /> Profile Details
+                </button>
+                <button 
+                  className={`profile-nav-item ${activeSection === 'orders' ? 'active' : ''}`}
+                  onClick={() => {
+                    setActiveSection('orders');
+                    fetchUserOrders();
+                  }}
+                >
+                  <FaShoppingBag /> My Orders
+                </button>
+                <button 
+                  className="profile-nav-item logout-btn"
+                  onClick={handleLogout}
+                >
+                  <FaSignOutAlt /> Logout
+                </button>
+                <button 
+                  className="profile-nav-item delete-btn"
+                  onClick={handleDeleteAccount}
+                >
+                  <FaUserTimes /> Delete Account
+                </button>
+              </nav>
+            </div>
+
+            {/* Main Content */}
+            <div className="profile-main">
+
+              {/* Profile Details Section */}
+              {activeSection === 'profile' && (
+                <div className="profile-section">
+                  <div className="section-header">
+                    <h2>Profile Details</h2>
+                    {!isEditing && (
+                      <button 
+                        className="edit-btn"
+                        onClick={() => setIsEditing(true)}
                       >
-                        <FaTrash />
+                        <FaEdit /> Edit
                       </button>
                     )}
                   </div>
-                )}
-                
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageSelect}
-                  style={{ display: 'none' }}
-                />
-              </div>
-              
-              {isEditing && (
-                <div className="avatar-help-text">
-                  <small>
-                    Click camera to upload photo (Max 5MB)
-                    {isGoogleProfileImage() && (
-                      <>
-                        <br />
-                        <span style={{ color: '#007bff' }}>
-                          Currently showing your Google profile picture
-                        </span>
-                      </>
-                    )}
-                  </small>
-                </div>
-              )}
-            </div>
 
-            <div className="profile-acc-form">
-              {/* Basic Information */}
-              <div className="profile-form-section">
-                <h3>Basic Information</h3>
-                
-                <div className="profile-form-group">
-                  <label>
-                    <FaUser /> Name
-                  </label>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      placeholder="Enter your name"
-                    />
-                  ) : (
-                    <span className="profile-form-value">{user.name}</span>
-                  )}
-                </div>
+                  <div className="profile-form">
 
-                <div className="profile-form-group">
-                  <label>
-                    <FaEnvelope /> Email
-                  </label>
-                  <span className="profile-form-value readonly">{user.email}</span>
-                  <small>Email cannot be changed</small>
-                </div>
-
-                <div className="profile-form-group">
-                  <label>
-                    <FaPhone /> Phone
-                  </label>
-                  {isEditing ? (
-
-                    <div className="phone-input-wrapper">
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        placeholder="Enter 10-digit mobile number"
-                        maxLength="10"
-                      />
-                      {formData.phone && (
-                        <small style={{ 
-                          color: formData.phone.length === 10 ? 'green' : 'red',
-                          display: 'block',
-                          marginTop: '4px'
-                        }}>
-                          {formData.phone.length}/10 digits
-                          {formData.phone.length === 10 && ' ✅'}
-                          {formData.phone.length > 0 && formData.phone.length !== 10 && ' ❌'}
-                        </small>
+                    {/* Profile Image Section */}
+                    <div className="profile-image-section">
+                      <div className="profile-image-container">
+                        {profileImagePreview ? (
+                          <img 
+                            src={profileImagePreview} 
+                            alt="Profile" 
+                            className="profile-image"
+                          />
+                        ) : (
+                          <FaUser className="profile-image-icon" />
+                        )}
+                        
+                        {isEditing && (
+                          <div className="image-actions">
+                            <button
+                              type="button"
+                              className="image-btn upload-btn"
+                              onClick={() => fileInputRef.current?.click()}
+                            >
+                              <FaCamera />
+                            </button>
+                            {profileImagePreview && !isGoogleProfileImage() && (
+                              <button
+                                type="button"
+                                className="image-btn remove-btn"
+                                onClick={handleRemoveImage}
+                              >
+                                <FaTrash />
+                              </button>
+                            )}
+                          </div>
+                        )}
+                        
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageSelect}
+                          style={{ display: 'none' }}
+                        />
+                      </div>
+                      
+                      {isEditing && (
+                        <p className="image-help">Click camera to upload photo (Max 5MB)</p>
                       )}
                     </div>
+
+                    {/* Form Fields */}
+                    <div className="form-fields">
+                      <div className="form-group">
+                        <label><FaUser /> Name</label>
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleInputChange}
+                            placeholder="Enter your name"
+                          />
+                        ) : (
+                          <span className="form-value">{user.name}</span>
+                        )}
+                      </div>
+
+                      <div className="form-group">
+                        <label><FaEnvelope /> Email</label>
+                        <span className="form-value readonly">{user.email}</span>
+                        <small>Email cannot be changed</small>
+                      </div>
+
+                      <div className="form-group">
+                        <label><FaPhone /> Phone</label>
+                        {isEditing ? (
+                          <input
+                            type="tel"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleInputChange}
+                            placeholder="Enter 10-digit mobile number"
+                            maxLength="10"
+                          />
+                        ) : (
+                          <span className="form-value">
+                            {user.phone ? `+91 ${user.phone}` : 'Not provided'}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="form-group">
+                        <label><FaMapMarkerAlt /> Street Address</label>
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            name="address.street"
+                            value={formData.address.street}
+                            onChange={handleInputChange}
+                            placeholder="Enter street address"
+                          />
+                        ) : (
+                          <span className="form-value">{user.address?.street || 'Not provided'}</span>
+                        )}
+                      </div>
+
+                      <div className="form-row">
+                        <div className="form-group">
+                          <label>City</label>
+                          {isEditing ? (
+                            <input
+                              type="text"
+                              name="address.city"
+                              value={formData.address.city}
+                              onChange={handleInputChange}
+                              placeholder="City"
+                            />
+                          ) : (
+                            <span className="form-value">{user.address?.city || 'Not provided'}</span>
+                          )}
+                        </div>
+
+                        <div className="form-group">
+                          <label>State</label>
+                          {isEditing ? (
+                            <input
+                              type="text"
+                              name="address.state"
+                              value={formData.address.state}
+                              onChange={handleInputChange}
+                              placeholder="State"
+                            />
+                          ) : (
+                            <span className="form-value">{user.address?.state || 'Not provided'}</span>
+                          )}
+                        </div>
+
+                        <div className="form-group">
+                          <label>Pincode</label>
+                          {isEditing ? (
+                            <input
+                              type="text"
+                              name="address.pincode"
+                              value={formData.address.pincode}
+                              onChange={handleInputChange}
+                              placeholder="Pincode"
+                            />
+                          ) : (
+                            <span className="form-value">{user.address?.pincode || 'Not provided'}</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    {isEditing && (
+                      <div className="form-actions">
+                        <button 
+                          className="save-btn"
+                          onClick={handleSave}
+                          disabled={loading}
+                        >
+                          <FaSave /> {loading ? 'Saving...' : 'Save Changes'}
+                        </button>
+                        <button 
+                          className="cancel-btn"
+                          onClick={handleCancel}
+                          disabled={loading}
+                        >
+                          <FaTimes /> Cancel
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* My Orders Section */}
+              {activeSection === 'orders' && (
+                <div className="profile-section">
+                  <div className="section-header">
+                    <h2>My Orders</h2>
+                  </div>
+
+                  {ordersLoading ? (
+                    <div className="orders-loading">
+                      <LoadingSpinner 
+                        isLoading={true} 
+                        brandName="Orders" 
+                        loadingText="Loading your orders..."
+                      />
+                    </div>
+                  ) : orders.length === 0 ? (
+                    <div className="no-orders">
+                      <FaShoppingBag className="no-orders-icon" />
+                      <h3>No Orders Found</h3>
+                      <p>You haven't placed any orders yet.</p>
+                      <button 
+                        className="shop-now-btn"
+                        onClick={() => navigate('/')}
+                      >
+                        Start Shopping
+                      </button>
+                    </div>
                   ) : (
-                    <span className="profile-form-value">
-                      {user.phone ? `+91 ${user.phone}` : 'Not provided'}
-                    </span>
-
+                    <div className="orders-list">
+                      {orders.map((order) => (
+                        <div key={order._id} className="order-card">
+                          <div className="order-header">
+                            <div className="order-info">
+                              <h4>Order #{order.orderNumber}</h4>
+                              <p className="order-date">
+                                <FaCalendarAlt /> {formatDate(order.createdAt)}
+                              </p>
+                            </div>
+                            <div className="order-status">
+                              <span 
+                                className="status-badge"
+                                style={{ backgroundColor: getStatusColor(order.status) }}
+                              >
+                                {order.status}
+                              </span>
+                            </div>
+                          </div>
+                          
+                          <div className="order-details">
+                            <div className="order-items">
+                              <p><strong>{order.items?.length || 0} items</strong></p>
+                              <div className="item-names">
+                                {order.items?.slice(0, 2).map((item, index) => (
+                                  <span key={index} className="item-name">
+                                    {item.productId?.name || 'Product'}
+                                  </span>
+                                ))}
+                                {order.items?.length > 2 && (
+                                  <span className="more-items">+{order.items.length - 2} more</span>
+                                )}
+                              </div>
+                            </div>
+                            
+                            <div className="order-total">
+                              <p className="total-amount">
+                                ${(order.orderSummary?.total ?? order.total)?.toFixed(2)}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <div className="order-actions">
+                            <button 
+                              className="view-order-btn"
+                              onClick={() => navigate('/myorders')}
+                            >
+                              <FaEye /> View Details
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   )}
-                </div>
-              </div>
-
-              {/* Address Information */}
-              <div className="profile-form-section">
-                <h3>
-                  <FaMapMarkerAlt /> Address Information
-                </h3>
-
-                <div className="profile-form-group">
-                  <label>Street Address</label>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      name="address.street"
-                      value={formData.address.street}
-                      onChange={handleInputChange}
-                      placeholder="Enter street address"
-                    />
-                  ) : (
-                    <span className="profile-form-value">{user.address?.street || 'Not provided'}</span>
-                  )}
-                </div>
-
-                <div className="profile-form-row">
-                  <div className="profile-form-group">
-                    <label>City</label>
-                    {isEditing ? (
-                      <input
-                        type="text"
-                        name="address.city"
-                        value={formData.address.city}
-                        onChange={handleInputChange}
-                        placeholder="City"
-                      />
-                    ) : (
-                      <span className="profile-form-value">{user.address?.city || 'Not provided'}</span>
-                    )}
-                  </div>
-
-                  <div className="profile-form-group">
-                    <label>State</label>
-                    {isEditing ? (
-                      <input
-                        type="text"
-                        name="address.state"
-                        value={formData.address.state}
-                        onChange={handleInputChange}
-                        placeholder="State"
-                      />
-                    ) : (
-                      <span className="profile-form-value">{user.address?.state || 'Not provided'}</span>
-                    )}
-                  </div>
-
-                  <div className="profile-form-group">
-                    <label>Pincode</label>
-                    {isEditing ? (
-                      <input
-                        type="text"
-                        name="address.pincode"
-                        value={formData.address.pincode}
-                        onChange={handleInputChange}
-                        placeholder="Pincode"
-                      />
-                    ) : (
-                      <span className="profile-form-value">{user.address?.pincode || 'Not provided'}</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              {isEditing && (
-                <div className="profile-form-actions">
-                  <button 
-                    className="save-button"
-                    onClick={handleSave}
-                    disabled={loading}
-                  >
-                    <FaSave /> {loading ? 'Saving...' : 'Save Changes'}
-                  </button>
-                  <button 
-                    className="cancel-button"
-                    onClick={handleCancel}
-                    disabled={loading}
-                  >
-                    <FaTimes /> Cancel
-                  </button>
                 </div>
               )}
             </div>

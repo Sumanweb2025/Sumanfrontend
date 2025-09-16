@@ -173,8 +173,8 @@
 
 .wishlist-remove-btn {
  position: absolute;
-  top: 55px;
-  right: 45px;
+  /* top: 55px; */
+  right: 115px;
   background: rgba(220, 53, 69, 0.1);
   border: none;
   border-radius: 50%;

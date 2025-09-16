@@ -28,11 +28,13 @@ import OrderTrackingPage from './Pages/OrderTracking/OrderTracking';
 import AboutUs from './Pages/Aboutus/Aboutus';
 import AdminDashboard from './Pages/AdminDashboard/AdminDashboard';
 import AdminLogin from './Pages/AdminLogin/AdminLogin';
+import ScrollToTop from './Components/ScrolltoTop/ScrolltoTop';
 
 const App = () => {
   return (
     
     <Router>
+      <ScrollToTop/>
       <Routes>
         <Route exact path="/" element={<Home />} />
          <Route path="/product" element={<Product />} />

@@ -28,6 +28,11 @@ const WishlistPopup = ({ isOpen, onClose, product, onAddToCart, onContinueShoppi
     window.location.href = '/cart';
   };
 
+  const handleContinueShopping = () => {
+  onContinueShopping();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
@@ -38,26 +43,26 @@ const WishlistPopup = ({ isOpen, onClose, product, onAddToCart, onContinueShoppi
       <div className="wishlist-popup">
         <div className="wishlist-popup-header">
           <h3>Wishlist (1)</h3>
-          <button className="close-btn" onClick={onClose}>×</button>
+          <button className="wishlist-popup-close-btn" onClick={onClose}>×</button>
         </div>
         
-        <div className="wishlist-item">
-          <button className="remove-item-btn">×</button>
-          <div className="item-image">
+        <div className="wishlist-popup-item">
+          <button className="wishlist-popup-remove-item-btn">×</button>
+          <div className="wishlist-popup-item-image">
             <img src={product.imageUrl || product.image || '/api/placeholder/80/80'} alt={product.name} />
           </div>
-          <div className="item-details">
+          <div className="wishlist-popup-item-details">
             <h4>{product.name}</h4>
-            <p className="item-price">${product.price}</p>
-            <p className="item-date">{formatDate(new Date())}</p>
+            <p className="wishlist-popup-item-price">${product.price}</p>
+            <p className="wishlist-popup-item-date">{formatDate(new Date())}</p>
           </div>
-          <div className="item-actions">
+          <div className="wishlist-popup-item-actions">
             {!isAddedToCart ? (
-              <button className="add-to-cart-btn" onClick={handleAddToCart}>
+              <button className="wishlist-popup-add-to-cart-btn" onClick={handleAddToCart}>
                 ADD TO CART
               </button>
             ) : (
-              <button className="view-cart-btn" onClick={handleViewCart}>
+              <button className="wishlist-popup-view-cart-btn" onClick={handleViewCart}>
                 VIEW CART
               </button>
             )}
@@ -68,7 +73,7 @@ const WishlistPopup = ({ isOpen, onClose, product, onAddToCart, onContinueShoppi
           <button className="open-wishlist-btn" onClick={onOpenWishlistPage}>
             OPEN WISHLIST PAGE
           </button>
-          <button className="continue-shopping-btn" onClick={onContinueShopping}>
+          <button className="wishlist-popup-continue-shopping-btn" onClick={handleContinueShopping}>
             CONTINUE SHOPPING
           </button>
         </div>
