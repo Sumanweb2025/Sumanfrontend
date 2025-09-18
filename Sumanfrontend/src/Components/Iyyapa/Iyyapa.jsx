@@ -4,6 +4,8 @@ import axios from 'axios';
 import './Iyyapa.css';
 import Header from '../Header/Header';
 import Banner from '../ShippingBanner/ShippingBanner';
+import iyappabanner from "../../assets/iyappabanner1.png";
+import iyappabanner1 from "../../assets/iyappabanner2.jpg";
 import Footer from "../Footer/Footer";
 import WishlistPopup from '../WishlistPopup/WishlistPopup';
 import CartPopup from '../CartPopup/CartPopup';
@@ -36,11 +38,13 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const API_URL = import.meta.env.VITE_APP_API_URL;
 
   // Carousel images for hero section
-  const carouselImages = [
-    'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-    'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1980&q=80',
-    'https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80'
-  ];
+  // const carouselImages = [
+  //   'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
+  //   'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1980&q=80',
+  //   'https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80'
+  // ];
+  const carouselImages = [iyappabanner,iyappabanner1];
+
 
   // Get unique categories for filters
   const uniqueCategories = [...new Set(products.map(product => product.category).filter(Boolean))];

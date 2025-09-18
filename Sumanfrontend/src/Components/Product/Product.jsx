@@ -216,7 +216,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
     navigate('/cart');
   };
 
-  // Fixed handleProductClick function
+  // CORRECTED: handleProductClick function similar to snacks page
   const handleProductClick = (product, e) => {
     e?.stopPropagation();
     
@@ -227,7 +227,15 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
     console.log('Product ID:', productId); // Debug log
     
     if (productId) {
-      navigate(`/product/${productId}`); // Changed from /products/ to /product/
+      // Navigate with state data like snacks page
+      navigate(`/product/${productId}`, {
+        state: {
+          product,
+          productName: product.name,
+          isGrouped: false, // Since this is from homepage
+          fromCarousel: true // Additional info that it came from homepage carousel
+        }
+      });
     } else {
       console.error('No valid product ID found:', product);
       alert('Unable to view product details. Product ID not found.');
@@ -272,8 +280,6 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
           <div className="iyappaa-section-header">
             <h2 className="section-title text-center text-animate iyappaa-main-title">Best Selling</h2>
             <div className="iyappaa-divider"></div>
-            {/* <h3 className="sub-title text-center  iyappaa-sub-title">Products</h3> */}
-            {/* <div className="iyappaa-divider">-</div> */}
           </div>
 
           {/* Product Carousel */}
@@ -402,7 +408,6 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
             </button>
           </div>
 
-          {/* Pagination Dots - REMOVED */}
           {/* View All Products Button */}
           <div className="iyappaa-view-all-section">
             <button 
