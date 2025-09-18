@@ -827,10 +827,97 @@
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+/* Desktop (1200px and up) */
+@media (min-width: 1200px) {
+  .little-krishna-container {
+    max-width: 1400px;
+    padding: 30px;
+  }
+  
+  .little-krishna-products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+  }
+  
+  .little-krishna-sidebar {
+    width: 320px;
+  }
+}
+
+/* Large Tablet (992px - 1199px) */
+@media (max-width: 1199px) and (min-width: 992px) {
+  .little-krishna-container {
+    max-width: 1100px;
+    padding: 25px;
+  }
+  
+  .little-krishna-products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  
+  .little-krishna-sidebar {
+    width: 280px;
+  }
+}
+
+/* Tablet (768px - 991px) */
+@media (max-width: 991px) and (min-width: 768px) {
+  .little-krishna-container {
+    padding: 20px;
+  }
+  
+  .little-krishna-page-content {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .little-krishna-sidebar {
+    width: 100%;
+    position: static;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 15px;
+  }
+  
+  .little-krishna-filter-section {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+    border-right: 1px solid #eee;
+    padding-right: 15px;
+  }
+  
+  .little-krishna-filter-section:last-child {
+    border-right: none;
+    padding-right: 0;
+  }
+  
+  .little-krishna-products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 18px;
+  }
+  
+  .little-krishna-page-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+    padding: 15px;
+  }
+  
+  .little-krishna-page-header h1 {
+    font-size: 24px;
+  }
+  
+  .little-krishna-sort-controls {
+    justify-content: center;
+  }
+
   .little-krishna-hero-carousel {
     height: 300px;
-    margin-bottom: 30px;
+    border-radius: 15px;
   }
 
   .little-krishna-carousel-title {
@@ -838,10 +925,16 @@
   }
 
   .little-krishna-carousel-subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+  }
+
+  .little-krishna-carousel-cta {
+    padding: 14px 30px;
     font-size: 1.1rem;
   }
 
-   .little-krishna-categories-grid {
+  .little-krishna-categories-grid {
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     gap: 15px;
   }
@@ -861,29 +954,6 @@
     font-size: 0.8rem;
   }
 
-  .little-krishna-page-content {
-    flex-direction: column;
-  }
-
-  .little-krishna-sidebar {
-    width: 100%;
-    position: static;
-    margin-bottom: 20px;
-  }
-
-  .little-krishna-products-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 15px;
-  }
-
-  .little-krishna-page-header {
-    text-align: center;
-  }
-
-  .little-krishna-sort-controls {
-    justify-content: center;
-  }
-
   .little-krishna-carousel-nav {
     width: 45px;
     height: 45px;
@@ -897,6 +967,65 @@
   .little-krishna-carousel-nav.next {
     right: 15px;
   }
+}
+
+/* Small Tablet (576px - 767px) */
+@media (max-width: 767px) and (min-width: 576px) {
+  .little-krishna-container {
+    padding: 15px;
+  }
+  
+  .little-krishna-page-content {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .little-krishna-sidebar {
+    width: 100%;
+    position: static;
+    margin-bottom: 15px;
+    display: block;
+    padding: 15px;
+  }
+  
+  .little-krishna-filter-section {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+  }
+  
+  .little-krishna-products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 15px;
+  }
+  
+  .little-krishna-page-header {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+    padding: 12px;
+  }
+  
+  .little-krishna-page-header h1 {
+    font-size: 22px;
+  }
+  
+  .little-krishna-product-image-container {
+    height: 180px;
+  }
+  
+  .little-krishna-product-info {
+    padding: 12px;
+  }
+  
+  .little-krishna-product-name {
+    font-size: 14px;
+  }
+  
+  .little-krishna-product-price {
+    font-size: 16px;
+  }
+  
   .little-krishna-gram-button {
     padding: 3px 8px;
     font-size: 10px;
@@ -908,7 +1037,129 @@
   }
 }
 
-@media (max-width: 480px) {
+/* Mobile (up to 575px) */
+@media (max-width: 575px) {
+  .little-krishna-container {
+    padding: 10px;
+  }
+  
+  .little-krishna-page-content {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .little-krishna-sidebar {
+    width: 100%;
+    position: static;
+    margin-bottom: 15px;
+    padding: 12px;
+  }
+  
+  .little-krishna-filter-section {
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 12px;
+  }
+  
+  .little-krishna-filter-section h3 {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  .little-krishna-products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(370px, 1fr));
+    gap: 12px;
+  }
+  
+  .little-krishna-page-header {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+    padding: 10px;
+  }
+  
+  .little-krishna-page-header h1 {
+    font-size: 20px;
+  }
+  
+  .little-krishna-sort-controls {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .little-krishna-sort-select {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+  
+  .little-krishna-product-card {
+    border-radius: 6px;
+  }
+  
+  .little-krishna-product-image-container {
+    height: 160px;
+  }
+  
+  .little-krishna-product-info {
+    padding: 10px;
+  }
+  
+  .little-krishna-product-name {
+    font-size: 13px;
+    line-height: 1.2;
+  }
+  
+  .little-krishna-product-brand {
+    font-size: 11px;
+  }
+  
+  .little-krishna-product-price {
+    font-size: 15px;
+  }
+  
+  .little-krishna-product-piece {
+    font-size: 11px;
+  }
+  
+  .little-krishna-add-to-cart-btn {
+    padding: 8px;
+    font-size: 12px;
+  }
+  
+  .little-krishna-wishlist-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+  
+  .little-krishna-pagination {
+    gap: 3px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .little-krishna-pagination-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  
+  .little-krishna-deal-items {
+    gap: 8px;
+  }
+  
+  .little-krishna-deal-image {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .little-krishna-deal-name {
+    font-size: 12px;
+  }
+  
+  .little-krishna-deal-price {
+    font-size: 13px;
+  }
+
   .little-krishna-hero-carousel {
     height: 250px;
     border-radius: 12px;
@@ -947,22 +1198,6 @@
     font-size: 0.7rem;
   }
 
-  .little-krishna-products-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .little-krishna-container {
-    padding: 10px;
-  }
-
-  .little-krishna-page-header h1 {
-    font-size: 24px;
-  }
-
-  .little-krishna-page-header h2 {
-    font-size: 20px;
-  }
-
   .little-krishna-carousel-nav {
     width: 40px;
     height: 40px;
@@ -976,10 +1211,50 @@
   .little-krishna-carousel-nav.next {
     right: 10px;
   }
+  
   .little-krishna-gram-button {
     padding: 2px 6px;
     font-size: 9px;
     min-width: 35px;
+  }
+  
+  .little-krishna-gram-variants {
+    gap: 3px;
+  }
+}
+
+/* Extra Small Mobile (up to 375px) */
+@media (max-width: 375px) {
+  .little-krishna-products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+  }
+  
+  .little-krishna-product-image-container {
+    height: 140px;
+  }
+  
+  .little-krishna-product-info {
+    padding: 8px;
+  }
+  
+  .little-krishna-product-name {
+    font-size: 12px;
+  }
+  
+  .little-krishna-product-price {
+    font-size: 14px;
+  }
+  
+  .little-krishna-add-to-cart-btn {
+    padding: 6px;
+    font-size: 11px;
+  }
+  
+  .little-krishna-gram-button {
+    padding: 2px 4px;
+    font-size: 8px;
+    min-width: 30px;
   }
 }
 

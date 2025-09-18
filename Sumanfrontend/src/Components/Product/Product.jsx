@@ -43,7 +43,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
         setLoading(true);
         setError(null);
 
-        const productsResponse = await axios.get(`${API_URL}api/products`);
+        const productsResponse = await axios.get(`${API_URL}api/products/featured?limit=10`);
         let productsData = [];
 
         if (productsResponse.data?.data) {
@@ -223,8 +223,6 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
     // Get product ID with multiple fallbacks
     const productId = product.product_id || product._id || product.id;
     
-    console.log('Product clicked:', product); // Debug log
-    console.log('Product ID:', productId); // Debug log
     
     if (productId) {
       // Navigate with state data like snacks page
@@ -262,31 +260,35 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
     setTimeout(() => setIsAutoPlaying(true), 5000);
   };
 
-  if (loading) return <div className="iyappaa-loading">Loading products...</div>;
-  if (error) return <div className="iyappaa-error">Error: {error}</div>;
+  // if (loading) return <div className="iyappaa-loading">Loading products...</div>;
+  // if (error) return <div className="iyappaa-error">Error: {error}</div>;
 
   const currentProduct = filteredProducts[currentSlide];
   const productId = currentProduct?.product_id || currentProduct?._id || currentProduct?.id;
 
   return (
     <>
-      <section className="iyappaa-products-section">
+      <section className="home-products-section">
         {/* Background decorative elements */}
-        <div className="iyappaa-bg-leaf iyappaa-leaf-1"></div>
-        <div className="iyappaa-bg-leaf iyappaa-leaf-2"></div>
-        <div className="iyappaa-bg-chili iyappaa-chili-1"></div>
-        
-        <div className="iyappaa-carousel-container">
-          <div className="iyappaa-section-header">
-            <h2 className="section-title text-center text-animate iyappaa-main-title">Best Selling</h2>
-            <div className="iyappaa-divider"></div>
+
+        <div className="home-bg-leaf iyappaa-leaf-1"></div>
+        <div className="home-bg-leaf iyappaa-leaf-2"></div>
+        <div className="home-bg-chili iyappaa-chili-1"></div>
+
+        <div className="home-carousel-container">
+          <div className="home-section-header">
+            <h2 className="section-title text-center text-animate home-main-title">Best Selling</h2>
+            <div className="home-divider"></div>
+            {/* <h3 className="sub-title text-center  home-sub-title">Products</h3> */}
+            {/* <div className="home-divider">-</div> */}
+
           </div>
 
           {/* Product Carousel */}
-          <div className="iyappaa-product-carousel">
-            <div className="iyappaa-carousel-wrapper">
+          <div className="home-product-carousel">
+            <div className="home-carousel-wrapper">
               <div 
-                className="iyappaa-carousel-slides"
+                className="home-carousel-slides"
                 style={{
                   transform: `translateX(-${currentSlide * 100}%)`,
                   transition: 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
@@ -297,30 +299,30 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
                   if (!productId) return null;
 
                   return (
-                    <div key={productId} className="iyappaa-carousel-slide">
-                      <div className="iyappaa-product-showcase">
+                    <div key={productId} className="home-carousel-slide">
+                      <div className="home-product-showcase">
                         {/* Left Side - Product Description */}
-                        <div className="iyappaa-product-info">
-                          <div className="small-text text-animate iyappaa-product-category">
+                        <div className="home-product-info">
+                          <div className="small-text text-animate home-product-category">
                             {product.category || 'Traditional Snacks'}
                           </div>
-                          <h3 className="card-title text-animate iyappaa-product-name">
+                          <h3 className="card-title text-animate home-product-name">
                             {product.name || 'Unnamed Product'}
                           </h3>
-                          <p className="body-text text-animate iyappaa-product-description">
+                          <p className="body-text text-animate home-product-description">
                             {product.description || 'A traditional South Indian snack made with authentic ingredients and spices for the perfect taste experience. Rich in flavor and made with love using traditional recipes passed down through generations.'}
                           </p>
-                          
-                          <div className="iyappaa-product-price-section">
-                            <span className="price-text iyappaa-price">${(product.price || 0).toFixed(2)}</span>
+
+                          <div className="home-product-price-section">
+                            <span className="price-text home-price">${(product.price || 0).toFixed(2)}</span>
                             {product.originalPrice && (
-                              <span className="iyappaa-original-price">${product.originalPrice.toFixed(2)}</span>
+                              <span className="home-original-price">${product.originalPrice.toFixed(2)}</span>
                             )}
                           </div>
 
-                          <div className="iyappaa-product-actions">
+                          <div className="home-product-actions">
                             <button
-                              className="button-text iyappaa-add-to-cart-btn"
+                              className="button-text home-add-to-cart-btn"
                               onClick={(e) => handleAddToCart(product, e)}
                             >
                               <svg 
@@ -339,7 +341,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
                             </button>
                             
                             <button
-                              className={`button-text iyappaa-wishlist-btn ${wishlistItems.includes(productId) ? 'active' : ''}`}
+                              className={`button-text home-wishlist-btn ${wishlistItems.includes(productId) ? 'active' : ''}`}
                               onClick={(e) => handleWishlistClick(product, e)}
                               disabled={wishlistLoading}
                             >
@@ -358,7 +360,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
                           </div>
 
                           <button 
-                            className="iyappaa-view-details-btn"
+                            className="home-view-details-btn"
                             onClick={(e) => handleProductClick(product, e)}
                           >
                             View Details →
@@ -366,12 +368,12 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
                         </div>
 
                         {/* Right Side - Product Image */}
-                        <div className="iyappaa-product-image-section">
-                          <div className="iyappaa-image-container">
+                        <div className="home-product-image-section">
+                          <div className="home-image-container">
                             <img
                               src={product.imageUrl || `${API_URL}/images/Products/${product.image}` || 'https://via.placeholder.com/500'}
                               alt={product.name || 'Product image'}
-                              className="iyappaa-main-product-img"
+                              className="home-main-product-img"
                               onError={(e) => {
                                 e.target.src = 'https://via.placeholder.com/500';
                                 e.target.onerror = null;
@@ -388,7 +390,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
 
             {/* Navigation Arrows */}
             <button 
-              className="iyappaa-nav-arrow iyappaa-prev-arrow" 
+              className="home-nav-arrow home-prev-arrow" 
               onClick={prevSlide}
               disabled={filteredProducts.length <= 1}
             >
@@ -398,7 +400,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
             </button>
             
             <button 
-              className="iyappaa-nav-arrow iyappaa-next-arrow" 
+              className="home-nav-arrow home-next-arrow" 
               onClick={nextSlide}
               disabled={filteredProducts.length <= 1}
             >
@@ -409,9 +411,9 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
           </div>
 
           {/* View All Products Button */}
-          <div className="iyappaa-view-all-section">
+          <div className="home-view-all-section">
             <button 
-              className="button-text iyappaa-view-all-btn"
+              className="button-text home-view-all-btn"
               onClick={handleViewAllProducts}
             >
               VIEW ALL PRODUCTS

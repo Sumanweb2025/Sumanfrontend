@@ -221,7 +221,7 @@ const WishlistPage = () => {
               <h2>Your wishlist is empty</h2>
               <p>Add items you love to your wishlist. Review them anytime and easily move them to your cart.</p>
               <button
-                className="continue-shopping-btn"
+                className="wishlist-continue-shopping-btn"
                 onClick={handleContinueShopping}
               >
                 Continue Shopping
@@ -245,21 +245,21 @@ const WishlistPage = () => {
 
                   return (
                     <div key={productId} className={`wishlist-item ${isRemoving ? 'processing' : ''}`}>
-                      <div className="item-product" onClick={() => handleProductClick(product)}>
-                        <div className="product-image-container">
+                      <div className="wishlist-item-product" onClick={() => handleProductClick(product)}>
+                        <div className="wishlist-product-image-container">
                           <img
                             src={imageUrl}
                             alt={product.name || 'Product'}
-                            className="product-image"
+                            className="wishlist-product-image"
                             onError={(e) => {
                               e.target.src = 'https://via.placeholder.com/300x300?text=No+Image';
                               e.target.onerror = null;
                             }}
                           />
                         </div>
-                        <div className="product-details">
-                          <h3 className="product-name">{product.name}</h3>
-                          <div className="product-rating">
+                        <div className="wishlist-product-details">
+                          <h3 className="wishlist-product-name">{product.name}</h3>
+                          <div className="wishlist-product-rating">
                             {Array(5).fill().map((_, i) => (
                               <span
                                 key={i}
@@ -272,19 +272,19 @@ const WishlistPage = () => {
                         </div>
                       </div>
                       
-                      <div className="price-text item-price">
+                      <div className="price-text wishlist-item-price">
                         ${product.price}
                       </div>
                       
-                      <div className="item-actions">
+                      <div className="wishlist-item-actions">
                         <button
-                          className="button-text add-to-cart-btn"
+                          className="button-text wishlist-add-to-cart-btn"
                           onClick={() => handleAddToCart(product)}
                           disabled={isAddingToCart || isRemoving}
                         >
                           {isAddingToCart ? (
                             <>
-                              <span className="loading-spinner">⏳</span>
+                              <span className="wishlist-loading-spinner">⏳</span>
                               Adding to Cart...
                             </>
                           ) : (
@@ -292,7 +292,7 @@ const WishlistPage = () => {
                           )}
                         </button>
                         <button
-                          className="remove-btn"
+                          className="wishlist-remove-btn"
                           onClick={() => handleRemoveFromWishlist(productId)}
                           disabled={isRemoving || isAddingToCart}
                           title="Remove from wishlist"

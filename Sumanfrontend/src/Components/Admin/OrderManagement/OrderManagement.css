@@ -325,27 +325,58 @@
 }
 
 /* Responsive Design */
+/* Large Desktop */
 @media (max-width: 1200px) {
+  .order-management-container {
+    padding: 0 16px;
+  }
+  
   .order-header-section {
     flex-direction: column;
     gap: 16px;
     text-align: center;
+    padding: 16px;
   }
   
   .order-meta {
     text-align: center;
   }
+  
+  .admin-modal.large {
+    max-width: 800px;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
 }
 
+/* Tablet */
 @media (max-width: 768px) {
+  .order-management-container {
+    padding: 0 12px;
+  }
+  
   .order-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
+    padding: 12px;
   }
   
   .item-image {
     align-self: center;
+    width: 50px;
+    height: 50px;
+  }
+  
+  .item-details h5 {
+    font-size: 13px;
+  }
+  
+  .item-details p {
+    font-size: 11px;
   }
   
   .item-total {
@@ -356,6 +387,7 @@
   .action-buttons {
     justify-content: center;
     flex-wrap: wrap;
+    gap: 6px;
   }
   
   .search-filter-bar {
@@ -370,10 +402,40 @@
   
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .admin-table {
+    min-width: 700px;
+  }
+  
+  .admin-table th,
+  .admin-table td {
+    padding: 8px 6px;
+    font-size: 12px;
+  }
+  
+  .customer-details,
+  .address,
+  .order-summary {
+    padding: 12px;
+  }
+  
+  .section h4 {
+    font-size: 15px;
   }
 }
 
+/* Mobile */
 @media (max-width: 480px) {
+  .order-management-container {
+    padding: 0 8px;
+  }
+  
+  .admin-table {
+    min-width: 600px;
+  }
+  
   .admin-table th,
   .admin-table td {
     padding: 8px 4px;
@@ -390,8 +452,22 @@
     font-size: 12px;
   }
   
+  .order-items {
+    font-size: 10px;
+  }
+  
+  .payment-badge {
+    font-size: 10px;
+    padding: 3px 6px;
+  }
+  
+  .payment-method {
+    font-size: 10px;
+  }
+  
   .action-buttons .admin-btn {
     padding: 4px 6px;
+    font-size: 11px;
   }
   
   .action-buttons .admin-btn .icon {
@@ -401,14 +477,158 @@
   
   .stats-grid {
     grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .order-item {
+    padding: 10px;
+  }
+  
+  .item-image {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .item-details h5 {
+    font-size: 12px;
+  }
+  
+  .item-details p {
+    font-size: 10px;
+  }
+  
+  .item-total {
+    font-size: 16px;
   }
   
   .summary-row {
     font-size: 13px;
+    padding: 6px 0;
   }
   
   .summary-row.total {
     font-size: 15px;
+    padding-top: 12px;
+  }
+  
+  .order-header-section {
+    padding: 12px;
+  }
+  
+  .section h4 {
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+  
+  .customer-details,
+  .address,
+  .order-summary {
+    padding: 10px;
+  }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 375px) {
+  .order-management-container {
+    padding: 0 6px;
+  }
+  
+  .admin-table {
+    min-width: 500px;
+  }
+  
+  .admin-table th,
+  .admin-table td {
+    padding: 6px 3px;
+    font-size: 11px;
+  }
+  
+  .order-number {
+    font-size: 11px;
+  }
+  
+  .order-items {
+    font-size: 9px;
+  }
+  
+  .payment-badge {
+    font-size: 9px;
+    padding: 2px 5px;
+  }
+  
+  .payment-method {
+    font-size: 9px;
+  }
+  
+  .action-buttons .admin-btn {
+    padding: 3px 5px;
+    font-size: 10px;
+  }
+  
+  .action-buttons .admin-btn .icon {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .order-item {
+    padding: 8px;
+  }
+  
+  .item-image {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .item-details h5 {
+    font-size: 11px;
+  }
+  
+  .item-details p {
+    font-size: 9px;
+  }
+  
+  .item-total {
+    font-size: 14px;
+  }
+  
+  .summary-row {
+    font-size: 12px;
+    padding: 4px 0;
+  }
+  
+  .summary-row.total {
+    font-size: 14px;
+    padding-top: 10px;
+  }
+  
+  .order-header-section {
+    padding: 10px;
+  }
+  
+  .section h4 {
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+  
+  .customer-details,
+  .address,
+  .order-summary {
+    padding: 8px;
+  }
+  
+  .customer-details p,
+  .address p {
+    font-size: 12px;
+  }
+  
+  .order-status-display .status-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .status-badge.large {
+    padding: 6px 12px;
+    font-size: 12px;
   }
 }
 

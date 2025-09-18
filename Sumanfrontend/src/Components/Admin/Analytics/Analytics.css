@@ -11,17 +11,6 @@
   margin-bottom: 32px;
 }
 
-@media (max-width: 1200px) {
-  .metrics-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 768px) {
-  .metrics-grid {
-    grid-template-columns: 1fr;
-  }
-}
 
 /* Metric Cards */
 .metric-card {
@@ -126,16 +115,11 @@
 /* Charts Grid */
 .charts-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: 24px;
   margin-bottom: 32px;
 }
 
-@media (max-width: 1200px) {
-  .charts-grid {
-    grid-template-columns: 1fr;
-  }
-}
 
 .chart-card {
   position: relative;
@@ -175,11 +159,6 @@
   gap: 24px;
 }
 
-@media (max-width: 1200px) {
-  .bottom-charts-grid {
-    grid-template-columns: 1fr;
-  }
-}
 
 /* Top Products List */
 .top-products-list {
@@ -368,12 +347,67 @@
   background: linear-gradient(90deg, #16a34a 0%, #15803d 100%);
 }
 
-/* Responsive Design */
+/* ===== RESPONSIVE DESIGN - ALL BREAKPOINTS ===== */
+
+/* Large Desktop */
+@media (max-width: 1200px) {
+  .analytics-container {
+    padding: 0 16px;
+  }
+  
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .charts-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .bottom-charts-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .metric-content h3 {
+    font-size: 28px;
+  }
+  
+  .metric-icon {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .metric-icon .icon {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* Tablet */
 @media (max-width: 768px) {
+  .analytics-container {
+    padding: 0 12px;
+  }
+  
+  .metrics-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .charts-grid {
+    gap: 16px;
+  }
+  
+  .bottom-charts-grid {
+    gap: 16px;
+  }
+  
   .header-actions {
     flex-direction: column;
     align-items: stretch;
-    gap: 8px;
+    gap: 12px;
   }
   
   .header-actions .admin-form-select {
@@ -385,10 +419,12 @@
     align-items: center;
     text-align: center;
     gap: 12px;
+    padding: 12px;
   }
   
   .product-stats {
     justify-content: center;
+    gap: 12px;
   }
   
   .product-progress {
@@ -399,10 +435,64 @@
   .chart-controls {
     justify-content: center;
     flex-wrap: wrap;
+    gap: 6px;
+  }
+  
+  .chart-btn {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+  
+  .metric-content h3 {
+    font-size: 26px;
+  }
+  
+  .metric-content p {
+    font-size: 13px;
+  }
+  
+  .metric-icon {
+    width: 42px;
+    height: 42px;
+  }
+  
+  .metric-icon .icon {
+    width: 21px;
+    height: 21px;
+  }
+  
+  .empty-chart {
+    height: 250px;
+  }
+  
+  .empty-chart-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .empty-chart p {
+    font-size: 13px;
   }
 }
 
+/* Mobile */
 @media (max-width: 480px) {
+  .analytics-container {
+    padding: 0 8px;
+  }
+  
+  .metrics-grid {
+    gap: 12px;
+  }
+  
+  .charts-grid {
+    gap: 12px;
+  }
+  
+  .bottom-charts-grid {
+    gap: 12px;
+  }
+  
   .metric-content h3 {
     font-size: 24px;
   }
@@ -421,6 +511,15 @@
     height: 20px;
   }
   
+  .metric-growth {
+    font-size: 11px;
+  }
+  
+  .growth-icon {
+    width: 12px;
+    height: 12px;
+  }
+  
   .product-rank {
     width: 28px;
     height: 28px;
@@ -433,6 +532,151 @@
   
   .product-stats {
     font-size: 11px;
+    gap: 8px;
+  }
+  
+  .sold-count {
+    font-size: 11px;
+  }
+  
+  .product-revenue {
+    font-size: 11px;
+  }
+  
+  .product-progress {
+    height: 5px;
+    max-width: 150px;
+  }
+  
+  .chart-btn {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+
+  .chart-container{
+    height:300px;
+  }
+
+   .chart-container.large{
+    height:400px;
+  }
+  
+  .empty-chart {
+    height: 200px;
+  }
+  
+  .empty-chart-icon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .empty-chart p {
+    font-size: 12px;
+  }
+  
+  .product-rank-item {
+    padding: 10px;
+  }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 375px) {
+  .analytics-container {
+    padding: 0 6px;
+  }
+  
+  .metrics-grid {
+    gap: 10px;
+  }
+  
+  .charts-grid {
+    gap: 10px;
+  }
+  
+  .bottom-charts-grid {
+    gap: 10px;
+  }
+  
+  .metric-content h3 {
+    font-size: 22px;
+  }
+  
+  .metric-content p {
+    font-size: 11px;
+  }
+  
+  .metric-icon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .metric-icon .icon {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .metric-growth {
+    font-size: 10px;
+  }
+  
+  .growth-icon {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .product-rank {
+    width: 26px;
+    height: 26px;
+    font-size: 11px;
+  }
+  
+  .product-info h4 {
+    font-size: 12px;
+  }
+  
+  .product-stats {
+    font-size: 10px;
+    gap: 6px;
+  }
+  
+  .sold-count {
+    font-size: 10px;
+  }
+  
+  .product-revenue {
+    font-size: 10px;
+  }
+  
+  .product-progress {
+    height: 4px;
+    max-width: 120px;
+  }
+  
+  .chart-btn {
+    font-size: 9px;
+    padding: 3px 6px;
+  }
+  
+  .empty-chart {
+    height: 180px;
+  }
+  
+  .empty-chart-icon {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .empty-chart p {
+    font-size: 11px;
+  }
+  
+  .product-rank-item {
+    padding: 8px;
+    gap: 8px;
+  }
+  
+  .loading-state {
+    min-height: 300px;
   }
 }
 

@@ -260,7 +260,7 @@ const Dashboard = ({ api, adminToken, setIsLoading, setError, handleApiError }) 
       </div>
 
       {/* Charts and Data */}
-      <div className="dashboard-content">
+      <div className="chart-section">
         {/* Revenue Chart */}
         <div className="admin-card">
           <div className="admin-card-header">

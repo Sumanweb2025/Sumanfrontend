@@ -239,7 +239,7 @@
 .table-container {
   overflow-x: auto;
   border-radius: 8px;
-  width: 900px;
+  width: 850px;
 }
 .admin-table th,
 .admin-table td {
@@ -534,36 +534,87 @@
 }
 
 /* Responsive Design */
+/* Large Desktop */
 @media (max-width: 1024px) {
+  .user-management-container {
+    padding: 0 16px;
+  }
+  
+  .management-header h1 {
+    font-size: 24px;
+  }
+  
   .user-stats-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
   }
   
   .admin-table th,
   .admin-table td {
-    padding: 8px;
+    padding: 10px 8px;
     font-size: 13px;
+  }
+  
+  .table-container {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .header-actions {
+    flex-wrap: wrap;
+    gap: 8px;
   }
 }
 
+/* Tablet */
 @media (max-width: 768px) {
+  .user-management-container {
+    padding: 0 12px;
+  }
+  
   .management-header {
     flex-direction: column;
     gap: 16px;
+    margin-bottom: 24px;
+  }
+  
+  .management-header h1 {
+    font-size: 22px;
+    text-align: center;
+  }
+  
+  .header-actions {
+    justify-content: center;
+    width: 100%;
   }
   
   .search-filter-bar {
     flex-direction: column;
     align-items: stretch;
+    gap: 12px;
   }
   
   .search-input {
     max-width: none;
   }
   
+  .tab-navigation {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .tab-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 12px 16px;
+    white-space: nowrap;
+    min-width: 120px;
+  }
+  
   .feedback-header {
     flex-direction: column;
     gap: 12px;
+    align-items: flex-start;
   }
   
   .feedback-meta {
@@ -577,20 +628,22 @@
   .user-profile-section {
     flex-direction: column;
     text-align: center;
+    gap: 16px;
   }
   
   .user-stats-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
   
-  .tab-btn {
-    flex: 1;
-    justify-content: center;
-    padding: 12px 16px;
-  }
-
-   .admin-table {
+  .admin-table {
     min-width: 600px;
+    font-size: 12px;
+  }
+  
+  .admin-table th,
+  .admin-table td {
+    padding: 8px 6px;
   }
   
   .admin-table th:first-child,
@@ -605,10 +658,50 @@
   
   .contact-item span {
     max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .avatar-placeholder {
+    font-size: 14px;
   }
 }
 
+/* Mobile */
 @media (max-width: 480px) {
+  .user-management-container {
+    padding: 0 8px;
+  }
+  
+  .management-header h1 {
+    font-size: 20px;
+  }
+  
+  .management-header p {
+    font-size: 14px;
+  }
+  
+  .tab-btn {
+    padding: 10px 12px;
+    font-size: 12px;
+    min-width: 100px;
+  }
+  
+  .tab-btn .icon {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .admin-table {
+    min-width: 500px;
+  }
+  
   .admin-table th,
   .admin-table td {
     padding: 8px 4px;
@@ -621,6 +714,24 @@
     gap: 8px;
   }
   
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    align-self: center;
+  }
+  
+  .avatar-placeholder {
+    font-size: 12px;
+  }
+  
+  .user-name {
+    font-size: 13px;
+  }
+  
+  .user-email {
+    font-size: 11px;
+  }
+  
   .contact-info,
   .join-date,
   .orders-count,
@@ -628,6 +739,7 @@
   .wishlist-count {
     font-size: 12px;
   }
+  
   .contact-item {
     font-size: 11px;
   }
@@ -636,14 +748,14 @@
     max-width: 80px;
   }
   
-  .tab-btn {
-    padding: 10px 12px;
-    font-size: 12px;
+  .feedback-item {
+    padding: 16px;
   }
   
-  .tab-btn .icon {
-    width: 14px;
-    height: 14px;
+  .reviewer-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
   }
   
   .pagination {
@@ -655,5 +767,79 @@
     height: 36px;
     font-size: 12px;
     padding: 6px 8px;
+  }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 375px) {
+  .user-management-container {
+    padding: 0 6px;
+  }
+  
+  .management-header h1 {
+    font-size: 18px;
+  }
+  
+  .tab-btn {
+    padding: 8px 10px;
+    font-size: 11px;
+    min-width: 90px;
+  }
+  
+  .admin-table {
+    min-width: 450px;
+  }
+  
+  .admin-table th,
+  .admin-table td {
+    padding: 6px 3px;
+    font-size: 11px;
+  }
+  
+  .user-avatar {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .avatar-placeholder {
+    font-size: 10px;
+  }
+  
+  .user-name {
+    font-size: 12px;
+  }
+  
+  .user-email {
+    font-size: 10px;
+  }
+  
+  .contact-item {
+    font-size: 10px;
+  }
+  
+  .contact-item span {
+    max-width: 60px;
+  }
+  
+  .feedback-item {
+    padding: 12px;
+  }
+  
+  .reviewer-avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 10px;
+  }
+  
+  .stat-item {
+    padding: 12px;
+  }
+  
+  .stat-value {
+    font-size: 16px;
+  }
+  
+  .stat-label {
+    font-size: 11px;
   }
 }

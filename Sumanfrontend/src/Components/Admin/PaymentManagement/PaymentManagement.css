@@ -11,11 +11,6 @@
   margin-bottom: 32px;
 }
 
-@media (max-width: 1200px) {
-  .charts-section {
-    grid-template-columns: 1fr;
-  }
-}
 
 .empty-chart {
   display: flex;
@@ -218,12 +213,44 @@
   font-weight: 700;
 }
 
-/* Responsive Design */
+/* ===== RESPONSIVE DESIGN - ALL BREAKPOINTS ===== */
+
+/* Large Desktop */
+@media (max-width: 1200px) {
+  .payment-management-container {
+    padding: 0 16px;
+  }
+  
+  .charts-section {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  
+  .empty-chart {
+    height: 280px;
+  }
+}
+
+/* Tablet */
 @media (max-width: 768px) {
+  .payment-management-container {
+    padding: 0 12px;
+  }
+  
+  .charts-section {
+    gap: 16px;
+  }
+  
   .detail-row {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+    padding: 10px 12px;
   }
   
   .detail-label {
@@ -234,18 +261,62 @@
     font-size: 13px;
   }
   
+  .detail-value.amount {
+    font-size: 15px;
+  }
+  
+  .tab-navigation {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
   .tab-btn {
     flex: 1;
     justify-content: center;
     padding: 10px 16px;
+    white-space: nowrap;
+    min-width: 120px;
   }
   
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .admin-table {
+    min-width: 700px;
+  }
+  
+  .admin-table th,
+  .admin-table td {
+    padding: 8px 6px;
+    font-size: 12px;
+  }
+  
+  .empty-chart {
+    height: 250px;
+  }
+  
+  .empty-chart-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .empty-chart p {
+    font-size: 13px;
   }
 }
 
+/* Mobile */
 @media (max-width: 480px) {
+  .payment-management-container {
+    padding: 0 8px;
+  }
+  
+  .admin-table {
+    min-width: 600px;
+  }
+  
   .admin-table th,
   .admin-table td {
     padding: 8px 4px;
@@ -254,6 +325,11 @@
   
   .tx-id, .rf-id {
     font-size: 10px;
+    padding: 2px 4px;
+  }
+
+  .chart-container{
+    height:300px;
   }
   
   .payment-method {
@@ -261,7 +337,138 @@
     padding: 2px 6px;
   }
   
+  .status-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+  
+  .refund-reason {
+    font-size: 11px;
+  }
+  
   .stats-grid {
     grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .tab-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+    min-width: 100px;
+  }
+  
+  .tab-btn .icon {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .detail-row {
+    padding: 8px 10px;
+  }
+  
+  .detail-label {
+    font-size: 12px;
+  }
+  
+  .detail-value {
+    font-size: 12px;
+  }
+  
+  .detail-value.amount {
+    font-size: 14px;
+  }
+  
+  .empty-chart {
+    height: 200px;
+  }
+  
+  .empty-chart-icon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .empty-chart p {
+    font-size: 12px;
+  }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 375px) {
+  .payment-management-container {
+    padding: 0 6px;
+  }
+  
+  .admin-table {
+    min-width: 500px;
+  }
+  
+  .admin-table th,
+  .admin-table td {
+    padding: 6px 3px;
+    font-size: 11px;
+  }
+  
+  .tx-id, .rf-id {
+    font-size: 9px;
+    padding: 1px 3px;
+  }
+  
+  .payment-method {
+    font-size: 9px;
+    padding: 2px 4px;
+  }
+  
+  .status-badge {
+    font-size: 9px;
+    padding: 2px 4px;
+  }
+  
+  .refund-reason {
+    font-size: 10px;
+  }
+  
+  .tab-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+    min-width: 90px;
+  }
+  
+  .tab-btn .icon {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .detail-row {
+    padding: 6px 8px;
+  }
+  
+  .detail-label {
+    font-size: 11px;
+  }
+  
+  .detail-value {
+    font-size: 11px;
+  }
+  
+  .detail-value.amount {
+    font-size: 13px;
+  }
+  
+  .empty-chart {
+    height: 180px;
+  }
+  
+  .empty-chart-icon {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .empty-chart p {
+    font-size: 11px;
+  }
+  
+  .status-icon {
+    width: 14px;
+    height: 14px;
   }
 }

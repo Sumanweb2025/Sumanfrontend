@@ -826,10 +826,97 @@
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+/* Desktop (1200px and up) */
+@media (min-width: 1200px) {
+  .iyyapa-container {
+    max-width: 1400px;
+    padding: 30px;
+  }
+  
+  .iyyapa-products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+  }
+  
+  .iyyapa-sidebar {
+    width: 320px;
+  }
+}
+
+/* Large Tablet (992px - 1199px) */
+@media (max-width: 1199px) and (min-width: 992px) {
+  .iyyapa-container {
+    max-width: 1100px;
+    padding: 25px;
+  }
+  
+  .iyyapa-products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  
+  .iyyapa-sidebar {
+    width: 280px;
+  }
+}
+
+/* Tablet (768px - 991px) */
+@media (max-width: 991px) and (min-width: 768px) {
+  .iyyapa-container {
+    padding: 20px;
+  }
+  
+  .iyyapa-page-content {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .iyyapa-sidebar {
+    width: 100%;
+    position: static;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 15px;
+  }
+  
+  .iyyapa-filter-section {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+    border-right: 1px solid #eee;
+    padding-right: 15px;
+  }
+  
+  .iyyapa-filter-section:last-child {
+    border-right: none;
+    padding-right: 0;
+  }
+  
+  .iyyapa-products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 18px;
+  }
+  
+  .iyyapa-page-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+    padding: 15px;
+  }
+  
+  .iyyapa-page-header h1 {
+    font-size: 24px;
+  }
+  
+  .iyyapa-sort-controls {
+    justify-content: center;
+  }
+
   .iyyapa-hero-carousel {
     height: 300px;
-    margin-bottom: 30px;
+    border-radius: 15px;
   }
 
   .iyyapa-carousel-title {
@@ -837,10 +924,16 @@
   }
 
   .iyyapa-carousel-subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+  }
+
+  .iyyapa-carousel-cta {
+    padding: 14px 30px;
     font-size: 1.1rem;
   }
 
-   .iyyapa-categories-grid {
+  .iyyapa-categories-grid {
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     gap: 15px;
   }
@@ -860,29 +953,6 @@
     font-size: 0.8rem;
   }
 
-  .iyyapa-page-content {
-    flex-direction: column;
-  }
-  
-  .iyyapa-sidebar {
-    width: 100%;
-    position: static;
-    margin-bottom: 20px;
-  }
-  
-  .iyyapa-products-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 15px;
-  }
-  
-  .iyyapa-page-header {
-    text-align: center;
-  }
-
-  .iyyapa-sort-controls {
-    justify-content: center;
-  }
-
   .iyyapa-carousel-nav {
     width: 45px;
     height: 45px;
@@ -896,6 +966,65 @@
   .iyyapa-carousel-nav.next {
     right: 15px;
   }
+}
+
+/* Small Tablet (576px - 767px) */
+@media (max-width: 767px) and (min-width: 576px) {
+  .iyyapa-container {
+    padding: 15px;
+  }
+  
+  .iyyapa-page-content {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .iyyapa-sidebar {
+    width: 100%;
+    position: static;
+    margin-bottom: 15px;
+    display: block;
+    padding: 15px;
+  }
+  
+  .iyyapa-filter-section {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+  }
+  
+  .iyyapa-products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 15px;
+  }
+  
+  .iyyapa-page-header {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+    padding: 12px;
+  }
+  
+  .iyyapa-page-header h1 {
+    font-size: 22px;
+  }
+  
+  .iyyapa-product-image-container {
+    height: 180px;
+  }
+  
+  .iyyapa-product-info {
+    padding: 12px;
+  }
+  
+  .iyyapa-product-name {
+    font-size: 14px;
+  }
+  
+  .iyyapa-product-price {
+    font-size: 16px;
+  }
+  
   .iyyapa-gram-button {
     padding: 3px 8px;
     font-size: 10px;
@@ -907,7 +1036,129 @@
   }
 }
 
-@media (max-width: 480px) {
+/* Mobile (up to 575px) */
+@media (max-width: 575px) {
+  .iyyapa-container {
+    padding: 10px;
+  }
+  
+  .iyyapa-page-content {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .iyyapa-sidebar {
+    width: 100%;
+    position: static;
+    margin-bottom: 15px;
+    padding: 12px;
+  }
+  
+  .iyyapa-filter-section {
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 12px;
+  }
+  
+  .iyyapa-filter-section h3 {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  .iyyapa-products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  
+  .iyyapa-page-header {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+    padding: 10px;
+  }
+  
+  .iyyapa-page-header h1 {
+    font-size: 20px;
+  }
+  
+  .iyyapa-sort-controls {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .iyyapa-sort-select {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+  
+  .iyyapa-product-card {
+    border-radius: 6px;
+  }
+  
+  .iyyapa-product-image-container {
+    height: 160px;
+  }
+  
+  .iyyapa-product-info {
+    padding: 10px;
+  }
+  
+  .iyyapa-product-name {
+    font-size: 13px;
+    line-height: 1.2;
+  }
+  
+  .iyyapa-product-brand {
+    font-size: 11px;
+  }
+  
+  .iyyapa-product-price {
+    font-size: 15px;
+  }
+  
+  .iyyapa-product-piece {
+    font-size: 11px;
+  }
+  
+  .iyyapa-add-to-cart-btn {
+    padding: 8px;
+    font-size: 12px;
+  }
+  
+  .iyyapa-wishlist-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+  
+  .iyyapa-pagination {
+    gap: 3px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .iyyapa-pagination-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  
+  .iyyapa-deal-items {
+    gap: 8px;
+  }
+  
+  .iyyapa-deal-image {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .iyyapa-deal-name {
+    font-size: 12px;
+  }
+  
+  .iyyapa-deal-price {
+    font-size: 13px;
+  }
+
   .iyyapa-hero-carousel {
     height: 250px;
     border-radius: 12px;
@@ -946,22 +1197,6 @@
     font-size: 0.7rem;
   }
 
-  .iyyapa-products-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .iyyapa-container {
-    padding: 10px;
-  }
-
-  .iyyapa-page-header h1 {
-    font-size: 24px;
-  }
-
-  .iyyapa-page-header h2 {
-    font-size: 20px;
-  }
-
   .iyyapa-carousel-nav {
     width: 40px;
     height: 40px;
@@ -975,10 +1210,50 @@
   .iyyapa-carousel-nav.next {
     right: 10px;
   }
+  
   .iyyapa-gram-button {
     padding: 2px 6px;
     font-size: 9px;
     min-width: 35px;
+  }
+  
+  .iyyapa-gram-variants {
+    gap: 3px;
+  }
+}
+
+/* Extra Small Mobile (up to 375px) */
+@media (max-width: 375px) {
+  .iyyapa-products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+  }
+  
+  .iyyapa-product-image-container {
+    height: 140px;
+  }
+  
+  .iyyapa-product-info {
+    padding: 8px;
+  }
+  
+  .iyyapa-product-name {
+    font-size: 12px;
+  }
+  
+  .iyyapa-product-price {
+    font-size: 14px;
+  }
+  
+  .iyyapa-add-to-cart-btn {
+    padding: 6px;
+    font-size: 11px;
+  }
+  
+  .iyyapa-gram-button {
+    padding: 2px 4px;
+    font-size: 8px;
+    min-width: 30px;
   }
 }
 
