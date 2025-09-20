@@ -1,8 +1,8 @@
 /* Contact Page Styles */
 .contact-page {
-  font-family: 'Poppins', sans-serif;
   color: #333;
   line-height: 1.6;
+  min-height: 100vh;
 }
 
 .contact-container {
@@ -13,12 +13,12 @@
 
 .contact-section-header {
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 10px;
 }
 
 .contact-section-header h2 {
   font-size: 2.5rem;
-  margin-bottom: 15px;
+  margin-bottom: 3px;
   color: #2c3e50;
 }
 
@@ -63,10 +63,8 @@
 
 /* Contact Info Section */
 .contact-info-section {
-  padding: 80px 0;
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
+  padding: 60px 0;
+  background-color: #d0e9c1;
 }
 
 .contact-info-grid {
@@ -77,19 +75,18 @@
 }
 
 .contact-info-card {
-  background: rgba(255, 255, 255, 0.85);
-  padding: 40px 30px;
-  border-radius: 12px;
+  background: white;
+  padding: 30px 20px;
+  border-radius: 8px;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  /* box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); */
   transition: all 0.3s ease;
   cursor: pointer;
-  backdrop-filter: blur(5px);
 }
 
 .contact-info-card:hover {
   transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  /* box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); */
 }
 
 .contact-icon-container {
@@ -121,10 +118,8 @@
 
 /* Contact Form Section */
 .contact-form-section {
-  padding: 80px 0;
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
+  padding: 60px 0 100px;
+  background-color: #d0e9c1;
 }
 
 .form-container {
@@ -135,11 +130,10 @@
 }
 
 .form-content {
-  background: rgba(255, 255, 255, 0.85);
-  padding: 50px;
-  border-radius: 12px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(8px);
+  background: white;
+  padding: 40px;
+  border-radius: 8px;
+  /* box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); */
 }
 
 .form-header {

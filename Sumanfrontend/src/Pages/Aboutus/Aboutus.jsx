@@ -130,9 +130,7 @@ const AboutUs = () => {
         </section>
 
         {/* Mission Section */}
-        <section className="about-section mission-section" style={{
-          backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75)), url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
-        }}>
+        <section className="about-section mission-section">
           <div className="about-container">
             <div className="mission-content">
               <div className="mission-icon">
@@ -185,9 +183,7 @@ const AboutUs = () => {
         </section>
 
         {/* Team Section */}
-        {/* <section className="about-section team-section" style={{
-          backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75)), url('https://images.unsplash.com/photo-1556911220-bff31c812dba?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
-        }}>
+        <section className="about-section team-section">
           <div className="about-container">
             <div className="about-section-header">
               <h2>Meet Our Team</h2>
@@ -211,12 +207,10 @@ const AboutUs = () => {
               ))}
             </div>
           </div>
-        </section> */}
+        </section>
 
         {/* CTA Section */}
-        <section className="about-section cta-section" style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1499028344343-cd173ffc68a9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
-        }}>
+        <section className="about-section cta-section">
           <div className="about-container">
             <h2>Experience the Authentic Taste</h2>
             <p>

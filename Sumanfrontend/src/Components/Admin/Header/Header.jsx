@@ -11,7 +11,7 @@ const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen, api, adminToken, setErr
   const [unreadCount, setUnreadCount] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [previousNotificationCount, setPreviousNotificationCount] = useState(0);
-  
+
   const notificationRef = useRef(null);
   const profileRef = useRef(null);
   const audioRef = useRef(null);
@@ -20,7 +20,7 @@ const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen, api, adminToken, setErr
   useEffect(() => {
     // Create audio context for notification sounds
     audioRef.current = new Audio();
-    
+
     // Load sound preference from localStorage
     const savedSoundPreference = localStorage.getItem('adminNotificationSound');
     if (savedSoundPreference !== null) {
@@ -68,42 +68,42 @@ const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen, api, adminToken, setErr
     try {
       // Create different sounds for different notification types
       const soundConfig = getSoundConfig(notificationType);
-      
+
       // Create audio context and generate sound
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
-      
+
       oscillator.connect(gainNode);
       gainNode.connect(audioContext.destination);
-      
+
       oscillator.frequency.value = soundConfig.frequency;
       oscillator.type = soundConfig.type;
-      
+
       gainNode.gain.setValueAtTime(0, audioContext.currentTime);
       gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.01);
       gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + soundConfig.duration);
-      
+
       oscillator.start(audioContext.currentTime);
       oscillator.stop(audioContext.currentTime + soundConfig.duration);
-      
+
       // For multiple beeps
       if (soundConfig.repeat > 1) {
         for (let i = 1; i < soundConfig.repeat; i++) {
           setTimeout(() => {
             const osc2 = audioContext.createOscillator();
             const gain2 = audioContext.createGain();
-            
+
             osc2.connect(gain2);
             gain2.connect(audioContext.destination);
-            
+
             osc2.frequency.value = soundConfig.frequency;
             osc2.type = soundConfig.type;
-            
+
             gain2.gain.setValueAtTime(0, audioContext.currentTime);
             gain2.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.01);
             gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + soundConfig.duration);
-            
+
             osc2.start();
             osc2.stop(audioContext.currentTime + soundConfig.duration);
           }, i * 200);
@@ -144,12 +144,12 @@ const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen, api, adminToken, setErr
       if (response.success) {
         const newNotifications = response.data;
         setNotifications(newNotifications);
-        
+
         // Check for new notifications and play sound
         if (newNotifications.length > previousNotificationCount && previousNotificationCount > 0) {
           const newNotification = newNotifications[0]; // Assuming newest is first
           playNotificationSound(newNotification.type);
-          
+
           // Show browser notification if permission granted
           if (Notification.permission === 'granted') {
             new Notification(newNotification.title, {
@@ -159,7 +159,7 @@ const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen, api, adminToken, setErr
             });
           }
         }
-        
+
         setPreviousNotificationCount(newNotifications.length);
         setUnreadCount(newNotifications.length);
       }
@@ -175,7 +175,7 @@ const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen, api, adminToken, setErr
     const newSoundEnabled = !soundEnabled;
     setSoundEnabled(newSoundEnabled);
     localStorage.setItem('adminNotificationSound', JSON.stringify(newSoundEnabled));
-    
+
     // Play a test sound when enabling
     if (newSoundEnabled) {
       playNotificationSound('default');
@@ -203,7 +203,7 @@ const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen, api, adminToken, setErr
     const now = new Date();
     const notificationTime = new Date(time);
     const diffInMinutes = Math.floor((now - notificationTime) / (1000 * 60));
-    
+
     if (diffInMinutes < 1) return 'Just now';
     if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
     if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
@@ -235,7 +235,7 @@ const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen, api, adminToken, setErr
   return (
     <header className="admin-header">
       <div className="admin-header-left">
-        <button 
+        <button
           className="admin-mobile-menu-btn"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
@@ -246,7 +246,7 @@ const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen, api, adminToken, setErr
 
       <div className="admin-header-right">
         {/* Sound Toggle Button */}
-        <button 
+        <button
           className={`admin-header-btn admin-sound-btn ${soundEnabled ? 'sound-enabled' : 'sound-disabled'}`}
           onClick={toggleSound}
           title={`${soundEnabled ? 'Disable' : 'Enable'} notification sounds`}
@@ -259,7 +259,7 @@ const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen, api, adminToken, setErr
         </button>
 
         {/* Refresh Button */}
-        <button 
+        <button
           className="admin-header-btn admin-refresh-btn"
           onClick={fetchNotifications}
           disabled={loading}
@@ -270,7 +270,7 @@ const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen, api, adminToken, setErr
 
         {/* Notifications */}
         <div className="admin-notification-container" ref={notificationRef}>
-          <button 
+          <button
             className="admin-header-btn admin-notification-btn"
             onClick={() => setShowNotifications(!showNotifications)}
           >
@@ -300,7 +300,7 @@ const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen, api, adminToken, setErr
                 {notifications.length > 0 ? (
                   notifications.slice(0, 10).map((notification, index) => (
                     <div key={index} className="admin-notification-item">
-                      <div 
+                      <div
                         className="admin-notification-icon"
                         style={{ backgroundColor: getNotificationColor(notification.type) }}
                       >
@@ -334,7 +334,7 @@ const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen, api, adminToken, setErr
 
         {/* Profile */}
         <div className="admin-profile-container" ref={profileRef}>
-          <button 
+          <button
             className="admin-profile-btn"
             onClick={() => setShowProfile(!showProfile)}
           >

@@ -1,45 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './Signup.css';
 
-// Toast Component
-const Toast = ({ message, type, isVisible, onClose }) => {
-  useEffect(() => {
-    if (isVisible) {
-      const timer = setTimeout(() => {
-        onClose();
-      }, 5000); // Auto close after 5 seconds
-
-      return () => clearTimeout(timer);
-    }
-  }, [isVisible, onClose]);
-
-  if (!isVisible) return null;
-
-  return (
-    <div className={`signup-toast signup-toast-${type}`}>
-      <div className="toast-content">
-        <div className="toast-icon">
-          {type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ'}
-        </div>
-        <div className="toast-message">{message}</div>
-        <button className="toast-close" onClick={onClose}>×</button>
-      </div>
-    </div>
-  );
-};
 
 const SignUp = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  const [toast, setToast] = useState({
-    message: '',
-    type: 'info',
-    isVisible: false
-  });
   const [signupData, setSignupData] = useState({
     name: '',
     email: '',
@@ -48,20 +18,7 @@ const SignUp = () => {
     agreeToTerms: false
   });
 
-  const API_URL = import.meta.env.VITE_APP_API_URL;
-
-  // Toast helper functions
-  const showToast = (message, type = 'info') => {
-    setToast({
-      message,
-      type,
-      isVisible: true
-    });
-  };
-
-  const closeToast = () => {
-    setToast(prev => ({ ...prev, isVisible: false }));
-  };
+   const API_URL = import.meta.env.VITE_APP_API_URL;
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -125,20 +82,20 @@ const SignUp = () => {
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-      console.log('Validation errors:', validationErrors);
-      showToast('Please fix the form errors before submitting', 'error');
+      toast.error('Please fix the form errors before submitting ❌', {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
       return;
     }
 
     setLoading(true);
 
     try {
-      console.log('Attempting signup with:', {
-        name: signupData.name.trim(),
-        email: signupData.email.toLowerCase().trim(),
-        password: '***hidden***'
-      });
-
       const response = await axios.post(`${API_URL}api/auth/signup`, {
         name: signupData.name.trim(),
         email: signupData.email.toLowerCase().trim(),
@@ -150,8 +107,6 @@ const SignUp = () => {
         timeout: 10000 // 10 second timeout
       });
 
-      console.log('Signup response:', response.data);
-
       if (response.data && response.data.success) {
         // Store auth data
         if (response.data.data?.token) {
@@ -161,26 +116,35 @@ const SignUp = () => {
           localStorage.setItem('user', JSON.stringify(response.data.data.user));
         }
         
-        showToast(`Welcome to Iyappaa Sweets & Snacks, ${signupData.name}! Your account has been created successfully.`, 'success');
+        toast.success(`Welcome to Iyappaa Sweets & Snacks, ${signupData.name}! Your account has been created successfully 🎉`, {
+          position: "top-right",
+          autoClose: 4000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
         
         // Navigate after showing toast for a moment
         setTimeout(() => {
           navigate('/', { replace: true });
         }, 2000);
       } else {
-        // Handle case where response doesn't have expected structure
-        console.error('Unexpected response structure:', response.data);
         setErrors({ api: 'Account creation failed. Please try again.' });
-        showToast('Account creation failed. Please try again.', 'error');
+        toast.error('Account creation failed. Please try again. ❌', {
+          position: "top-right",
+          autoClose: 4000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       }
 
     } catch (error) {
       console.error('SignUp error:', error);
 
       if (error.response) {
-        // Server responded with error status
-        console.error('Error response:', error.response.data);
-        console.error('Error status:', error.response.status);
         
         const { data, status } = error.response;
 
@@ -192,36 +156,83 @@ const SignUp = () => {
             formattedErrors[field] = err.msg || err.message;
           });
           setErrors(formattedErrors);
-          showToast('Please fix the form errors and try again', 'error');
+          toast.error('Please fix the form errors and try again ❌', {
+            position: "top-right",
+            autoClose: 4000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
         } else if (status === 409) {
           // Handle duplicate email
           setErrors({ email: 'An account with this email already exists' });
-          showToast('An account with this email already exists', 'error');
+          toast.error('An account with this email already exists ❌', {
+            position: "top-right",
+            autoClose: 4000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
         } else if (data.message) {
           setErrors({ api: data.message });
-          showToast(data.message, 'error');
+           toast.error(`${data.message} ❌`, {
+            position: "top-right",
+            autoClose: 4000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
         } else {
           const errorMsg = `Server error (${status}). Please try again.`;
           setErrors({ api: errorMsg });
-          showToast(errorMsg, 'error');
+         toast.error(`${errorMsg} ❌`, {
+            position: "top-right",
+            autoClose: 4000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
         }
       } else if (error.request) {
         // Network error
-        console.error('Network error:', error.request);
         const errorMsg = 'Cannot connect to server. Please check if the backend is running on http://localhost:8000';
         setErrors({ api: errorMsg });
-        showToast(errorMsg, 'error');
+        toast.error(`${errorMsg} 🌐`, {
+          position: "top-right",
+          autoClose: 4000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       } else if (error.code === 'ECONNABORTED') {
         // Timeout error
         const errorMsg = 'Request timed out. Please try again.';
         setErrors({ api: errorMsg });
-        showToast(errorMsg, 'error');
+         toast.error(`${errorMsg} ❌`, {
+          position: "top-right",
+          autoClose: 4000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       } else {
         // Other error
-        console.error('Unexpected error:', error.message);
         const errorMsg = 'An unexpected error occurred. Please try again.';
         setErrors({ api: errorMsg });
-        showToast(errorMsg, 'error');
+        toast.error(`${errorMsg} ❌`, {
+          position: "top-right",
+          autoClose: 4000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       }
     } finally {
       setLoading(false);
@@ -230,36 +241,37 @@ const SignUp = () => {
 
   return (
     <div className="signup-wrapper">
-      {/* Toast Notification */}
-      <Toast 
-        message={toast.message}
-        type={toast.type}
-        isVisible={toast.isVisible}
-        onClose={closeToast}
+       {/* Toast Container */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
       />
-
-      <div className="signup-left">
-        <div className="promo-text">
-          <h1>Join Iyappaa Sweets & Snacks Today</h1>
-          <p>Best Sweets and Snacks under one roof<br />Takeaway | Dining | Delivery</p>
+      <div className="signup-form-logo">
+          <img src="/src/assets/logo-title.png" alt="Suman Foods Logo" />
+          <span className="signup-form-logo-text">Iyappaa Sweets & Snacks</span>
         </div>
-      </div>
-
       <div className="signup-right">
-        <div className="signup-content">
-        <h2 className="form-title">Create Your Account</h2>
-        <p className="form-subtitle">Start your journey</p>
+        <p className="signup-form-subtitle">Please enter your details</p>
+        <h2 className="signup-form-title">Create Your Account</h2>
 
         <form onSubmit={handleSubmit} className="signup-form">
           {/* API Error Display */}
           {errors.api && (
-            <div className="error-message-container">
-              <div className="error-message">{errors.api}</div>
+            <div className="signup-error-message-container">
+              <div className="signup-error-message">{errors.api}</div>
             </div>
           )}
 
           {/* Name Field */}
-          <div className="form-group">
+          <div className="signup-form-group">
             <input
               type="text"
               name="name"
@@ -271,14 +283,14 @@ const SignUp = () => {
               required
             />
             {errors.name && (
-              <div className="error-text-wrapper">
-                <span className="error-text">{errors.name}</span>
+              <div className="signup-error-text-wrapper">
+                <span className="signup-error-text">{errors.name}</span>
               </div>
             )}
           </div>
 
           {/* Email Field */}
-          <div className="form-group">
+          <div className="signup-form-group">
             <input
               type="email"
               name="email"
@@ -290,14 +302,14 @@ const SignUp = () => {
               required
             />
             {errors.email && (
-              <div className="error-text-wrapper">
-                <span className="error-text">{errors.email}</span>
+              <div className="signup-error-text-wrapper">
+                <span className="signup-error-text">{errors.email}</span>
               </div>
             )}
           </div>
 
           {/* Password Field */}
-          <div className="form-group">
+          <div className="signup-form-group">
             <input
               type="password"
               name="password"
@@ -310,14 +322,14 @@ const SignUp = () => {
               required
             />
             {errors.password && (
-              <div className="error-text-wrapper">
-                <span className="error-text">{errors.password}</span>
+              <div className="signup-error-text-wrapper">
+                <span className="signup-error-text">{errors.password}</span>
               </div>
             )}
           </div>
 
           {/* Confirm Password Field */}
-          <div className="form-group">
+          <div className="signup-form-group">
             <input
               type="password"
               name="confirmPassword"
@@ -329,15 +341,15 @@ const SignUp = () => {
               required
             />
             {errors.confirmPassword && (
-              <div className="error-text-wrapper">
-                <span className="error-text">{errors.confirmPassword}</span>
+              <div className="signup-error-text-wrapper">
+                <span className="signup-error-text">{errors.confirmPassword}</span>
               </div>
             )}
           </div>
 
           {/* Terms Agreement */}
-          <div className="form-options">
-            <div className="agree-terms">
+          <div className="signup-form-options">
+            <div className="signup-agree-terms">
               <input
                 type="checkbox"
                 name="agreeToTerms"
@@ -351,8 +363,8 @@ const SignUp = () => {
               </label>
             </div>
             {errors.agreeToTerms && (
-              <div className="error-text-wrapper">
-                <span className="error-text">{errors.agreeToTerms}</span>
+              <div className="signup-error-text-wrapper">
+                <span className="signup-error-text">{errors.agreeToTerms}</span>
               </div>
             )}
           </div>
@@ -371,7 +383,6 @@ const SignUp = () => {
 
         <div className="signup-footer">
           <p>Already have an account? <a href="/signin">Sign In</a></p>
-        </div>
         </div>
       </div>
     </div>

@@ -114,7 +114,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
       try {
         const productsResponse = await axios.get(`${API_URL}api/products/search?brand=little krishna`);
         const productsData = productsResponse.data?.data || productsResponse.data?.products || productsResponse.data;
-        
+
         // Group products by name
         const groupedProducts = groupProductsByName(productsData);
         setProducts(groupedProducts);
@@ -641,16 +641,16 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                           </div>
 
                           <div className="price-text little-krishna-product-price">{(() => {
-                              const selectedIndex = getSelectedVariant(product);
-                              const selectedVariant = product.variants[selectedIndex] || product.variants[0];
-                              const price = selectedVariant.price;
+                            const selectedIndex = getSelectedVariant(product);
+                            const selectedVariant = product.variants[selectedIndex] || product.variants[0];
+                            const price = selectedVariant.price;
 
-                              return price !== undefined && price !== null
-                                ? `$${price}`
-                                : <span style={{ color: '#999', fontSize: "0.9rem" }}>$0 (Price not fixed)</span>;
-                            })()}</div>
+                            return price !== undefined && price !== null
+                              ? `$${price}`
+                              : <span style={{ color: '#999', fontSize: "0.9rem" }}>$0 (Price not fixed)</span>;
+                          })()}</div>
 
-                            {/* Gram Variants Display */}
+                          {/* Gram Variants Display */}
                           {product.hasMultipleVariants ? (
                             <div className="little-krishna-gram-variants">
                               {product.variants.map((variant, index) => {

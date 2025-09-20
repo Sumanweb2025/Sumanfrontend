@@ -27,9 +27,9 @@ const CartPopup = ({ isOpen, onClose, product, cartItems, onContinueShopping, on
   };
 
   const handleContinueShopping = () => {
-  onContinueShopping();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-};
+    onContinueShopping();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <div className="cart-popup-overlay">
@@ -38,7 +38,7 @@ const CartPopup = ({ isOpen, onClose, product, cartItems, onContinueShopping, on
           <h3>SHOPPING CART</h3>
           <button className="cart-popup-close-btn" onClick={onClose}>×</button>
         </div>
-        
+
         <div className="cart-popup-content">
           <div className="cart-popup-item-added">
             <div className="cart-popup-item-image">
@@ -60,12 +60,12 @@ const CartPopup = ({ isOpen, onClose, product, cartItems, onContinueShopping, on
               {cartItems.slice(0, 2).map((item, index) => {
                 const itemProduct = item.productId || item;
                 if (itemProduct._id === product._id || itemProduct.id === product.id) return null;
-                
+
                 return (
                   <div key={index} className="cart-popup-summary-item">
-                    <img 
-                      src={itemProduct.imageUrl || itemProduct.image || '/api/placeholder/40/40'} 
-                      alt={itemProduct.name} 
+                    <img
+                      src={itemProduct.imageUrl || itemProduct.image || '/api/placeholder/40/40'}
+                      alt={itemProduct.name}
                     />
                     <div className="cart-popup-summary-item-info">
                       <span className="cart-popup-summary-item-name">{itemProduct.name}</span>
@@ -91,7 +91,7 @@ const CartPopup = ({ isOpen, onClose, product, cartItems, onContinueShopping, on
             </div>
           </div>
         </div>
-        
+
         <div className="popup-footer">
           <button className="cart-popup-view-cart-btn" onClick={onViewCart}>
             VIEW CART

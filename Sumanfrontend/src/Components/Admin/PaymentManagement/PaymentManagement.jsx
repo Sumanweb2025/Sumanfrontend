@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  CreditCard, 
+import {
+  CreditCard,
   DollarSign,
   TrendingUp,
   TrendingDown,
@@ -41,7 +41,7 @@ const PaymentManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
     try {
       setLoading(true);
       const response = await api.get('/admin/payments/stats', adminToken);
-      
+
       if (response.success) {
         setPaymentStats(response.data);
         setRecentPayments(response.data.recentPayments || []);
@@ -164,14 +164,14 @@ const PaymentManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
 
   const filteredPayments = recentPayments.filter(payment => {
     const matchesSearch = payment.orderId?.orderNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         payment.orderId?.userId?.name?.toLowerCase().includes(searchTerm.toLowerCase());
+      payment.orderId?.userId?.name?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = !statusFilter || payment.paymentStatus === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
   const filteredRefunds = refunds.filter(refund => {
     const matchesSearch = refund.orderNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         refund.customerInfo?.firstName?.toLowerCase().includes(searchTerm.toLowerCase());
+      refund.customerInfo?.firstName?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = !statusFilter || refund.refundStatus === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -341,9 +341,9 @@ const PaymentManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        
-        <select 
-          value={statusFilter} 
+
+        <select
+          value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
           className="admin-form-select"
         >
@@ -363,7 +363,7 @@ const PaymentManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
             </>
           )}
         </select>
-        
+
         <button className="admin-btn admin-btn-outline">
           <Filter className="icon" />
           More Filters
@@ -569,7 +569,7 @@ const PaymentManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
                 ×
               </button>
             </div>
-            
+
             <div className="modal-content">
               <div className="payment-details">
                 <div className="detail-row">
@@ -578,38 +578,38 @@ const PaymentManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
                     {selectedPayment.stripePaymentIntentId || selectedPayment._id}
                   </span>
                 </div>
-                
+
                 <div className="detail-row">
                   <span className="detail-label">Amount:</span>
                   <span className="detail-value amount">
                     {formatCurrency(selectedPayment.amount || selectedPayment.refundAmount)}
                   </span>
                 </div>
-                
+
                 <div className="detail-row">
                   <span className="detail-label">Status:</span>
                   <span className={`status-badge ${getStatusBadgeClass(selectedPayment.paymentStatus || selectedPayment.refundStatus)}`}>
                     {selectedPayment.paymentStatus || selectedPayment.refundStatus}
                   </span>
                 </div>
-                
+
                 <div className="detail-row">
                   <span className="detail-label">Method:</span>
                   <span className="detail-value">{selectedPayment.paymentMethod || 'Refund'}</span>
                 </div>
-                
+
                 <div className="detail-row">
                   <span className="detail-label">Date:</span>
                   <span className="detail-value">{formatDate(selectedPayment.createdAt)}</span>
                 </div>
-                
+
                 {selectedPayment.refundReason && (
                   <div className="detail-row">
                     <span className="detail-label">Reason:</span>
                     <span className="detail-value">{selectedPayment.refundReason}</span>
                   </div>
                 )}
-                
+
                 {selectedPayment.orderId && (
                   <div className="detail-row">
                     <span className="detail-label">Order:</span>
@@ -618,9 +618,9 @@ const PaymentManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
                 )}
               </div>
             </div>
-            
+
             <div className="admin-modal-actions">
-              <button 
+              <button
                 className="admin-btn admin-btn-outline"
                 onClick={() => setShowPaymentDetails(false)}
               >
@@ -628,14 +628,14 @@ const PaymentManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
               </button>
               {selectedPayment.orderId && (
                 <>
-                  <button 
+                  <button
                     className="admin-btn admin-btn-secondary"
                     onClick={() => downloadOrderPDF(selectedPayment.orderId._id || selectedPayment.orderId, selectedPayment.paymentMethod)}
                   >
                     <FileText className="icon" />
                     Download {selectedPayment.paymentMethod === 'cod' ? 'Bill' : 'Paid Invoice'}
                   </button>
-                  <button 
+                  <button
                     className="admin-btn admin-btn-outline"
                     onClick={() => viewOrderPDF(selectedPayment.orderId._id || selectedPayment.orderId, selectedPayment.paymentMethod)}
                   >

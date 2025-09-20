@@ -1,47 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './Cart.css';
 import Header from '../../Components/Header/Header';
 import Banner from '../../Components/ShippingBanner/ShippingBanner';
 import Footer from "../../Components/Footer/Footer";
 import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 
-// Toast Component
-const Toast = ({ message, type, onClose }) => {
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      onClose();
-    }, 4000);
-
-    return () => clearTimeout(timer);
-  }, [onClose]);
-
-  const getIcon = () => {
-    switch (type) {
-      case 'success':
-        return '✅';
-      case 'error':
-        return '❌';
-      case 'warning':
-        return '⚠️';
-      case 'info':
-        return 'ℹ️';
-      default:
-        return 'ℹ️';
-    }
-  };
-
-  return (
-    <div className={`toast toast-${type}`}>
-      <div className="toast-content">
-        <span className="toast-icon">{getIcon()}</span>
-        <span className="toast-message">{message}</span>
-        <button className="toast-close" onClick={onClose}>×</button>
-      </div>
-    </div>
-  );
-};
 
 // Confirmation Modal Component
 const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message }) => {
@@ -287,7 +254,6 @@ const CartPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [updatingItems, setUpdatingItems] = useState(new Set());
-  const [toasts, setToasts] = useState([]);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -304,16 +270,6 @@ const CartPage = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  // Toast functions
-  const showToast = (message, type = 'info') => {
-    const id = Date.now();
-    setToasts(prev => [...prev, { id, message, type }]);
-  };
-
-  const removeToast = (id) => {
-    setToasts(prev => prev.filter(toast => toast.id !== id));
-  };
 
   const fetchCart = async () => {
     try {
@@ -349,7 +305,15 @@ const CartPage = () => {
       // If we filtered out invalid items, show a notification
       if (validCartItems.length < (cartData.items || []).length) {
         const removedCount = (cartData.items || []).length - validCartItems.length;
-        showToast(`${removedCount} invalid item(s) removed from cart`, 'warning');
+        toast.warning(`${removedCount} invalid item(s) removed from cart`, {
+          position: "top-right",
+          autoClose: 4000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          icon: "⚠️"
+        });
 
         // Optionally clean up the cart on the server
         if (validCartItems.length === 0) {
@@ -361,7 +325,15 @@ const CartPage = () => {
     } catch (err) {
       console.error('Error fetching cart:', err);
       setError(err.response?.data?.message || 'Failed to load cart');
-      showToast('Failed to load cart items', 'error');
+      toast.error('Failed to load cart items', {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        icon: "❌"
+      });
       setLoading(false);
     }
   };
@@ -436,10 +408,26 @@ const CartPage = () => {
       }
 
       window.dispatchEvent(new CustomEvent('cartUpdated'));
-      showToast('Cart updated successfully!', 'success');
+      toast.success('Cart updated successfully', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        icon: "✅"
+      });
     } catch (err) {
       console.error('Error updating quantity:', err);
-      showToast('Failed to update quantity', 'error');
+      toast.error('Failed to update quantity', {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        icon: "❌"
+      });
     } finally {
       setUpdatingItems(prev => {
         const newSet = new Set(prev);
@@ -477,10 +465,26 @@ const CartPage = () => {
       }
 
       window.dispatchEvent(new CustomEvent('cartUpdated'));
-      showToast(`${productName} removed from cart`, 'success');
+      toast.success(`${productName} removed from cart`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        icon: "✅"
+      });
     } catch (err) {
       console.error('Error removing from cart:', err);
-      showToast('Failed to remove item from cart', 'error');
+      toast.error('Failed to remove item from cart', {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        icon: "❌"
+      });
     } finally {
       setUpdatingItems(prev => {
         const newSet = new Set(prev);
@@ -502,10 +506,26 @@ const CartPage = () => {
       setCartItems([]);
       setShowClearConfirm(false);
       window.dispatchEvent(new CustomEvent('cartUpdated'));
-      showToast('Cart cleared successfully!', 'success');
+      toast.success('Cart cleared successfully', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        icon: "✅"
+      });
     } catch (err) {
       console.error('Error clearing cart:', err);
-      showToast('Failed to clear cart', 'error');
+      toast.error('Failed to clear cart', {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        icon: "❌"
+      });
     }
   };
 
@@ -531,13 +551,29 @@ const CartPage = () => {
   const handleCheckout = () => {
     const token = localStorage.getItem('token');
     if (!token) {
-      showToast('Please sign in to continue with checkout', 'warning');
+      toast.warning('Please sign in to continue with checkout', {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        icon: "⚠️"
+      });
       navigate('/signin');
       return;
     }
 
     if (cartItems.length === 0) {
-      showToast('Your cart is empty. Add some items before checkout.', 'warning');
+      toast.warning('Your cart is empty. Add some items before checkout.', {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        icon: "⚠️"
+      });
       return;
     }
 
@@ -582,16 +618,18 @@ const CartPage = () => {
       />
 
       {/* Toast Container */}
-      <div className="toast-container">
-        {toasts.map((toast) => (
-          <Toast
-            key={toast.id}
-            message={toast.message}
-            type={toast.type}
-            onClose={() => removeToast(toast.id)}
-          />
-        ))}
-      </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
 
       {/* Confirmation Modal */}
       <ConfirmationModal

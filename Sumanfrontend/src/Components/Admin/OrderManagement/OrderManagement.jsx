@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  ShoppingBag, 
-  ExternalLink, 
-  Edit, 
-  Search, 
+import {
+  ShoppingBag,
+  ExternalLink,
+  Edit,
+  Search,
   Filter,
   Calendar,
   DollarSign,
@@ -57,9 +57,9 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
         ...(statusFilter && { status: statusFilter }),
         ...(paymentFilter && { paymentStatus: paymentFilter })
       });
-      
+
       const response = await api.get(`/admin/orders/stats?${params}`, adminToken);
-      
+
       if (response.success) {
         setOrders(response.data.recentOrdersDetails || []);
         // Note: Add pagination info to API response
@@ -75,7 +75,7 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
   const fetchOrderStats = async () => {
     try {
       const response = await api.get('/admin/orders/stats', adminToken);
-      
+
       if (response.success) {
         setOrderStats(response.data);
       }
@@ -89,14 +89,14 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
 
     try {
       setIsLoading(true);
-      
+
       const response = await api.put(`/orders/${selectedOrder._id}/status`, {
         status: newStatus
       }, adminToken);
-      
+
       if (response.success) {
-        setOrders(prev => prev.map(order => 
-          order._id === selectedOrder._id 
+        setOrders(prev => prev.map(order =>
+          order._id === selectedOrder._id
             ? { ...order, status: newStatus }
             : order
         ));
@@ -115,7 +115,7 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
     try {
       setIsLoading(true);
       const response = await api.get(`/orders/${orderId}`, adminToken);
-      
+
       if (response.success) {
         setSelectedOrder(response.data);
         setShowOrderDetails(true);
@@ -306,9 +306,9 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        
-        <select 
-          value={statusFilter} 
+
+        <select
+          value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
           className="admin-form-select"
         >
@@ -317,9 +317,9 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
             <option key={status.value} value={status.value}>{status.label}</option>
           ))}
         </select>
-        
-        <select 
-          value={paymentFilter} 
+
+        <select
+          value={paymentFilter}
           onChange={(e) => setPaymentFilter(e.target.value)}
           className="admin-form-select"
         >
@@ -329,7 +329,7 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
           <option value="failed">Failed</option>
           <option value="refunded">Refunded</option>
         </select>
-        
+
         <button className="admin-btn admin-btn-outline">
           <Filter className="icon" />
           More Filters
@@ -459,7 +459,7 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
           >
             Previous
           </button>
-          
+
           {Array.from({ length: Math.min(totalPages, 5) }, (_, index) => {
             const page = index + 1;
             return (
@@ -472,7 +472,7 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
               </button>
             );
           })}
-          
+
           <button
             onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
@@ -496,7 +496,7 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
                 ×
               </button>
             </div>
-            
+
             <div className="modal-content">
               {/* Order Status and Basic Info */}
               <div className="order-header-section">
@@ -509,7 +509,7 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
                 <div className="order-meta">
                   <p><strong>Order Date:</strong> {formatDate(selectedOrder.createdAt)}</p>
                   <p><strong>Payment Method:</strong> {selectedOrder.paymentMethod}</p>
-                  <p><strong>Payment Status:</strong> 
+                  <p><strong>Payment Status:</strong>
                     <span className={`payment-badge ${selectedOrder.paymentStatus === 'paid' ? 'payment-paid' : selectedOrder.paymentStatus === 'failed' ? 'payment-failed' : 'payment-pending'}`}>
                       {selectedOrder.paymentStatus}
                     </span>
@@ -592,29 +592,29 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
                 </div>
               </div>
             </div>
-            
+
             <div className="admin-modal-actions">
-              <button 
+              <button
                 className="admin-btn admin-btn-outline"
                 onClick={() => setShowOrderDetails(false)}
               >
                 Close
               </button>
-              <button 
+              <button
                 className="admin-btn admin-btn-secondary"
                 onClick={() => downloadOrderPDF(selectedOrder._id, selectedOrder.paymentMethod)}
               >
                 <FileText className="icon" />
                 Download {selectedOrder.paymentMethod === 'cod' ? 'Bill' : 'Paid Invoice'}
               </button>
-              <button 
+              <button
                 className="admin-btn admin-btn-outline"
                 onClick={() => viewOrderPDF(selectedOrder._id, selectedOrder.paymentMethod)}
               >
                 <ExternalLink className="icon" />
                 View {selectedOrder.paymentMethod === 'cod' ? 'Bill' : 'Paid Invoice'}
               </button>
-              <button 
+              <button
                 className="admin-btn admin-btn-primary"
                 onClick={() => {
                   setNewStatus(selectedOrder.status);
@@ -642,7 +642,7 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
                 ×
               </button>
             </div>
-            
+
             <div className="modal-content">
               <div className="current-status">
                 <p><strong>Current Status:</strong></p>
@@ -650,11 +650,11 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
                   {selectedOrder.status}
                 </span>
               </div>
-              
+
               <div className="admin-form-group">
                 <label className="admin-form-label">New Status</label>
-                <select 
-                  value={newStatus} 
+                <select
+                  value={newStatus}
                   onChange={(e) => setNewStatus(e.target.value)}
                   className="admin-form-select"
                 >
@@ -664,15 +664,15 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
                 </select>
               </div>
             </div>
-            
+
             <div className="admin-modal-actions">
-              <button 
+              <button
                 className="admin-btn admin-btn-outline"
                 onClick={() => setShowStatusUpdateModal(false)}
               >
                 Cancel
               </button>
-              <button 
+              <button
                 className="admin-btn admin-btn-primary"
                 onClick={handleStatusUpdate}
                 disabled={newStatus === selectedOrder.status}

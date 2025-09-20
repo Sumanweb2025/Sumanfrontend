@@ -1,81 +1,80 @@
 .iyappaa-footer {
   background: white;
   padding: 40px 30px 20px;
-  font-family: 'Segoe UI', sans-serif;
   color: #000;
 }
 
-.footer-main {
+.footer-part-main {
   display: flex;
   flex-wrap: wrap;
-  gap: 30px;
+  gap: 40px;
   justify-content: space-between;
 }
 
-.footer-left {
-  flex: 1 1 200px;
-  min-width: 180px;
+.footer-part-left {
+  flex: 1 1 240px;
+  /* min-width: 180px; */
 }
 
-.footer-logo {
-  width: 120px;
-  margin-bottom: 8px;
+.footer-part-logo {
+  width: 140px;
+  margin-bottom: 10px;
 }
 
-.footer-tagline {
-  font-size: 13px;
+.footer-part-tagline {
+  font-size: 14px;
   color: gray;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
 }
 
-.footer-contact {
-  font-size: 13px;
-  margin-bottom: 3px;
+.footer-part-contact {
+  font-size: 14px;
+  margin-bottom: 5px;
 }
 
 .red-text {
   color: #d40000;
 }
 
-.footer-column {
-  flex: 1 1 160px;
-  min-width: 140px;
+.footer-part-column {
+  flex: 1 1 200px;
+  /* min-width: 140px; */
 }
 
-.footer-column h4 {
+.footer-part-column h4 {
   margin-bottom: 8px;
   font-size: 15px;
   font-weight: 600;
 }
 
-.footer-column p {
+.footer-part-column p {
   margin: 4px 0;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.3;
 }
 
-.footer-column ul {
+.footer-part-column ul {
   padding: 0;
   margin: 0;
 }
 
-.footer-column ul li {
+.footer-part-column ul li {
   list-style: none;
   margin: 4px 0;
 }
 
-.footer-column ul li a {
+.footer-part-column ul li a {
   text-decoration: none;
   color: gray;
-  font-size: 13px;
+  font-size: 14px;
   transition: color 0.3s;
 }
 
-.footer-column ul li a:hover {
+.footer-part-column ul li a:hover {
   color: #d40000;
 }
 
-.footer-bottom {
+.footer-part-bottom {
   margin-top: 30px;
   border-top: 1px solid #ccc;
   padding-top: 15px;
@@ -86,35 +85,35 @@
   gap: 15px;
 }
 
-.footer-social {
+.footer-part-social {
   display: flex;
   gap: 15px;
   font-size: 18px;
 }
 
-.footer-social svg {
+.footer-part-social svg {
   color: #555;
   transition: color 0.3s;
   cursor: pointer;
 }
 
-.footer-social svg:hover {
+.footer-part-social svg:hover {
   color: #d40000;
 }
 
-.footer-copyright {
+.footer-part-copyright {
   font-size: 11px;
   color: #777;
   text-align: center;
   flex: 1;
 }
 
-.footer-payments {
+.footer-part-payments {
   display: flex;
   justify-content: flex-end;
 }
 
-.footer-payments img {
+.footer-part-payments img {
   width: 130px;
 }
 
@@ -123,85 +122,85 @@
   .iyappaa-footer {
     padding: 20px 15px 15px;
   }
-  
-  .footer-main {
+
+  .footer-part-main {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 15px 20px;
     justify-content: start;
   }
-  
-  .footer-left {
+
+  .footer-part-left {
     grid-column: 1 / -1;
     margin-bottom: 10px;
     text-align: center;
   }
-  
-  .footer-logo {
+
+  .footer-part-logo {
     width: 100px;
     margin-bottom: 5px;
   }
-  
-  .footer-tagline {
+
+  .footer-part-tagline {
     font-size: 12px;
     margin-bottom: 3px;
   }
-  
-  .footer-contact {
+
+  .footer-part-contact {
     font-size: 12px;
     margin-bottom: 2px;
   }
-  
-  .footer-column {
+
+  .footer-part-column {
     min-width: auto;
   }
-  
-  .footer-column h4 {
+
+  .footer-part-column h4 {
     margin-bottom: 8px;
     font-size: 14px;
     font-weight: 600;
     color: #000;
   }
-  
-  .footer-column p {
+
+  .footer-part-column p {
     margin: 3px 0;
     font-size: 12px;
     line-height: 1.4;
   }
-  
-  .footer-column ul li {
+
+  .footer-part-column ul li {
     margin: 5px 0;
   }
-  
-  .footer-column ul li a {
+
+  .footer-part-column ul li a {
     font-size: 12px;
     line-height: 1.3;
   }
-  
-  .footer-bottom {
+
+  .footer-part-bottom {
     margin-top: 20px;
     padding-top: 12px;
     flex-direction: column;
     text-align: center;
     gap: 10px;
   }
-  
-  .footer-social {
+
+  .footer-part-social {
     gap: 15px;
     font-size: 16px;
     justify-content: center;
   }
   
-  .footer-copyright {
+  .footer-part-copyright {
     font-size: 10px;
     margin: 5px 0;
   }
-  
-  .footer-payments {
+
+  .footer-part-payments {
     justify-content: center;
   }
-  
-  .footer-payments img {
+
+  .footer-part-payments img {
     width: 110px;
   }
 }
@@ -210,76 +209,76 @@
   .iyappaa-footer {
     padding: 10px 20px 10px;
   }
-  
-  .footer-main {
+
+  .footer-part-main {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     gap: 8px;
   }
-  
-  .footer-left {
+
+  .footer-part-left {
     text-align: center;
     margin-bottom: 8px;
   }
-  
-  .footer-logo {
+
+  .footer-part-logo {
     width: 90px;
     margin-bottom: 4px;
   }
-  
-  .footer-tagline {
+
+  .footer-part-tagline {
     font-size: 11px;
     margin-bottom: 2px;
   }
-  
-  .footer-contact {
+
+  .footer-part-contact {
     font-size: 11px;
     margin-bottom: 1px;
   }
-  
-  .footer-column {
+
+  .footer-part-column {
     margin-bottom: 8px;
   }
-  
-  .footer-column h4 {
+
+  .footer-part-column h4 {
     margin-bottom: 6px;
     font-size: 13px;
     text-align: left;
   }
-  
-  .footer-column p {
+
+  .footer-part-column p {
     margin: 2px 0;
     font-size: 11px;
     line-height: 1.3;
     text-align: left;
   }
-  
-  .footer-column ul li {
+
+  .footer-part-column ul li {
     margin: 3px 0;
   }
-  
-  .footer-column ul li a {
+
+  .footer-part-column ul li a {
     font-size: 11px;
   }
-  
-  .footer-bottom {
+
+  .footer-part-bottom {
     margin-top: 15px;
     padding-top: 10px;
     gap: 8px;
   }
-  
-  .footer-social {
+
+  .footer-part-social {
     gap: 12px;
     font-size: 15px;
   }
-  
-  .footer-copyright {
+
+  .footer-part-copyright {
     font-size: 9px;
     margin: 4px 0;
   }
-  
-  .footer-payments img {
+
+  .footer-part-payments img {
     width: 100px;
   }
 }
@@ -288,70 +287,70 @@
   .iyappaa-footer {
     padding: 12px 10px 10px;
   }
-  
-  .footer-main {
+
+  .footer-part-main {
     gap: 10px;
   }
-  
-  .footer-left {
+
+  .footer-part-left {
     margin-bottom: 6px;
   }
-  
-  .footer-logo {
+
+  .footer-part-logo {
     width: 85px;
     margin-bottom: 3px;
   }
-  
-  .footer-tagline {
+
+  .footer-part-tagline {
     font-size: 10px;
     margin-bottom: 1px;
   }
-  
-  .footer-contact {
+
+  .footer-part-contact {
     font-size: 10px;
     margin-bottom: 1px;
   }
-  
-  .footer-column {
+
+  .footer-part-column {
     margin-bottom: 6px;
   }
-  
-  .footer-column h4 {
+
+  .footer-part-column h4 {
     margin-bottom: 4px;
     font-size: 12px;
   }
-  
-  .footer-column p {
+
+  .footer-part-column p {
     margin: 1px 0;
     font-size: 10px;
     line-height: 1.2;
   }
-  
-  .footer-column ul li {
+
+  .footer-part-column ul li {
     margin: 2px 0;
   }
-  
-  .footer-column ul li a {
+
+  .footer-part-column ul li a {
     font-size: 10px;
   }
-  
-  .footer-bottom {
+
+  .footer-part-bottom {
     margin-top: 12px;
     padding-top: 8px;
     gap: 6px;
   }
-  
-  .footer-social {
+
+  .footer-part-social {
     gap: 10px;
     font-size: 14px;
   }
-  
-  .footer-copyright {
+
+  .footer-part-copyright {
     font-size: 8px;
     margin: 3px 0;
   }
-  
-  .footer-payments img {
+
+  .footer-part-payments img {
     width: 95px;
   }
 }
@@ -361,39 +360,39 @@
   .iyappaa-footer {
     padding: 10px 8px 8px;
   }
-  
-  .footer-main {
+
+  .footer-part-main {
     gap: 8px;
   }
-  
-  .footer-left {
+
+  .footer-part-left {
     margin-bottom: 5px;
   }
-  
-  .footer-logo {
+
+  .footer-part-logo {
     width: 80px;
   }
-  
-  .footer-column {
+
+  .footer-part-column {
     margin-bottom: 5px;
   }
-  
-  .footer-column h4 {
+
+  .footer-part-column h4 {
     margin-bottom: 3px;
     font-size: 11px;
   }
-  
-  .footer-column p,
-  .footer-column ul li a {
+
+  .footer-part-column p,
+  .footer-part-column ul li a {
     font-size: 9px;
   }
-  
-  .footer-bottom {
+
+  .footer-part-bottom {
     margin-top: 10px;
     padding-top: 6px;
   }
-  
-  .footer-payments img {
+
+  .footer-part-payments img {
     width: 90px;
   }
 }

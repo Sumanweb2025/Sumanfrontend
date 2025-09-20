@@ -257,8 +257,8 @@
   align-items: flex-start;
 }
 
-.iyyapa-main-content .iyyapa-page-header{
-  display:flex;
+.iyyapa-main-content .iyyapa-page-header {
+  display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
@@ -652,6 +652,7 @@
   background-color: #388e3c;
   transform: translateY(-1px);
 }
+
 .iyyapa-add-to-cart-btn.sold-out-btn {
   background: #6c757d;
   color: white;
@@ -795,6 +796,7 @@
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -806,6 +808,7 @@
     opacity: 0;
     transform: translateY(50px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -832,12 +835,12 @@
     max-width: 1400px;
     padding: 30px;
   }
-  
+
   .iyyapa-products-grid {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 25px;
   }
-  
+
   .iyyapa-sidebar {
     width: 320px;
   }
@@ -849,12 +852,12 @@
     max-width: 1100px;
     padding: 25px;
   }
-  
+
   .iyyapa-products-grid {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
   }
-  
+
   .iyyapa-sidebar {
     width: 280px;
   }
@@ -865,12 +868,12 @@
   .iyyapa-container {
     padding: 20px;
   }
-  
+
   .iyyapa-page-content {
     flex-direction: column;
     gap: 20px;
   }
-  
+
   .iyyapa-sidebar {
     width: 100%;
     position: static;
@@ -880,7 +883,7 @@
     gap: 20px;
     padding: 15px;
   }
-  
+
   .iyyapa-filter-section {
     margin-bottom: 0;
     border-bottom: none;
@@ -888,28 +891,28 @@
     border-right: 1px solid #eee;
     padding-right: 15px;
   }
-  
+
   .iyyapa-filter-section:last-child {
     border-right: none;
     padding-right: 0;
   }
-  
+
   .iyyapa-products-grid {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 18px;
   }
-  
+
   .iyyapa-page-header {
     flex-direction: column;
     gap: 15px;
     text-align: center;
     padding: 15px;
   }
-  
+
   .iyyapa-page-header h1 {
     font-size: 24px;
   }
-  
+
   .iyyapa-sort-controls {
     justify-content: center;
   }
@@ -942,13 +945,13 @@
     font-size: 1.5rem;
     margin-bottom: 25px;
   }
-  
+
   .iyyapa-category-image {
     width: 50px;
     height: 50px;
     margin-bottom: 10px;
   }
-  
+
   .iyyapa-category-name {
     font-size: 0.8rem;
   }
@@ -973,12 +976,12 @@
   .iyyapa-container {
     padding: 15px;
   }
-  
+
   .iyyapa-page-content {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .iyyapa-sidebar {
     width: 100%;
     position: static;
@@ -986,51 +989,51 @@
     display: block;
     padding: 15px;
   }
-  
+
   .iyyapa-filter-section {
     margin-bottom: 20px;
     border-bottom: 1px solid #eee;
     padding-bottom: 15px;
   }
-  
+
   .iyyapa-products-grid {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 15px;
   }
-  
+
   .iyyapa-page-header {
     flex-direction: column;
     gap: 12px;
     text-align: center;
     padding: 12px;
   }
-  
+
   .iyyapa-page-header h1 {
     font-size: 22px;
   }
-  
+
   .iyyapa-product-image-container {
     height: 180px;
   }
-  
+
   .iyyapa-product-info {
     padding: 12px;
   }
-  
+
   .iyyapa-product-name {
     font-size: 14px;
   }
-  
+
   .iyyapa-product-price {
     font-size: 16px;
   }
-  
+
   .iyyapa-gram-button {
     padding: 3px 8px;
     font-size: 10px;
     min-width: 40px;
   }
-  
+
   .iyyapa-gram-variants {
     gap: 4px;
   }
@@ -1041,120 +1044,120 @@
   .iyyapa-container {
     padding: 10px;
   }
-  
+
   .iyyapa-page-content {
     flex-direction: column;
     gap: 10px;
   }
-  
+
   .iyyapa-sidebar {
     width: 100%;
     position: static;
     margin-bottom: 15px;
     padding: 12px;
   }
-  
+
   .iyyapa-filter-section {
     margin-bottom: 15px;
     border-bottom: 1px solid #eee;
     padding-bottom: 12px;
   }
-  
+
   .iyyapa-filter-section h3 {
     font-size: 14px;
     margin-bottom: 10px;
   }
-  
+
   .iyyapa-products-grid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 12px;
   }
-  
+
   .iyyapa-page-header {
     flex-direction: column;
     gap: 10px;
     text-align: center;
     padding: 10px;
   }
-  
+
   .iyyapa-page-header h1 {
     font-size: 20px;
   }
-  
+
   .iyyapa-sort-controls {
     justify-content: center;
     flex-wrap: wrap;
   }
-  
+
   .iyyapa-sort-select {
     font-size: 12px;
     padding: 6px 10px;
   }
-  
+
   .iyyapa-product-card {
     border-radius: 6px;
   }
-  
+
   .iyyapa-product-image-container {
     height: 160px;
   }
-  
+
   .iyyapa-product-info {
     padding: 10px;
   }
-  
+
   .iyyapa-product-name {
     font-size: 13px;
     line-height: 1.2;
   }
-  
+
   .iyyapa-product-brand {
     font-size: 11px;
   }
-  
+
   .iyyapa-product-price {
     font-size: 15px;
   }
-  
+
   .iyyapa-product-piece {
     font-size: 11px;
   }
-  
+
   .iyyapa-add-to-cart-btn {
     padding: 8px;
     font-size: 12px;
   }
-  
+
   .iyyapa-wishlist-btn {
     width: 30px;
     height: 30px;
     font-size: 14px;
   }
-  
+
   .iyyapa-pagination {
     gap: 3px;
     flex-wrap: wrap;
     justify-content: center;
   }
-  
+
   .iyyapa-pagination-btn {
     padding: 6px 10px;
     font-size: 12px;
   }
-  
+
   .iyyapa-deal-items {
     gap: 8px;
   }
-  
+
   .iyyapa-deal-image {
     width: 40px;
     height: 40px;
   }
-  
+
   .iyyapa-deal-name {
     font-size: 12px;
   }
-  
+
   .iyyapa-deal-price {
     font-size: 13px;
   }
@@ -1187,12 +1190,12 @@
     font-size: 1.3rem;
     margin-bottom: 20px;
   }
-  
+
   .iyyapa-category-image {
     width: 40px;
     height: 40px;
   }
-  
+
   .iyyapa-category-name {
     font-size: 0.7rem;
   }
@@ -1210,13 +1213,13 @@
   .iyyapa-carousel-nav.next {
     right: 10px;
   }
-  
+
   .iyyapa-gram-button {
     padding: 2px 6px;
     font-size: 9px;
     min-width: 35px;
   }
-  
+
   .iyyapa-gram-variants {
     gap: 3px;
   }
@@ -1228,28 +1231,28 @@
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 10px;
   }
-  
+
   .iyyapa-product-image-container {
     height: 140px;
   }
-  
+
   .iyyapa-product-info {
     padding: 8px;
   }
-  
+
   .iyyapa-product-name {
     font-size: 12px;
   }
-  
+
   .iyyapa-product-price {
     font-size: 14px;
   }
-  
+
   .iyyapa-add-to-cart-btn {
     padding: 6px;
     font-size: 11px;
   }
-  
+
   .iyyapa-gram-button {
     padding: 2px 4px;
     font-size: 8px;
@@ -1309,9 +1312,11 @@
     transform: translateX(-100%) translateY(-100%) rotate(45deg);
     opacity: 0;
   }
+
   50% {
     opacity: 1;
   }
+
   100% {
     transform: translateX(100%) translateY(100%) rotate(45deg);
     opacity: 0;
