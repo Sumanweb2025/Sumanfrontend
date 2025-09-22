@@ -75,7 +75,7 @@ const Navbar = () => {
   ];
 
   const brandLinks = [
-    { name: 'Iyyappa', path: '/brands/iyyappa' },
+    { name: 'Iyappaa', path: '/brands/iyyappa' },
     { name: 'Amrith', path: '/brands/amrith' },
     { name: 'Venba', path: '/brands/venba' },
     { name: 'Little Krishna', path: '/brands/little-krishna' },
@@ -172,7 +172,7 @@ const Navbar = () => {
       <div className="phone-info">
         <FaPhoneAlt />
         <span className="call-text">Call Us At</span>
-        <span className="phone-number">+1 647 573 6363</span>
+        <span className="phone-number">+1 416 562 6363</span>
       </div>
     </div>
   );

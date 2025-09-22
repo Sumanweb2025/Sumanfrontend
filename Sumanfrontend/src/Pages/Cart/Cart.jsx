@@ -730,7 +730,7 @@ const CartPage = () => {
 
                   <div className="summary-row">
                     <span>Shipping:</span>
-                    <span>{shipping === 0 ? 'FREE' : `${shipping.toFixed(2)}`}</span>
+                    <span>{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span>
                   </div>
 
                   {shipping === 0 && (
