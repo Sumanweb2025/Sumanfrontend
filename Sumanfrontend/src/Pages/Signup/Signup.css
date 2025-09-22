@@ -1,50 +1,44 @@
-
 .signup-wrapper {
   display: flex;
-  height: 100vh;
-  background: url('../../assets/72103edc-f441-4e8f-8f71-9cf82c73b111.png') center center / cover no-repeat;
-  overflow: hidden;
-}
-
-/* Left Section - Promo */
-.signup-left {
-  flex: 1;
-  background-size: cover;
-  color: white;
-  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px;
-  text-align: center;
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 20px;
 }
 
-.promo-text h1 {
-  font-size: 2.8rem;
-  font-weight: bold;
-  margin-bottom: 20px;
-  line-height: 1.2;
+/* Logo section at top-left of form */
+.signup-form-logo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+  width: 100%;
 }
 
-.promo-text p {
-  font-size: 1.2rem;
-  line-height: 1.6;
-  opacity: 0.9;
+.signup-form-logo img {
+  height: 70px;
+  width: auto;
+  object-fit: contain;
 }
 
-/* Right Section - Form */
+.signup-form-logo-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Form Container */
 .signup-right {
-  flex: 1;
-  background: rgba(190, 172, 172, 0.637);
-  border-radius: 20px;
-  padding: 40px 30px;
-  margin: 40px;
-  /* border: 1px solid rgba(255, 255, 255, 0.3); */
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  /* backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px); */
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  width: 100%;
+  max-width: 400px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   position: relative;
 }
@@ -57,23 +51,21 @@
 
 }
 
-.form-title {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 8px;
-  color: #2c3e50;
+.signup-form-subtitle {
+  font-size: 14px;
+  color: #999;
+  margin-bottom: 6px;
   text-align: center;
   width: 100%;
-  max-width: 380px;
 }
 
-.form-subtitle {
-  font-size: 1rem;
-  color: #5a6c7d;
-  margin-bottom: 15px;
+.signup-form-title {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #333;
   text-align: center;
   width: 100%;
-  max-width: 380px;
 }
 
 /* Form Container */
@@ -82,15 +74,15 @@
   flex-direction: column;
   width: 100%;
   max-width: 380px;
-  gap: 8px;
+  gap: 10px;
 }
 
 /* API Error */
-.error-message-container {
+.signup-error-message-container {
   width: 100%;
 }
 
-.error-message {
+.signup-error-message {
   background-color: #ffeaea;
   color: #e74c3c;
   padding: 12px 16px;
@@ -103,7 +95,7 @@
 }
 
 /* Form Groups */
-.form-group {
+.signup-form-group {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -112,26 +104,25 @@
 
 .signup-form input {
   width: 100%;
-  height: 50px;
-  padding: 14px 18px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 12px;
-  font-size: 1rem;
-  background: rgba(255, 255, 255, 0.9);
-  transition: all 0.3s ease;
+  height: 48px;
+  padding: 12px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  transition: all 0.2s ease;
   box-sizing: border-box;
 }
 
 .signup-form input::placeholder {
-  color: #7f8c8d;
+  color: #999;
   font-weight: 400;
 }
 
 .signup-form input:focus {
-  border-color: #ff4757;
+  border-color: #4CAF50;
   outline: none;
-  background: rgba(255, 255, 255, 1);
-  box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.1);
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
 }
 
 .signup-form input.error {
@@ -140,49 +131,58 @@
 }
 
 /* Error Text */
-.error-text-wrapper {
+.signup-error-text-wrapper {
   height: 20px;
   margin-top: 6px;
 }
 
-.error-text {
+.signup-error-text {
   font-size: 0.85rem;
   color: #e74c3c;
   font-weight: 500;
 }
 
 /* Terms & Conditions */
-.form-options {
+.signup-form-options {
   display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  font-size: 0.95rem;
-  color: #2c3e50;
-  margin: 2px 0;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  width: 100%;
+  margin: 12px 0 8px 0;
 }
 
-.form-options input[type="checkbox"] {
+.signup-agree-terms{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.signup-form-options input[type="checkbox"] {
   width: 16px;
   height: 16px;
   margin-top: 2px;
   cursor: pointer;
-  accent-color: #ff4757;
+  accent-color: #4CAF50;
   flex-shrink: 0;
 }
 
-.form-options label {
+.signup-form-options label {
   cursor: pointer;
   line-height: 1.4;
+  font-size: 13px;
+  color: #666;
 }
 
-.form-options a {
-  color: #d12735;
+.signup-form-options a {
+  color: #4CAF50;
   text-decoration: none;
-  font-weight: 500;
+  font-size:13px;
 }
 
-.form-options a:hover {
-  text-decoration: underline;
+.signup-agree-terms a:hover {
+  color:#e31e24;
 }
 
 /* Button */
@@ -193,22 +193,19 @@
 
 .signup-btn {
   width: 100%;
-  height: 52px;
-  background: linear-gradient(135deg, #ff4757, #e84118);
+  height: 48px;
+  background: #4CAF50;
   color: white;
   border: none;
-  border-radius: 12px;
-  font-size: 1.1rem;
+  border-radius: 6px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+  transition: all 0.2s ease;
 }
 
 .signup-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #e84118, #c44569);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4);
+  background: #45a049;
 }
 
 .signup-btn:disabled {
@@ -222,191 +219,167 @@
 .signup-footer {
   margin-top: 10px;
   text-align: center;
-  font-size: 1rem;
+  font-size: 13px;
   width: 100%;
-  max-width: 380px;
 }
 
 .signup-footer p {
   margin: 0;
-  color: #2c3e50;
+  color: #5f6368;
 }
 
 .signup-footer a {
-  color: #d12735;
+  color: #4CAF50;
   text-decoration: none;
   font-weight: 600;
 }
 
 .signup-footer a:hover {
-  text-decoration: underline;
+  color:#e31e24;
 }
 
-.signup-toast {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 9999;
+/* Custom React-Toastify Styles */
+.Toastify__toast-container {
+  width: auto;
   min-width: 320px;
   max-width: 400px;
+}
+
+.Toastify__toast--success {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  border: 1px solid #b8dacc;
+  border-left: 4px solid #28a745;
+  color: #155724;
   border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  animation: slideInRight 0.4s ease-out;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  overflow: hidden;
-}
-
-/* Success Toast - Dark Theme with Green Accent */
-.signup-toast-success {
-  background: #1e1e1e; /* Dark background like VS Code */
-  border-left: 4px solid #4BB543; /* Green accent border */
-  color: white;
-}
-
-/* Error Toast - Dark Theme with Red Accent */
-.signup-toast-error {
-  background: #1e1e1e; /* Dark background */
-  border-left: 4px solid #f85149; /* Red accent border */
-  color: white;
-}
-
-/* Info Toast - Dark Theme with Blue Accent */
-.signup-toast-info {
-  background: #1e1e1e; /* Dark background */
-  border-left: 4px solid #0ea5e9; /* Blue accent border */
-  color: white;
-}
-
-.signup-toast .toast-content {
-  display: flex;
-  align-items: flex-start;
-  padding: 16px 20px;
-  gap: 12px;
-}
-
-.signup-toast .toast-icon {
-  font-size: 18px;
-  font-weight: bold;
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  margin-top: 2px;
-}
-
-/* Success icon - Green checkmark on dark background */
-.signup-toast-success .toast-icon {
-  background: rgba(75, 181, 67, 0.2); /* Green tint background */
-  color: #4BB543; /* Green checkmark */
-  font-size: 16px;
-  border: 1px solid rgba(75, 181, 67, 0.3);
-}
-
-/* Error icon */
-.signup-toast-error .toast-icon {
-  background: rgba(248, 81, 73, 0.2); /* Red tint background */
-  color: #f85149; /* Red X */
-  font-size: 16px;
-  border: 1px solid rgba(248, 81, 73, 0.3);
-}
-
-/* Info icon */
-.signup-toast-info .toast-icon {
-  background: rgba(14, 165, 233, 0.2); /* Blue tint background */
-  color: #0ea5e9; /* Blue info icon */
-  font-size: 14px;
-  border: 1px solid rgba(14, 165, 233, 0.3);
-}
-
-.signup-toast .toast-message {
-  flex: 1;
-  font-size: 15px;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.15);
   font-weight: 500;
-  line-height: 1.4;
-  color: white;
-  margin-top: 2px;
 }
 
-.signup-toast .toast-close {
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: rgba(255, 255, 255, 0.8);
+.Toastify__toast--error {
+  background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+  border: 1px solid #f1aeb5;
+  border-left: 4px solid #dc3545;
+  color: #721c24;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.15);
+  font-weight: 500;
+}
+
+.Toastify__close-button {
+  color: #6c757d;
   font-size: 18px;
-  cursor: pointer;
-  padding: 4px;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
   font-weight: bold;
-  margin-top: 2px;
+  opacity: 0.7;
 }
 
-.signup-toast .toast-close:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  transform: scale(1.1);
+.Toastify__close-button:hover {
+  opacity: 1;
+  color: #495057;
 }
+
+.Toastify__progress-bar--success {
+  background: #28a745;
+}
+
+.Toastify__progress-bar--error {
+  background: #dc3545;
+}
+
+.Toastify__toast-body {
+  font-size: 14px;
+  line-height: 1.4;
+  padding: 8px 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.Toastify__toast {
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 8px;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .signup-wrapper {
-    flex-direction: column;
-  }
-
-  .signup-left {
-    height: 180px;
-    padding: 20px;
-  }
-
-  .promo-text h1 {
-    font-size: 1.8rem;
+    padding: 16px;
   }
 
   .signup-right {
-    padding: 30px 20px;
-    margin: 20px;
-    border-radius: 15px;
+    padding: 24px 20px;
+    max-width: 100%;
   }
 
-  .signup-form,
-  .signup-footer {
-    max-width: 320px;
+  .signup-form-title {
+    font-size: 24px;
   }
 
-  .form-title {
-    font-size: 1.7rem;
+  .signup-form-logo-text {
+    font-size: 14px;
+  }
+
+  .signup-form-logo img {
+    height: 30px;
+  }
+
+  .toast {
+    min-width: 280px;
+    right: 16px;
+    top: 16px;
   }
 }
 
 @media (max-width: 480px) {
+  .signup-wrapper {
+    padding: 12px;
+  }
+
   .signup-right {
-    padding: 25px 15px;
-    margin: 15px;
+    padding: 20px 16px;
   }
 
-  .signup-form,
-  .signup-footer {
-    max-width: 280px;
+  .signup-form-title {
+    font-size: 22px;
   }
 
-  .form-title {
-    font-size: 1.5rem;
+  .signup-form-logo {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .signup-form-logo-text {
+    font-size: 13px;
+  }
+
+  .signup-form-logo img {
+    height: 28px;
   }
 
   .signup-form input {
-    height: 48px;
-    padding: 12px 16px;
+    height: 46px;
+    font-size: 16px;
   }
 
   .signup-btn {
-    height: 48px;
-    font-size: 1rem;
+    height: 46px;
+  }
+}
+
+@media (max-width: 360px) {
+  .signup-right {
+    padding: 16px 12px;
+  }
+
+  .signup-form-logo {
+    margin-bottom: 16px;
+  }
+
+  .signup-form-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .signup-form {
+    gap: 14px;
   }
 }

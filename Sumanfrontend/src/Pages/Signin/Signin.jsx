@@ -1,35 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './Signin.css';
 
-
-// Toast Component
-const Toast = ({ message, type, isVisible, onClose }) => {
-  useEffect(() => {
-    if (isVisible) {
-      const timer = setTimeout(() => {
-        onClose();
-      }, 5000); // Auto close after 4 seconds
-
-      return () => clearTimeout(timer);
-    }
-  }, [isVisible, onClose]);
-
-  if (!isVisible) return null;
-
-  return (
-    <div className={`signin-toast signin-toast-${type}`}>
-      <div className="toast-content">
-        <div className="toast-icon">
-          {type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ'}
-        </div>
-        <div className="toast-message">{message}</div>
-        <button className="toast-close" onClick={onClose}>×</button>
-      </div>
-    </div>
-  );
-};
 
 // Google Sign-In Component
 const GoogleSignIn = ({ onSuccess, onError, loading }) => {
@@ -91,11 +66,6 @@ const SignIn = () => {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  const [toast, setToast] = useState({
-    message: '',
-    type: 'info',
-    isVisible: false
-  });
   const [signinData, setSigninData] = useState({
     email: '',
     password: '',
@@ -104,18 +74,6 @@ const SignIn = () => {
 
   const API_URL = import.meta.env.VITE_APP_API_URL;
 
-  // Toast helper functions
-  const showToast = (message, type = 'info') => {
-    setToast({
-      message,
-      type,
-      isVisible: true
-    });
-  };
-
-  const closeToast = () => {
-    setToast(prev => ({ ...prev, isVisible: false }));
-  };
 
   // Helper function to safely store user data with image handling
   const storeUserData = (user, token) => {
@@ -131,13 +89,13 @@ const SignIn = () => {
         name: userDataToStore.name,
         email: userDataToStore.email,
         hasProfileImage: !!userDataToStore.profileImage,
-        profileImageType: userDataToStore.profileImage ? 
+        profileImageType: userDataToStore.profileImage ?
           (userDataToStore.profileImage.startsWith('data:') ? 'base64' : 'url') : 'none'
       });
 
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(userDataToStore));
-      
+
       return true;
     } catch (error) {
       console.error('Error storing user data:', error);
@@ -197,28 +155,34 @@ const SignIn = () => {
         // Always use the nested data structure (consistent with backend)
         const token = response.data.data.token;
         const user = response.data.data.user;
-        
-        console.log('Regular login - User data received:', {
-          name: user.name,
-          email: user.email,
-          profileImage: user.profileImage,
-          picture: user.picture,
-          authProvider: user.authProvider
-        });
 
         // Store user data safely
         const stored = storeUserData(user, token);
-        
+
         if (stored) {
-          showToast(`Welcome back, ${user.name}! `, 'success');
-          
+          toast.success(`Welcome back, ${user.name}! 🎉`, {
+            position: "top-right",
+            autoClose: 4000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
+
           // Navigate after showing toast for a moment
           setTimeout(() => {
             navigate('/', { replace: true });
           }, 1500);
         } else {
           setErrors({ api: 'Failed to save user data. Please try again.' });
-          showToast('Failed to save user data. Please try again.', 'error');
+          toast.error('Failed to save user data. Please try again. ❌', {
+            position: "top-right",
+            autoClose: 4000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
         }
       }
 
@@ -236,19 +200,47 @@ const SignIn = () => {
           setErrors(formattedErrors);
         } else if (data.message) {
           setErrors({ api: data.message });
-          showToast(data.message, 'error');
+          toast.error(data.message + ' ❌', {
+            position: "top-right",
+            autoClose: 4000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
         } else {
           setErrors({ api: 'Sign in failed. Please try again.' });
-          showToast('Sign in failed. Please try again.', 'error');
+          toast.error('Sign in failed. Please try again. ❌', {
+            position: "top-right",
+            autoClose: 4000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
         }
       } else if (error.request) {
         const errorMsg = 'Network error. Please check your connection and try again.';
         setErrors({ api: errorMsg });
-        showToast(errorMsg, 'error');
+        toast.error(errorMsg + ' 🌐', {
+          position: "top-right",
+          autoClose: 4000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       } else {
         const errorMsg = 'An unexpected error occurred. Please try again.';
         setErrors({ api: errorMsg });
-        showToast(errorMsg, 'error');
+        toast.error(errorMsg + ' ❌', {
+          position: "top-right",
+          autoClose: 4000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       }
     } finally {
       setLoading(false);
@@ -260,33 +252,28 @@ const SignIn = () => {
     setErrors({});
 
     try {
-      console.log('Sending Google credential to backend...');
 
       const response = await axios.post(`${API_URL}api/auth/google-auth`, {
         credential
       });
 
-      console.log('Google auth response:', response.data);
-
       if (response.data.success) {
         const { token, user } = response.data.data;
-        
-        console.log('Google login - User data received:', {
-          name: user.name,
-          email: user.email,
-          profileImage: user.profileImage,
-          picture: user.picture,
-          googleProfileImage: user.googleProfileImage,
-          authProvider: user.authProvider,
-          profileImageInfo: user.profileImageInfo
-        });
+
 
         // Store user data safely
         const stored = storeUserData(user, token);
-        
+
         if (stored) {
-          showToast(`Welcome ${user.name}! Google sign-in successful 🚀`, 'success');
-          
+          toast.success(`Welcome ${user.name}! Google sign-in successful 🚀`, {
+            position: "top-right",
+            autoClose: 4000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
+
           // Navigate after showing toast for a moment
           setTimeout(() => {
             navigate('/', { replace: true });
@@ -294,13 +281,20 @@ const SignIn = () => {
         } else {
           const errorMsg = 'Failed to save user data. Please try again.';
           setErrors({ api: errorMsg });
-          showToast(errorMsg, 'error');
+          toast.error(errorMsg + ' ❌', {
+            position: "top-right",
+            autoClose: 4000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
         }
       }
 
     } catch (error) {
       console.error('Google auth error:', error);
-      
+
       let errorMsg = 'Google authentication failed';
       if (error.response && error.response.data) {
         errorMsg = error.response.data.message || errorMsg;
@@ -312,7 +306,14 @@ const SignIn = () => {
         errorMsg = 'An unexpected error occurred. Please try again.';
         setErrors({ api: errorMsg });
       }
-      showToast(errorMsg, 'error');
+      toast.error(errorMsg + ' ❌', {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     } finally {
       setGoogleLoading(false);
     }
@@ -320,71 +321,59 @@ const SignIn = () => {
 
   const handleGoogleError = (errorMessage) => {
     setErrors({ api: errorMessage });
-    showToast(errorMessage, 'error');
+    toast.error(errorMessage + ' ❌', {
+      position: "top-right",
+      autoClose: 4000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
   };
 
   return (
     <div className="signin-wrapper">
-      
-      {/* Toast Notification */}
-      <Toast 
-        message={toast.message}
-        type={toast.type}
-        isVisible={toast.isVisible}
-        onClose={closeToast}
+      {/* Toast Container */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
       />
-      
-
-      <div className="signin-left">
-        <div className="promo-text">
-          <h1>Welcome Back to Iyappaa Sweets & Snacks</h1>
-          <p>Best Sweets and Snacks under one roof<br />Takeaway | Dining | Delivery</p>
-        </div>
+      <div className="signin-form-logo">
+        <img src="/src/assets/logo-title.png" alt="Suman Foods Logo" />
+        <span className="signin-form-logo-text">Iyappaa Sweets & Snacks</span>
       </div>
-
       <div className="signin-right">
-        <h2 className="form-title">Sign In to Your Account</h2>
-        <p className="form-subtitle">Continue your journey</p>
+        <p className="signin-form-subtitle">Please enter your details</p>
+        <h2 className="signin-form-title">Welcome back</h2>
 
-        {errors.api && <div className="error-message">{errors.api}</div>}
-        
-        {/* Google Sign-In Button */}
-        <div className="google-auth-section">
-          <GoogleSignIn 
-            onSuccess={handleGoogleSuccess}
-            onError={handleGoogleError}
-            loading={googleLoading}
-          />
-          {googleLoading && (
-            <div className="google-loading">
-              <span className="spinner"></span> Signing in with Google...
-            </div>
-          )}
-        </div>
+        {errors.api && <div className="signin-error-message">{errors.api}</div>}
 
-        {/* Divider */}
-        <div className="auth-divider">
-          <span>or</span>
-        </div>
-        
         {/* Email/Password Form */}
         <form onSubmit={handleSubmit} className="signin-form">
-          <div className="form-group">
+          <div className="signin-form-group">
             <input
               type="email"
               name="email"
-              placeholder="Email Address"
+              placeholder="Email address"
               value={signinData.email}
               onChange={handleChange}
               className={errors.email ? 'error' : ''}
               autoComplete="email"
             />
-            <div className="error-text-wrapper">
-              <span className="error-text">{errors.email || ''}</span>
+            <div className="signin-error-text-wrapper">
+              <span className="signin-error-text">{errors.email || ''}</span>
             </div>
           </div>
 
-          <div className="form-group">
+          <div className="signin-form-group">
             <input
               type="password"
               name="password"
@@ -394,14 +383,14 @@ const SignIn = () => {
               className={errors.password ? 'error' : ''}
               autoComplete="current-password"
             />
-            <div className="error-text-wrapper">
-              <span className="error-text">{errors.password || ''}</span>
+            <div className="signin-error-text-wrapper">
+              <span className="signin-error-text">{errors.password || ''}</span>
             </div>
           </div>
-          
 
-          <div className="form-options">
-            <div className="remember-me">
+
+          <div className="signin-form-options">
+            <div className="signin-remember-me">
               <input
                 type="checkbox"
                 name="rememberMe"
@@ -412,7 +401,7 @@ const SignIn = () => {
               <label htmlFor="rememberMe">Remember me</label>
             </div>
             <div className="forgot-password">
-              <a href="/forgot-password">Forgot Password?</a>
+              <a href="/forgot-password">Forgot password</a>
             </div>
           </div>
 
@@ -427,8 +416,22 @@ const SignIn = () => {
           </div>
         </form>
 
+        {/* Google Sign-In Button */}
+        <div className="google-auth-section">
+          <GoogleSignIn
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            loading={googleLoading}
+          />
+          {googleLoading && (
+            <div className="google-loading">
+              <span className="spinner"></span> Signing in with Google...
+            </div>
+          )}
+        </div>
+
         <div className="signin-footer">
-          <p>Don't have an account? <a href="/signup">Create Account</a></p>
+          <p>Don't have an account? <a href="/signup">Sign up</a></p>
         </div>
       </div>
     </div>

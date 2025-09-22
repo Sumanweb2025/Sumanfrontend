@@ -6,9 +6,9 @@ import Navbar from '../Navbar/Navbar';
 const Header = () => {
     return (
         <>
-        <TopHeader/>
-        <MainHeader/>
-        <Navbar/>
+            <TopHeader />
+            <MainHeader />
+            <Navbar />
         </>
     )
 }

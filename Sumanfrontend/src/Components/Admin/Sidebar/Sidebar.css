@@ -1,4 +1,3 @@
-
 .sidebar-overlay {
   position: fixed;
   top: 0;
@@ -8,12 +7,6 @@
   background: rgba(0, 0, 0, 0.5);
   z-index: 40;
   display: none;
-}
-
-@media (max-width: 1024px) {
-  .sidebar-overlay {
-    display: block;
-  }
 }
 
 .admin-sidebar {
@@ -34,14 +27,6 @@
 
 .admin-sidebar.mobile-open {
   transform: translateX(0);
-}
-
-@media (min-width: 1025px) {
-  .admin-sidebar {
-    position: static;
-    transform: translateX(0);
-    box-shadow: none;
-  }
 }
 
 /* Sidebar Header */
@@ -107,12 +92,6 @@
 .sidebar-close-btn .icon {
   width: 18px;
   height: 18px;
-}
-
-@media (max-width: 1024px) {
-  .sidebar-close-btn {
-    display: block;
-  }
 }
 
 /* Navigation */
@@ -333,21 +312,257 @@
 } */
 
 /* Mobile Responsive */
-@media (max-width: 480px) {
+@media (max-width: 1024px) {
+  .sidebar-overlay {
+    display: block;
+  }
+
   .admin-sidebar {
+    position: static;
+    transform: translateX(0);
+    box-shadow: none;
+  }
+
+  .sidebar-close-btn {
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar-overlay {
+    display: block;
+  }
+
+  .admin-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
     width: 280px;
   }
-  
+
+  .admin-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-close-btn {
+    display: flex;
+  }
+
   .sidebar-header {
     padding: 16px;
   }
-  
-  .nav-link {
-    padding: 10px 16px;
+
+  .logo-container {
+    gap: 12px;
   }
-  
-  .sidebar-footer {
+
+  .logo {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .company-info h2 {
+    font-size: 18px;
+  }
+
+  .company-info p {
+    font-size: 12px;
+  }
+
+  .nav-section {
     padding: 16px;
+  }
+
+  .nav-section-title {
+    font-size: 11px;
+    margin-bottom: 12px;
+  }
+
+  .nav-link {
+    padding: 12px 16px;
+    gap: 12px;
+  }
+
+  .nav-icon .icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .nav-label {
+    font-size: 14px;
+  }
+
+  .nav-description {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-sidebar {
+    width: 260px;
+  }
+
+  .sidebar-header {
+    padding: 14px;
+  }
+
+  .logo {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+
+  .company-info h2 {
+    font-size: 16px;
+  }
+
+  .company-info p {
+    font-size: 11px;
+  }
+
+  .nav-section {
+    padding: 14px;
+  }
+
+  .nav-link {
+    padding: 10px 14px;
+    gap: 10px;
+  }
+
+  .nav-icon .icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .nav-label {
+    font-size: 13px;
+  }
+
+  .nav-description {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-sidebar {
+    width: 240px;
+  }
+
+  .sidebar-header {
+    padding: 12px;
+  }
+
+  .logo-container {
+    gap: 10px;
+  }
+
+  .logo {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .company-info h2 {
+    font-size: 14px;
+  }
+
+  .company-info p {
+    font-size: 10px;
+  }
+
+  .sidebar-close-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .sidebar-close-btn .icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .nav-section {
+    padding: 12px;
+  }
+
+  .nav-section-title {
+    font-size: 10px;
+    margin-bottom: 10px;
+  }
+
+  .nav-link {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .nav-icon .icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .nav-label {
+    font-size: 12px;
+  }
+
+  .nav-description {
+    font-size: 9px;
+  }
+
+  .active-indicator {
+    width: 2px;
+  }
+
+  .sidebar-footer {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .admin-sidebar {
+    width: calc(100vw - 40px);
+    max-width: 220px;
+  }
+
+  .sidebar-header {
+    padding: 10px;
+  }
+
+  .logo-container {
+    gap: 8px;
+  }
+
+  .logo {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  .company-info h2 {
+    font-size: 12px;
+  }
+
+  .company-info p {
+    font-size: 9px;
+  }
+
+  .nav-section {
+    padding: 10px;
+  }
+
+  .nav-link {
+    padding: 6px 10px;
+    gap: 6px;
+  }
+
+  .nav-label {
+    font-size: 11px;
+  }
+
+  .nav-description {
+    font-size: 8px;
+  }
+
+  .sidebar-footer {
+    padding: 10px;
   }
 }
 
@@ -367,5 +582,25 @@
   
   .footer-content p {
     display: none;
+  }
+}
+
+/* Additional mobile optimizations */
+@media (max-width: 768px) and (max-height: 600px) {
+  .nav-section {
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+  
+  .nav-link {
+    padding: 8px 12px;
+  }
+  
+  .nav-description {
+    display: none;
+  }
+  
+  .sidebar-footer {
+    padding: 12px;
   }
 }

@@ -60,7 +60,7 @@ const Contact = () => {
 
   const contactInfo = [
     {
-      icon: <FaPhone className="contact-icon" />,
+      icon: <FaPhone className="contact-icon"/>,
       title: 'Phone',
       detail: '+1 647-573-6363',
       subdetail: 'Mon–Fri, 9:30 AM – 6:30 PM'
@@ -98,15 +98,12 @@ const Contact = () => {
 
       <div className="contact-page">
         {/* Hero Section */}
-        <section
-          className="contact-hero"
-          style={{
+        <section className="contact-hero" style={{
             backgroundImage: `
               linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
               url('https://images.unsplash.com/photo-1423666639041-f56000c27a9a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')
             `
-          }}
-        >
+          }}>
           <div className="hero-content">
             <motion.h1
               initial={{ opacity: 0, y: -30 }}
@@ -127,15 +124,7 @@ const Contact = () => {
         </section>
 
         {/* Contact Info Cards */}
-        <section
-          className="contact-info-section"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)),
-              url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')
-            `
-          }}
-        >
+        <section className="contact-info-section">
           <div className="contact-container">
             <div className="contact-section-header">
               <h2>Contact Information</h2>
@@ -163,15 +152,7 @@ const Contact = () => {
         </section>
 
         {/* Contact Form Section */}
-        <section
-          className="contact-form-section"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75)),
-              url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')
-            `
-          }}
-        >
+        <section className="contact-form-section">
           <div className="container">
             <div className="form-container">
               <motion.div
@@ -274,10 +255,10 @@ const Contact = () => {
         {/* Map Section */}
         <section className="map-section">
           <div className="container">
-            <div className="section-header">
+            <div className="contact-section-header">
               <h2>Find Us</h2>
               <div className="divider"></div>
-              <p className="section-subtitle">Visit our store in Scarborough, Toronto</p>
+              <p className="contact-section-subtitle">Visit our store in Scarborough, Toronto</p>
             </div>
             <div className="map-container">
               <iframe

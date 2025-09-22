@@ -1,12 +1,12 @@
 import React from 'react';
-import { 
-  Home, 
-  Users, 
-  ShoppingBag, 
-  CreditCard, 
-  Package, 
+import {
+  Home,
+  Users,
+  ShoppingBag,
+  CreditCard,
+  Package,
   TrendingUp,
-  X 
+  X
 } from 'lucide-react';
 import './Sidebar.css';
 
@@ -59,12 +59,12 @@ const Sidebar = ({ activeTab, setActiveTab, isMobileMenuOpen, setIsMobileMenuOpe
     <>
       {/* Mobile Overlay */}
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="sidebar-overlay"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
-      
+
       {/* Sidebar */}
       <div className={`admin-sidebar ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
         {/* Sidebar Header */}
@@ -78,9 +78,9 @@ const Sidebar = ({ activeTab, setActiveTab, isMobileMenuOpen, setIsMobileMenuOpe
               <p>Sweets & Snacks</p>
             </div>
           </div>
-          
+
           {/* Mobile Close Button */}
-          <button 
+          <button
             className="sidebar-close-btn"
             onClick={() => setIsMobileMenuOpen(false)}
           >
@@ -96,7 +96,7 @@ const Sidebar = ({ activeTab, setActiveTab, isMobileMenuOpen, setIsMobileMenuOpe
               {menuItems.map((item) => {
                 const IconComponent = item.icon;
                 const isActive = activeTab === item.id;
-                
+
                 return (
                   <li key={item.id} className="nav-item">
                     <button

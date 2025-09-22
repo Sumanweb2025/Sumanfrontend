@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  TrendingUp, 
+import {
+  TrendingUp,
   TrendingDown,
   Calendar,
   Download,
@@ -11,18 +11,18 @@ import {
   ShoppingBag,
   Users
 } from 'lucide-react';
-import { 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
-  BarChart, 
+  BarChart,
   Bar,
-  PieChart, 
-  Pie, 
+  PieChart,
+  Pie,
   Cell,
   Area,
   AreaChart
@@ -50,7 +50,7 @@ const Analytics = ({ api, adminToken, setIsLoading, setError, handleApiError }) 
     try {
       setLoading(true);
       const response = await api.get(`/admin/analytics?period=${period}`, adminToken);
-      
+
       if (response.success) {
         setAnalyticsData(response.data);
       }
@@ -157,8 +157,8 @@ const Analytics = ({ api, adminToken, setIsLoading, setError, handleApiError }) 
           <p>Track sales performance, revenue trends and customer insights</p>
         </div>
         <div className="header-actions">
-          <select 
-            value={period} 
+          <select
+            value={period}
             onChange={(e) => setPeriod(e.target.value)}
             className="admin-form-select"
           >
@@ -258,13 +258,13 @@ const Analytics = ({ api, adminToken, setIsLoading, setError, handleApiError }) 
               <div className="admin-card-header">
                 <h2 className="admin-card-title">Revenue Trend</h2>
                 <div className="chart-controls">
-                  <button 
+                  <button
                     className={`chart-btn ${selectedMetric === 'revenue' ? 'active' : ''}`}
                     onClick={() => setSelectedMetric('revenue')}
                   >
                     Revenue
                   </button>
-                  <button 
+                  <button
                     className={`chart-btn ${selectedMetric === 'orders' ? 'active' : ''}`}
                     onClick={() => setSelectedMetric('orders')}
                   >
@@ -278,25 +278,25 @@ const Analytics = ({ api, adminToken, setIsLoading, setError, handleApiError }) 
                     <AreaChart data={revenueChartData}>
                       <defs>
                         <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3}/>
-                          <stop offset="95%" stopColor="#22c55e" stopOpacity={0}/>
+                          <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3} />
+                          <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
                         </linearGradient>
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="date" />
                       <YAxis tickFormatter={selectedMetric === 'revenue' ? formatCurrency : formatNumber} />
-                      <Tooltip 
+                      <Tooltip
                         formatter={(value, name) => [
-                          selectedMetric === 'revenue' ? formatCurrency(value) : formatNumber(value), 
+                          selectedMetric === 'revenue' ? formatCurrency(value) : formatNumber(value),
                           name === 'revenue' ? 'Revenue' : 'Orders'
-                        ]} 
+                        ]}
                       />
-                      <Area 
-                        type="monotone" 
-                        dataKey={selectedMetric} 
-                        stroke="#22c55e" 
-                        fillOpacity={1} 
-                        fill="url(#revenueGradient)" 
+                      <Area
+                        type="monotone"
+                        dataKey={selectedMetric}
+                        stroke="#22c55e"
+                        fillOpacity={1}
+                        fill="url(#revenueGradient)"
                       />
                     </AreaChart>
                   </ResponsiveContainer>
@@ -355,8 +355,8 @@ const Analytics = ({ api, adminToken, setIsLoading, setError, handleApiError }) 
                         </div>
                       </div>
                       <div className="product-progress">
-                        <div 
-                          className="progress-bar" 
+                        <div
+                          className="progress-bar"
                           style={{ width: `${(product.sold / topProductsData[0].sold) * 100}%` }}
                         />
                       </div>

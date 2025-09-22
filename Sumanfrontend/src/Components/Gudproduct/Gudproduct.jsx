@@ -48,7 +48,7 @@ const FeaturedProducts = () => {
   // Newsletter subscription handler
   const handleNewsletterSubscription = async (e) => {
     e?.preventDefault();
-    
+
     if (!newsletterEmail) {
       showNewsletterMessage('error', 'Please enter your email address');
       return;
@@ -62,14 +62,14 @@ const FeaturedProducts = () => {
     }
 
     setNewsletterLoading(true);
-    
+
     try {
       // Get user token if available
       const token = localStorage.getItem('token');
       const headers = {
         'Content-Type': 'application/json'
       };
-      
+
       // Add auth header if user is logged in
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
@@ -95,7 +95,7 @@ const FeaturedProducts = () => {
           const userResponse = await axios.get(`${API_URL}api/auth/profile`, {
             headers: { 'Authorization': `Bearer ${token}` }
           });
-          
+
           if (userResponse.data && userResponse.data.name) {
             subscriptionData.name = userResponse.data.name;
           }
@@ -116,7 +116,7 @@ const FeaturedProducts = () => {
       if (response.data) {
         showNewsletterMessage('success', 'Successfully subscribed! Check your email for verification. 🎉');
         setNewsletterEmail('');
-        
+
         // Optional: Track subscription event
         if (window.gtag) {
           window.gtag('event', 'newsletter_subscription', {
@@ -127,9 +127,9 @@ const FeaturedProducts = () => {
       }
     } catch (error) {
       console.error('Newsletter subscription error:', error);
-      
+
       let errorMessage = 'Failed to subscribe. Please try again.';
-      
+
       if (error.response) {
         // Server responded with error status
         if (error.response.status === 400) {
@@ -147,7 +147,7 @@ const FeaturedProducts = () => {
       } else if (error.request) {
         errorMessage = 'Network error. Please check your connection.';
       }
-      
+
       showNewsletterMessage('error', errorMessage);
     } finally {
       setNewsletterLoading(false);
@@ -176,7 +176,6 @@ const FeaturedProducts = () => {
       }
 
       const data = await response.json();
-      console.log(`${category} API Response:`, data);
 
       if (data.products) {
         return data.products;
@@ -399,8 +398,8 @@ const FeaturedProducts = () => {
 
   if (loading) {
     return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
+      <div className="gud-product-loading-container">
+        <div className="gud-product-loading-spinner"></div>
         <p>Loading special products...</p>
       </div>
     );
@@ -551,59 +550,59 @@ const FeaturedProducts = () => {
             </div>
           </div>
         </div>
-        
-{/* Enhanced Newsletter Section */}
-<div className="newsletter-section">
-  <div className="newsletter-content">
-    <div className="newsletter-text">
-      <h3 className="small-text text-animate newsletter-title">$20 discount for your first order</h3>
-      <h2 className="sub-title text-animate newsletter-subtitle">Join our newsletter and get...</h2>
-      <p className="body-text newsletter-description">
-        Join our email subscription now to get updates on
-        promotions and coupons.
-      </p>
-    </div>
-    
-    {/* Add this wrapper div */}
-    <div className="newsletter-form-wrapper">
-      <div className="newsletter-form">
-        {/* Newsletter Message */}
-        {newsletterMessage.text && (
-          <div className={`newsletter-message ${newsletterMessage.type === 'success' ? 'success' : 'error'}`}>
-            {newsletterMessage.text}
+
+        {/* Enhanced Newsletter Section */}
+        <div className="newsletter-section">
+          <div className="newsletter-content">
+            <div className="newsletter-text">
+              <h3 className="small-text text-animate newsletter-title">$20 discount for your first order</h3>
+              <h2 className="sub-title text-animate newsletter-subtitle">Join our newsletter and get...</h2>
+              <p className="body-text newsletter-description">
+                Join our email subscription now to get updates on
+                promotions and coupons.
+              </p>
+            </div>
+
+            {/* Add this wrapper div */}
+            <div className="newsletter-form-wrapper">
+              <div className="newsletter-form">
+                {/* Newsletter Message */}
+                {newsletterMessage.text && (
+                  <div className={`newsletter-message ${newsletterMessage.type === 'success' ? 'success' : 'error'}`}>
+                    {newsletterMessage.text}
+                  </div>
+                )}
+
+                <div className="newsletter-input-container">
+                  <span className="newsletter-email-icon">📧</span>
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    className="newsletter-input"
+                    value={newsletterEmail}
+                    onChange={(e) => setNewsletterEmail(e.target.value)}
+                    onKeyPress={handleNewsletterKeyPress}
+                    disabled={newsletterLoading}
+                  />
+                </div>
+                <button
+                  className={`newsletter-btn ${newsletterLoading ? 'loading' : ''}`}
+                  onClick={handleNewsletterSubscription}
+                  disabled={newsletterLoading}
+                >
+                  {newsletterLoading ? (
+                    <>
+                      <span className="newsletter-spinner"></span>
+                      SUBSCRIBING...
+                    </>
+                  ) : (
+                    'SUBSCRIBE'
+                  )}
+                </button>
+              </div>
+            </div>
           </div>
-        )}
-        
-        <div className="newsletter-input-container">
-          <span className="newsletter-email-icon">📧</span>
-          <input
-            type="email"
-            placeholder="Enter your email"
-            className="newsletter-input"
-            value={newsletterEmail}
-            onChange={(e) => setNewsletterEmail(e.target.value)}
-            onKeyPress={handleNewsletterKeyPress}
-            disabled={newsletterLoading}
-          />
         </div>
-        <button 
-          className={`newsletter-btn ${newsletterLoading ? 'loading' : ''}`}
-          onClick={handleNewsletterSubscription}
-          disabled={newsletterLoading}
-        >
-          {newsletterLoading ? (
-            <>
-              <span className="newsletter-spinner"></span>
-              SUBSCRIBING...
-            </>
-          ) : (
-            'SUBSCRIBE'
-          )}
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
       </section>
 
       {/* Wishlist Popup */}

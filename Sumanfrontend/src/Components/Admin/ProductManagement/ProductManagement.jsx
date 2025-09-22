@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Package, 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Search, 
+import {
+  Package,
+  Plus,
+  Edit,
+  Trash2,
+  Search,
   Filter,
   AlertTriangle,
   Eye,
@@ -58,7 +58,7 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
     try {
       setLoading(true);
       const response = await api.get('/products', adminToken);
-      
+
       if (response.success) {
         setProducts(response.data);
       }
@@ -72,7 +72,7 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
   const fetchProductStats = async () => {
     try {
       const response = await api.get('/admin/products/stats', adminToken);
-      
+
       if (response.success) {
         setProductStats(response.data);
       }
@@ -83,10 +83,10 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.description?.toLowerCase().includes(searchTerm.toLowerCase());
+      product.description?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = !categoryFilter || product.category === categoryFilter;
     const matchesBrand = !brandFilter || product.brand === brandFilter;
-    
+
     return matchesSearch && matchesCategory && matchesBrand;
   });
 
@@ -117,13 +117,13 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
 
   const handleCreateProduct = async (e) => {
     e.preventDefault();
-    
+
     try {
       setIsLoading(true);
-      
+
       // Generate product ID if not provided
       const productId = formData.product_id || generateProductId();
-      
+
       const formDataToSend = new FormData();
       formDataToSend.append('name', formData.name);
       formDataToSend.append('product_id', productId);
@@ -135,7 +135,7 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
       formDataToSend.append('ingredients', formData.ingredients || '');
       formDataToSend.append('storage_condition', formData.storage_condition || '');
       formDataToSend.append('gram', formData.gram);
-      
+
       if (formData.image) {
         formDataToSend.append('image', formData.image);
       }
@@ -149,7 +149,7 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
       });
 
       const result = await response.json();
-      
+
       if (response.ok && result.success) {
         setProducts(prev => [...prev, result.data]);
         setShowCreateModal(false);
@@ -168,10 +168,10 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
 
   const handleEditProduct = async (e) => {
     e.preventDefault();
-    
+
     try {
       setIsLoading(true);
-      
+
       const formDataToSend = new FormData();
       Object.keys(formData).forEach(key => {
         if (formData[key] !== null && formData[key] !== '' && key !== 'image') {
@@ -192,9 +192,9 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
       });
 
       const result = await response.json();
-      
+
       if (response.ok && result.success) {
-        setProducts(prev => prev.map(p => 
+        setProducts(prev => prev.map(p =>
           p._id === selectedProduct._id ? result.data : p
         ));
         setShowEditModal(false);
@@ -219,9 +219,9 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
 
     try {
       setIsLoading(true);
-      
+
       const response = await api.delete(`/products/${productId}`, adminToken);
-      
+
       if (response.success) {
         setProducts(prev => prev.filter(p => p.product_id !== productId));
         fetchProductStats();
@@ -238,7 +238,7 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
   const handleExportProducts = async (format = 'csv') => {
     try {
       setIsLoading(true);
-      
+
       const exportData = products.map(product => ({
         product_id: product.product_id,
         name: product.name,
@@ -253,15 +253,15 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
       }));
 
       let content, filename, mimeType;
-      
+
       if (format === 'csv') {
         const headers = Object.keys(exportData[0]).join(',');
-        const csvContent = exportData.map(row => 
-          Object.values(row).map(value => 
+        const csvContent = exportData.map(row =>
+          Object.values(row).map(value =>
             `"${String(value).replace(/"/g, '""')}"`
           ).join(',')
         ).join('\n');
-        
+
         content = headers + '\n' + csvContent;
         filename = `products_${new Date().toISOString().split('T')[0]}.csv`;
         mimeType = 'text/csv';
@@ -280,7 +280,7 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-      
+
       alert(`Products exported successfully as ${format.toUpperCase()}!`);
     } catch (error) {
       handleApiError(error);
@@ -293,19 +293,19 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
   const parseCSV = (content) => {
     const lines = content.split('\n').filter(line => line.trim());
     if (lines.length < 2) throw new Error('CSV file must have at least a header and one data row');
-    
+
     const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g, '').trim());
     const data = [];
-    
+
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i].trim();
       if (!line) continue;
-      
+
       // Handle CSV with quoted values containing commas
       const values = [];
       let current = '';
       let inQuotes = false;
-      
+
       for (let j = 0; j < line.length; j++) {
         const char = line[j];
         if (char === '"') {
@@ -318,14 +318,14 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
         }
       }
       values.push(current.trim());
-      
+
       const obj = {};
       headers.forEach((header, index) => {
         obj[header] = values[index] ? values[index].replace(/^"|"$/g, '') : '';
       });
       data.push(obj);
     }
-    
+
     return data;
   };
 
@@ -337,7 +337,7 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
     // Validate file type
     const validTypes = ['.csv', '.json'];
     const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
-    
+
     if (!validTypes.includes(fileExtension)) {
       alert('Please select a CSV or JSON file.');
       e.target.value = '';
@@ -352,20 +352,20 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
     }
 
     setImportFile(file);
-    
+
     const reader = new FileReader();
     reader.onload = (event) => {
       try {
         const content = event.target.result;
         let parsedData = [];
-        
+
         if (fileExtension === '.csv') {
           parsedData = parseCSV(content);
         } else if (fileExtension === '.json') {
           const jsonData = JSON.parse(content);
           parsedData = Array.isArray(jsonData) ? jsonData : [jsonData];
         }
-        
+
         // Normalize data to handle different field name formats
         const normalizedData = parsedData.map(item => ({
           name: item.name || item.Name,
@@ -384,27 +384,22 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
         }));
 
         // Validate required fields in preview
-        const validData = normalizedData.filter(item => 
+        const validData = normalizedData.filter(item =>
           item.name && (item.price !== undefined && item.price !== '') && (item.piece !== undefined && item.piece !== '')
         );
-        
-        console.log('Original data:', parsedData);
-        console.log('Normalized data:', normalizedData);
-        console.log('Valid data:', validData);
-        console.log('Sample item:', normalizedData[0]);
-        
+
         if (validData.length === 0) {
           console.error('No valid products found. Sample data structure:', normalizedData[0]);
           throw new Error('No valid products found. Please ensure your file contains name/Name, price/Price, and piece/Piece fields.');
         }
-        
+
         // Store normalized data for import
         setImportPreview(normalizedData.slice(0, 5));
-        
+
         if (validData.length < normalizedData.length) {
           alert(`Warning: ${normalizedData.length - validData.length} rows will be skipped due to missing required fields (name, price, piece).`);
         }
-        
+
       } catch (error) {
         console.error('File parsing error:', error);
         alert(`Error reading file: ${error.message}`);
@@ -413,14 +408,14 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
         e.target.value = '';
       }
     };
-    
+
     reader.onerror = () => {
       alert('Error reading file. Please try again.');
       setImportFile(null);
       setImportPreview([]);
       e.target.value = '';
     };
-    
+
     reader.readAsText(file);
   };
 
@@ -430,14 +425,14 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
 
     try {
       setIsLoading(true);
-      
+
       const reader = new FileReader();
       reader.onload = async (event) => {
         try {
           const content = event.target.result;
           let productsToImport = [];
           const fileExtension = '.' + importFile.name.split('.').pop().toLowerCase();
-          
+
           if (fileExtension === '.csv') {
             productsToImport = parseCSV(content);
           } else if (fileExtension === '.json') {
@@ -470,7 +465,7 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
           const validProducts = filteredProducts.map(item => {
             // Only generate product_id if it doesn't exist
             const productId = item.product_id ? item.product_id.trim() : generateProductId();
-            
+
             return {
               ...item,
               product_id: productId,
@@ -510,10 +505,10 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
           const result = await response.json();
 
           if (result.success) {
-            setImportStatus({ 
-              loading: false, 
-              message: `Import completed successfully! ${result.data.imported} products imported.${result.data.skipped > 0 ? ` ${result.data.skipped} products were skipped.` : ''}`, 
-              type: 'success' 
+            setImportStatus({
+              loading: false,
+              message: `Import completed successfully! ${result.data.imported} products imported.${result.data.skipped > 0 ? ` ${result.data.skipped} products were skipped.` : ''}`,
+              type: 'success'
             });
             fetchProducts(); // Refresh the product list
             setImportFile(null);
@@ -578,7 +573,7 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
           <p>Manage your inventory, products and stock levels</p>
         </div>
         <div className="header-actions">
-          <button 
+          <button
             onClick={() => setShowImportModal(true)}
             className="admin-btn admin-btn-outline"
           >
@@ -586,14 +581,14 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
             Import Data
           </button>
           <div className="export-dropdown">
-            <button 
+            <button
               onClick={() => handleExportProducts('csv')}
               className="admin-btn admin-btn-outline"
             >
               <Download className="icon" />
               Export CSV
             </button>
-            <button 
+            <button
               onClick={() => handleExportProducts('json')}
               className="admin-btn admin-btn-outline"
             >
@@ -601,7 +596,7 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
               Export JSON
             </button>
           </div>
-          <button 
+          <button
             onClick={() => setShowCreateModal(true)}
             className="admin-btn admin-btn-primary"
           >
@@ -703,9 +698,9 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        
-        <select 
-          value={categoryFilter} 
+
+        <select
+          value={categoryFilter}
           onChange={(e) => setCategoryFilter(e.target.value)}
           className="admin-form-select"
         >
@@ -714,9 +709,9 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
             <option key={category} value={category}>{category}</option>
           ))}
         </select>
-        
-        <select 
-          value={brandFilter} 
+
+        <select
+          value={brandFilter}
           onChange={(e) => setBrandFilter(e.target.value)}
           className="admin-form-select"
         >
@@ -725,7 +720,7 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
             <option key={brand} value={brand}>{brand}</option>
           ))}
         </select>
-        
+
         <button className="admin-btn admin-btn-outline">
           <Filter className="icon" />
           More Filters
@@ -761,7 +756,7 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
               <tbody>
                 {filteredProducts.map((product) => {
                   const stockStatus = getStockStatus(product.piece);
-                  
+
                   return (
                     <tr key={product._id}>
                       <td>
@@ -841,7 +836,7 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
                 <X className="icon" />
               </button>
             </div>
-            
+
             <div className="import-content">
               <div className="admin-form-group">
                 <label className="admin-form-label">Select File (CSV or JSON)</label>
@@ -896,16 +891,16 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
                 </ul>
               </div>
             </div>
-            
+
             <div className="admin-modal-actions">
-              <button 
+              <button
                 type="button"
                 className="admin-btn admin-btn-outline"
                 onClick={() => setShowImportModal(false)}
               >
                 Cancel
               </button>
-              <button 
+              <button
                 onClick={handleImportProducts}
                 disabled={!importFile}
                 className="admin-btn admin-btn-primary"
@@ -931,7 +926,7 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
                 <X className="icon" />
               </button>
             </div>
-            
+
             <form onSubmit={handleCreateProduct} className="product-form">
               <div className="form-grid">
                 <div className="admin-form-group">
@@ -940,44 +935,44 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
                     type="text"
                     className="admin-form-input"
                     value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     required
                   />
                 </div>
-                
+
                 <div className="admin-form-group">
                   <label className="admin-form-label">Product ID</label>
                   <input
                     type="text"
                     className="admin-form-input"
                     value={formData.product_id}
-                    onChange={(e) => setFormData({...formData, product_id: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, product_id: e.target.value })}
                     placeholder="Auto-generated if empty"
                   />
                 </div>
-                
+
                 <div className="admin-form-group">
                   <label className="admin-form-label">Brand *</label>
                   <input
                     type="text"
                     className="admin-form-input"
                     value={formData.brand}
-                    onChange={(e) => setFormData({...formData, brand: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
                     required
                   />
                 </div>
-                
+
                 <div className="admin-form-group">
                   <label className="admin-form-label">Category *</label>
                   <input
                     type="text"
                     className="admin-form-input"
                     value={formData.category}
-                    onChange={(e) => setFormData({...formData, category: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                     required
                   />
                 </div>
-                
+
                 <div className="admin-form-group">
                   <label className="admin-form-label">Price (CAD) *</label>
                   <input
@@ -985,74 +980,74 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
                     step="0.01"
                     className="admin-form-input"
                     value={formData.price}
-                    onChange={(e) => setFormData({...formData, price: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                     required
                   />
                 </div>
-                
+
                 <div className="admin-form-group">
                   <label className="admin-form-label">Stock Quantity *</label>
                   <input
                     type="number"
                     className="admin-form-input"
                     value={formData.piece}
-                    onChange={(e) => setFormData({...formData, piece: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, piece: e.target.value })}
                     required
                   />
                 </div>
-                
+
                 <div className="admin-form-group">
                   <label className="admin-form-label">Weight (grams) *</label>
                   <input
                     type="number"
                     className="admin-form-input"
                     value={formData.gram}
-                    onChange={(e) => setFormData({...formData, gram: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, gram: e.target.value })}
                     required
                   />
                 </div>
-                
+
                 <div className="admin-form-group">
                   <label className="admin-form-label">Product Image</label>
                   <input
                     type="file"
                     accept="image/*"
                     className="admin-form-input"
-                    onChange={(e) => setFormData({...formData, image: e.target.files[0]})}
+                    onChange={(e) => setFormData({ ...formData, image: e.target.files[0] })}
                   />
                 </div>
               </div>
-              
+
               <div className="admin-form-group full-width">
                 <label className="admin-form-label">Description *</label>
                 <textarea
                   className="admin-form-textarea"
                   value={formData.description}
-                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   required
                 />
               </div>
-              
+
               <div className="admin-form-group full-width">
                 <label className="admin-form-label">Ingredients</label>
                 <textarea
                   className="admin-form-textarea"
                   value={formData.ingredients}
-                  onChange={(e) => setFormData({...formData, ingredients: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, ingredients: e.target.value })}
                 />
               </div>
-              
+
               <div className="admin-form-group full-width">
                 <label className="admin-form-label">Storage Conditions</label>
                 <textarea
                   className="admin-form-textarea"
                   value={formData.storage_condition}
-                  onChange={(e) => setFormData({...formData, storage_condition: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, storage_condition: e.target.value })}
                 />
               </div>
-              
+
               <div className="admin-modal-actions">
-                <button 
+                <button
                   type="button"
                   className="admin-btn admin-btn-outline"
                   onClick={() => setShowCreateModal(false)}
@@ -1082,7 +1077,7 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
                 <X className="icon" />
               </button>
             </div>
-            
+
             <form onSubmit={handleEditProduct} className="product-form">
               <div className="form-grid">
                 <div className="admin-form-group">
@@ -1091,33 +1086,33 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
                     type="text"
                     className="admin-form-input"
                     value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     required
                   />
                 </div>
-                
+
                 <div className="admin-form-group">
                   <label className="admin-form-label">Brand *</label>
                   <input
                     type="text"
                     className="admin-form-input"
                     value={formData.brand}
-                    onChange={(e) => setFormData({...formData, brand: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
                     required
                   />
                 </div>
-                
+
                 <div className="admin-form-group">
                   <label className="admin-form-label">Category *</label>
                   <input
                     type="text"
                     className="admin-form-input"
                     value={formData.category}
-                    onChange={(e) => setFormData({...formData, category: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                     required
                   />
                 </div>
-                
+
                 <div className="admin-form-group">
                   <label className="admin-form-label">Price (CAD) *</label>
                   <input
@@ -1125,40 +1120,40 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
                     step="0.01"
                     className="admin-form-input"
                     value={formData.price}
-                    onChange={(e) => setFormData({...formData, price: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                     required
                   />
                 </div>
-                
+
                 <div className="admin-form-group">
                   <label className="admin-form-label">Stock Quantity *</label>
                   <input
                     type="number"
                     className="admin-form-input"
                     value={formData.piece}
-                    onChange={(e) => setFormData({...formData, piece: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, piece: e.target.value })}
                     required
                   />
                 </div>
-                
+
                 <div className="admin-form-group">
                   <label className="admin-form-label">Weight (grams) *</label>
                   <input
                     type="number"
                     className="admin-form-input"
                     value={formData.gram}
-                    onChange={(e) => setFormData({...formData, gram: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, gram: e.target.value })}
                     required
                   />
                 </div>
-                
+
                 <div className="admin-form-group full-width">
                   <label className="admin-form-label">Update Product Image</label>
                   <input
                     type="file"
                     accept="image/*"
                     className="admin-form-input"
-                    onChange={(e) => setFormData({...formData, image: e.target.files[0]})}
+                    onChange={(e) => setFormData({ ...formData, image: e.target.files[0] })}
                   />
                   {selectedProduct.imageUrl && (
                     <div className="current-image">
@@ -1168,37 +1163,37 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
                   )}
                 </div>
               </div>
-              
+
               <div className="admin-form-group full-width">
                 <label className="admin-form-label">Description *</label>
                 <textarea
                   className="admin-form-textarea"
                   value={formData.description}
-                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   required
                 />
               </div>
-              
+
               <div className="admin-form-group full-width">
                 <label className="admin-form-label">Ingredients</label>
                 <textarea
                   className="admin-form-textarea"
                   value={formData.ingredients}
-                  onChange={(e) => setFormData({...formData, ingredients: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, ingredients: e.target.value })}
                 />
               </div>
-              
+
               <div className="admin-form-group full-width">
                 <label className="admin-form-label">Storage Conditions</label>
                 <textarea
                   className="admin-form-textarea"
                   value={formData.storage_condition}
-                  onChange={(e) => setFormData({...formData, storage_condition: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, storage_condition: e.target.value })}
                 />
               </div>
-              
+
               <div className="admin-modal-actions">
-                <button 
+                <button
                   type="button"
                   className="admin-btn admin-btn-outline"
                   onClick={() => setShowEditModal(false)}
@@ -1222,7 +1217,7 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
             <div className="import-popup-header">
               <h3>{importStatus.loading ? 'Processing' : importStatus.type === 'success' ? 'Success' : 'Error'}</h3>
               {!importStatus.loading && (
-                <button 
+                <button
                   className="import-popup-close"
                   onClick={() => setShowImportPopup(false)}
                 >
@@ -1240,7 +1235,7 @@ const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
             </div>
             {!importStatus.loading && (
               <div className="import-popup-footer">
-                <button 
+                <button
                   className="admin-btn admin-btn-primary"
                   onClick={() => setShowImportPopup(false)}
                 >

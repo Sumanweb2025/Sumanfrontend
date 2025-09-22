@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  DollarSign, 
-  ShoppingBag, 
-  Users, 
+import {
+  DollarSign,
+  ShoppingBag,
+  Users,
   Package,
   TrendingUp,
   TrendingDown,
@@ -14,16 +14,16 @@ import {
   AlertCircle,
   RefreshCw
 } from 'lucide-react';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
-  PieChart, 
-  Pie, 
+  PieChart,
+  Pie,
   Cell,
   LineChart,
   Line
@@ -37,12 +37,12 @@ const Dashboard = ({ api, adminToken, setIsLoading, setError, handleApiError }) 
 
   useEffect(() => {
     fetchDashboardData();
-    
+
     // Auto-refresh every 5 minutes
     const interval = setInterval(() => {
       fetchDashboardData(true);
     }, 300000);
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -53,10 +53,9 @@ const Dashboard = ({ api, adminToken, setIsLoading, setError, handleApiError }) 
       } else {
         setLoading(true);
       }
-      
+
       const response = await api.get('/admin/dashboard/overview', adminToken);
-      console.log('Dashboard API Response:', response);
-      
+
       if (response.success) {
         setDashboardData(response.data);
       } else {
@@ -119,12 +118,12 @@ const Dashboard = ({ api, adminToken, setIsLoading, setError, handleApiError }) 
         {Array(fullStars).fill(0).map((_, index) => (
           <Star key={`full-${index}`} className="star-icon filled" />
         ))}
-        
+
         {/* Half star */}
         {hasHalfStar && (
           <Star key="half" className="star-icon half-filled" />
         )}
-        
+
         {/* Empty stars */}
         {Array(emptyStars).fill(0).map((_, index) => (
           <Star key={`empty-${index}`} className="star-icon" />
@@ -180,8 +179,8 @@ const Dashboard = ({ api, adminToken, setIsLoading, setError, handleApiError }) 
           <h1>Dashboard Overview</h1>
           <p>Welcome back! Here's what's happening with your business today.</p>
         </div>
-        <button 
-          onClick={() => fetchDashboardData(true)} 
+        <button
+          onClick={() => fetchDashboardData(true)}
           className={`admin-btn admin-btn-outline ${refreshing ? 'refreshing' : ''}`}
           disabled={refreshing}
         >

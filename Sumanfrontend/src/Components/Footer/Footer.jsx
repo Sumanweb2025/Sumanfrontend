@@ -8,17 +8,17 @@ import logo from '../../assets/logo.jpeg';
 const Footer = () => {
   return (
     <footer className="iyappaa-footer">
-      <div className="footer-main">
+      <div className="footer-part-main">
         {/* Logo + Contact */}
-        <div className="footer-left">
-          <img src={logo} alt="Iyappaa Logo" className="footer-logo" />
-          <p className="footer-tagline">Unleash Your Taste Buds !</p>
-          <p className="footer-contact red-text">+1 6475736363</p>
-          <p className="footer-contact red-text">sellappan@gmail.com</p>
+        <div className="footer-part-left">
+          <img src={logo} alt="Iyappaa Logo" className="footer-part-logo" />
+          <p className="footer-part-tagline">Unleash Your Taste Buds !</p>
+          <p className="footer-part-contact red-text">+1 6475736363</p>
+          <p className="footer-part-contact red-text">sellappan@gmail.com</p>
         </div>
 
         {/* Address & Hours */}
-        <div className="footer-column">
+        <div className="footer-part-column">
           <h4>Address</h4>
           <p>Iyappaa Sweets & Snacks</p>
           <p>2721, Markham Road, Unit #16, 17, 18</p>
@@ -29,7 +29,7 @@ const Footer = () => {
         </div>
 
         {/* Useful Links */}
-        <div className="footer-column">
+        <div className="footer-part-column">
           <h4>Useful Links</h4>
           <ul>
             <li><Link to="/">Home</Link></li>
@@ -40,7 +40,7 @@ const Footer = () => {
         </div>
 
         {/* My Account */}
-        <div className="footer-column">
+        <div className="footer-part-column">
           <h4>My Account</h4>
           <ul>
             <li><Link to="/profile">Profile</Link></li>
@@ -52,7 +52,7 @@ const Footer = () => {
         </div>
 
         {/* Information */}
-        <div className="footer-column">
+        <div className="footer-part-column">
           <h4>Information</h4>
           <ul>
             <li><Link to="/terms">Terms & Condition</Link></li>
@@ -63,17 +63,17 @@ const Footer = () => {
       </div>
 
       {/* Social Icons & Footer Bottom */}
-      <div className="footer-bottom">
-        <div className="footer-social">
+      <div className="footer-part-bottom">
+        <div className="footer-part-social">
           <FaFacebookF />
           <FaInstagram />
           <FaWhatsapp />
         </div>
 
-        <p className="footer-copyright">
+        <p className="footer-part-copyright">
           Copyright © 2025 iyappaa.com All Rights Reserved.
         </p>
-        <div className="footer-payments">
+        <div className="footer-part-payments">
           <img src={payment} alt="Payment Methods" />
         </div>
       </div>

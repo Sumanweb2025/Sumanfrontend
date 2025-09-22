@@ -307,16 +307,28 @@
   animation: fadeInUp 0.5s ease-out;
 }
 
-.stats-card:nth-child(1) { animation-delay: 0.1s; }
-.stats-card:nth-child(2) { animation-delay: 0.2s; }
-.stats-card:nth-child(3) { animation-delay: 0.3s; }
-.stats-card:nth-child(4) { animation-delay: 0.4s; }
+.stats-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.stats-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.stats-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.stats-card:nth-child(4) {
+  animation-delay: 0.4s;
+}
 
 @keyframes fadeInUp {
   from {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -331,6 +343,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -348,8 +361,13 @@
 
 /* Loading Animation for Refresh Button */
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .spinning {
@@ -372,26 +390,26 @@ svg defs {
     grid-template-columns: 1fr;
     gap: 20px;
   }
-  
+
   .stats-grid {
     gap: 20px;
   }
-  
+
   .chart-container {
     height: 300px;
     min-height: 260px;
     padding: 14px;
   }
-  
+
   .chart-container.large {
     height: 380px;
     min-height: 340px;
   }
-  
+
   .recharts-responsive-container {
     min-height: 220px !important;
   }
-  
+
   .recharts-wrapper {
     min-height: 220px !important;
   }
@@ -402,122 +420,122 @@ svg defs {
   .dashboard-container {
     padding: 0 12px;
   }
-  
+
   .dashboard-header {
     flex-direction: column;
     gap: 12px;
     margin-bottom: 24px;
   }
-  
+
   .dashboard-header h1 {
     font-size: 24px;
   }
-  
+
   .dashboard-charts-section {
     gap: 16px;
     margin-top: 24px;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
     gap: 16px;
     margin-bottom: 24px;
   }
-  
+
   .product-item {
     padding: 12px;
   }
-  
+
   .product-rank {
     width: 28px;
     height: 28px;
     font-size: 12px;
     margin-right: 12px;
   }
-  
+
   .product-name {
     font-size: 14px;
   }
-  
+
   .product-rating {
     gap: 8px;
   }
-  
+
   .rating-stars {
     gap: 1px;
   }
-  
+
   .star-icon {
     width: 14px;
     height: 14px;
   }
-  
+
   .rating-value {
     font-size: 13px;
   }
-  
+
   .rating-count {
     font-size: 12px;
   }
-  
+
   .product-price {
     font-size: 13px;
   }
-  
+
   .chart-container {
     height: 280px;
     min-height: 240px;
     margin: 16px 0;
     padding: 12px;
   }
-  
+
   .chart-container.large {
     height: 320px;
     min-height: 280px;
   }
-  
+
   .recharts-responsive-container {
     min-height: 200px !important;
   }
-  
+
   .recharts-wrapper {
     min-height: 200px !important;
   }
-  
+
   .chart-title {
     font-size: 14px;
     margin-bottom: 8px;
   }
-  
+
   .recharts-legend-item {
     margin-right: 8px !important;
     font-size: 11px !important;
   }
-  
+
   .recharts-cartesian-axis-tick-value {
     font-size: 10px !important;
   }
-  
+
   .recharts-text {
     font-size: 10px !important;
   }
-  
+
   .dashboard-table-container {
     margin: 0 -2px;
     padding: 0 2px;
     border-radius: 8px;
   }
-  
+
   .dashboard-table {
     min-width: 500px;
     font-size: 12px;
   }
-  
+
   .dashboard-table th {
     padding: 10px 12px;
     font-size: 11px;
   }
-  
+
   .dashboard-table td {
     padding: 10px 12px;
     font-size: 11px;
@@ -530,31 +548,31 @@ svg defs {
     padding: 0 8px;
   }
 
-  .dashboard-header{
+  .dashboard-header {
     margin-bottom: 20px;
     text-align: center;
     gap: 10px;
   }
-  
+
   .dashboard-header h1 {
     font-size: 20px;
   }
-  
+
   .dashboard-header p {
     font-size: 13px;
   }
-  
+
   .stats-grid {
     gap: 12px;
   }
-  
+
   .product-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
     padding: 10px;
   }
-  
+
   .product-rank {
     width: 24px;
     height: 24px;
@@ -562,107 +580,107 @@ svg defs {
     margin-right: 0;
     align-self: flex-start;
   }
-  
+
   .product-info {
     width: 100%;
   }
-  
+
   .product-name {
     font-size: 13px;
     white-space: normal;
     line-height: 1.3;
   }
-  
+
   .product-rating {
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
     width: 100%;
   }
-  
+
   .rating-stars {
     order: 1;
     gap: 0;
   }
-  
+
   .star-icon {
     width: 12px;
     height: 12px;
   }
-  
+
   .rating-value {
     order: 2;
     font-size: 12px;
   }
-  
+
   .rating-count {
     order: 3;
     font-size: 11px;
   }
-  
+
   .product-price {
     order: 4;
     font-size: 12px;
     font-weight: 700;
   }
-  
+
   .chart-container {
     height: 240px;
     min-height: 200px;
     margin: 12px 0;
     padding: 8px;
   }
-  
+
   .chart-container.large {
     height: 260px;
     min-height: 220px;
   }
-  
+
   .recharts-responsive-container {
     min-height: 180px !important;
   }
-  
+
   .recharts-wrapper {
     min-height: 180px !important;
   }
-  
+
   .chart-title {
     font-size: 13px;
     margin-bottom: 6px;
   }
-  
+
   .recharts-legend-wrapper {
     padding-top: 5px !important;
   }
-  
+
   .recharts-legend-item {
     margin-right: 5px !important;
     font-size: 10px !important;
   }
-  
+
   .recharts-cartesian-axis-tick-value {
     font-size: 9px !important;
   }
-  
+
   .recharts-text {
     font-size: 9px !important;
   }
-  
+
   .dashboard-table {
     min-width: 400px;
     font-size: 11px;
   }
-  
+
   .dashboard-table th {
     padding: 8px 10px;
     font-size: 10px;
   }
-  
+
   .dashboard-table td {
     padding: 8px 10px;
     font-size: 10px;
   }
-  
+
   .dashboard-table-container {
     margin: 0;
     padding: 0;
@@ -674,75 +692,75 @@ svg defs {
   .dashboard-container {
     padding: 0 4px;
   }
-  
+
   .dashboard-header {
     margin-bottom: 16px;
   }
-  
+
   .dashboard-header h1 {
     font-size: 18px;
   }
-  
+
   .dashboard-header p {
     font-size: 12px;
   }
-  
+
   .stats-grid {
     gap: 8px;
   }
-  
+
   .products-list {
     gap: 8px;
   }
-  
+
   .chart-container {
     height: 220px;
     min-height: 180px;
     padding: 8px;
     margin: 8px 0;
   }
-  
+
   .chart-container.large {
     height: 240px;
     min-height: 200px;
   }
-  
+
   .recharts-responsive-container {
     min-height: 160px !important;
   }
-  
+
   .recharts-wrapper {
     min-height: 160px !important;
   }
-  
+
   .chart-title {
     font-size: 12px;
     margin-bottom: 4px;
   }
-  
+
   .recharts-legend-item {
     margin-right: 3px !important;
     font-size: 9px !important;
   }
-  
+
   .recharts-cartesian-axis-tick-value {
     font-size: 8px !important;
   }
-  
+
   .recharts-text {
     font-size: 8px !important;
   }
-  
+
   .dashboard-table {
     min-width: 350px;
     font-size: 10px;
   }
-  
+
   .dashboard-table th {
     padding: 6px 8px;
     font-size: 9px;
   }
-  
+
   .dashboard-table td {
     padding: 6px 8px;
     font-size: 9px;

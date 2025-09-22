@@ -1,4 +1,3 @@
-// wishlist.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -82,7 +81,7 @@ const WishlistPage = () => {
       toast.success('Item removed from wishlist! 🗑️', {
         position: "top-right",
         autoClose: 3000,
-        hideProgressBar: false,
+        hideProgressBar: true,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
@@ -92,7 +91,7 @@ const WishlistPage = () => {
       toast.error('Failed to remove item from wishlist! ❌', {
         position: "top-right",
         autoClose: 4000,
-        hideProgressBar: false,
+        hideProgressBar: true,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
@@ -140,7 +139,7 @@ const WishlistPage = () => {
     toast.success(`🛒 ${product.name} added to cart!`, {
       position: "top-right",
       autoClose: 4000,
-      hideProgressBar: false,
+      hideProgressBar: true,
       closeOnClick: true,
       pauseOnHover: true,
       draggable: true,
@@ -150,7 +149,7 @@ const WishlistPage = () => {
     toast.error(err.response?.data?.message || 'Failed to add to cart! ❌', {
       position: "top-right",
       autoClose: 4000,
-      hideProgressBar: false,
+      hideProgressBar: true,
       closeOnClick: true,
       pauseOnHover: true,
       draggable: true,
@@ -186,7 +185,7 @@ const WishlistPage = () => {
       <ToastContainer
         position="top-right"
         autoClose={3000}
-        hideProgressBar={false}
+        hideProgressBar={true}
         newestOnTop={false}
         closeOnClick
         rtl={false}

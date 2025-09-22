@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Users, 
-  Search, 
-  Eye, 
-  Mail, 
-  Phone, 
+import {
+  Users,
+  Search,
+  Eye,
+  Mail,
+  Phone,
   Calendar,
   ShoppingBag,
   Heart,
@@ -24,7 +24,7 @@ const UserManagement = ({ api, adminToken, setIsLoading, setError, handleApiErro
   const [users, setUsers] = useState([]);
   const [feedback, setFeedback] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('users'); // 'users' or 'feedback'
+  const [activeTab, setActiveTab] = useState('users');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -49,10 +49,9 @@ const UserManagement = ({ api, adminToken, setIsLoading, setError, handleApiErro
         limit: 10,
         ...(searchTerm && { search: searchTerm })
       });
-      
+
       const response = await api.get(`/admin/users?${params}`, adminToken);
-      console.log('Users API Response:', response);
-      
+
       if (response.success) {
         setUsers(response.data.users || []);
         setTotalPages(response.data.totalPages || 1);
@@ -75,10 +74,9 @@ const UserManagement = ({ api, adminToken, setIsLoading, setError, handleApiErro
         page: currentPage,
         limit: 10
       });
-      
+
       const response = await api.get(`/admin/users/feedback?${params}`, adminToken);
-      console.log('Feedback API Response:', response);
-      
+
       if (response.success) {
         setFeedback(response.data.reviews || []);
         setTotalPages(response.data.totalPages || 1);
@@ -391,20 +389,20 @@ const UserManagement = ({ api, adminToken, setIsLoading, setError, handleApiErro
                         <span className="feedback-date">{formatDate(review.createdAt)}</span>
                       </div>
                     </div>
-                    
+
                     <div className="feedback-content">
                       <div className="product-info">
                         <span className="product-name">
                           Product: {review.product_id?.name || 'Unknown Product'}
                         </span>
                       </div>
-                      
+
                       {review.comment && (
                         <div className="review-comment">
                           <p>"{review.comment}"</p>
                         </div>
                       )}
-                      
+
                       <div className="feedback-actions">
                         <button className="feedback-btn helpful">
                           <ThumbsUp className="icon" />
@@ -440,7 +438,7 @@ const UserManagement = ({ api, adminToken, setIsLoading, setError, handleApiErro
           >
             Previous
           </button>
-          
+
           {Array.from({ length: Math.min(5, totalPages) }, (_, index) => {
             let pageNum;
             if (totalPages <= 5) {
@@ -452,7 +450,7 @@ const UserManagement = ({ api, adminToken, setIsLoading, setError, handleApiErro
             } else {
               pageNum = currentPage - 2 + index;
             }
-            
+
             return (
               <button
                 key={pageNum}
@@ -464,7 +462,7 @@ const UserManagement = ({ api, adminToken, setIsLoading, setError, handleApiErro
               </button>
             );
           })}
-          
+
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages || loading}
@@ -488,7 +486,7 @@ const UserManagement = ({ api, adminToken, setIsLoading, setError, handleApiErro
                 ×
               </button>
             </div>
-            
+
             <div className="modal-content">
               <div className="user-profile-section">
                 <div className="profile-avatar large">
@@ -508,7 +506,7 @@ const UserManagement = ({ api, adminToken, setIsLoading, setError, handleApiErro
                   </span>
                 </div>
               </div>
-              
+
               <div className="user-stats-grid">
                 <div className="stat-item">
                   <ShoppingBag className="stat-icon" />
@@ -532,7 +530,7 @@ const UserManagement = ({ api, adminToken, setIsLoading, setError, handleApiErro
                   </div>
                 </div>
               </div>
-              
+
               {selectedUser.phone && (
                 <div className="address-section">
                   <h4>Contact Information</h4>
@@ -553,9 +551,9 @@ const UserManagement = ({ api, adminToken, setIsLoading, setError, handleApiErro
                 </div>
               )}
             </div>
-            
+
             <div className="admin-modal-actions">
-              <button 
+              <button
                 className="admin-btn admin-btn-outline"
                 onClick={() => setShowUserDetails(false)}
               >
