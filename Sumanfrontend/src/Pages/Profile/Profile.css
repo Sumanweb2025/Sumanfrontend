@@ -566,6 +566,78 @@
 }
 
 /* Responsive Design */
+/* Tablet View (769px to 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .profile-page {
+    padding: 16px;
+  }
+  
+  .profile-container {
+    max-width: 900px;
+  }
+  
+  .profile-header {
+    padding: 20px 24px;
+  }
+  
+  .profile-header h1 {
+    font-size: 1.75rem;
+  }
+  
+  .profile-sidebar {
+    width: 240px;
+    padding: 20px;
+  }
+  
+  .profile-avatar {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .profile-avatar-icon {
+    font-size: 28px;
+  }
+  
+  .profile-main {
+    padding: 24px;
+  }
+  
+  .profile-form {
+    padding: 20px;
+  }
+  
+  .profile-image-container {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .profile-image-icon {
+    font-size: 42px;
+  }
+  
+  .form-row {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+  
+  .section-header h2 {
+    font-size: 1.375rem;
+  }
+  
+  .order-card {
+    padding: 18px;
+  }
+  
+  .order-header {
+    margin-bottom: 14px;
+  }
+  
+  .order-details {
+    margin-bottom: 14px;
+  }
+}
+
+/* Mobile View (768px and below) */
 @media (max-width: 768px) {
   .profile-page {
     padding: 12px;
@@ -585,6 +657,7 @@
   
   .profile-content {
     flex-direction: column;
+    min-height: auto;
   }
   
   .profile-sidebar {
@@ -635,6 +708,7 @@
   }
 }
 
+/* Small Mobile View (480px and below) */
 @media (max-width: 480px) {
   .profile-page {
     padding: 8px;
@@ -680,5 +754,44 @@
   
   .order-card {
     padding: 16px;
+  }
+  
+  .form-actions {
+    gap: 8px;
+  }
+  
+  .save-btn, .cancel-btn {
+    padding: 8px 16px;
+    font-size: 0.8125rem;
+  }
+}
+
+/* Extra responsive adjustments for better tablet experience */
+@media (max-width: 1024px) and (min-width: 481px) {
+  .profile-nav {
+    gap: 6px;
+  }
+  
+  .profile-nav-item {
+    padding: 10px 14px;
+    font-size: 0.8125rem;
+  }
+  
+  .form-group input {
+    padding: 10px 14px;
+  }
+  
+  .form-value {
+    padding: 10px 14px;
+  }
+  
+  .back-button {
+    padding: 6px 10px;
+    font-size: 0.8125rem;
+  }
+  
+  .edit-btn {
+    padding: 6px 12px;
+    font-size: 0.8125rem;
   }
 }

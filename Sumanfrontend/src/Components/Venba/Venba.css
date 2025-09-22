@@ -1,6 +1,6 @@
 /* Base Styles */
 .venba-page {
-  background-color: #ebe0c6;
+  background-color: #d0e9c1;
   min-height: 100vh;
 }
 
@@ -424,16 +424,15 @@
 }
 
 /* Page Header */
-.venba-page-header {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.venba-main-content .venba-page-header {
+   display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
   background: white;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
 }
 
 .venba-page-header h1 {
@@ -898,7 +897,8 @@
     gap: 18px;
   }
   
-  .venba-page-header {
+  .venba-main-content .venba-page-header {
+    display:flex;
     flex-direction: column;
     gap: 15px;
     text-align: center;
@@ -997,7 +997,8 @@
     gap: 15px;
   }
   
-  .venba-page-header {
+  .venba-main-content .venba-page-header {
+    display:flex;
     flex-direction: column;
     gap: 12px;
     text-align: center;
@@ -1069,7 +1070,8 @@
     gap: 12px;
   }
   
-  .venba-page-header {
+  .venba-main-content .venba-page-header {
+    display:flex;
     flex-direction: column;
     gap: 10px;
     text-align: center;

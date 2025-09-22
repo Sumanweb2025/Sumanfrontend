@@ -114,7 +114,7 @@
 }
 
 .footer-part-payments img {
-  width: 130px;
+  width: 180px;
 }
 
 /* Responsive Design - Optimized for Mobile */
@@ -201,7 +201,7 @@
   }
 
   .footer-part-payments img {
-    width: 110px;
+    width:110px;
   }
 }
 
@@ -211,10 +211,10 @@
   }
 
   .footer-part-main {
-    display: flex;
+    /* display: flex; */
     flex-direction: row;
     justify-content: space-between;
-    gap: 8px;
+    gap: 20px;
   }
 
   .footer-part-left {

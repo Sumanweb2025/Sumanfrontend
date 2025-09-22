@@ -1,9 +1,9 @@
 import React from 'react';
-import './Footer.css';
 import { Link } from 'react-router-dom';
 import { FaFacebookF, FaInstagram, FaWhatsapp } from 'react-icons/fa';
-import payment from '../../assets/payment.png';
+import payment from '../../assets/stripe-cards.png';
 import logo from '../../assets/logo.jpeg';
+import './Footer.css';
 
 const Footer = () => {
   return (
@@ -13,7 +13,7 @@ const Footer = () => {
         <div className="footer-part-left">
           <img src={logo} alt="Iyappaa Logo" className="footer-part-logo" />
           <p className="footer-part-tagline">Unleash Your Taste Buds !</p>
-          <p className="footer-part-contact red-text">+1 6475736363</p>
+          <p className="footer-part-contact red-text">+1 416 562 6363</p>
           <p className="footer-part-contact red-text">sellappan@gmail.com</p>
         </div>
 
@@ -23,7 +23,7 @@ const Footer = () => {
           <p>Iyappaa Sweets & Snacks</p>
           <p>2721, Markham Road, Unit #16, 17, 18</p>
           <p>Scarborough – M1X 1L5, Toronto, Canada</p>
-          <p>Tel: (416) 562-6363</p>
+          <p>Call: +1 416 562 6363</p>
           <h4>Hours</h4>
           <p>9:30am – 6:30pm Monday to Friday</p>
         </div>
