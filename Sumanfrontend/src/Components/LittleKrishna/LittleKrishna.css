@@ -168,7 +168,7 @@
 .little-krishna-categories-section {
   margin: 40px 0;
   text-align: center;
-  padding: 20px 0;
+  
 }
 
 .little-krishna-categories-title {
@@ -244,7 +244,17 @@
   font-size: 14px;
   color: #666;
 }
+.little-krishna-breadcrumb .little-krishna-link {
+  color: #666;         /* Blue link color */
+  cursor: pointer;        /* Hand cursor */
+  text-decoration: none;  /* No underline by default */
+  transition: color 0.2s ease-in-out;
+}
 
+.little-krishna-breadcrumb .little-krishna-link:hover {
+  color: #666;         /* Darker blue on hover */
+  text-decoration: underline;
+}
 .little-krishna-breadcrumb .little-krishna-current {
   color: #333;
   font-weight: 500;

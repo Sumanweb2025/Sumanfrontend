@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Iyyapa.css';
@@ -35,16 +35,13 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
 
   const [selectedVariants, setSelectedVariants] = useState({}); // Track selected variant for each product
 
+  // Add ref for scroll target
+  const mainContentRef = useRef(null);
+
   const API_URL = import.meta.env.VITE_APP_API_URL;
 
   // Carousel images for hero section
-  // const carouselImages = [
-  //   'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-  //   'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1980&q=80',
-  //   'https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80'
-  // ];
   const carouselImages = [iyappabanner,iyappabanner1];
-
 
   // Get unique categories for filters
   const uniqueCategories = [...new Set(products.map(product => product.category).filter(Boolean))];
@@ -163,11 +160,6 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     }
 
     // Price range filter
-    // result = result.filter(product =>
-    //   product.price >= priceRange[0] && product.price <= priceRange[1]
-    // );
-
-    // New Price range filter
     result = result.filter(product => {
       const price = product.price || 0; // Treat missing price as 0
       return price >= priceRange[0] && price <= priceRange[1];
@@ -234,7 +226,25 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Modified paginate function with scroll
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    
+    // Scroll to top of main content area
+    if (mainContentRef.current) {
+      mainContentRef.current.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' 
+      });
+    } else {
+      // Fallback - scroll to top of page
+      window.scrollTo({ 
+        top: 0, 
+        behavior: 'smooth' 
+      });
+    }
+  };
 
   const handleProductClick = (product) => {
     setLoading(true);
@@ -434,8 +444,15 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         <div className="iyyapa-container">
           {/* Breadcrumb */}
           <div className="iyyapa-breadcrumb">
-            <span>Home</span> / <span>Brands</span> / <span className="iyyapa-current">Iyappaa</span>
-          </div>
+  <span 
+    className="iyyapa-link" 
+    onClick={() => navigate('/')}
+    
+  >
+    Home
+  </span> 
+  / <span>Brands</span> / <span className="iyyapa-current">iyyapa</span>
+</div>
 
           {/* Categories Section */}
           <div className="iyyapa-categories-section">
@@ -561,7 +578,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
             </div>
 
             {/* Main Content */}
-            <div className="iyyapa-main-content">
+            <div className="iyyapa-main-content" ref={mainContentRef}>
               <div className="iyyapa-page-header">
                 <h1 className='main-title text-animate'>Our Products</h1>
                 <div className="iyyapa-sort-controls">

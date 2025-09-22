@@ -256,7 +256,27 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     indexOfLastProduct
   );
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Updated pagination function with scroll to top
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    
+    // Scroll to the page header section smoothly
+    const pageHeader = document.querySelector('.snacks-page-header');
+    if (pageHeader) {
+      pageHeader.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start',
+        inline: 'nearest'
+      });
+    } else {
+      // Fallback to top of page
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   const handleProductClick = (product) => {
     // Show existing loading spinner when navigating to product details
@@ -426,8 +446,14 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         <div className="snacks-container">
           {/* Breadcrumb */}
           <div className="snacks-breadcrumb">
-            <span>Home</span> /{" "}
-            <span className="current">Snacks</span>
+            <span 
+    className="snacks-link" 
+    onClick={() => navigate('/')}
+    
+  >
+    Home
+  </span>  
+            /<span className="current">Snacks</span>
           </div>
 
           <div className="snacks-page-content">

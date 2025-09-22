@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './sweets.css';
@@ -31,7 +31,10 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [cartItems, setCartItems] = useState([]);
 
-   const [selectedVariants, setSelectedVariants] = useState({}); // Track selected variant for each product
+  const [selectedVariants, setSelectedVariants] = useState({}); // Track selected variant for each product
+
+  // Add ref for scroll target
+  const mainContentRef = useRef(null);
 
   const API_URL = import.meta.env.VITE_APP_API_URL;
 
@@ -225,7 +228,25 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Modified paginate function with scroll
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    
+    // Scroll to top of main content area
+    if (mainContentRef.current) {
+      mainContentRef.current.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' 
+      });
+    } else {
+      // Fallback - scroll to top of page
+      window.scrollTo({ 
+        top: 0, 
+        behavior: 'smooth' 
+      });
+    }
+  };
 
   const handleProductClick = (product) => {
     // Show existing loading spinner when navigating to product details
@@ -379,7 +400,6 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     navigate('/cart');
   };
 
-
   return (
     <>
       <LoadingSpinner
@@ -393,7 +413,13 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         <div className="sweets-container">
           {/* Breadcrumb */}
           <div className="sweets-breadcrumb">
-            <span>Home</span> / <span className="sweets-current">Sweets</span>
+             <span 
+    className="sweets-link" 
+    onClick={() => navigate('/')}
+    
+  >
+    Home
+  </span> / <span className="sweets-current">Sweets</span>
           </div>
 
           <div className="sweets-page-content">
@@ -464,7 +490,6 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
 
                   <div className="sweets-price-values">
                     ${priceRange[0]} - ${priceRange[1]}
-
                   </div>
                 </div>
               </div>
@@ -483,7 +508,6 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                       <div className="sweets-deal-info">
                         <div className="sweets-deal-name">{product.name}</div>
                         <div className="sweets-deal-price">${product.price}</div>
-
                       </div>
                     </div>
                   ))}
@@ -496,7 +520,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
             </div>
 
             {/* Main Content */}
-            <div className="sweets-main-content">
+            <div className="sweets-main-content" ref={mainContentRef}>
               <div className="sweets-page-header">
                 <h1 className='main-title text-animate'>Sweets</h1>
                 <div className="sweets-sort-controls">
@@ -552,7 +576,6 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                           <h3 className="card-title sweets-product-name">{product.name}</h3>
                           <div className="sweets-product-brand">{product.brand}</div>
                           
-
                           <div className="sweets-product-rating">
                             {Array(5).fill().map((_, i) => (
                               <span key={i} className={i < Math.floor(product.rating || 0) ? 'star-filled' : 'star-empty'}>
@@ -561,7 +584,6 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                             ))}
                             <span className="sweets-rating-text">({product.rating?.toFixed(1) || '0.0'})</span>
                           </div>
-
 
                           <div className="price-text sweets-product-price">{(() => {
                               const selectedIndex = getSelectedVariant(product);

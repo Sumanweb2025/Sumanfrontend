@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Amirth.css';
@@ -34,6 +34,9 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const [cartItems, setCartItems] = useState([]);
 
   const [selectedVariants, setSelectedVariants] = useState({}); // Track selected variant for each product
+
+  // Add ref for scroll target
+  const mainContentRef = useRef(null);
 
   const API_URL = import.meta.env.VITE_APP_API_URL;
 
@@ -161,11 +164,6 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     }
 
     // Price range filter
-    // result = result.filter(product =>
-    //   product.price >= priceRange[0] && product.price <= priceRange[1]
-    // );
-
-    // New Price range filter
     result = result.filter(product => {
       const price = product.price || 0; // Treat missing price as 0
       return price >= priceRange[0] && price <= priceRange[1];
@@ -232,7 +230,25 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Modified paginate function with scroll
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    
+    // Scroll to top of main content area
+    if (mainContentRef.current) {
+      mainContentRef.current.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' 
+      });
+    } else {
+      // Fallback - scroll to top of page
+      window.scrollTo({ 
+        top: 0, 
+        behavior: 'smooth' 
+      });
+    }
+  };
 
   const handleProductClick = (product) => {
     setLoading(true);
@@ -432,8 +448,15 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         <div className="amirth-container">
           {/* Breadcrumb */}
           <div className="amirth-breadcrumb">
-            <span>Home</span> / <span>Brands</span> / <span className="amirth-current">Amirth</span>
-          </div>
+  <span 
+    className="amirth-link" 
+    onClick={() => navigate('/')}
+    
+  >
+    Home
+  </span> 
+  / <span>Brands</span> / <span className="amirth-current">Amirth</span>
+</div>
 
           {/* Categories Section */}
           <div className="amirth-categories-section">
@@ -558,7 +581,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
             </div>
 
             {/* Main Content */}
-            <div className="amirth-main-content">
+            <div className="amirth-main-content" ref={mainContentRef}>
               <div className="amirth-page-header">
                 <h1 className='main-title text-animate'>Our Products</h1>
                 <div className="amirth-sort-controls">
@@ -570,7 +593,6 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                     <option value="default">Default Sorting</option>
                     <option value="price-low">Price: Low to High</option>
                     <option value="price-high">Price: High to Low</option>
-                    <option value="rating">Highest Rated</option>
                     <option value="name">Name: A to Z</option>
                   </select>
                 </div>

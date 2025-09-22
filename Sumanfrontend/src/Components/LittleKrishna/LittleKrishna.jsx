@@ -430,8 +430,16 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         <div className="little-krishna-container">
           {/* Breadcrumb */}
           <div className="little-krishna-breadcrumb">
-            <span>Home</span> / <span>Brands</span> / <span className="little-krishna-current">Little Krishna</span>
-          </div>
+  <span 
+    className="little-krishna-link" 
+    onClick={() => navigate('/')}
+    
+  >
+    Home
+  </span> 
+  / <span>Brands</span> / <span className="little-krishna-current">Little Krishna</span>
+</div>
+
 
           {/* Categories Section */}
           <div className="little-krishna-categories-section">
