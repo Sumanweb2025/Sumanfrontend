@@ -164,12 +164,21 @@
 }
 
 /* Breadcrumb */
-.amirth-breadcrumb {
-  margin-bottom: 20px;
+.amirthbreadcrumb {
   font-size: 14px;
+  margin-bottom: 20px;
   color: #666;
 }
-
+.amirth-breadcrumb .amirth-link {
+  color: #666;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+.amirth-breadcrumb .amirth-link:hover {
+  color: #666;         /* Darker blue on hover */
+  text-decoration: underline;
+}
 .amirth-breadcrumb .amirth-current {
   color: #333;
   font-weight: 500;

@@ -415,7 +415,7 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     
   >
     Home
-  </span>  / <span className="current">Groceries</span>
+  </span>  / <span className="grocery-current">Groceries</span>
           </div>
 
           <div className="grocery-page-content">

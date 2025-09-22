@@ -17,9 +17,13 @@
   color: #666;
 }
 
-.grocery-breadcrumb .current {
-  color: #333;
+.grocery-breadcrumb .grocery-current {
+  color: #666;
   font-weight: 500;
+}
+.grocery-link:hover {
+  color: #666;         /* Darker blue on hover */
+  text-decoration: underline;
 }
 
 /* Page Layout */

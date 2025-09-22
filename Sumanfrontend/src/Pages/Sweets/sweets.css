@@ -17,10 +17,15 @@
   color: #666;
 }
 
-.sweets-breadcrumb .current {
+.sweets-breadcrumb .sweets-current {
   color: #333;
   font-weight: 500;
 }
+.sweets-link:hover {
+  color: #666;         /* Darker blue on hover */
+  text-decoration: underline;
+}
+
 
 /* Page Layout */
 .sweets-page-content {

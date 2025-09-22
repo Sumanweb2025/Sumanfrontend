@@ -453,7 +453,7 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   >
     Home
   </span>  
-            /<span className="current">Snacks</span>
+            /<span className="snacks-current">Snacks</span>
           </div>
 
           <div className="snacks-page-content">
