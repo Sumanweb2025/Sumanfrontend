@@ -417,7 +417,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                     <div className="iyyapa-carousel-content">
                       <h1 className="iyyapa-carousel-title">Iyappaa Foods</h1>
                       <p className="iyyapa-carousel-subtitle">Premium Quality Traditional Foods</p>
-                      <button className="iyyapa-carousel-cta">Explore Products</button>
+                      {/* <button className="iyyapa-carousel-cta">Explore Products</button> */}
                     </div>
                   </div>
                 </div>
@@ -451,7 +451,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   >
     Home
   </span> 
-  / <span>Brands</span> / <span className="iyyapa-current">iyyapa</span>
+  / <span>Brands</span> / <span className="iyyapa-current">Iyappaa</span>
 </div>
 
           {/* Categories Section */}

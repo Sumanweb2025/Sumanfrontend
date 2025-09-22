@@ -43,8 +43,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   // Carousel images for hero section
   const amirthCarouselImages = [
     BgImage1,
-    BgImage2,
-    BgImage3
+    BgImage2
   ];
 
   // Get unique categories for filters
@@ -421,7 +420,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                     <div className="amirth-carousel-content">
                       <h1 className="amirth-carousel-title">Amirth Foods</h1>
                       <p className="amirth-carousel-subtitle">Premium Quality Traditional Foods</p>
-                      <button className="amirth-carousel-cta">Explore Products</button>
+                      {/* <button className="amirth-carousel-cta">Explore Products</button> */}
                     </div>
                   </div>
                 </div>

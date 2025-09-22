@@ -20,8 +20,7 @@ const AboutUs = () => {
 
   // Add this function to handle navigation
   const handleShopProducts = () => {
-    navigate('/brands/iyyappa'); // Replace with your actual route
-    // Or use: navigate('/products'); or navigate('/shop');
+    navigate('/brands/iyappaa'); 
   };
 
   const teamMembers = [
