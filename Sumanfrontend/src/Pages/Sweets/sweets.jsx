@@ -103,7 +103,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
       try {
         const productsResponse = await axios.get(`${API_URL}api/products/search?category=sweets`);
         const productsData = productsResponse.data?.data || productsResponse.data?.products || productsResponse.data;
-        
+
         // Group products by name
         const groupedProducts = groupProductsByName(productsData);
         setProducts(groupedProducts);
@@ -232,18 +232,18 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   // Modified paginate function with scroll
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
-    
+
     // Scroll to top of main content area
     if (mainContentRef.current) {
-      mainContentRef.current.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'start' 
+      mainContentRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
       });
     } else {
       // Fallback - scroll to top of page
-      window.scrollTo({ 
-        top: 0, 
-        behavior: 'smooth' 
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
       });
     }
   };
@@ -255,7 +255,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     // Small delay to show the loading spinner before navigation
     setTimeout(() => {
       // Navigate to product details page
-     const selectedIndex = getSelectedVariant(product);
+      const selectedIndex = getSelectedVariant(product);
       const selectedVariant = product.variants[selectedIndex] || product.variants[0];
 
       // Use selected variant's product ID for navigation
@@ -279,10 +279,10 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
 
     const token = localStorage.getItem('token');
     if (!token) {
-       // Store current page URL for redirect after login
+      // Store current page URL for redirect after login
       const currentUrl = window.location.pathname + window.location.search;
       localStorage.setItem('returnUrl', currentUrl);
-      
+
       // Show alert and redirect to sign-in page
       if (window.confirm('Please log in to add items to your wishlist.')) {
         navigate('/signin');
@@ -354,7 +354,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     }
   };
 
- const handleAddToCart = async (e, productData) => {
+  const handleAddToCart = async (e, productData) => {
     e.stopPropagation(); // Prevent card click
     try {
       const token = localStorage.getItem('token');
@@ -362,7 +362,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         // Store current page URL for redirect after login
         const currentUrl = window.location.pathname + window.location.search;
         localStorage.setItem('returnUrl', currentUrl);
-        
+
         // Show alert and redirect to sign-in page
         if (window.confirm('Please log in to add items to your cart.')) {
           navigate('/signin');
@@ -427,13 +427,13 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         <div className="sweets-container">
           {/* Breadcrumb */}
           <div className="sweets-breadcrumb">
-             <span 
-    className="sweets-link" 
-    onClick={() => navigate('/')}
-    
-  >
-    Home
-  </span> / <span className="sweets-current">Sweets</span>
+            <span
+              className="sweets-link"
+              onClick={() => navigate('/')}
+
+            >
+              Home
+            </span> / <span className="sweets-current">Sweets</span>
           </div>
 
           <div className="sweets-page-content">
@@ -568,15 +568,48 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                         onClick={() => handleProductClick(product)}
                       >
                         <div className="sweets-product-image-container">
-                          <img
-                            src={product.imageUrl || `${API_URL}/uploads/${product.image}`}
-                            alt={product.name}
-                            className="sweets-product-image"
-                            onError={(e) => {
-                              e.target.src = 'https://via.placeholder.com/300';
-                              e.target.onerror = null;
-                            }}
-                          />
+                          <div className="sweets-image-wrapper">
+                            {/* Primary Image - uses first image in array */}
+                            <img
+                              src={
+                                product.imageUrl ||
+                                (product.imageUrls && product.imageUrls[0]) ||
+                                (product.image && Array.isArray(product.image) && product.image.length > 0
+                                  ? `${API_URL}/images/Products/${product.image[0]}`
+                                  : `${API_URL}/images/Products/${product.image}`)
+                              }
+                              alt={product.name}
+                              className="sweets-product-image primary-image"
+                              onError={(e) => {
+                                e.target.src = 'https://via.placeholder.com/300';
+                                e.target.onerror = null;
+                              }}
+                            />
+
+                            {/* Secondary Image for Hover - uses second image in array */}
+                            {(
+                              product.secondaryImageUrl ||
+                              product.hoverImageUrl ||
+                              (product.imageUrls && product.imageUrls.length > 1) ||
+                              (product.image && Array.isArray(product.image) && product.image.length > 1)
+                            ) && (
+                                <img
+                                  src={
+                                    product.secondaryImageUrl ||
+                                    product.hoverImageUrl ||
+                                    (product.imageUrls && product.imageUrls[1]) ||
+                                    (product.image && Array.isArray(product.image) && product.image.length > 1
+                                      ? `${API_URL}/images/Products/${product.image[1]}`
+                                      : null)
+                                  }
+                                  alt={`${product.name} hover view`}
+                                  className="sweets-product-image secondary-image"
+                                  onError={(e) => {
+                                    e.target.style.display = 'none';
+                                  }}
+                                />
+                              )}
+                          </div>
                           <button
                             className={`sweets-wishlist-btn ${wishlistItems.includes(product.product_id || product._id || product.id) ? 'active' : ''}`}
                             onClick={(e) => handleWishlistClick(e, product)}
@@ -589,7 +622,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                         <div className="sweets-product-info">
                           <h3 className="card-title sweets-product-name">{product.name}</h3>
                           <div className="sweets-product-brand">{product.brand}</div>
-                          
+
                           <div className="sweets-product-rating">
                             {Array(5).fill().map((_, i) => (
                               <span key={i} className={i < Math.floor(product.rating || 0) ? 'star-filled' : 'star-empty'}>
@@ -600,16 +633,16 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                           </div>
 
                           <div className="price-text sweets-product-price">{(() => {
-                              const selectedIndex = getSelectedVariant(product);
-                              const selectedVariant = product.variants[selectedIndex] || product.variants[0];
-                              const price = selectedVariant.price;
+                            const selectedIndex = getSelectedVariant(product);
+                            const selectedVariant = product.variants[selectedIndex] || product.variants[0];
+                            const price = selectedVariant.price;
 
-                              return price !== undefined && price !== null
-                                ? `$${price}`
-                                : <span style={{ color: '#999', fontSize: "0.9rem" }}>$0 (Price not fixed)</span>;
-                            })()}</div>
+                            return price !== undefined && price !== null
+                              ? `$${price}`
+                              : <span style={{ color: '#999', fontSize: "0.9rem" }}>$0 (Price not fixed)</span>;
+                          })()}</div>
 
-                            {/* Gram Variants Display */}
+                          {/* Gram Variants Display */}
                           {product.hasMultipleVariants ? (
                             <div className="sweet-gram-variants">
                               {product.variants.map((variant, index) => {

@@ -33,15 +33,15 @@ const AdminLogin = () => {
       setDebugInfo(`Response data: ${JSON.stringify(result, null, 2)}`);
 
       // Log everything for debugging
-      console.log('=== LOGIN DEBUG INFO ===');
-      console.log('Response Status:', response.status);
-      console.log('Response Data:', result);
-      console.log('Success:', result.success);
-      console.log('Has data:', !!result.data);
-      console.log('Has admin:', !!result.data?.admin);
-      console.log('Admin role:', result.data?.admin?.role);
-      console.log('Token:', result.data?.token);
-      console.log('========================');
+      // console.log('=== LOGIN DEBUG INFO ===');
+      // console.log('Response Status:', response.status);
+      // console.log('Response Data:', result);
+      // console.log('Success:', result.success);
+      // console.log('Has data:', !!result.data);
+      // console.log('Has admin:', !!result.data?.admin);
+      // console.log('Admin role:', result.data?.admin?.role);
+      // console.log('Token:', result.data?.token);
+      // console.log('========================');
 
       if (response.ok && result.success) {
         if (result.data && result.data.admin) {
@@ -76,7 +76,10 @@ const AdminLogin = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8fafc' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8fafc' }}>
+      <div className="admin-form-logo">
+        <img style={{ width:'auto', height: '150px' , objectFit: 'contain'}} src="/src/assets/logo-title.png" alt="Suman Foods Logo" />
+      </div>
       <div style={{ maxWidth: '500px', width: '100%', padding: '32px', backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937', margin: '0 0 8px 0' }}>Admin Login</h1>
@@ -101,7 +104,7 @@ const AdminLogin = () => {
                 boxSizing: 'border-box'
               }}
               required
-              placeholder="admin@iyappasweets.com"
+              placeholder="user@company.com"
             />
           </div>
 
@@ -122,7 +125,7 @@ const AdminLogin = () => {
                 boxSizing: 'border-box'
               }}
               required
-              placeholder="admin123"
+              placeholder="********"
             />
           </div>
 
@@ -140,7 +143,7 @@ const AdminLogin = () => {
             </div>
           )}
 
-          {debugInfo && (
+          {/* {debugInfo && (
             <div style={{ 
               padding: '12px', 
               backgroundColor: '#f0f9ff', 
@@ -156,7 +159,7 @@ const AdminLogin = () => {
             }}>
               <strong>Debug:</strong> {debugInfo}
             </div>
-          )}
+          )} */}
 
           <button
             type="submit"
@@ -178,7 +181,7 @@ const AdminLogin = () => {
           </button>
         </form>
 
-        <div style={{ marginTop: '24px', padding: '16px', backgroundColor: '#f9fafb', borderRadius: '8px' }}>
+        {/* <div style={{ marginTop: '24px', padding: '16px', backgroundColor: '#f9fafb', borderRadius: '8px' }}>
           <h3 style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: '600', color: '#374151' }}>Test Credentials:</h3>
           <div style={{ fontSize: '12px', color: '#6b7280', fontFamily: 'monospace' }}>
             <div>Email: admin@iyappasweets.com</div>
@@ -188,7 +191,7 @@ const AdminLogin = () => {
 
         <div style={{ marginTop: '16px', padding: '12px', backgroundColor: '#f3f4f6', borderRadius: '8px', fontSize: '12px', color: '#6b7280' }}>
           <strong>API Endpoint:</strong> {API_BASE_URL}/admin/login
-        </div>
+        </div> */}
       </div>
     </div>
   );

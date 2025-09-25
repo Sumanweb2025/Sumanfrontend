@@ -626,15 +626,48 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                         onClick={() => handleProductClick(product)}
                       >
                         <div className="iyyapa-product-image-container">
-                          <img
-                            src={product.imageUrl || `${API_URL}/uploads/${product.image}`}
-                            alt={product.name}
-                            className="iyyapa-product-image"
-                            onError={(e) => {
-                              e.target.src = 'https://via.placeholder.com/300';
-                              e.target.onerror = null;
-                            }}
-                          />
+                          <div className="iyyapa-image-wrapper">
+                            {/* Primary Image - uses first image in array */}
+                            <img
+                              src={
+                                product.imageUrl ||
+                                (product.imageUrls && product.imageUrls[0]) ||
+                                (product.image && Array.isArray(product.image) && product.image.length > 0
+                                  ? `${API_URL}/images/Products/${product.image[0]}`
+                                  : `${API_URL}/images/Products/${product.image}`)
+                              }
+                              alt={product.name}
+                              className="iyyapa-product-image primary-image"
+                              onError={(e) => {
+                                e.target.src = 'https://via.placeholder.com/300';
+                                e.target.onerror = null;
+                              }}
+                            />
+
+                            {/* Secondary Image for Hover - uses second image in array */}
+                            {(
+                              product.secondaryImageUrl ||
+                              product.hoverImageUrl ||
+                              (product.imageUrls && product.imageUrls.length > 1) ||
+                              (product.image && Array.isArray(product.image) && product.image.length > 1)
+                            ) && (
+                                <img
+                                  src={
+                                    product.secondaryImageUrl ||
+                                    product.hoverImageUrl ||
+                                    (product.imageUrls && product.imageUrls[1]) ||
+                                    (product.image && Array.isArray(product.image) && product.image.length > 1
+                                      ? `${API_URL}/images/Products/${product.image[1]}`
+                                      : null)
+                                  }
+                                  alt={`${product.name} hover view`}
+                                  className="iyyapa-product-image secondary-image"
+                                  onError={(e) => {
+                                    e.target.style.display = 'none';
+                                  }}
+                                />
+                              )}
+                          </div>
                           <button
                             className={`iyyapa-wishlist-btn ${wishlistItems.includes(product.product_id || product._id || product.id) ? 'active' : ''}`}
                             onClick={(e) => handleWishlistClick(e, product)}

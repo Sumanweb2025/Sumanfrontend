@@ -562,15 +562,48 @@ const GroceryListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                         onClick={() => handleProductClick(product)}
                       >
                         <div className="grocery-product-image-container">
-                          <img
-                            src={product.imageUrl || `${API_URL}/uploads/${product.image}`}
-                            alt={product.name}
-                            className="grocery-product-image"
-                            onError={(e) => {
-                              e.target.src = 'https://via.placeholder.com/300';
-                              e.target.onerror = null;
-                            }}
-                          />
+                          <div className="grocery-image-wrapper">
+                            {/* Primary Image - uses first image in array */}
+                            <img
+                              src={
+                                product.imageUrl ||
+                                (product.imageUrls && product.imageUrls[0]) ||
+                                (product.image && Array.isArray(product.image) && product.image.length > 0
+                                  ? `${API_URL}/images/Products/${product.image[0]}`
+                                  : `${API_URL}/images/Products/${product.image}`)
+                              }
+                              alt={product.name}
+                              className="grocery-product-image primary-image"
+                              onError={(e) => {
+                                e.target.src = 'https://via.placeholder.com/300';
+                                e.target.onerror = null;
+                              }}
+                            />
+
+                            {/* Secondary Image for Hover - uses second image in array */}
+                            {(
+                              product.secondaryImageUrl ||
+                              product.hoverImageUrl ||
+                              (product.imageUrls && product.imageUrls.length > 1) ||
+                              (product.image && Array.isArray(product.image) && product.image.length > 1)
+                            ) && (
+                                <img
+                                  src={
+                                    product.secondaryImageUrl ||
+                                    product.hoverImageUrl ||
+                                    (product.imageUrls && product.imageUrls[1]) ||
+                                    (product.image && Array.isArray(product.image) && product.image.length > 1
+                                      ? `${API_URL}/images/Products/${product.image[1]}`
+                                      : null)
+                                  }
+                                  alt={`${product.name} hover view`}
+                                  className="grocery-product-image secondary-image"
+                                  onError={(e) => {
+                                    e.target.style.display = 'none';
+                                  }}
+                                />
+                              )}
+                          </div>
                           <button
                             className={`grocery-wishlist-btn ${wishlistItems.includes(product.product_id || product._id || product.id) ? 'active' : ''}`}
                             onClick={(e) => handleWishlistClick(e, product)}
