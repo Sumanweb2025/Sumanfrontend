@@ -272,6 +272,14 @@
   object-fit: cover;
   transition: transform 0.3s ease;
 }
+.sweets-product-image:hover,
+.sweets-product-image.hover-active {
+  transform: scale(1.05);
+}
+
+.sweets-product-image-container:hover .sweets-product-image {
+  filter: brightness(1.1);
+}
 
 .sweets-product-card:hover .product-image {
   transform: scale(1.05);

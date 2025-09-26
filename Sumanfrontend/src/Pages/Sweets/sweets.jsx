@@ -24,6 +24,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [hoveredProduct, setHoveredProduct] = useState(null); // New state for hover
 
   // Popup states
   const [showWishlistPopup, setShowWishlistPopup] = useState(false);
@@ -41,6 +42,48 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   // Get unique brands and categories for filters
   const uniqueBrands = [...new Set(products.map(product => product.brand).filter(Boolean))];
   const uniqueCategories = [...new Set(products.map(product => product.category).filter(Boolean))];
+
+  // Helper function to get the correct image URL
+  const getImageUrl = (product, isHover = false) => {
+    // Use mainImage/hoverImage if available
+    if (isHover && product.hoverImage) {
+      return product.hoverImage;
+    }
+    
+    if (!isHover && product.mainImage) {
+      return product.mainImage;
+    }
+
+    // Fallback to images array
+    if (product.images && product.images.length > 0) {
+      if (isHover && product.images.length > 1) {
+        return product.images[1]; // Second image for hover
+      }
+      return product.images[0]; // First image as default
+    }
+
+    // Fallback to legacy image fields
+    if (product.imageUrl) {
+      return product.imageUrl;
+    }
+    
+    if (product.image) {
+      return product.image.startsWith('http') 
+        ? product.image 
+        : `${API_URL}/uploads/${product.image}`;
+    }
+
+    return 'https://via.placeholder.com/300';
+  };
+
+  // Hover handlers
+  const handleImageHover = (productId) => {
+    setHoveredProduct(productId);
+  };
+
+  const handleImageLeave = () => {
+    setHoveredProduct(null);
+  };
 
   const groupProductsByName = (productsData) => {
     const grouped = {};
@@ -153,11 +196,6 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     }
 
     // Price range filter
-    // result = result.filter(product => 
-    //   product.price >= priceRange[0] && product.price <= priceRange[1]
-    // );
-
-    // New Price range filter
     result = result.filter(product => {
       const price = product.price || 0; // Treat missing price as 0
       return price >= priceRange[0] && price <= priceRange[1];
@@ -255,7 +293,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     // Small delay to show the loading spinner before navigation
     setTimeout(() => {
       // Navigate to product details page
-     const selectedIndex = getSelectedVariant(product);
+      const selectedIndex = getSelectedVariant(product);
       const selectedVariant = product.variants[selectedIndex] || product.variants[0];
 
       // Use selected variant's product ID for navigation
@@ -347,7 +385,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     }
   };
 
- const handleAddToCart = async (e, productData) => {
+  const handleAddToCart = async (e, productData) => {
     e.stopPropagation(); // Prevent card click
     try {
       const token = localStorage.getItem('token');
@@ -413,13 +451,12 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         <div className="sweets-container">
           {/* Breadcrumb */}
           <div className="sweets-breadcrumb">
-             <span 
-    className="sweets-link" 
-    onClick={() => navigate('/')}
-    
-  >
-    Home
-  </span> / <span className="sweets-current">Sweets</span>
+            <span 
+              className="sweets-link" 
+              onClick={() => navigate('/')}
+            >
+              Home
+            </span> / <span className="sweets-current">Sweets</span>
           </div>
 
           <div className="sweets-page-content">
@@ -500,9 +537,13 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                   {products.slice(0, 3).map(product => (
                     <div key={product.product_id || product.id} className="sweets-deal-item">
                       <img
-                        src={product.imageUrl || `${API_URL}/uploads/${product.image}`}
+                        src={getImageUrl(product)}
                         alt={product.name}
                         className="sweets-deal-image"
+                        onError={(e) => {
+                          e.target.src = 'https://via.placeholder.com/300';
+                          e.target.onerror = null;
+                        }}
                       />
 
                       <div className="sweets-deal-info">
@@ -547,121 +588,140 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
               ) : (
                 <>
                   <div className="sweets-products-grid">
-                    {currentProducts.map((product) => (
-                      <div
-                        key={product.product_id || product.id}
-                        className="sweets-product-card"
-                        onClick={() => handleProductClick(product)}
-                      >
-                        <div className="sweets-product-image-container">
-                          <img
-                            src={product.imageUrl || `${API_URL}/uploads/${product.image}`}
-                            alt={product.name}
-                            className="sweets-product-image"
-                            onError={(e) => {
-                              e.target.src = 'https://via.placeholder.com/300';
-                              e.target.onerror = null;
-                            }}
-                          />
-                          <button
-                            className={`sweets-wishlist-btn ${wishlistItems.includes(product.product_id || product._id || product.id) ? 'active' : ''}`}
-                            onClick={(e) => handleWishlistClick(e, product)}
-                            disabled={wishlistLoading}
-                          >
-                            {wishlistItems.includes(product.product_id || product._id || product.id) ? '❤️' : '♡'}
-                          </button>
-                        </div>
+                    {currentProducts.map((product) => {
+                      const productId = product.product_id || product.id;
+                      const isHovered = hoveredProduct === productId;
 
-                        <div className="sweets-product-info">
-                          <h3 className="card-title sweets-product-name">{product.name}</h3>
-                          <div className="sweets-product-brand">{product.brand}</div>
-                          
-                          <div className="sweets-product-rating">
-                            {Array(5).fill().map((_, i) => (
-                              <span key={i} className={i < Math.floor(product.rating || 0) ? 'star-filled' : 'star-empty'}>
-                                ★
-                              </span>
-                            ))}
-                            <span className="sweets-rating-text">({product.rating?.toFixed(1) || '0.0'})</span>
+                      return (
+                        <div
+                          key={productId}
+                          className="sweets-product-card"
+                          onClick={() => handleProductClick(product)}
+                        >
+                          <div 
+                            className="sweets-product-image-container"
+                            onMouseEnter={() => handleImageHover(productId)}
+                            onMouseLeave={handleImageLeave}
+                          >
+                            <img
+                              src={getImageUrl(product, isHovered)}
+                              alt={product.name}
+                              className={`sweets-product-image ${isHovered ? 'hover-active' : ''}`}
+                              onError={(e) => {
+                                e.target.src = 'https://via.placeholder.com/300';
+                                e.target.onerror = null;
+                              }}
+                            />
+                            
+                            {/* Optional: Show image indicator if multiple images available */}
+                            {((product.images && product.images.length > 1) || 
+                              (product.mainImage && product.hoverImage)) && (
+                              <div className="sweets-image-indicator">
+                                <span className={`indicator-dot ${!isHovered ? 'active' : ''}`}></span>
+                                <span className={`indicator-dot ${isHovered ? 'active' : ''}`}></span>
+                              </div>
+                            )}
+
+                            <button
+                              className={`sweets-wishlist-btn ${wishlistItems.includes(productId) ? 'active' : ''}`}
+                              onClick={(e) => handleWishlistClick(e, product)}
+                              disabled={wishlistLoading}
+                            >
+                              {wishlistItems.includes(productId) ? '❤️' : '♡'}
+                            </button>
                           </div>
 
-                          <div className="price-text sweets-product-price">{(() => {
+                          <div className="sweets-product-info">
+                            <h3 className="card-title sweets-product-name">{product.name}</h3>
+                            <div className="sweets-product-brand">{product.brand}</div>
+                            
+                            <div className="sweets-product-rating">
+                              {Array(5).fill().map((_, i) => (
+                                <span key={i} className={i < Math.floor(product.rating || 0) ? 'star-filled' : 'star-empty'}>
+                                  ★
+                                </span>
+                              ))}
+                              <span className="sweets-rating-text">({product.rating?.toFixed(1) || '0.0'})</span>
+                            </div>
+
+                            <div className="price-text sweets-product-price">{(() => {
+                                const selectedIndex = getSelectedVariant(product);
+                                const selectedVariant = product.variants[selectedIndex] || product.variants[0];
+                                const price = selectedVariant.price;
+
+                                return price !== undefined && price !== null
+                                  ? `$${price}`
+                                  : <span style={{ color: '#999', fontSize: "0.9rem" }}>$0 (Price not fixed)</span>;
+                              })()}</div>
+
+                              {/* Gram Variants Display */}
+                            {product.hasMultipleVariants ? (
+                              <div className="sweet-gram-variants">
+                                {product.variants.map((variant, index) => {
+                                  const selectedIndex = getSelectedVariant(product);
+                                  const isSelected = selectedIndex === index;
+                                  const isOutOfStock = (variant.piece || 0) <= 0;
+
+                                  return (
+                                    <button
+                                      key={variant.productId}
+                                      className={`sweet-gram-button ${isSelected ? 'selected' : ''} ${isOutOfStock ? 'out-of-stock' : ''}`}
+                                      onClick={(e) => handleVariantSelect(product, index, e)}
+                                      disabled={isOutOfStock}
+                                    >
+                                      {variant.gram}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            ) : (
+                              <div className="sweet-single-gram">
+                                <span className="sweet-gram-display">{product.variants[0]?.gram || 'Standard'}</span>
+                              </div>
+                            )}
+
+                            {/* Stock Status */}
+                            {(() => {
                               const selectedIndex = getSelectedVariant(product);
                               const selectedVariant = product.variants[selectedIndex] || product.variants[0];
-                              const price = selectedVariant.price;
+                              const stock = selectedVariant.piece || 0;
 
-                              return price !== undefined && price !== null
-                                ? `$${price}`
-                                : <span style={{ color: '#999', fontSize: "0.9rem" }}>$0 (Price not fixed)</span>;
-                            })()}</div>
+                              return stock > 0 ? (
+                                <div className="sweets-product-stock in-stock">
+                                  In Stock
+                                </div>
+                              ) : (
+                                <div className="sweets-product-stock out-of-stock">
+                                  Out of Stock
+                                </div>
+                              );
+                            })()}
 
-                            {/* Gram Variants Display */}
-                          {product.hasMultipleVariants ? (
-                            <div className="sweet-gram-variants">
-                              {product.variants.map((variant, index) => {
-                                const selectedIndex = getSelectedVariant(product);
-                                const isSelected = selectedIndex === index;
-                                const isOutOfStock = (variant.piece || 0) <= 0;
+                            {(() => {
+                              const selectedIndex = getSelectedVariant(product);
+                              const selectedVariant = product.variants[selectedIndex] || product.variants[0];
+                              const stock = selectedVariant.piece || 0;
 
-                                return (
-                                  <button
-                                    key={variant.productId}
-                                    className={`sweet-gram-button ${isSelected ? 'selected' : ''} ${isOutOfStock ? 'out-of-stock' : ''}`}
-                                    onClick={(e) => handleVariantSelect(product, index, e)}
-                                    disabled={isOutOfStock}
-                                  >
-                                    {variant.gram}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          ) : (
-                            <div className="sweet-single-gram">
-                              <span className="sweet-gram-display">{product.variants[0]?.gram || 'Standard'}</span>
-                            </div>
-                          )}
-
-                          {/* Stock Status */}
-                          {(() => {
-                            const selectedIndex = getSelectedVariant(product);
-                            const selectedVariant = product.variants[selectedIndex] || product.variants[0];
-                            const stock = selectedVariant.piece || 0;
-
-                            return stock > 0 ? (
-                              <div className="sweets-product-stock in-stock">
-                                In Stock
-                              </div>
-                            ) : (
-                              <div className="sweets-product-stock out-of-stock">
-                                Out of Stock
-                              </div>
-                            );
-                          })()}
-
-                          {(() => {
-                            const selectedIndex = getSelectedVariant(product);
-                            const selectedVariant = product.variants[selectedIndex] || product.variants[0];
-                            const stock = selectedVariant.piece || 0;
-
-                            return stock > 0 ? (
-                              <button
-                                className="sweet-add-to-cart-btn"
-                                onClick={(e) => handleAddToCart(e, { ...product, ...selectedVariant })}
-                              >
-                                Add to Cart
-                              </button>
-                            ) : (
-                              <button
-                                className="sweet-add-to-cart-btn sold-out-btn"
-                                disabled
-                              >
-                                Sold Out
-                              </button>
-                            );
-                          })()}
+                              return stock > 0 ? (
+                                <button
+                                  className="sweet-add-to-cart-btn"
+                                  onClick={(e) => handleAddToCart(e, { ...product, ...selectedVariant })}
+                                >
+                                  Add to Cart
+                                </button>
+                              ) : (
+                                <button
+                                  className="sweet-add-to-cart-btn sold-out-btn"
+                                  disabled
+                                >
+                                  Sold Out
+                                </button>
+                              );
+                            })()}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
 
                   {totalPages > 1 && (

@@ -411,7 +411,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
       <Header />
       <div className="amirth-page">
         {/* Hero Carousel Section */}
-        <div className="amirth-hero-carousel">
+        {/* <div className="amirth-hero-carousel">
           <div className="amirth-carousel-container">
             <div className="amirth-carousel-wrapper" style={{ transform: `translateX(-${currentCarouselIndex * (100 / 3)}%)` }}>
               {amirthCarouselImages.map((image, index) => (
@@ -443,7 +443,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
               ))}
             </div>
           </div>
-        </div>
+        </div> */}
 
         <div className="amirth-container">
           {/* Breadcrumb */}

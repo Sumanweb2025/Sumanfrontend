@@ -517,7 +517,7 @@ const FeaturedProducts = () => {
           )}
 
           {/* Featured Cards */}
-          <div className="featured-cards">
+          {/* <div className="featured-cards">
             <div className="feature-card delicious-sweets">
               <div className="feature-card-content">
                 <span className="feature-card-tag">Today's HeartBeat</span>
@@ -548,7 +548,7 @@ const FeaturedProducts = () => {
                 </button>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Enhanced Newsletter Section */}

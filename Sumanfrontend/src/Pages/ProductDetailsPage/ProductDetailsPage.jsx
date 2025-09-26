@@ -48,6 +48,22 @@ const ProductDetailsPage = ({ addToCart }) => {
 
   const API_URL = import.meta.env.VITE_APP_API_URL;
 
+  // Category route mapping
+  const CATEGORY_ROUTES = {
+    'grocery': '/groceries',
+    'snacks': '/snacks', 
+    'sweets': '/sweets',
+    // Add more mappings as needed
+  };
+
+  // Helper function to get correct category route
+  const getCategoryRoute = (category) => {
+    if (!category) return '/';
+    
+    const categoryLower = category.toLowerCase();
+    return CATEGORY_ROUTES[categoryLower] || `/${categoryLower}`;
+  };
+
   useEffect(() => {
     const fetchProductDetails = async () => {
       if (!product) {
@@ -199,7 +215,6 @@ const ProductDetailsPage = ({ addToCart }) => {
     }
     return product || { price: 0 };
   };
-
 
   const handleWishlistClick = async () => {
     if (!product || wishlistLoading) return;
@@ -500,7 +515,7 @@ const ProductDetailsPage = ({ addToCart }) => {
             </td>
             <td>{product.storageCondition || product.storage_condition || "Store in a cool, dry place"}</td>
           </tr>
-</tbody>
+        </tbody>
       </table>
     </div>
   );
@@ -650,6 +665,7 @@ const ProductDetailsPage = ({ addToCart }) => {
       </div>
     );
   };
+
   if (loading) {
     return (
       <LoadingSpinner
@@ -677,14 +693,14 @@ const ProductDetailsPage = ({ addToCart }) => {
       <Header />
       <div className="product-details-page">
         <div className="container">
-          {/* Breadcrumb */}
+          {/* Breadcrumb - UPDATED WITH FIX */}
           <div className="breadcrumb">
             <span onClick={() => navigate("/")} className="clickable">
               Home
             </span>{" "}
             /
             <span
-              onClick={() => navigate(`/${product.category?.toLowerCase()}`)}
+              onClick={() => navigate(getCategoryRoute(product.category))}
               className="clickable"
             >
               {product.category}
