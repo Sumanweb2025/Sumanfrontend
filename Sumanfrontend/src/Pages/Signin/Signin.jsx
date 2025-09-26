@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate , useLocation} from 'react-router-dom';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -63,6 +63,7 @@ const GoogleSignIn = ({ onSuccess, onError, loading }) => {
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -171,7 +172,14 @@ const SignIn = () => {
 
           // Navigate after showing toast for a moment
           setTimeout(() => {
-            navigate('/', { replace: true });
+           // Check for return URL and redirect accordingly
+            const returnUrl = localStorage.getItem('returnUrl');
+            if (returnUrl) {
+              localStorage.removeItem('returnUrl');
+              navigate(returnUrl, { replace: true });
+            } else {
+              navigate('/', { replace: true });
+            }
           }, 1500);
         } else {
           setErrors({ api: 'Failed to save user data. Please try again.' });
@@ -276,7 +284,14 @@ const SignIn = () => {
 
           // Navigate after showing toast for a moment
           setTimeout(() => {
-            navigate('/', { replace: true });
+            // Check for return URL and redirect accordingly
+            const returnUrl = localStorage.getItem('returnUrl');
+            if (returnUrl) {
+              localStorage.removeItem('returnUrl');
+              navigate(returnUrl, { replace: true });
+            } else {
+              navigate('/', { replace: true });
+            }
           }, 1500);
         } else {
           const errorMsg = 'Failed to save user data. Please try again.';

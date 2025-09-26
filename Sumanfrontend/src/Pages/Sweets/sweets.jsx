@@ -24,7 +24,6 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [hoveredProduct, setHoveredProduct] = useState(null); // New state for hover
 
   // Popup states
   const [showWishlistPopup, setShowWishlistPopup] = useState(false);
@@ -42,48 +41,6 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   // Get unique brands and categories for filters
   const uniqueBrands = [...new Set(products.map(product => product.brand).filter(Boolean))];
   const uniqueCategories = [...new Set(products.map(product => product.category).filter(Boolean))];
-
-  // Helper function to get the correct image URL
-  const getImageUrl = (product, isHover = false) => {
-    // Use mainImage/hoverImage if available
-    if (isHover && product.hoverImage) {
-      return product.hoverImage;
-    }
-    
-    if (!isHover && product.mainImage) {
-      return product.mainImage;
-    }
-
-    // Fallback to images array
-    if (product.images && product.images.length > 0) {
-      if (isHover && product.images.length > 1) {
-        return product.images[1]; // Second image for hover
-      }
-      return product.images[0]; // First image as default
-    }
-
-    // Fallback to legacy image fields
-    if (product.imageUrl) {
-      return product.imageUrl;
-    }
-    
-    if (product.image) {
-      return product.image.startsWith('http') 
-        ? product.image 
-        : `${API_URL}/uploads/${product.image}`;
-    }
-
-    return 'https://via.placeholder.com/300';
-  };
-
-  // Hover handlers
-  const handleImageHover = (productId) => {
-    setHoveredProduct(productId);
-  };
-
-  const handleImageLeave = () => {
-    setHoveredProduct(null);
-  };
 
   const groupProductsByName = (productsData) => {
     const grouped = {};
@@ -146,7 +103,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
       try {
         const productsResponse = await axios.get(`${API_URL}api/products/search?category=sweets`);
         const productsData = productsResponse.data?.data || productsResponse.data?.products || productsResponse.data;
-        
+
         // Group products by name
         const groupedProducts = groupProductsByName(productsData);
         setProducts(groupedProducts);
@@ -196,6 +153,11 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     }
 
     // Price range filter
+    // result = result.filter(product => 
+    //   product.price >= priceRange[0] && product.price <= priceRange[1]
+    // );
+
+    // New Price range filter
     result = result.filter(product => {
       const price = product.price || 0; // Treat missing price as 0
       return price >= priceRange[0] && price <= priceRange[1];
@@ -270,18 +232,18 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   // Modified paginate function with scroll
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
-    
+
     // Scroll to top of main content area
     if (mainContentRef.current) {
-      mainContentRef.current.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'start' 
+      mainContentRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
       });
     } else {
       // Fallback - scroll to top of page
-      window.scrollTo({ 
-        top: 0, 
-        behavior: 'smooth' 
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
       });
     }
   };
@@ -317,7 +279,14 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
 
     const token = localStorage.getItem('token');
     if (!token) {
-      alert('Please login to add items to your wishlist');
+      // Store current page URL for redirect after login
+      const currentUrl = window.location.pathname + window.location.search;
+      localStorage.setItem('returnUrl', currentUrl);
+
+      // Show alert and redirect to sign-in page
+      if (window.confirm('Please log in to add items to your wishlist.')) {
+        navigate('/signin');
+      }
       return;
     }
 
@@ -390,7 +359,14 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-        alert('Please login to add items to your cart');
+        // Store current page URL for redirect after login
+        const currentUrl = window.location.pathname + window.location.search;
+        localStorage.setItem('returnUrl', currentUrl);
+
+        // Show alert and redirect to sign-in page
+        if (window.confirm('Please log in to add items to your cart.')) {
+          navigate('/signin');
+        }
         return;
       }
 
@@ -451,9 +427,10 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         <div className="sweets-container">
           {/* Breadcrumb */}
           <div className="sweets-breadcrumb">
-            <span 
-              className="sweets-link" 
+            <span
+              className="sweets-link"
               onClick={() => navigate('/')}
+
             >
               Home
             </span> / <span className="sweets-current">Sweets</span>
@@ -537,13 +514,9 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                   {products.slice(0, 3).map(product => (
                     <div key={product.product_id || product.id} className="sweets-deal-item">
                       <img
-                        src={getImageUrl(product)}
+                        src={product.imageUrl || `${API_URL}/uploads/${product.image}`}
                         alt={product.name}
                         className="sweets-deal-image"
-                        onError={(e) => {
-                          e.target.src = 'https://via.placeholder.com/300';
-                          e.target.onerror = null;
-                        }}
                       />
 
                       <div className="sweets-deal-info">
@@ -588,140 +561,154 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
               ) : (
                 <>
                   <div className="sweets-products-grid">
-                    {currentProducts.map((product) => {
-                      const productId = product.product_id || product.id;
-                      const isHovered = hoveredProduct === productId;
-
-                      return (
-                        <div
-                          key={productId}
-                          className="sweets-product-card"
-                          onClick={() => handleProductClick(product)}
-                        >
-                          <div 
-                            className="sweets-product-image-container"
-                            onMouseEnter={() => handleImageHover(productId)}
-                            onMouseLeave={handleImageLeave}
-                          >
+                    {currentProducts.map((product) => (
+                      <div
+                        key={product.product_id || product.id}
+                        className="sweets-product-card"
+                        onClick={() => handleProductClick(product)}
+                      >
+                        <div className="sweets-product-image-container">
+                          <div className="sweets-image-wrapper">
+                            {/* Primary Image - uses first image in array */}
                             <img
-                              src={getImageUrl(product, isHovered)}
+                              src={
+                                product.imageUrl ||
+                                (product.imageUrls && product.imageUrls[0]) ||
+                                (product.image && Array.isArray(product.image) && product.image.length > 0
+                                  ? `${API_URL}/images/Products/${product.image[0]}`
+                                  : `${API_URL}/images/Products/${product.image}`)
+                              }
                               alt={product.name}
-                              className={`sweets-product-image ${isHovered ? 'hover-active' : ''}`}
+                              className="sweets-product-image primary-image"
                               onError={(e) => {
                                 e.target.src = 'https://via.placeholder.com/300';
                                 e.target.onerror = null;
                               }}
                             />
-                            
-                            {/* Optional: Show image indicator if multiple images available */}
-                            {((product.images && product.images.length > 1) || 
-                              (product.mainImage && product.hoverImage)) && (
-                              <div className="sweets-image-indicator">
-                                <span className={`indicator-dot ${!isHovered ? 'active' : ''}`}></span>
-                                <span className={`indicator-dot ${isHovered ? 'active' : ''}`}></span>
-                              </div>
-                            )}
 
-                            <button
-                              className={`sweets-wishlist-btn ${wishlistItems.includes(productId) ? 'active' : ''}`}
-                              onClick={(e) => handleWishlistClick(e, product)}
-                              disabled={wishlistLoading}
-                            >
-                              {wishlistItems.includes(productId) ? '❤️' : '♡'}
-                            </button>
+                            {/* Secondary Image for Hover - uses second image in array */}
+                            {(
+                              product.secondaryImageUrl ||
+                              product.hoverImageUrl ||
+                              (product.imageUrls && product.imageUrls.length > 1) ||
+                              (product.image && Array.isArray(product.image) && product.image.length > 1)
+                            ) && (
+                                <img
+                                  src={
+                                    product.secondaryImageUrl ||
+                                    product.hoverImageUrl ||
+                                    (product.imageUrls && product.imageUrls[1]) ||
+                                    (product.image && Array.isArray(product.image) && product.image.length > 1
+                                      ? `${API_URL}/images/Products/${product.image[1]}`
+                                      : null)
+                                  }
+                                  alt={`${product.name} hover view`}
+                                  className="sweets-product-image secondary-image"
+                                  onError={(e) => {
+                                    e.target.style.display = 'none';
+                                  }}
+                                />
+                              )}
+                          </div>
+                          <button
+                            className={`sweets-wishlist-btn ${wishlistItems.includes(product.product_id || product._id || product.id) ? 'active' : ''}`}
+                            onClick={(e) => handleWishlistClick(e, product)}
+                            disabled={wishlistLoading}
+                          >
+                            {wishlistItems.includes(product.product_id || product._id || product.id) ? '❤️' : '♡'}
+                          </button>
+                        </div>
+
+                        <div className="sweets-product-info">
+                          <h3 className="card-title sweets-product-name">{product.name}</h3>
+                          <div className="sweets-product-brand">{product.brand}</div>
+
+                          <div className="sweets-product-rating">
+                            {Array(5).fill().map((_, i) => (
+                              <span key={i} className={i < Math.floor(product.rating || 0) ? 'star-filled' : 'star-empty'}>
+                                ★
+                              </span>
+                            ))}
+                            <span className="sweets-rating-text">({product.rating?.toFixed(1) || '0.0'})</span>
                           </div>
 
-                          <div className="sweets-product-info">
-                            <h3 className="card-title sweets-product-name">{product.name}</h3>
-                            <div className="sweets-product-brand">{product.brand}</div>
-                            
-                            <div className="sweets-product-rating">
-                              {Array(5).fill().map((_, i) => (
-                                <span key={i} className={i < Math.floor(product.rating || 0) ? 'star-filled' : 'star-empty'}>
-                                  ★
-                                </span>
-                              ))}
-                              <span className="sweets-rating-text">({product.rating?.toFixed(1) || '0.0'})</span>
-                            </div>
+                          <div className="price-text sweets-product-price">{(() => {
+                            const selectedIndex = getSelectedVariant(product);
+                            const selectedVariant = product.variants[selectedIndex] || product.variants[0];
+                            const price = selectedVariant.price;
 
-                            <div className="price-text sweets-product-price">{(() => {
+                            return price !== undefined && price !== null
+                              ? `$${price}`
+                              : <span style={{ color: '#999', fontSize: "0.9rem" }}>$0 (Price not fixed)</span>;
+                          })()}</div>
+
+                          {/* Gram Variants Display */}
+                          {product.hasMultipleVariants ? (
+                            <div className="sweet-gram-variants">
+                              {product.variants.map((variant, index) => {
                                 const selectedIndex = getSelectedVariant(product);
-                                const selectedVariant = product.variants[selectedIndex] || product.variants[0];
-                                const price = selectedVariant.price;
+                                const isSelected = selectedIndex === index;
+                                const isOutOfStock = (variant.piece || 0) <= 0;
 
-                                return price !== undefined && price !== null
-                                  ? `$${price}`
-                                  : <span style={{ color: '#999', fontSize: "0.9rem" }}>$0 (Price not fixed)</span>;
-                              })()}</div>
+                                return (
+                                  <button
+                                    key={variant.productId}
+                                    className={`sweet-gram-button ${isSelected ? 'selected' : ''} ${isOutOfStock ? 'out-of-stock' : ''}`}
+                                    onClick={(e) => handleVariantSelect(product, index, e)}
+                                    disabled={isOutOfStock}
+                                  >
+                                    {variant.gram}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <div className="sweet-single-gram">
+                              <span className="sweet-gram-display">{product.variants[0]?.gram || 'Standard'}</span>
+                            </div>
+                          )}
 
-                              {/* Gram Variants Display */}
-                            {product.hasMultipleVariants ? (
-                              <div className="sweet-gram-variants">
-                                {product.variants.map((variant, index) => {
-                                  const selectedIndex = getSelectedVariant(product);
-                                  const isSelected = selectedIndex === index;
-                                  const isOutOfStock = (variant.piece || 0) <= 0;
+                          {/* Stock Status */}
+                          {(() => {
+                            const selectedIndex = getSelectedVariant(product);
+                            const selectedVariant = product.variants[selectedIndex] || product.variants[0];
+                            const stock = selectedVariant.piece || 0;
 
-                                  return (
-                                    <button
-                                      key={variant.productId}
-                                      className={`sweet-gram-button ${isSelected ? 'selected' : ''} ${isOutOfStock ? 'out-of-stock' : ''}`}
-                                      onClick={(e) => handleVariantSelect(product, index, e)}
-                                      disabled={isOutOfStock}
-                                    >
-                                      {variant.gram}
-                                    </button>
-                                  );
-                                })}
+                            return stock > 0 ? (
+                              <div className="sweets-product-stock in-stock">
+                                In Stock
                               </div>
                             ) : (
-                              <div className="sweet-single-gram">
-                                <span className="sweet-gram-display">{product.variants[0]?.gram || 'Standard'}</span>
+                              <div className="sweets-product-stock out-of-stock">
+                                Out of Stock
                               </div>
-                            )}
+                            );
+                          })()}
 
-                            {/* Stock Status */}
-                            {(() => {
-                              const selectedIndex = getSelectedVariant(product);
-                              const selectedVariant = product.variants[selectedIndex] || product.variants[0];
-                              const stock = selectedVariant.piece || 0;
+                          {(() => {
+                            const selectedIndex = getSelectedVariant(product);
+                            const selectedVariant = product.variants[selectedIndex] || product.variants[0];
+                            const stock = selectedVariant.piece || 0;
 
-                              return stock > 0 ? (
-                                <div className="sweets-product-stock in-stock">
-                                  In Stock
-                                </div>
-                              ) : (
-                                <div className="sweets-product-stock out-of-stock">
-                                  Out of Stock
-                                </div>
-                              );
-                            })()}
-
-                            {(() => {
-                              const selectedIndex = getSelectedVariant(product);
-                              const selectedVariant = product.variants[selectedIndex] || product.variants[0];
-                              const stock = selectedVariant.piece || 0;
-
-                              return stock > 0 ? (
-                                <button
-                                  className="sweet-add-to-cart-btn"
-                                  onClick={(e) => handleAddToCart(e, { ...product, ...selectedVariant })}
-                                >
-                                  Add to Cart
-                                </button>
-                              ) : (
-                                <button
-                                  className="sweet-add-to-cart-btn sold-out-btn"
-                                  disabled
-                                >
-                                  Sold Out
-                                </button>
-                              );
-                            })()}
-                          </div>
+                            return stock > 0 ? (
+                              <button
+                                className="sweet-add-to-cart-btn"
+                                onClick={(e) => handleAddToCart(e, { ...product, ...selectedVariant })}
+                              >
+                                Add to Cart
+                              </button>
+                            ) : (
+                              <button
+                                className="sweet-add-to-cart-btn sold-out-btn"
+                                disabled
+                              >
+                                Sold Out
+                              </button>
+                            );
+                          })()}
                         </div>
-                      );
-                    })}
+                      </div>
+                    ))}
                   </div>
 
                   {totalPages > 1 && (

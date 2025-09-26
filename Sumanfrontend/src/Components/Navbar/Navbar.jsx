@@ -75,7 +75,7 @@ const Navbar = () => {
   ];
 
   const brandLinks = [
-    { name: 'Iyappaa', path: '/brands/iyyappa' },
+    { name: 'Iyappaa', path: '/brands/iyappaa' },
     { name: 'Amrith', path: '/brands/amrith' },
     { name: 'Venba', path: '/brands/venba' },
     { name: 'Little Krishna', path: '/brands/little-krishna' },

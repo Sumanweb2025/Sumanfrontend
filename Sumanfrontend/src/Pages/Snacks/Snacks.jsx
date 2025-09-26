@@ -308,7 +308,14 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
 
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("Please login to add items to your wishlist");
+      // Store current page URL for redirect after login
+      const currentUrl = window.location.pathname + window.location.search;
+      localStorage.setItem('returnUrl', currentUrl);
+      
+      // Show alert and redirect to sign-in page
+      if (window.confirm('Please log in to add items to your wishlist.')) {
+        navigate('/signin');
+      }
       return;
     }
 
@@ -385,7 +392,14 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-        alert('Please login to add items to your cart');
+        // Store current page URL for redirect after login
+        const currentUrl = window.location.pathname + window.location.search;
+        localStorage.setItem('returnUrl', currentUrl);
+        
+        // Show alert and redirect to sign-in page
+        if (window.confirm('Please log in to add items to your cart.')) {
+          navigate('/signin');
+        }
         return;
       }
 
@@ -607,33 +621,54 @@ const SnacksListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                         onClick={() => handleProductClick(product)}
                       >
                         <div className="snacks-product-image-container">
-                          <img
-                            src={
-                              product.imageUrl ||
-                              `${API_URL}/uploads/${product.image}`
-                            }
-                            alt={product.name}
-                            className="snacks-product-image"
-                            onError={(e) => {
-                              e.target.src = "https://via.placeholder.com/300";
-                              e.target.onerror = null;
-                            }}
-                          />
+                          <div className="snacks-image-wrapper">
+                            {/* Primary Image - uses first image in array */}
+                            <img
+                              src={
+                                product.imageUrl ||
+                                (product.imageUrls && product.imageUrls[0]) ||
+                                (product.image && Array.isArray(product.image) && product.image.length > 0
+                                  ? `${API_URL}/images/Products/${product.image[0]}`
+                                  : `${API_URL}/images/Products/${product.image}`)
+                              }
+                              alt={product.name}
+                              className="snacks-product-image primary-image"
+                              onError={(e) => {
+                                e.target.src = 'https://via.placeholder.com/300';
+                                e.target.onerror = null;
+                              }}
+                            />
+
+                            {/* Secondary Image for Hover - uses second image in array */}
+                            {(
+                              product.secondaryImageUrl ||
+                              product.hoverImageUrl ||
+                              (product.imageUrls && product.imageUrls.length > 1) ||
+                              (product.image && Array.isArray(product.image) && product.image.length > 1)
+                            ) && (
+                                <img
+                                  src={
+                                    product.secondaryImageUrl ||
+                                    product.hoverImageUrl ||
+                                    (product.imageUrls && product.imageUrls[1]) ||
+                                    (product.image && Array.isArray(product.image) && product.image.length > 1
+                                      ? `${API_URL}/images/Products/${product.image[1]}`
+                                      : null)
+                                  }
+                                  alt={`${product.name} hover view`}
+                                  className="snacks-product-image secondary-image"
+                                  onError={(e) => {
+                                    e.target.style.display = 'none';
+                                  }}
+                                />
+                              )}
+                          </div>
                           <button
-                            className={`snacks-wishlist-btn ${wishlistItems.includes(
-                              product.product_id || product._id || product.id
-                            )
-                              ? "active"
-                              : ""
-                              }`}
+                            className={`snacks-wishlist-btn ${wishlistItems.includes(product.product_id || product._id || product.id) ? 'active' : ''}`}
                             onClick={(e) => handleWishlistClick(e, product)}
                             disabled={wishlistLoading}
                           >
-                            {wishlistItems.includes(
-                              product.product_id || product._id || product.id
-                            )
-                              ? "❤️"
-                              : "♡"}
+                            {wishlistItems.includes(product.product_id || product._id || product.id) ? '❤️' : '♡'}
                           </button>
                         </div>
 

@@ -1,3 +1,4 @@
+
 .sidebar-overlay {
   position: fixed;
   top: 0;
@@ -7,6 +8,12 @@
   background: rgba(0, 0, 0, 0.5);
   z-index: 40;
   display: none;
+}
+
+@media (max-width: 1024px) {
+  .sidebar-overlay {
+    display: block;
+  }
 }
 
 .admin-sidebar {
@@ -27,6 +34,14 @@
 
 .admin-sidebar.mobile-open {
   transform: translateX(0);
+}
+
+@media (min-width: 1025px) {
+  .admin-sidebar {
+    position: static;
+    transform: translateX(0);
+    box-shadow: none;
+  }
 }
 
 /* Sidebar Header */
@@ -92,6 +107,12 @@
 .sidebar-close-btn .icon {
   width: 18px;
   height: 18px;
+}
+
+@media (max-width: 1024px) {
+  .sidebar-close-btn {
+    display: block;
+  }
 }
 
 /* Navigation */
@@ -312,22 +333,6 @@
 } */
 
 /* Mobile Responsive */
-@media (max-width: 1024px) {
-  .sidebar-overlay {
-    display: block;
-  }
-
-  .admin-sidebar {
-    position: static;
-    transform: translateX(0);
-    box-shadow: none;
-  }
-
-  .sidebar-close-btn {
-    display: block;
-  }
-}
-
 @media (max-width: 768px) {
   .sidebar-overlay {
     display: block;

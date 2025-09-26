@@ -221,7 +221,14 @@ const ProductDetailsPage = ({ addToCart }) => {
 
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("Please login to add items to your wishlist");
+      // Store current page URL for redirect after login
+      const currentUrl = window.location.pathname + window.location.search;
+      localStorage.setItem('returnUrl', currentUrl);
+      
+      // Show alert and redirect to sign-in page
+      if (window.confirm('Please log in to add items to your wishlist.')) {
+        navigate('/signin');
+      }
       return;
     }
 
@@ -288,7 +295,14 @@ const ProductDetailsPage = ({ addToCart }) => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        alert("Please login to add items to your cart");
+        // Store current page URL for redirect after login
+        const currentUrl = window.location.pathname + window.location.search;
+        localStorage.setItem('returnUrl', currentUrl);
+        
+        // Show alert and redirect to sign-in page
+        if (window.confirm('Please log in to add items to your cart.')) {
+          navigate('/signin');
+        }
         return;
       }
 

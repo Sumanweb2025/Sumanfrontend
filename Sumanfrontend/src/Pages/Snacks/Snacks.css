@@ -253,27 +253,55 @@
   position: relative;
 }
 
-.snacks-product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-}
-
-.snacks-product-image-container {
+.snacks-image-wrapper {
   position: relative;
   width: 100%;
-  height: 200px;
+  height: 100%;
   overflow: hidden;
 }
 
+/* Override existing transition for product image */
 .snacks-product-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
+  transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
 }
 
-.snacks-product-card:hover .product-image {
-  transform: scale(1.05);
+.snacks-product-image.primary-image {
+  position: relative;
+  z-index: 1;
+}
+
+.snacks-product-image.secondary-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  opacity: 0;
+  transform: scale(1.08);
+}
+
+/* Hover Effects */
+.snacks-product-image-container:hover .primary-image {
+  opacity: 0;
+  transform: scale(0.92);
+}
+
+.snacks-product-image-container:hover .secondary-image {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Remove the existing card hover transform and replace */
+.snacks-product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Ensure smooth transitions for all states */
+.snacks-product-card {
+  transition: all 0.4s ease;
 }
 
 .snacks-wishlist-btn {
