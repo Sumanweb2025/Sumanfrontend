@@ -161,6 +161,21 @@
   margin-top: 0.5rem;
 }
 
+.react-tel-input .form-control {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: white;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.react-tel-input .form-control:focus {
+  outline: none;
+  border-color: #ffd700;
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+}
+
 /* Country, State, City Select Styling */
 .country-select,
 .state-select,
@@ -206,21 +221,20 @@
 .dropdown-icon {
   position: absolute;
   right: 0.75rem;
-  top: 40%;
+  top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
   color: #6b7280;
   font-size: 0.875rem;
-  transition: transform 0.2s ease, color 0.2s ease;
+  transition: color 0.2s ease;
   z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Rotate icon when dropdown is open */
+/* Remove rotation transform since we're using different icons */
 .dropdown-icon.rotated {
-  transform: translateY(-50%) rotate(180deg);
   color: #ffd700;
 }
 
@@ -236,6 +250,7 @@
 .select-wrapper:focus-within .dropdown-icon {
   color: #ffd700;
 }
+
 
 /* Payment Methods */
 .checkout-payment-methods {

@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { GetCountries, GetState, GetCity } from 'react-country-state-city';
-import { FaChevronDown } from 'react-icons/fa';
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/bootstrap.css";
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { FaCircleCheck } from "react-icons/fa6";
 import './CheckOut.css';
 import Header from '../../Components/Header/Header';
@@ -55,6 +57,8 @@ const CheckoutPage = () => {
     city: false
   });
 
+  const [isGuest, setIsGuest] = useState(false);
+
   const API_URL = import.meta.env.VITE_APP_API_URL;
 
   // Payment methods configuration
@@ -76,6 +80,17 @@ const CheckoutPage = () => {
   ];
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userType = localStorage.getItem('userType');
+    const sessionId = localStorage.getItem('guestSessionId');
+
+    if (!token && (!userType || userType !== 'guest' || !sessionId)) {
+      // Redirect to home if not logged in and not guest
+      navigate('/');
+      return;
+    }
+
+    setIsGuest(!token && userType === 'guest');
     fetchCheckoutData();
   }, []);
 
@@ -162,15 +177,20 @@ const CheckoutPage = () => {
 
   const fetchCheckoutData = async () => {
     try {
+      const headers = {};
       const token = localStorage.getItem('token');
-      if (!token) {
-        navigate('/signin');
+      const sessionId = localStorage.getItem('guestSessionId');
+
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      } else if (sessionId) {
+        headers['X-Session-ID'] = sessionId;
+      } else {
+        navigate('/');
         return;
       }
 
-      const response = await axios.get(`${API_URL}api/orders/checkout`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      const response = await axios.get(`${API_URL}api/orders/checkout`, { headers });
 
       const data = response.data.data;
       setOrderItems(data.items);
@@ -221,17 +241,28 @@ const CheckoutPage = () => {
 
     setCouponLoading(true);
     try {
+      const headers = {};
       const token = localStorage.getItem('token');
+      const sessionId = localStorage.getItem('guestSessionId');
+
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      } else if (sessionId) {
+        headers['X-Session-ID'] = sessionId;
+      } else {
+        alert('Session expired. Please refresh the page.');
+        return;
+      }
+
       const response = await axios.post(
         `${API_URL}api/orders/apply-coupon`,
         { couponCode: couponCode.trim() },
-        { headers: { 'Authorization': `Bearer ${token}` } }
+        { headers }
       );
 
       const couponData = response.data.data;
       setAppliedCoupon(couponData);
 
-      // Update order summary with discount
       setOrderSummary(prev => ({
         ...prev,
         discount: couponData.discount,
@@ -275,6 +306,22 @@ const CheckoutPage = () => {
       }
     });
 
+    // Phone validation - check if it's a valid Canadian number (minimum 10 digits)
+    if (!formData.billingAddress.phone) {
+    newErrors['billingAddress.phone'] = 'Phone number is required';
+  } else {
+    // Remove all non-digit characters to get just the numbers
+    const digitsOnly = formData.billingAddress.phone.replace(/\D/g, '');
+    
+    // Check if phone number has at least 10 digits (minimum valid phone number)
+    if (digitsOnly.length < 10) {
+      newErrors['billingAddress.phone'] = 'Please enter a valid phone number';
+    } else if (digitsOnly.length > 15) {
+      // Maximum international phone number length
+      newErrors['billingAddress.phone'] = 'Phone number is too long';
+    }
+  }
+
     // Postal code validation based on country
     if (formData.billingAddress.postalCode) {
       if (formData.billingAddress.country === 'Canada' && !/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(formData.billingAddress.postalCode)) {
@@ -316,16 +363,30 @@ const CheckoutPage = () => {
     setSubmitting(true);
 
     try {
+      const headers = {};
       const token = localStorage.getItem('token');
+      const sessionId = localStorage.getItem('guestSessionId');
+
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      } else if (sessionId) {
+        headers['X-Session-ID'] = sessionId;
+      } else {
+        alert('Session expired. Please refresh the page.');
+        setSubmitting(false);
+        return;
+      }
+
       const orderData = {
         ...formData,
-        appliedCoupon: appliedCoupon
+        appliedCoupon: appliedCoupon,
+        isGuestOrder: isGuest // Mark as guest order
       };
 
       const response = await axios.post(
         `${API_URL}api/payments/cod`,
         orderData,
-        { headers: { 'Authorization': `Bearer ${token}` } }
+        { headers }
       );
 
       handlePaymentSuccess(response.data.data);
@@ -414,6 +475,17 @@ const CheckoutPage = () => {
                   <p className="checkout-order-number">{orderDetails?.orderNumber}</p>
                   <p className="checkout-order-label">Total Amount</p>
                   <p className="checkout-order-total">${orderDetails?.total} CAD</p>
+
+                  {/* First Order Discount Display */}
+                  {orderDetails?.firstOrderDiscount && parseFloat(orderDetails.firstOrderDiscount) > 0 && (
+                    <>
+                      <p className="checkout-order-label">First Order Savings</p>
+                      <p style={{ color: '#10b981', fontWeight: '600', fontSize: '1.1rem' }}>
+                        ${parseFloat(orderDetails.firstOrderDiscount).toFixed(2)} Saved!
+                      </p>
+                    </>
+                  )}
+                  
                   {orderDetails?.paymentStatus === 'paid' && (
                     <>
                       <p className="checkout-order-label">Payment Status</p>
@@ -494,6 +566,40 @@ const CheckoutPage = () => {
 
                 <p className="guest-notice">You are currently checking out as a guest.</p>
               </div>
+              {isGuest && (
+                <div className="guest-checkout-notice" style={{
+                  background: 'linear-gradient(135deg, #fff5e6 0%, #ffe6f0 100%)',
+                  padding: '20px',
+                  borderRadius: '12px',
+                  marginBottom: '20px',
+                  border: '2px dashed #ff6b6b'
+                }}>
+                  <h4 style={{ color: '#ff0000', marginBottom: '10px' }}>🎉 Checking out as Guest</h4>
+                  <p style={{ margin: 0, lineHeight: 1.6 }}>
+                    You're almost there! Create an account after checkout to track your orders and get <strong>2% OFF</strong> on your next purchase plus exclusive member benefits.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      localStorage.setItem('returnUrl', '/checkout');
+                      navigate('/signin');
+                    }}
+                    style={{
+                      marginTop: '15px',
+                      background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                      color: 'white',
+                      border: 'none',
+                      padding: '12px 24px',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      fontWeight: '600',
+                      fontSize: '14px'
+                    }}
+                  >
+                    Sign In to Save Cart & Get Offers
+                  </button>
+                </div>
+              )}
 
               {/* Billing Address */}
               <div className="checkout-section">
@@ -518,7 +624,7 @@ const CheckoutPage = () => {
                       ))}
                     </select>
                     <div className={`dropdown-icon ${dropdownStates.country ? 'rotated' : ''}`}>
-                      <FaChevronDown />
+                      {dropdownStates.country ? <FaChevronUp /> : <FaChevronDown />}
                     </div>
                   </div>
 
@@ -612,7 +718,7 @@ const CheckoutPage = () => {
                         ))}
                       </select>
                       <div className={`dropdown-icon ${dropdownStates.city ? 'rotated' : ''}`}>
-                        <FaChevronDown />
+                        {dropdownStates.city ? <FaChevronUp /> : <FaChevronDown />}
                       </div>
                       {errors['billingAddress.city'] && (
                         <p className="error-message">
@@ -638,7 +744,7 @@ const CheckoutPage = () => {
                         ))}
                       </select>
                       <div className={`dropdown-icon ${dropdownStates.state ? 'rotated' : ''}`}>
-                        <FaChevronDown />
+                        {dropdownStates.state ? <FaChevronUp /> : <FaChevronDown />}
                       </div>
                     </div>
                   </div>
@@ -661,13 +767,27 @@ const CheckoutPage = () => {
                       )}
                     </div>
                     <div className="form-group">
-                      <input
-                        type="tel"
-                        placeholder="Phone (optional)"
+                      <PhoneInput
+                        country={'ca'}
                         value={formData.billingAddress.phone}
-                        onChange={(e) => handleInputChange('billingAddress', 'phone', e.target.value)}
-                        className="form-input"
+                        onChange={(phone) => handleInputChange('billingAddress', 'phone', phone)}
+                        inputProps={{
+                          name: 'phone',
+                          required: true,
+                          // className: `form-input phone-input ${errors['billingAddress.phone'] ? 'error' : ''}`
+                        }}
+                        enableSearch={true}
+                        searchPlaceholder="Search countries..."
+                        inputStyle={{
+                          width: '100%',
+                        }}
                       />
+                      {errors['billingAddress.phone'] && (
+                        <p className="error-message">
+                          <span className="error-icon">⚠ </span>
+                          {errors['billingAddress.phone']}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </form>
@@ -709,6 +829,7 @@ const CheckoutPage = () => {
                     onError={handlePaymentError}
                     submitting={submitting}
                     setSubmitting={setSubmitting}
+                    isGuest={isGuest}
                   />
                 )}
 
@@ -849,9 +970,17 @@ const CheckoutPage = () => {
                     </div>
                   )}
 
+                  {/* First Order Discount Display */}
+                  {!isGuest && orderSummary.firstOrderDiscount && parseFloat(orderSummary.firstOrderDiscount) > 0 && (
+                    <div className="total-row discount-row" style={{ color: '#10b981', fontWeight: '600' }}>
+                      <span>First Order Discount (2%)</span>
+                      <span>- ${parseFloat(orderSummary.firstOrderDiscount).toFixed(2)}</span>
+                    </div>
+                  )}
+
                   {parseFloat(orderSummary.shipping) === 0 && (
                     <div className="free-shipping-notice">
-                      🎉 You've earned free shipping!
+                      You've earned free shipping!
                     </div>
                   )}
 

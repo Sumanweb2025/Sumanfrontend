@@ -6,7 +6,8 @@ import {
   CreditCard,
   Package,
   TrendingUp,
-  X
+  X,
+  User
 } from 'lucide-react';
 import './Sidebar.css';
 
@@ -47,6 +48,12 @@ const Sidebar = ({ activeTab, setActiveTab, isMobileMenuOpen, setIsMobileMenuOpe
       label: 'Analytics',
       icon: TrendingUp,
       description: 'Sales & Revenue Reports'
+    },
+    {
+      id: 'profile',
+      label: 'Admin Profile',
+      icon: User,
+      description: 'Manage Your Profile'
     }
   ];
 

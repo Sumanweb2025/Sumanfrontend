@@ -130,6 +130,21 @@
   background: #ffeaea;
 }
 
+.react-tel-input .form-control {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.react-tel-input .form-control:focus {
+  border-color: #4CAF50;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}
+
 /* Error Text */
 .signup-error-text-wrapper {
   height: 20px;

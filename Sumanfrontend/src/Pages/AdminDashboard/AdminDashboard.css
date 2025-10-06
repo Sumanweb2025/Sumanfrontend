@@ -561,11 +561,6 @@
   font-size: 14px;
   margin: 0;
 }
-
-/* ========================================
-   RESPONSIVE DESIGN - ALL BREAKPOINTS
-======================================== */
-
 /* Large Desktop */
 @media (max-width: 1024px) {
   .admin-main-content {

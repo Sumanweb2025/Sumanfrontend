@@ -57,24 +57,46 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
         setProducts(productsData);
         setFilteredProducts(productsData);
 
+        // NEW: Check for both logged-in user and guest
         const token = localStorage.getItem('token');
+        const userType = localStorage.getItem('userType');
+        const sessionId = localStorage.getItem('guestSessionId');
+
         if (token) {
+          // Logged-in user
           try {
-            // Fetch wishlist
             const wishlistResponse = await axios.get(`${API_URL}api/wishlist`, {
               headers: { 'Authorization': `Bearer ${token}` }
             });
             const wishlistData = wishlistResponse.data?.data || wishlistResponse.data;
             setWishlistItems(wishlistData.products?.map(item => item.productId._id || item.productId) || []);
 
-            // Fetch cart
             const cartResponse = await axios.get(`${API_URL}api/cart`, {
               headers: { 'Authorization': `Bearer ${token}` }
             });
             const cartData = cartResponse.data?.data || cartResponse.data;
             setCartItems(cartData.items || []);
-          } catch (wishlistError) {
-            console.log('Wishlist/Cart not loaded:', wishlistError);
+          } catch (error) {
+            console.log('User data not loaded:', error);
+            setWishlistItems([]);
+            setCartItems([]);
+          }
+        } else if (userType === 'guest' && sessionId) {
+          // Guest user
+          try {
+            const wishlistResponse = await axios.get(`${API_URL}api/wishlist`, {
+              headers: { 'X-Session-ID': sessionId }
+            });
+            const wishlistData = wishlistResponse.data?.data || wishlistResponse.data;
+            setWishlistItems(wishlistData.products?.map(item => item.productId._id || item.productId) || []);
+
+            const cartResponse = await axios.get(`${API_URL}api/cart`, {
+              headers: { 'X-Session-ID': sessionId }
+            });
+            const cartData = cartResponse.data?.data || cartResponse.data;
+            setCartItems(cartData.items || []);
+          } catch (error) {
+            console.log('Guest data not loaded:', error);
             setWishlistItems([]);
             setCartItems([]);
           }
@@ -101,36 +123,45 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
   const handleWishlistClick = async (product, e) => {
     e?.stopPropagation();
     if (!product || wishlistLoading) return;
-    
+
+    const headers = {};
     const token = localStorage.getItem('token');
-    if (!token) {
-      alert('Please login to add items to your wishlist');
-      return;
+    const userType = localStorage.getItem('userType');
+    let sessionId = localStorage.getItem('guestSessionId');
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    } else if (userType === 'guest' && sessionId) {
+      headers['X-Session-ID'] = sessionId;
+    } else {
+      // Not logged in and not guest - prompt user
+      if (window.confirm('Add to wishlist as guest or sign in to save permanently. Click OK to sign in, Cancel for guest mode.')) {
+        localStorage.setItem('returnUrl', window.location.pathname);
+        navigate('/signin');
+        return;
+      } else {
+        // Create guest session
+        sessionId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('userType', 'guest');
+        localStorage.setItem('guestSessionId', sessionId);
+        headers['X-Session-ID'] = sessionId;
+      }
     }
 
     setWishlistLoading(true);
     try {
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      };
-
+      const config = { headers };
       const productId = product.product_id || product._id || product.id;
       const isInWishlist = wishlistItems.includes(productId);
-      
+
       if (isInWishlist) {
         await axios.delete(`${API_URL}api/wishlist/${productId}`, config);
         setWishlistItems(prev => prev.filter(id => id !== productId));
-        
         window.dispatchEvent(new CustomEvent('wishlistUpdated'));
       } else {
         await axios.post(`${API_URL}api/wishlist`, { productId }, config);
         setWishlistItems(prev => [...prev, productId]);
-        
         window.dispatchEvent(new CustomEvent('wishlistUpdated'));
-        
         setSelectedProduct(product);
         setShowWishlistPopup(true);
       }
@@ -142,24 +173,29 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
     }
   };
 
+
   const handleAddToCartFromWishlist = async (productId) => {
     try {
+      const headers = {};
       const token = localStorage.getItem('token');
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      };
+      const sessionId = localStorage.getItem('guestSessionId');
 
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      } else if (sessionId) {
+        headers['X-Session-ID'] = sessionId;
+      } else {
+        throw new Error('No session available');
+      }
+
+      const config = { headers };
       await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
-      
+
       const cartResponse = await axios.get(`${API_URL}api/cart`, config);
       const cartData = cartResponse.data?.data || cartResponse.data;
       setCartItems(cartData.items || []);
 
       window.dispatchEvent(new CustomEvent('cartUpdated'));
-
       return true;
     } catch (err) {
       console.error('Add to cart error:', err);
@@ -169,29 +205,42 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
 
   const handleAddToCart = async (product, e) => {
     e?.stopPropagation();
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        alert('Please login to add items to your cart');
+
+    const headers = {};
+    const token = localStorage.getItem('token');
+    const userType = localStorage.getItem('userType');
+    let sessionId = localStorage.getItem('guestSessionId');
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    } else if (userType === 'guest' && sessionId) {
+      headers['X-Session-ID'] = sessionId;
+    } else {
+      // Not logged in and not guest - prompt user
+      if (window.confirm('Add to cart as guest or sign in for exclusive offers. Click OK to sign in, Cancel for guest mode.')) {
+        localStorage.setItem('returnUrl', window.location.pathname);
+        navigate('/signin');
         return;
+      } else {
+        // Create guest session
+        sessionId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('userType', 'guest');
+        localStorage.setItem('guestSessionId', sessionId);
+        headers['X-Session-ID'] = sessionId;
       }
+    }
 
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      };
-
+    try {
+      const config = { headers };
       const productId = product.product_id || product._id || product.id;
+
       await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
-      
+
       const cartResponse = await axios.get(`${API_URL}api/cart`, config);
       const cartData = cartResponse.data?.data || cartResponse.data;
       setCartItems(cartData.items || []);
 
       window.dispatchEvent(new CustomEvent('cartUpdated'));
-
       setSelectedProduct(product);
       setShowCartPopup(true);
     } catch (err) {
@@ -219,11 +268,11 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
   // CORRECTED: handleProductClick function similar to snacks page
   const handleProductClick = (product, e) => {
     e?.stopPropagation();
-    
+
     // Get product ID with multiple fallbacks
     const productId = product.product_id || product._id || product.id;
-    
-    
+
+
     if (productId) {
       // Navigate with state data like snacks page
       navigate(`/product/${productId}`, {
@@ -245,7 +294,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
   };
 
   const nextSlide = () => {
-    setCurrentSlide(prevSlide => 
+    setCurrentSlide(prevSlide =>
       prevSlide >= filteredProducts.length - 1 ? 0 : prevSlide + 1
     );
     setIsAutoPlaying(false);
@@ -253,7 +302,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
   };
 
   const prevSlide = () => {
-    setCurrentSlide(prevSlide => 
+    setCurrentSlide(prevSlide =>
       prevSlide <= 0 ? filteredProducts.length - 1 : prevSlide - 1
     );
     setIsAutoPlaying(false);
@@ -287,7 +336,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
           {/* Product Carousel */}
           <div className="home-product-carousel">
             <div className="home-carousel-wrapper">
-              <div 
+              <div
                 className="home-carousel-slides"
                 style={{
                   transform: `translateX(-${currentSlide * 100}%)`,
@@ -325,12 +374,12 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
                               className="button-text home-add-to-cart-btn"
                               onClick={(e) => handleAddToCart(product, e)}
                             >
-                              <svg 
-                                width="20" 
-                                height="20" 
-                                viewBox="0 0 24 24" 
-                                fill="none" 
-                                stroke="currentColor" 
+                              <svg
+                                width="20"
+                                height="20"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
                                 strokeWidth="2"
                               >
                                 <circle cx="9" cy="21" r="1"></circle>
@@ -339,18 +388,18 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
                               </svg>
                               Add to Cart
                             </button>
-                            
+
                             <button
                               className={`button-text home-wishlist-btn ${wishlistItems.includes(productId) ? 'active' : ''}`}
                               onClick={(e) => handleWishlistClick(product, e)}
                               disabled={wishlistLoading}
                             >
-                              <svg 
-                                width="20" 
-                                height="20" 
-                                viewBox="0 0 24 24" 
+                              <svg
+                                width="20"
+                                height="20"
+                                viewBox="0 0 24 24"
                                 fill={wishlistItems.includes(productId) ? "currentColor" : "none"}
-                                stroke="currentColor" 
+                                stroke="currentColor"
                                 strokeWidth="2"
                               >
                                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
@@ -359,7 +408,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
                             </button>
                           </div>
 
-                          <button 
+                          <button
                             className="home-view-details-btn"
                             onClick={(e) => handleProductClick(product, e)}
                           >
@@ -389,8 +438,8 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
             </div>
 
             {/* Navigation Arrows */}
-            <button 
-              className="home-nav-arrow home-prev-arrow" 
+            <button
+              className="home-nav-arrow home-prev-arrow"
               onClick={prevSlide}
               disabled={filteredProducts.length <= 1}
             >
@@ -398,9 +447,9 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
                 <polyline points="15,18 9,12 15,6"></polyline>
               </svg>
             </button>
-            
-            <button 
-              className="home-nav-arrow home-next-arrow" 
+
+            <button
+              className="home-nav-arrow home-next-arrow"
               onClick={nextSlide}
               disabled={filteredProducts.length <= 1}
             >
@@ -412,7 +461,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
 
           {/* View All Products Button */}
           <div className="home-view-all-section">
-            <button 
+            <button
               className="button-text home-view-all-btn"
               onClick={handleViewAllProducts}
             >

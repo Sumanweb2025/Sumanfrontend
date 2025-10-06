@@ -228,8 +228,6 @@
   font-weight: 700;
 }
 
-/* ===== RESPONSIVE DESIGN - ALL BREAKPOINTS ===== */
-
 /* Large Desktop */
 @media (max-width: 1200px) {
   .payment-management-container {

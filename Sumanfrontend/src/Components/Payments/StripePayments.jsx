@@ -38,7 +38,8 @@ const PaymentForm = ({
   onSuccess, 
   onError, 
   submitting, 
-  setSubmitting 
+  setSubmitting,
+  isGuest 
 }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -66,13 +67,26 @@ const PaymentForm = ({
     setProcessingPayment(true);
     
     try {
+      // Get authentication headers
+      const headers = {};
       const token = localStorage.getItem('token');
+      const sessionId = localStorage.getItem('guestSessionId');
+
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      } else if (sessionId) {
+        headers['X-Session-ID'] = sessionId;
+      } else {
+        onError('Session expired. Please refresh the page.');
+        setProcessingPayment(false);
+        return;
+      }
       
       // Step 1: Create Payment Intent
       const paymentIntentResponse = await axios.post(
         `${API_URL}api/payments/create-intent`,
         { appliedCoupon },
-        { headers: { 'Authorization': `Bearer ${token}` } }
+        { headers }
       );
 
       const { clientSecret } = paymentIntentResponse.data.data;
@@ -112,9 +126,10 @@ const PaymentForm = ({
             paymentIntentId: paymentIntent.id,
             contactInfo: formData.contactInfo,
             billingAddress: formData.billingAddress,
-            paymentMethod: 'card'
+            paymentMethod: 'card',
+            isGuestOrder: isGuest
           },
-          { headers: { 'Authorization': `Bearer ${token}` } }
+          { headers }
         );
 
         onSuccess(confirmResponse.data.data);
@@ -179,7 +194,8 @@ const StripePaymentComponent = ({
   onSuccess, 
   onError, 
   submitting, 
-  setSubmitting 
+  setSubmitting,
+  isGuest 
 }) => {
   return (
     <Elements stripe={stripePromise}>
@@ -191,6 +207,7 @@ const StripePaymentComponent = ({
         onError={onError}
         submitting={submitting}
         setSubmitting={setSubmitting}
+        isGuest={isGuest}
       />
     </Elements>
   );

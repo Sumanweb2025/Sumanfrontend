@@ -136,7 +136,7 @@ const PaymentManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
 
   const viewOrderPDF = async (orderId, paymentMethod) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/invoices/download-invoice/${orderId}`, {
+      const response = await fetch(`${API_BASE_URL}api/invoices/download-invoice/${orderId}`, {
         headers: {
           'Authorization': `Bearer ${adminToken}`,
         },
@@ -407,13 +407,54 @@ const PaymentManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
                       </td>
                       <td>
                         <div className="order-info">
-                          <span className="order-number">#{payment.orderId?.orderNumber}</span>
+                          <span className="order-number">
+                            #{payment.orderId?.orderNumber}
+                            {payment.transactionDetails?.firstOrderDiscount &&
+                              parseFloat(payment.transactionDetails.firstOrderDiscount) > 0 && (
+                                <span style={{
+                                  marginLeft: '6px',
+                                  padding: '2px 6px',
+                                  background: '#10b981',
+                                  color: 'white',
+                                  borderRadius: '4px',
+                                  fontSize: '0.7rem',
+                                  fontWeight: '600'
+                                }}>
+                                  First Order
+                                </span>
+                              )}
+                          </span>
                         </div>
                       </td>
                       <td>
                         <div className="customer-info">
-                          <span className="customer-name">{payment.orderId?.userId?.name}</span>
-                          <span className="customer-email">{payment.orderId?.userId?.email}</span>
+                          <span className="customer-name">
+                            {payment.isGuestOrder || !payment.userId ? (
+                              <>
+                                {payment.customerInfo?.firstName} {payment.customerInfo?.lastName}
+                                <span className="guest-badge" style={{
+                                  marginLeft: '6px',
+                                  padding: '2px 6px',
+                                  background: '#fbbf24',
+                                  color: '#78350f',
+                                  borderRadius: '4px',
+                                  fontSize: '0.7rem',
+                                  fontWeight: '600'
+                                }}>
+                                  Guest
+                                </span>
+                              </>
+                            ) : (
+                              payment.orderId?.userId?.name || 'Unknown'
+                            )}
+                          </span>
+                          <span className="customer-email">
+                            {payment.isGuestOrder || !payment.userId ? (
+                              payment.customerInfo?.email
+                            ) : (
+                              payment.orderId?.userId?.email
+                            )}
+                          </span>
                         </div>
                       </td>
                       <td className="amount">{formatCurrency(payment.amount)}</td>
@@ -557,7 +598,7 @@ const PaymentManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
       {/* Payment Details Modal */}
       {showPaymentDetails && selectedPayment && (
         <div className="admin-modal-overlay" onClick={() => setShowPaymentDetails(false)}>
-          <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="admin-modal large" onClick={(e) => e.stopPropagation()}>
             <div className="admin-modal-header">
               <h3 className="admin-modal-title">
                 {activeTab === 'payments' ? 'Payment Details' : 'Refund Details'}
@@ -570,7 +611,7 @@ const PaymentManagement = ({ api, adminToken, setIsLoading, setError, handleApiE
               </button>
             </div>
 
-            <div className="modal-content">
+            <div className="admin-payment-modal-content">
               <div className="payment-details">
                 <div className="detail-row">
                   <span className="detail-label">Transaction ID:</span>

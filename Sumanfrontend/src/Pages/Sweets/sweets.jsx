@@ -274,48 +274,47 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   };
 
   const handleWishlistClick = async (e, product) => {
-    e.stopPropagation(); // Prevent card click
+    e.stopPropagation();
     if (!product || wishlistLoading) return;
 
+    const headers = {};
     const token = localStorage.getItem('token');
-    if (!token) {
-      // Store current page URL for redirect after login
-      const currentUrl = window.location.pathname + window.location.search;
-      localStorage.setItem('returnUrl', currentUrl);
+    const userType = localStorage.getItem('userType');
+    let sessionId = localStorage.getItem('guestSessionId');
 
-      // Show alert and redirect to sign-in page
-      if (window.confirm('Please log in to add items to your wishlist.')) {
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    } else if (userType === 'guest' && sessionId) {
+      headers['X-Session-ID'] = sessionId;
+    } else {
+      // Not logged in and not guest - prompt user
+      if (window.confirm('Add to wishlist as guest or sign in to save permanently. Click OK to sign in, Cancel for guest mode.')) {
+        localStorage.setItem('returnUrl', window.location.pathname);
         navigate('/signin');
+        return;
+      } else {
+        // Create guest session
+        sessionId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('userType', 'guest');
+        localStorage.setItem('guestSessionId', sessionId);
+        headers['X-Session-ID'] = sessionId;
       }
-      return;
     }
 
     setWishlistLoading(true);
     try {
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      };
-
+      const config = { headers };
       const productId = product.product_id || product._id || product.id;
       const isInWishlist = wishlistItems.includes(productId);
 
       if (isInWishlist) {
         await axios.delete(`${API_URL}api/wishlist/${productId}`, config);
         setWishlistItems(prev => prev.filter(id => id !== productId));
-
-        // Dispatch custom event to update header count
         window.dispatchEvent(new CustomEvent('wishlistUpdated'));
       } else {
         await axios.post(`${API_URL}api/wishlist`, { productId }, config);
         setWishlistItems(prev => [...prev, productId]);
-
-        // Dispatch custom event to update header count
         window.dispatchEvent(new CustomEvent('wishlistUpdated'));
-
-        // Show wishlist popup
         setSelectedProduct(product);
         setShowWishlistPopup(true);
       }
@@ -328,75 +327,80 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   };
 
   const handleAddToCartFromWishlist = async (productId) => {
-    try {
-      const token = localStorage.getItem('token');
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      };
-
-      await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
-
-      // Update cart items
-      const cartResponse = await axios.get(`${API_URL}api/cart`, config);
-      const cartData = cartResponse.data?.data || cartResponse.data;
-      setCartItems(cartData.items || []);
-
-      // Dispatch custom event to update header count
-      window.dispatchEvent(new CustomEvent('cartUpdated'));
-
-      return true;
-    } catch (err) {
-      console.error('Add to cart error:', err);
-      throw err;
+  try {
+    const headers = {};
+    const token = localStorage.getItem('token');
+    const sessionId = localStorage.getItem('guestSessionId');
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    } else if (sessionId) {
+      headers['X-Session-ID'] = sessionId;
+    } else {
+      throw new Error('No session available');
     }
-  };
+
+    const config = { headers };
+    await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
+
+    const cartResponse = await axios.get(`${API_URL}api/cart`, config);
+    const cartData = cartResponse.data?.data || cartResponse.data;
+    setCartItems(cartData.items || []);
+
+    window.dispatchEvent(new CustomEvent('cartUpdated'));
+    return true;
+  } catch (err) {
+    console.error('Add to cart error:', err);
+    throw err;
+  }
+};
 
   const handleAddToCart = async (e, productData) => {
-    e.stopPropagation(); // Prevent card click
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        // Store current page URL for redirect after login
-        const currentUrl = window.location.pathname + window.location.search;
-        localStorage.setItem('returnUrl', currentUrl);
-
-        // Show alert and redirect to sign-in page
-        if (window.confirm('Please log in to add items to your cart.')) {
-          navigate('/signin');
-        }
-        return;
-      }
-
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      };
-
-      // Use the specific variant's product ID
-      const productId = productData.productId || productData.product_id || productData._id || productData.id;
-      await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
-
-      // Update cart items
-      const cartResponse = await axios.get(`${API_URL}api/cart`, config);
-      const cartData = cartResponse.data?.data || cartResponse.data;
-      setCartItems(cartData.items || []);
-
-      // Dispatch custom event to update header count
-      window.dispatchEvent(new CustomEvent('cartUpdated'));
-
-      // Show cart popup with the specific variant
-      setSelectedProduct(productData);
-      setShowCartPopup(true);
-    } catch (err) {
-      console.error('Add to cart error:', err);
-      alert(err.response?.data?.message || 'Failed to add to cart');
+  e.stopPropagation();
+  
+  const headers = {};
+  const token = localStorage.getItem('token');
+  const userType = localStorage.getItem('userType');
+  let sessionId = localStorage.getItem('guestSessionId');
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  } else if (userType === 'guest' && sessionId) {
+    headers['X-Session-ID'] = sessionId;
+  } else {
+    // Not logged in and not guest - prompt user
+    if (window.confirm('Add to cart as guest or sign in for exclusive offers. Click OK to sign in, Cancel for guest mode.')) {
+      localStorage.setItem('returnUrl', window.location.pathname);
+      navigate('/signin');
+      return;
+    } else {
+      // Create guest session
+      sessionId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem('userType', 'guest');
+      localStorage.setItem('guestSessionId', sessionId);
+      headers['X-Session-ID'] = sessionId;
     }
-  };
+  }
+
+  try {
+    const config = { headers };
+    const productId = productData.productId || productData.product_id || productData._id || productData.id;
+    
+    await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
+
+    // Update cart items
+    const cartResponse = await axios.get(`${API_URL}api/cart`, config);
+    const cartData = cartResponse.data?.data || cartResponse.data;
+    setCartItems(cartData.items || []);
+
+    window.dispatchEvent(new CustomEvent('cartUpdated'));
+    setSelectedProduct(productData);
+    setShowCartPopup(true);
+  } catch (err) {
+    console.error('Add to cart error:', err);
+    alert(err.response?.data?.message || 'Failed to add to cart');
+  }
+};
 
   const handleContinueShopping = () => {
     setShowWishlistPopup(false);

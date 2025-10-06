@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Menu, Bell, User, LogOut, RefreshCw, Volume2, VolumeX } from 'lucide-react';
 import './Header.css';
 
-const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen, api, adminToken, setError }) => {
+const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen, api, adminToken, setError, setActiveTab }) => {
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
@@ -212,12 +212,13 @@ const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen, api, adminToken, setErr
 
   const getNotificationIcon = (type) => {
     switch (type) {
-      case 'new_order': return '🛍️';
+      case 'new_order': return '🛒';
       case 'payment': return '💰';
+      case 'new_user': return '👤';  // NEW
       case 'cancellation': return '❌';
       case 'refund': return '💸';
       case 'low_stock': return '📦';
-      default: return '📢';
+      default: return '🔔';
     }
   };
 
@@ -225,6 +226,7 @@ const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen, api, adminToken, setErr
     switch (type) {
       case 'new_order': return '#22c55e';
       case 'payment': return '#3b82f6';
+      case 'new_user': return '#8b5cf6';
       case 'cancellation': return '#ef4444';
       case 'refund': return '#f59e0b';
       case 'low_stock': return '#8b5cf6';
@@ -368,10 +370,19 @@ const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen, api, adminToken, setErr
               </div>
 
               <div className="admin-profile-actions">
-                <button className="admin-profile-action-btn">
+                <button
+                  className="admin-profile-action-btn"
+                  onClick={() => {
+                    setShowProfile(false);
+                    if (setActiveTab) {
+                      setActiveTab('profile');
+                    }
+                  }}
+                >
                   <User className="admin-icon" />
                   View Profile
                 </button>
+
                 <button className="admin-profile-action-btn logout" onClick={handleLogout}>
                   <LogOut className="admin-icon" />
                   Logout

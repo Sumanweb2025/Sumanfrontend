@@ -27,6 +27,7 @@ const ProfilePage = ({ onBack }) => {
       country: 'India'
     }
   });
+  const [imageDeleted, setImageDeleted] = useState(false);
 
   const API_URL = import.meta.env.VITE_APP_API_URL;
   
@@ -124,11 +125,11 @@ const ProfilePage = ({ onBack }) => {
 const getImageUrl = (imageUrl) => {
   if (!imageUrl) return null;
   
-  console.log('🔍 Processing image URL:', imageUrl);
+  //console.log('🔍 Processing image URL:', imageUrl);
   
   // If it's a base64 data URL, return as is (CRITICAL FIX)
   if (imageUrl.startsWith('data:')) {
-    console.log('📊 Base64 data URL detected:', imageUrl.substring(0, 50) + '...');
+    //console.log('📊 Base64 data URL detected:', imageUrl.substring(0, 50) + '...');
     return imageUrl;
   }
   
@@ -137,14 +138,14 @@ const getImageUrl = (imageUrl) => {
       imageUrl.includes('googleusercontent.com') || 
       imageUrl.startsWith('http://') || 
       imageUrl.startsWith('https://')) {
-    console.log('✅ External/Full URL detected:', imageUrl);
+    //console.log('✅ External/Full URL detected:', imageUrl);
     return imageUrl;
   }
   
   // For local uploaded images (starts with /uploads/), prepend server URL
   if (imageUrl.startsWith('/uploads/')) {
     const fullUrl = `${API_URL}${imageUrl}`;
-    console.log('🏠 Local image URL created:', fullUrl);
+    //console.log('🏠 Local image URL created:', fullUrl);
     return fullUrl;
   }
   
@@ -152,7 +153,7 @@ const getImageUrl = (imageUrl) => {
   const fullUrl = imageUrl.startsWith('/') ? 
     `${API_URL}${imageUrl}` : 
     `${API_URL}/${imageUrl}`;
-  console.log('🔧 Fallback URL created:', fullUrl);
+  //console.log('🔧 Fallback URL created:', fullUrl);
   return fullUrl;
 };
 
@@ -174,26 +175,26 @@ const getImageUrl = (imageUrl) => {
       const data = await response.json();
       
       if (data.success) {
-        console.log('✅ Profile data received:', data.data.user);
+        //console.log('✅ Profile data received:', data.data.user);
         setUser(data.data.user);
         
 
         // The backend now handles the priority logic and returns the correct URL in profileImage
         const imageUrl = data.data.user.profileImage;
         
-        console.log('🔍 Profile image from backend:', {
-          profileImage: data.data.user.profileImage,
-          picture: data.data.user.picture,
-          googleProfileImage: data.data.user.googleProfileImage,
-          authProvider: data.data.user.authProvider
-        });
+        // console.log('🔍 Profile image from backend:', {
+        //   profileImage: data.data.user.profileImage,
+        //   picture: data.data.user.picture,
+        //   googleProfileImage: data.data.user.googleProfileImage,
+        //   authProvider: data.data.user.authProvider
+        // });
         
         if (imageUrl) {
           const fullImageUrl = getImageUrl(imageUrl);
-          console.log('🖼️ Final profile image URL:', fullImageUrl);
+          //console.log('🖼️ Final profile image URL:', fullImageUrl);
           setProfileImagePreview(fullImageUrl);
         } else {
-          console.log('📷 No profile image found');
+          //console.log('📷 No profile image found');
           setProfileImagePreview(null);
         }
 
@@ -232,13 +233,13 @@ const getImageUrl = (imageUrl) => {
     const currentImageIsGoogle = profileImagePreview && 
       (profileImagePreview.includes('googleapis.com') || profileImagePreview.includes('googleusercontent.com'));
     
-    console.log('🔍 Google image check:', {
-      isGoogleUser,
-      hasGoogleImage,
-      currentImageIsGoogle,
-      profileImagePreview,
-      hasNewImage: !!profileImage
-    });
+    // console.log('🔍 Google image check:', {
+    //   isGoogleUser,
+    //   hasGoogleImage,
+    //   currentImageIsGoogle,
+    //   profileImagePreview,
+    //   hasNewImage: !!profileImage
+    // });
     
     return isGoogleUser && hasGoogleImage && currentImageIsGoogle && !profileImage;
 
@@ -247,16 +248,16 @@ const getImageUrl = (imageUrl) => {
   // Handle profile image selection
   const handleImageSelect = (e) => {
 
-    console.log('🖼️ File selection started');
+    //console.log('🖼️ File selection started');
     const file = e.target.files[0];
     
     if (file) {
-      console.log('📁 Selected file:', {
-        name: file.name,
-        size: file.size,
-        type: file.type,
-        sizeMB: (file.size / (1024 * 1024)).toFixed(2) + 'MB'
-      });
+      //console.log('📁 Selected file:', {
+      //  name: file.name,
+      //  size: file.size,
+      //  type: file.type,
+      //  sizeMB: (file.size / (1024 * 1024)).toFixed(2) + 'MB'
+      //});
 
 
       // Check file size (limit to 5MB)
@@ -272,7 +273,7 @@ const getImageUrl = (imageUrl) => {
       }
       
 
-      console.log('✅ File validation passed');
+      //console.log('✅ File validation passed');
 
       setProfileImage(file);
       
@@ -280,7 +281,7 @@ const getImageUrl = (imageUrl) => {
       const reader = new FileReader();
       reader.onload = (e) => {
 
-        console.log('✅ Preview created for new upload');
+        //console.log('✅ Preview created for new upload');
         setProfileImagePreview(e.target.result);
       };
       reader.onerror = (e) => {
@@ -295,33 +296,33 @@ const getImageUrl = (imageUrl) => {
 
   // Remove profile image - UPDATED
   const handleRemoveImage = () => {
-    console.log('🗑️ Removing current image');
-    setProfileImage(null);
-    
-    // For Google users, fallback to Google image; for others, remove completely
-    if (user?.authProvider === 'google' && (user.picture || user.googleProfileImage)) {
-      const googleImageUrl = user.picture || user.googleProfileImage;
-      const fallbackUrl = getImageUrl(googleImageUrl);
-      console.log('↩️ Falling back to Google image:', fallbackUrl);
-      setProfileImagePreview(fallbackUrl);
-    } else {
-      console.log('❌ Removing image completely');
-      setProfileImagePreview(null);
-    }
-
-    
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
+  //console.log('Removing current image');
+  setProfileImage(null);
+  setImageDeleted(true); // Mark for deletion
+  
+  // For Google users, fallback to Google image; for others, remove completely
+  if (user?.authProvider === 'google' && (user.picture || user.googleProfileImage)) {
+    const googleImageUrl = user.picture || user.googleProfileImage;
+    const fallbackUrl = getImageUrl(googleImageUrl);
+    //console.log('Falling back to Google image:', fallbackUrl);
+    setProfileImagePreview(fallbackUrl);
+  } else {
+    //console.log('Removing image completely');
+    setProfileImagePreview(null);
+  }
+  
+  if (fileInputRef.current) {
+    fileInputRef.current.value = '';
+  }
+};
 
   // Upload profile image
   const uploadProfileImage = async () => {
 
-    console.log('🚀 Starting image upload...');
+    //console.log('🚀 Starting image upload...');
     
     if (!profileImage) {
-      console.log('❌ No profile image to upload');
+      //console.log('❌ No profile image to upload');
       return null;
     }
     
@@ -400,137 +401,174 @@ const getImageUrl = (imageUrl) => {
   };
 
   const handleSave = async () => {
-    console.log('💾 Starting profile save...');
-    setLoading(true);
+  console.log('Starting profile save...');
+  setLoading(true);
+  
+  try {
+    const token = localStorage.getItem('token');
     
-    try {
-      const token = localStorage.getItem('token');
-      
-      // Upload image first if there's a new image
-      let imageUrl = null;
-      if (profileImage) {
-
-        console.log('📸 Uploading new image...');
-        imageUrl = await uploadProfileImage();
-        console.log('✅ Image uploaded:', imageUrl);
-
-      }
-      
-      // Prepare update data
-      const updateData = { ...formData };
-
-      
-      // Clean phone number
-      if (updateData.phone) {
-        let cleanPhone = updateData.phone.replace(/\D/g, '');
-        if (cleanPhone.startsWith('0')) {
-          cleanPhone = cleanPhone.substring(1);
-        }
-        
-        if (cleanPhone.length === 10) {
-          updateData.phone = cleanPhone;
-        } else if (cleanPhone.length === 0) {
-          delete updateData.phone; // Remove empty phone
-        } else {
-          alert(`Invalid phone number. Please enter 10 digits. Current: ${cleanPhone.length} digits`);
-          setLoading(false);
-          return;
-        }
-      }
-      
-
-      if (imageUrl) {
-        updateData.profileImage = imageUrl;
-      }
-      
-
-      console.log('📝 Update data being sent:', updateData);
-      
-
-      const response = await fetch(`${API_URL}api/auth/profile`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(updateData)
-      });
-
-      const data = await response.json();
-      console.log('📦 Profile update response:', data);
-      
-      if (data.success) {
-        console.log('✅ Profile updated successfully');
-        setUser(data.data.user);
-        
-        // Update image preview with the response from backend (which handles the URL logic)
-        if (data.data.user.profileImage) {
-          const fullImageUrl = getImageUrl(data.data.user.profileImage);
-          console.log('🖼️ Setting updated profile image:', fullImageUrl);
-          setProfileImagePreview(fullImageUrl);
-        }
-        
-        setIsEditing(false);
-        setProfileImage(null); // Clear the file input
-        
-        // Update user data in localStorage
-        localStorage.setItem('user', JSON.stringify(data.data.user));
-        
-        alert('Profile updated successfully!');
-      } else {
-        console.error('❌ Profile update failed:', data);
-        let errorMessage = 'Failed to update profile:\n';
-        if (data.errors && Array.isArray(data.errors)) {
-          errorMessage += data.errors.map(err => `• ${err.msg || err.message}`).join('\n');
-        } else if (data.message) {
-          errorMessage += data.message;
-        }
-        alert(errorMessage);
-      }
-    } catch (error) {
-      console.error('❌ Save error:', error);
-      alert('Error updating profile: ' + error.message);
-    } finally {
-      setLoading(false);
+    if (!token) {
+      alert('Session expired. Please login again.');
+      navigate('/signin');
+      return;
     }
-  };
-
-  const handleCancel = () => {
-    console.log('❌ Canceling edit mode');
-    setIsEditing(false);
-    setProfileImage(null);
     
+    // Step 1: Handle image deletion if marked
+    if (imageDeleted && !profileImage) {
+      //console.log('Deleting profile image...');
+      
+      const deleteResponse = await fetch(`${API_URL}api/auth/remove-profile-image`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      const deleteData = await deleteResponse.json();
+      if (deleteData.success) {
+        console.log('Image deleted successfully');
+      }
+    }
+    
+    // Step 2: Upload new image if selected
+    let imageUrl = null;
+    if (profileImage) {
+      console.log('Uploading new image...');
+      
+      const formDataObj = new FormData();
+      formDataObj.append('profileImage', profileImage);
+      
+      const uploadResponse = await fetch(`${API_URL}api/auth/upload-profile-image`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formDataObj
+      });
+      
+      const uploadData = await uploadResponse.json();
+      
+      if (!uploadResponse.ok || !uploadData.success) {
+        throw new Error(uploadData.message || 'Failed to upload image');
+      }
+      
+      imageUrl = uploadData.data.imageUrl;
+      //console.log('Image uploaded successfully');
+    }
+    
+    // Step 3: Prepare minimal update data (NO validation issues)
+    const updateData = {
+      name: formData.name || user.name
+    };
+    
+    // Only include phone if it's provided and valid
+    if (formData.phone) {
+      let cleanPhone = formData.phone.replace(/\D/g, '');
+      if (cleanPhone.startsWith('0')) {
+        cleanPhone = cleanPhone.substring(1);
+      }
+      
+      if (cleanPhone.length === 10) {
+        updateData.phone = cleanPhone;
+      } else if (cleanPhone.length > 0) {
+        alert(`Invalid phone number. Please enter 10 digits.`);
+        setLoading(false);
+        return;
+      }
+    }
+    
+    // Only include address fields if they exist
+    const addressData = {};
+    if (formData.address.street) addressData.street = formData.address.street;
+    if (formData.address.city) addressData.city = formData.address.city;
+    if (formData.address.state) addressData.state = formData.address.state;
+    if (formData.address.pincode) addressData.pincode = formData.address.pincode;
+    if (formData.address.country) addressData.country = formData.address.country;
+    
+    if (Object.keys(addressData).length > 0) {
+      updateData.address = addressData;
+    }
+    
+    //console.log('Update data being sent:', updateData);
+    
+    const response = await fetch(`${API_URL}api/auth/profile`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updateData)
+    });
 
-    // Reset to original image from user data
-    if (user?.profileImage) {
-      const fullOriginalUrl = getImageUrl(user.profileImage);
-      console.log('↩️ Resetting to original image:', fullOriginalUrl);
-      setProfileImagePreview(fullOriginalUrl);
+    const data = await response.json();
+    
+    if (!response.ok || !data.success) {
+      let errorMessage = 'Failed to update profile:\n';
+      if (data.errors && Array.isArray(data.errors)) {
+        errorMessage += data.errors.map(err => `${err.msg || err.message}`).join('\n');
+      } else if (data.message) {
+        errorMessage += data.message;
+      }
+      throw new Error(errorMessage);
+    }
+    
+    //console.log('Profile updated successfully');
+    setUser(data.data.user);
+    
+    if (data.data.user.profileImage) {
+      const fullImageUrl = getImageUrl(data.data.user.profileImage);
+      setProfileImagePreview(fullImageUrl);
     } else {
-      console.log('❌ No original image to reset to');
       setProfileImagePreview(null);
     }
-
-    // Reset form data to original user data
-    if (user) {
-      setFormData({
-        name: user.name || '',
-        phone: user.phone || '',
-        address: {
-          street: user.address?.street || '',
-          city: user.address?.city || '',
-          state: user.address?.state || '',
-          pincode: user.address?.pincode || '',
-          country: user.address?.country || 'India'
-        }
-      });
-    }
     
-    // Clear file input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
+    setIsEditing(false);
+    setProfileImage(null);
+    setImageDeleted(false);
+    
+    localStorage.setItem('user', JSON.stringify(data.data.user));
+    alert('Profile updated successfully!');
+    
+  } catch (error) {
+    console.error('Save error:', error);
+    alert('Error updating profile: ' + error.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+  const handleCancel = () => {
+  //console.log('Canceling edit mode');
+  setIsEditing(false);
+  setProfileImage(null);
+  setImageDeleted(false); // Reset deletion flag
+  
+  if (user?.profileImage) {
+    const fullOriginalUrl = getImageUrl(user.profileImage);
+    setProfileImagePreview(fullOriginalUrl);
+  } else {
+    setProfileImagePreview(null);
+  }
+
+  if (user) {
+    setFormData({
+      name: user.name || '',
+      phone: user.phone || '',
+      address: {
+        street: user.address?.street || '',
+        city: user.address?.city || '',
+        state: user.address?.state || '',
+        pincode: user.address?.pincode || '',
+        country: user.address?.country || 'India'
+      }
+    });
+  }
+  
+  if (fileInputRef.current) {
+    fileInputRef.current.value = '';
+  }
+};
 
   // Enhanced back button handler with fallback options
   const handleBack = () => {

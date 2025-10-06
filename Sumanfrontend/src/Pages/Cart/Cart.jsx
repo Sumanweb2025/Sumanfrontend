@@ -257,86 +257,102 @@ const CartPage = () => {
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
+  const [isGuest, setIsGuest] = useState(false);
+const [guestSessionId, setGuestSessionId] = useState(null);
+
   const API_URL = import.meta.env.VITE_APP_API_URL;
 
   useEffect(() => {
-    fetchCart();
+  const token = localStorage.getItem('token');
+  const userType = localStorage.getItem('userType');
+  const sessionId = localStorage.getItem('guestSessionId');
+  
+  if (token) {
+    setIsGuest(false);
+    fetchCart(token, null);
+  } else if (userType === 'guest' && sessionId) {
+    setIsGuest(true);
+    setGuestSessionId(sessionId);
+    fetchCart(null, sessionId);
+  } else {
+    // No token and no guest session - redirect to home with modal
+    navigate('/');
+  }
 
-    // Add resize listener
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
+  const handleResize = () => {
+    setIsMobile(window.innerWidth <= 768);
+  };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  window.addEventListener('resize', handleResize);
+  return () => window.removeEventListener('resize', handleResize);
+}, []);
 
-  const fetchCart = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        navigate('/signin');
-        return;
+  const fetchCart = async (token = null, sessionId = null) => {
+  try {
+    const headers = {};
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    } else if (sessionId) {
+      headers['X-Session-ID'] = sessionId;
+    } else {
+      navigate('/');
+      return;
+    }
+
+    const response = await axios.get(`${API_URL}api/cart`, { headers });
+
+    const cartData = response.data?.data || response.data;
+
+    const validCartItems = (cartData.items || []).filter(item => {
+      const isValid = item && item.productId && (
+        typeof item.productId === 'object'
+          ? item.productId._id || item.productId.id || item.productId.product_id
+          : item.productId
+      );
+
+      if (!isValid) {
+        console.warn('Invalid cart item found:', item);
       }
 
-      const response = await axios.get(`${API_URL}api/cart`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      return isValid;
+    });
 
-      const cartData = response.data?.data || response.data;
+    setCartItems(validCartItems);
 
-      // Filter out items with null or invalid product references
-      const validCartItems = (cartData.items || []).filter(item => {
-        const isValid = item && item.productId && (
-          typeof item.productId === 'object'
-            ? item.productId._id || item.productId.id || item.productId.product_id
-            : item.productId
-        );
-
-        if (!isValid) {
-          console.warn('Invalid cart item found:', item);
-        }
-
-        return isValid;
-      });
-
-      setCartItems(validCartItems);
-
-      // If we filtered out invalid items, show a notification
-      if (validCartItems.length < (cartData.items || []).length) {
-        const removedCount = (cartData.items || []).length - validCartItems.length;
-        toast.warning(`${removedCount} invalid item(s) removed from cart`, {
-          position: "top-right",
-          autoClose: 4000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          icon: "⚠️"
-        });
-
-        // Optionally clean up the cart on the server
-        if (validCartItems.length === 0) {
-          handleClearCart();
-        }
-      }
-
-      setLoading(false);
-    } catch (err) {
-      console.error('Error fetching cart:', err);
-      setError(err.response?.data?.message || 'Failed to load cart');
-      toast.error('Failed to load cart items', {
+    if (validCartItems.length < (cartData.items || []).length) {
+      const removedCount = (cartData.items || []).length - validCartItems.length;
+      toast.warning(`${removedCount} invalid item(s) removed from cart`, {
         position: "top-right",
         autoClose: 4000,
         hideProgressBar: true,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        icon: "❌"
+        icon: "⚠️"
       });
-      setLoading(false);
+
+      if (validCartItems.length === 0) {
+        handleClearCart();
+      }
     }
-  };
+
+    setLoading(false);
+  } catch (err) {
+    console.error('Error fetching cart:', err);
+    setError(err.response?.data?.message || 'Failed to load cart');
+    toast.error('Failed to load cart items', {
+      position: "top-right",
+      autoClose: 4000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      icon: "❌"
+    });
+    setLoading(false);
+  }
+};
 
   // Helper functions
   const getProductGram = (product) => {
@@ -378,156 +394,191 @@ const CartPage = () => {
   };
 
   const updateQuantity = async (productId, newQuantity) => {
-    const token = localStorage.getItem('token');
-    if (!token || newQuantity < 1 || !productId) return;
+  if (newQuantity < 1 || !productId) return;
 
-    setUpdatingItems(prev => new Set(prev).add(productId));
+  const headers = {};
+  const token = localStorage.getItem('token');
+  const sessionId = localStorage.getItem('guestSessionId');
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  } else if (sessionId) {
+    headers['X-Session-ID'] = sessionId;
+  } else {
+    toast.warning('Please sign in to update cart', {
+      position: "top-right",
+      autoClose: 3000,
+    });
+    return;
+  }
 
-    try {
-      const response = await axios.put(`${API_URL}api/cart/${productId}`,
-        { quantity: newQuantity },
-        { headers: { 'Authorization': `Bearer ${token}` } }
+  setUpdatingItems(prev => new Set(prev).add(productId));
+
+  try {
+    const response = await axios.put(
+      `${API_URL}api/cart/${productId}`,
+      { quantity: newQuantity },
+      { headers }
+    );
+
+    const updatedCartData = response.data?.data;
+    if (updatedCartData && updatedCartData.items) {
+      const validItems = updatedCartData.items.filter(item =>
+        item && item.productId && getProductId(item)
       );
-
-      const updatedCartData = response.data?.data;
-      if (updatedCartData && updatedCartData.items) {
-        const validItems = updatedCartData.items.filter(item =>
-          item && item.productId && getProductId(item)
-        );
-        setCartItems(validItems);
-      } else {
-        setCartItems(prev =>
-          prev.map(item => {
-            const itemProductId = getProductId(item);
-            if (itemProductId === productId) {
-              return { ...item, quantity: newQuantity };
-            }
-            return item;
-          })
-        );
-      }
-
-      window.dispatchEvent(new CustomEvent('cartUpdated'));
-      toast.success('Cart updated successfully', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        icon: "✅"
-      });
-    } catch (err) {
-      console.error('Error updating quantity:', err);
-      toast.error('Failed to update quantity', {
-        position: "top-right",
-        autoClose: 4000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        icon: "❌"
-      });
-    } finally {
-      setUpdatingItems(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(productId);
-        return newSet;
-      });
+      setCartItems(validItems);
+    } else {
+      setCartItems(prev =>
+        prev.map(item => {
+          const itemProductId = getProductId(item);
+          if (itemProductId === productId) {
+            return { ...item, quantity: newQuantity };
+          }
+          return item;
+        })
+      );
     }
-  };
 
-  const handleRemoveFromCart = async (productId) => {
-    const token = localStorage.getItem('token');
-    if (!token || !productId) return;
+    window.dispatchEvent(new CustomEvent('cartUpdated'));
+    toast.success('Cart updated successfully', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      icon: "✅"
+    });
+  } catch (err) {
+    console.error('Error updating quantity:', err);
+    toast.error('Failed to update quantity', {
+      position: "top-right",
+      autoClose: 4000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      icon: "❌"
+    });
+  } finally {
+    setUpdatingItems(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(productId);
+      return newSet;
+    });
+  }
+};
 
-    const item = cartItems.find(item => getProductId(item) === productId);
-    const product = getProductData(item);
-    const productName = product?.name || product?.Name || 'Item';
+ const handleRemoveFromCart = async (productId) => {
+  if (!productId) return;
 
-    setUpdatingItems(prev => new Set(prev).add(productId));
+  const headers = {};
+  const token = localStorage.getItem('token');
+  const sessionId = localStorage.getItem('guestSessionId');
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  } else if (sessionId) {
+    headers['X-Session-ID'] = sessionId;
+  } else {
+    return;
+  }
 
-    try {
-      const response = await axios.delete(`${API_URL}api/cart/${productId}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+  const item = cartItems.find(item => getProductId(item) === productId);
+  const product = getProductData(item);
+  const productName = product?.name || product?.Name || 'Item';
 
-      const updatedCartData = response.data?.data;
-      if (updatedCartData && updatedCartData.items) {
-        const validItems = updatedCartData.items.filter(item =>
-          item && item.productId && getProductId(item)
-        );
-        setCartItems(validItems);
-      } else {
-        setCartItems(prev =>
-          prev.filter(item => getProductId(item) !== productId)
-        );
-      }
+  setUpdatingItems(prev => new Set(prev).add(productId));
 
-      window.dispatchEvent(new CustomEvent('cartUpdated'));
-      toast.success(`${productName} removed from cart`, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        icon: "✅"
-      });
-    } catch (err) {
-      console.error('Error removing from cart:', err);
-      toast.error('Failed to remove item from cart', {
-        position: "top-right",
-        autoClose: 4000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        icon: "❌"
-      });
-    } finally {
-      setUpdatingItems(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(productId);
-        return newSet;
-      });
+  try {
+    const response = await axios.delete(
+      `${API_URL}api/cart/${productId}`,
+      { headers }
+    );
+
+    const updatedCartData = response.data?.data;
+    if (updatedCartData && updatedCartData.items) {
+      const validItems = updatedCartData.items.filter(item =>
+        item && item.productId && getProductId(item)
+      );
+      setCartItems(validItems);
+    } else {
+      setCartItems(prev =>
+        prev.filter(item => getProductId(item) !== productId)
+      );
     }
-  };
 
-  const handleClearCart = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
+    window.dispatchEvent(new CustomEvent('cartUpdated'));
+    toast.success(`${productName} removed from cart`, {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      icon: "✅"
+    });
+  } catch (err) {
+    console.error('Error removing from cart:', err);
+    toast.error('Failed to remove item from cart', {
+      position: "top-right",
+      autoClose: 4000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      icon: "❌"
+    });
+  } finally {
+    setUpdatingItems(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(productId);
+      return newSet;
+    });
+  }
+};
 
-    try {
-      await axios.delete(`${API_URL}api/cart/`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+ const handleClearCart = async () => {
+  const headers = {};
+  const token = localStorage.getItem('token');
+  const sessionId = localStorage.getItem('guestSessionId');
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  } else if (sessionId) {
+    headers['X-Session-ID'] = sessionId;
+  } else {
+    return;
+  }
 
-      setCartItems([]);
-      setShowClearConfirm(false);
-      window.dispatchEvent(new CustomEvent('cartUpdated'));
-      toast.success('Cart cleared successfully', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        icon: "✅"
-      });
-    } catch (err) {
-      console.error('Error clearing cart:', err);
-      toast.error('Failed to clear cart', {
-        position: "top-right",
-        autoClose: 4000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        icon: "❌"
-      });
-    }
-  };
+  try {
+    await axios.delete(`${API_URL}api/cart/`, { headers });
+
+    setCartItems([]);
+    setShowClearConfirm(false);
+    window.dispatchEvent(new CustomEvent('cartUpdated'));
+    toast.success('Cart cleared successfully', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      icon: "✅"
+    });
+  } catch (err) {
+    console.error('Error clearing cart:', err);
+    toast.error('Failed to clear cart', {
+      position: "top-right",
+      autoClose: 4000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      icon: "❌"
+    });
+  }
+};
 
   const handleProductClick = (product) => {
     if (!product) return;
@@ -548,37 +599,42 @@ const CartPage = () => {
     navigate('/sweets');
   };
 
-  const handleCheckout = () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      toast.warning('Please sign in to continue with checkout', {
-        position: "top-right",
-        autoClose: 4000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        icon: "⚠️"
-      });
-      navigate('/signin');
-      return;
-    }
+ const handleCheckout = () => {
+  if (cartItems.length === 0) {
+    toast.warning('Your cart is empty. Add some items before checkout.', {
+      position: "top-right",
+      autoClose: 4000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      icon: "⚠️"
+    });
+    return;
+  }
 
-    if (cartItems.length === 0) {
-      toast.warning('Your cart is empty. Add some items before checkout.', {
-        position: "top-right",
-        autoClose: 4000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        icon: "⚠️"
-      });
-      return;
-    }
+  const token = localStorage.getItem('token');
+  const userType = localStorage.getItem('userType');
+  const sessionId = localStorage.getItem('guestSessionId');
 
+  // Allow both logged-in users and guests to checkout
+  if (token || (userType === 'guest' && sessionId)) {
     navigate('/checkout');
-  };
+  } else {
+    // Show sign-in prompt with option to continue as guest
+    if (window.confirm('Sign in to save your cart and get exclusive offers. Click OK to sign in, or Cancel to continue as guest.')) {
+      // Store return URL
+      localStorage.setItem('returnUrl', '/cart');
+      navigate('/signin');
+    } else {
+      // Continue as guest - set guest mode
+      const newSessionId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem('userType', 'guest');
+      localStorage.setItem('guestSessionId', newSessionId);
+      navigate('/checkout');
+    }
+  }
+};
 
   const calculateSubtotal = () => {
     return cartItems.reduce((total, item) => {

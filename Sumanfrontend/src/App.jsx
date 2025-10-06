@@ -28,7 +28,9 @@ import OrderTrackingPage from './Pages/OrderTracking/OrderTracking';
 import AboutUs from './Pages/Aboutus/Aboutus';
 import AdminDashboard from './Pages/AdminDashboard/AdminDashboard';
 import AdminLogin from './Pages/AdminLogin/AdminLogin';
+import AdminProfile from './Components/Admin/AdminProfile/AdminProfile';
 import ScrollToTop from './Components/ScrolltoTop/ScrolltoTop';
+import OTPVerification from './Pages/OTPVerification/OTPVerification';
 
 const App = () => {
   return (
@@ -63,6 +65,8 @@ const App = () => {
          <Route path='/aboutus' element={<AboutUs/>} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/profile" element={<AdminProfile />} />
+          <Route path="/verify-otp" element={<OTPVerification />} />
 
       </Routes>
     </Router>
