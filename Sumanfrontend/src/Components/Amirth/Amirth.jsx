@@ -434,7 +434,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                     <div className="amirth-carousel-content">
                       <h1 className="amirth-carousel-title">Amirth Foods</h1>
                       <p className="amirth-carousel-subtitle">Premium Quality Traditional Foods</p>
-                      {/* <button className="amirth-carousel-cta">Explore Products</button> */}
+                      <button className="amirth-carousel-cta">Explore Products</button>
                     </div>
                   </div>
                 </div>
