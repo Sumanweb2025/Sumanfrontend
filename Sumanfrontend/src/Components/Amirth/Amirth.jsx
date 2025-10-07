@@ -468,7 +468,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
               ))}
             </div>
           </div>
-        </div> */}
+        </div>  */}
 
         <div className="amirth-container">
           {/* Breadcrumb */}
