@@ -1,16 +1,16 @@
-/* Main Header Container */
 .main-header {
   background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  /* box-shadow: 0 2px 4px rgba(0,0,0,0.1); */
   position: relative;
+  max-height:130px;
 }
 
 .header-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 15px 20px;
-  flex-wrap: nowrap;
+  padding: 15px 10px;
+  /* flex-wrap: nowrap; */
 }
 
 /* Logo */
@@ -21,7 +21,7 @@
 /* Search Bar */
 .search-bar {
   flex: 1;
-  margin: 0 30px;
+  /* margin: 0 30px; */
   display: flex;
   align-items: center;
   border: 1px solid orange;
@@ -176,6 +176,22 @@
   transition: color 0.3s ease;
 }
 
+.main-user-avatar-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #4CAF50;
+  cursor: pointer;
+  /* transition: transform 0.3s ease, border-color 0.3s ease;
+  margin-right: 8px; */
+}
+
+.main-user-avatar-image:hover {
+  /* transform: scale(1.1); */
+  border-color: #45a049;
+}
+
 .main-user-name {
   font-size: 14px;
   font-weight: 500;
@@ -289,6 +305,21 @@
   font-size: 24px;
   color: #ff6b35;
 }
+
+.mobile-user-avatar-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #4CAF50;
+  margin-right: 12px;
+}
+
+/* Hide mobile icon when image is shown */
+.mobile-user-info img + .mobile-user-avatar {
+  display: none;
+}
+
 
 .mobile-user-name {
   font-size: 16px;
@@ -519,6 +550,16 @@
     min-width: 40px;
     min-height: 40px;
     font-size: 16px;
+  }
+
+  .main-user-avatar-image {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .mobile-user-avatar-image {
+    width: 45px;
+    height: 45px;
   }
 }
 

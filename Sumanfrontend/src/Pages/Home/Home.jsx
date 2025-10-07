@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import Header from '../../Components/Header/Header';
-
 import Product from '../../Components/Product/Product';
 import Oruproduct from '../../Components/Ourproduct/Ourproduct';
 import Ourproduct1 from "../../Components/Ourproduct1/Ourproduct1";
@@ -9,6 +8,7 @@ import Offer from '../../Components/Offer/Offer';
 import Banner from '../../Components/ShippingBanner/ShippingBanner';
 import Testimonials from '../../Components/Testimonials/Testimonial'; 
 import Footer from '../../Components/Footer/Footer';
+import GuestWelcomeModal from '../../Components/GuestPopup/GuestPopup'; // NEW
 import './Home.css';
 import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 import homeheader1 from '../../assets/iyappa home header1.png';
@@ -18,21 +18,14 @@ import homeheader4 from '../../assets/little krishna home header.png';
 
 const Home = () => {
   const [loading, setLoading] = useState(true);
+  const [showGuestModal, setShowGuestModal] = useState(false); // NEW
   
-  // Background images array - Your local assets
+  // Background images array
   const carouselImages = [
-    {
-      url: homeheader1,
-    },
-    {
-      url: homeheader2,
-    },
-    {
-      url: homeheader3,
-    },
-    {
-      url: homeheader4,
-    }
+    { url: homeheader1 },
+    { url: homeheader2 },
+    { url: homeheader3 },
+    { url: homeheader4 }
   ];
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -40,13 +33,45 @@ const Home = () => {
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   
   useEffect(() => {
-    // Simulate API/data loading
     const timer = setTimeout(() => {
       setLoading(false);
+      
+      // NEW: Check if user has seen the modal and is not logged in
+      const hasSeenModal = localStorage.getItem('hasSeenGuestModal');
+      const token = localStorage.getItem('token');
+      
+      if (!hasSeenModal && !token) {
+        // Show modal after 1 second delay
+        setTimeout(() => {
+          setShowGuestModal(true);
+        }, 1000);
+      }
     }, 1000);
 
     return () => clearTimeout(timer);
   }, []);
+
+  // NEW: Handle guest modal actions
+  const handleContinueAsGuest = () => {
+    localStorage.setItem('hasSeenGuestModal', 'true');
+    localStorage.setItem('userType', 'guest');
+    
+    // Generate and store session ID for guest
+    const sessionId = generateSessionId();
+    localStorage.setItem('guestSessionId', sessionId);
+    
+    setShowGuestModal(false);
+  };
+
+  const handleCloseGuestModal = () => {
+    localStorage.setItem('hasSeenGuestModal', 'true');
+    setShowGuestModal(false);
+  };
+
+  // NEW: Generate unique session ID for guest users
+  const generateSessionId = () => {
+    return 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+  };
 
   // Auto slide functionality
   useEffect(() => {
@@ -54,17 +79,13 @@ const Home = () => {
     let progressInterval;
 
     const startSlideshow = () => {
-      // Progress bar animation
       progressInterval = setInterval(() => {
         setProgress(prev => {
-          if (prev >= 100) {
-            return 0;
-          }
-          return prev + 2; // Increase by 2% every 100ms (5000ms total)
+          if (prev >= 100) return 0;
+          return prev + 2;
         });
       }, 100);
 
-      // Slide change
       slideInterval = setInterval(() => {
         setCurrentSlide(prev => (prev + 1) % carouselImages.length);
         setProgress(0);
@@ -87,13 +108,11 @@ const Home = () => {
     };
   }, [isAutoPlaying, loading, carouselImages.length]);
 
-  // Handle manual navigation
   const goToSlide = (index) => {
     setCurrentSlide(index);
     setProgress(0);
     setIsAutoPlaying(false);
     
-    // Resume autoplay after 3 seconds
     setTimeout(() => {
       setIsAutoPlaying(true);
     }, 3000);
@@ -109,12 +128,10 @@ const Home = () => {
     goToSlide(prev);
   };
 
-  // Handle dot click
   const handleDotClick = (index) => {
     goToSlide(index);
   };
 
-  // Pause on hover
   const handleMouseEnter = () => {
     setIsAutoPlaying(false);
   };
@@ -127,10 +144,18 @@ const Home = () => {
     <>
       <LoadingSpinner 
         isLoading={loading} 
-        brandName="Iyappaa Foods" 
+        brandName="Iyappaa Sweets" 
         loadingText="Loading our site..."
         progressColor="#3b82f6"
       />
+
+      {/* NEW: Guest Welcome Modal */}
+      <GuestWelcomeModal
+        isOpen={showGuestModal}
+        onClose={handleCloseGuestModal}
+        onContinueAsGuest={handleContinueAsGuest}
+      />
+
       <div className="home-container">
         <Header />
 
@@ -141,7 +166,6 @@ const Home = () => {
           onMouseLeave={handleMouseLeave}
         >
           <div className="carousel-container">
-            {/* Carousel Slides */}
             <div className="carousel-slides">
               {carouselImages.map((image, index) => (
                 <div
@@ -154,12 +178,10 @@ const Home = () => {
                         : 'next'
                   }`}
                   style={{ backgroundImage: `url(${image.url})` }}
-                >
-                </div>
+                />
               ))}
             </div>
 
-            {/* Navigation Arrows */}
             <button 
               className="carousel-nav carousel-nav-prev"
               onClick={prevSlide}
@@ -180,7 +202,6 @@ const Home = () => {
               </svg>
             </button>
 
-            {/* Pagination Dots */}
             <div className="carousel-pagination">
               {carouselImages.map((_, index) => (
                 <div
@@ -191,12 +212,11 @@ const Home = () => {
               ))}
             </div>
 
-            {/* Progress Bar */}
             <div className="carousel-progress">
               <div 
                 className="progress-bar" 
                 style={{ width: `${progress}%` }}
-              ></div>
+              />
             </div>
           </div>
         </div>
@@ -204,7 +224,6 @@ const Home = () => {
 
       <Oruproduct />
       <Product />
-      {/* <Ourproduct1 /> */}
       <Offer />
       <GutProduct />
       <Testimonials />

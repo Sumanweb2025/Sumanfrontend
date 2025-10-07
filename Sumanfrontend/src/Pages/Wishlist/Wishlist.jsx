@@ -17,37 +17,58 @@ const WishlistPage = () => {
   const [removingItems, setRemovingItems] = useState(new Set());
   const [addingToCart, setAddingToCart] = useState(new Set());
 
+  const [isGuest, setIsGuest] = useState(false);
+const [guestSessionId, setGuestSessionId] = useState(null);
+
+
   const API_URL = import.meta.env.VITE_APP_API_URL;
 
   useEffect(() => {
-    fetchWishlist();
-  }, []);
+  const token = localStorage.getItem('token');
+  const userType = localStorage.getItem('userType');
+  const sessionId = localStorage.getItem('guestSessionId');
+  
+  if (token) {
+    setIsGuest(false);
+    fetchWishlist(token, null);
+  } else if (userType === 'guest' && sessionId) {
+    setIsGuest(true);
+    setGuestSessionId(sessionId);
+    fetchWishlist(null, sessionId);
+  } else {
+    // No token and no guest session - redirect to home
+    navigate('/');
+  }
+}, []);
 
-  const fetchWishlist = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        navigate('/signin');
-        return;
-      }
-
-      const response = await axios.get(`${API_URL}api/wishlist`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      const wishlistData = response.data?.data || response.data;
-      setWishlistItems(wishlistData.products || []);
-      setLoading(false);
-    } catch (err) {
-      console.error('Error fetching wishlist:', err);
-      setError(err.response?.data?.message || 'Failed to load wishlist');
-      setLoading(false);
-      
-      if (err.response?.status === 401) {
-        navigate('/signin');
-      }
+  const fetchWishlist = async (token = null, sessionId = null) => {
+  try {
+    const headers = {};
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    } else if (sessionId) {
+      headers['X-Session-ID'] = sessionId;
+    } else {
+      navigate('/');
+      return;
     }
-  };
+
+    const response = await axios.get(`${API_URL}api/wishlist`, { headers });
+
+    const wishlistData = response.data?.data || response.data;
+    setWishlistItems(wishlistData.products || []);
+    setLoading(false);
+  } catch (err) {
+    console.error('Error fetching wishlist:', err);
+    setError(err.response?.data?.message || 'Failed to load wishlist');
+    setLoading(false);
+    
+    if (err.response?.status === 401 && !sessionId) {
+      navigate('/signin');
+    }
+  }
+};
 
   const getImageUrl = (product) => {
     if (product.imageUrl) {
@@ -62,54 +83,77 @@ const WishlistPage = () => {
   };
 
   const handleRemoveFromWishlist = async (productId) => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
+  const headers = {};
+  const token = localStorage.getItem('token');
+  const sessionId = localStorage.getItem('guestSessionId');
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  } else if (sessionId) {
+    headers['X-Session-ID'] = sessionId;
+  } else {
+    return;
+  }
 
-    setRemovingItems(prev => new Set(prev).add(productId));
+  setRemovingItems(prev => new Set(prev).add(productId));
 
-    try {
-      await axios.delete(`${API_URL}api/wishlist/${productId}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+  try {
+    await axios.delete(`${API_URL}api/wishlist/${productId}`, { headers });
 
-      setWishlistItems(prev =>
-        prev.filter(item => (item.productId._id || item.productId) !== productId)
-      );
+    setWishlistItems(prev =>
+      prev.filter(item => (item.productId._id || item.productId) !== productId)
+    );
 
-      window.dispatchEvent(new CustomEvent('wishlistUpdated'));
-      
-      toast.success('Item removed from wishlist! 🗑️', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
-    } catch (err) {
-      console.error('Error removing from wishlist:', err);
-      toast.error('Failed to remove item from wishlist! ❌', {
-        position: "top-right",
-        autoClose: 4000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
-    } finally {
-      setRemovingItems(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(productId);
-        return newSet;
-      });
-    }
-  };
+    window.dispatchEvent(new CustomEvent('wishlistUpdated'));
+    
+    toast.success('Item removed from wishlist! 🗑️', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  } catch (err) {
+    console.error('Error removing from wishlist:', err);
+    toast.error('Failed to remove item from wishlist! ❌', {
+      position: "top-right",
+      autoClose: 4000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  } finally {
+    setRemovingItems(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(productId);
+      return newSet;
+    });
+  }
+};
 
  const handleAddToCart = async (product) => {
+  const headers = {};
   const token = localStorage.getItem('token');
-  if (!token) {
-    navigate('/signin');
-    return;
+  const sessionId = localStorage.getItem('guestSessionId');
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  } else if (sessionId) {
+    headers['X-Session-ID'] = sessionId;
+  } else {
+    // Prompt to sign in or continue as guest
+    if (window.confirm('Sign in to save your cart. Click OK to sign in, or Cancel to continue as guest.')) {
+      localStorage.setItem('returnUrl', '/wishlist');
+      navigate('/signin');
+    } else {
+      // Generate guest session
+      const newSessionId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem('userType', 'guest');
+      localStorage.setItem('guestSessionId', newSessionId);
+      headers['X-Session-ID'] = newSessionId;
+    }
   }
 
   const productId = product._id || product.product_id || product.id;
@@ -119,20 +163,16 @@ const WishlistPage = () => {
     // Add to cart
     await axios.post(`${API_URL}api/cart`,
       { productId, quantity: 1 },
-      { headers: { 'Authorization': `Bearer ${token}` } }
+      { headers }
     );
 
     // Remove from wishlist after successful cart addition
-    await axios.delete(`${API_URL}api/wishlist/${productId}`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
+    await axios.delete(`${API_URL}api/wishlist/${productId}`, { headers });
 
-    // Update local state to remove the product from wishlist
     setWishlistItems(prev =>
       prev.filter(item => (item.productId._id || item.productId || item._id) !== productId)
     );
 
-    // Dispatch custom events to update header counts
     window.dispatchEvent(new CustomEvent('cartUpdated'));
     window.dispatchEvent(new CustomEvent('wishlistUpdated'));
     

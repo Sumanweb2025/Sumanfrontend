@@ -118,7 +118,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
       try {
         const productsResponse = await axios.get(`${API_URL}api/products/search?brand=venba`);
         const productsData = productsResponse.data?.data || productsResponse.data?.products || productsResponse.data;
-        
+
         // Group products by name
         const groupedProducts = groupProductsByName(productsData);
         setProducts(groupedProducts);
@@ -233,18 +233,18 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   // Modified paginate function with scroll
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
-    
+
     // Scroll to top of main content area
     if (mainContentRef.current) {
-      mainContentRef.current.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'start' 
+      mainContentRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
       });
     } else {
       // Fallback - scroll to top of page
-      window.scrollTo({ 
-        top: 0, 
-        behavior: 'smooth' 
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
       });
     }
   };
@@ -274,28 +274,33 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     e.stopPropagation();
     if (!product || wishlistLoading) return;
 
+    const headers = {};
     const token = localStorage.getItem('token');
-    if (!token) {
-      // Store current page URL for redirect after login
-      const currentUrl = window.location.pathname + window.location.search;
-      localStorage.setItem('returnUrl', currentUrl);
-      
-      // Show alert and redirect to sign-in page
-      if (window.confirm('Please log in to add items to your wishlist.')) {
+    const userType = localStorage.getItem('userType');
+    let sessionId = localStorage.getItem('guestSessionId');
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    } else if (userType === 'guest' && sessionId) {
+      headers['X-Session-ID'] = sessionId;
+    } else {
+      // Not logged in and not guest - prompt user
+      if (window.confirm('Add to wishlist as guest or sign in to save permanently. Click OK to sign in, Cancel for guest mode.')) {
+        localStorage.setItem('returnUrl', window.location.pathname);
         navigate('/signin');
+        return;
+      } else {
+        // Create guest session
+        sessionId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('userType', 'guest');
+        localStorage.setItem('guestSessionId', sessionId);
+        headers['X-Session-ID'] = sessionId;
       }
-      return;
     }
 
     setWishlistLoading(true);
     try {
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      };
-
+      const config = { headers };
       const productId = product.product_id || product._id || product.id;
       const isInWishlist = wishlistItems.includes(productId);
 
@@ -307,7 +312,6 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         await axios.post(`${API_URL}api/wishlist`, { productId }, config);
         setWishlistItems(prev => [...prev, productId]);
         window.dispatchEvent(new CustomEvent('wishlistUpdated'));
-
         setSelectedProduct(product);
         setShowWishlistPopup(true);
       }
@@ -321,14 +325,19 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
 
   const handleAddToCartFromWishlist = async (productId) => {
     try {
+      const headers = {};
       const token = localStorage.getItem('token');
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      };
+      const sessionId = localStorage.getItem('guestSessionId');
 
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      } else if (sessionId) {
+        headers['X-Session-ID'] = sessionId;
+      } else {
+        throw new Error('No session available');
+      }
+
+      const config = { headers };
       await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
 
       const cartResponse = await axios.get(`${API_URL}api/cart`, config);
@@ -344,30 +353,36 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   };
 
   const handleAddToCart = async (e, productData) => {
-    e.stopPropagation(); // Prevent card click
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        // Store current page URL for redirect after login
-        const currentUrl = window.location.pathname + window.location.search;
-        localStorage.setItem('returnUrl', currentUrl);
-        
-        // Show alert and redirect to sign-in page
-        if (window.confirm('Please log in to add items to your cart.')) {
-          navigate('/signin');
-        }
+    e.stopPropagation();
+
+    const headers = {};
+    const token = localStorage.getItem('token');
+    const userType = localStorage.getItem('userType');
+    let sessionId = localStorage.getItem('guestSessionId');
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    } else if (userType === 'guest' && sessionId) {
+      headers['X-Session-ID'] = sessionId;
+    } else {
+      // Not logged in and not guest - prompt user
+      if (window.confirm('Add to cart as guest or sign in for exclusive offers. Click OK to sign in, Cancel for guest mode.')) {
+        localStorage.setItem('returnUrl', window.location.pathname);
+        navigate('/signin');
         return;
+      } else {
+        // Create guest session
+        sessionId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('userType', 'guest');
+        localStorage.setItem('guestSessionId', sessionId);
+        headers['X-Session-ID'] = sessionId;
       }
+    }
 
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      };
-
-      // Use the specific variant's product ID
+    try {
+      const config = { headers };
       const productId = productData.productId || productData.product_id || productData._id || productData.id;
+
       await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
 
       // Update cart items
@@ -375,10 +390,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
       const cartData = cartResponse.data?.data || cartResponse.data;
       setCartItems(cartData.items || []);
 
-      // Dispatch custom event to update header count
       window.dispatchEvent(new CustomEvent('cartUpdated'));
-
-      // Show cart popup with the specific variant
       setSelectedProduct(productData);
       setShowCartPopup(true);
     } catch (err) {
@@ -461,15 +473,15 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         <div className="venba-container">
           {/* Breadcrumb */}
           <div className="venba-breadcrumb">
-  <span 
-    className="venba-link" 
-    onClick={() => navigate('/')}
-    
-  >
-    Home
-  </span> 
-  / <span>Brands</span> / <span className="venba-current">Venba</span>
-</div>
+            <span
+              className="venba-link"
+              onClick={() => navigate('/')}
+
+            >
+              Home
+            </span>
+            / <span>Brands</span> / <span className="venba-current">Venba</span>
+          </div>
 
           {/* Categories Section */}
           <div className="venba-categories-section">
@@ -679,7 +691,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                             {wishlistItems.includes(product.product_id || product._id || product.id) ? '❤️' : '♡'}
                           </button>
 
-                           {/* Stock Status */}
+                          {/* Stock Status */}
                           {(() => {
                             const selectedIndex = getSelectedVariant(product);
                             const selectedVariant = product.variants[selectedIndex] || product.variants[0];
@@ -712,16 +724,16 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                           </div>
 
                           <div className="price-text venba-product-price"> {(() => {
-                              const selectedIndex = getSelectedVariant(product);
-                              const selectedVariant = product.variants[selectedIndex] || product.variants[0];
-                              const price = selectedVariant.price;
+                            const selectedIndex = getSelectedVariant(product);
+                            const selectedVariant = product.variants[selectedIndex] || product.variants[0];
+                            const price = selectedVariant.price;
 
-                              return price !== undefined && price !== null
-                                ? `$${price}`
-                                : <span style={{ color: '#999', fontSize: "0.9rem" }}>$0 (Price not fixed)</span>;
-                            })()}</div>
+                            return price !== undefined && price !== null
+                              ? `$${price}`
+                              : <span style={{ color: '#999', fontSize: "0.9rem" }}>$0 (Price not fixed)</span>;
+                          })()}</div>
 
-                            {/* Gram Variants Display */}
+                          {/* Gram Variants Display */}
                           {product.hasMultipleVariants ? (
                             <div className="venba-gram-variants">
                               {product.variants.map((variant, index) => {
@@ -747,7 +759,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                             </div>
                           )}
 
-                         {/* Add to Cart Button */}
+                          {/* Add to Cart Button */}
                           {(() => {
                             const selectedIndex = getSelectedVariant(product);
                             const selectedVariant = product.variants[selectedIndex] || product.variants[0];

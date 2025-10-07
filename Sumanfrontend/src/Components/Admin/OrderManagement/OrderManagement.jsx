@@ -114,7 +114,7 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
   const viewOrderDetails = async (orderId) => {
     try {
       setIsLoading(true);
-      const response = await api.get(`/orders/${orderId}`, adminToken);
+      const response = await api.get(`/admin/orders/${orderId}`, adminToken);
 
       if (response.success) {
         setSelectedOrder(response.data);
@@ -129,7 +129,7 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
 
   const downloadOrderPDF = async (orderId, paymentMethod) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/invoices/download-invoice/${orderId}`, {
+      const response = await fetch(`${API_BASE_URL}api/invoices/download-invoice/${orderId}`, {
         headers: {
           'Authorization': `Bearer ${adminToken}`,
         },
@@ -154,7 +154,7 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
 
   const viewOrderPDF = async (orderId, paymentMethod) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/invoices/download-invoice/${orderId}`, {
+      const response = await fetch(`${API_BASE_URL}api/invoices/download-invoice/${orderId}`, {
         headers: {
           'Authorization': `Bearer ${adminToken}`,
         },
@@ -368,16 +368,46 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
                     <td>
                       <div className="order-info">
                         <span className="order-number">#{order.orderNumber}</span>
+                        {order.orderSummary?.firstOrderDiscount && parseFloat(order.orderSummary.firstOrderDiscount) > 0 && (
+                          <span className="first-order-badge" style={{
+                            marginLeft: '6px',
+                            padding: '2px 8px',
+                            background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                            color: 'white',
+                            borderRadius: '4px',
+                            fontSize: '0.7rem',
+                            fontWeight: '600'
+                          }}>
+                            First Order
+                          </span>
+                        )}
                         <span className="order-items">{order.items?.length || 0} items</span>
                       </div>
                     </td>
                     <td>
                       <div className="customer-info">
                         <span className="customer-name">
-                          {order.userId?.name || `${order.billingAddress?.firstName} ${order.billingAddress?.lastName}`}
+                          {order.customerInfo?.name ||
+                            order.userId?.name ||
+                            `${order.billingAddress?.firstName} ${order.billingAddress?.lastName}`}
+                          {(order.isGuestOrder || order.customerInfo?.isGuest) && (
+                            <span className="guest-badge" style={{
+                              marginLeft: '8px',
+                              padding: '2px 6px',
+                              background: '#fbbf24',
+                              color: '#78350f',
+                              borderRadius: '4px',
+                              fontSize: '0.7rem',
+                              fontWeight: '600'
+                            }}>
+                              Guest
+                            </span>
+                          )}
                         </span>
                         <span className="customer-email">
-                          {order.userId?.email || order.contactInfo?.email}
+                          {order.customerInfo?.email ||
+                            order.userId?.email ||
+                            order.contactInfo?.email}
                         </span>
                       </div>
                     </td>
@@ -497,7 +527,7 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
               </button>
             </div>
 
-            <div className="modal-content">
+            <div className="admin-order-modal-content">
               {/* Order Status and Basic Info */}
               <div className="order-header-section">
                 <div className="order-status-display">

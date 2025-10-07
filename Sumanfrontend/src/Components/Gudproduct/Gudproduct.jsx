@@ -212,25 +212,46 @@ const FeaturedProducts = () => {
           snacks: snacksData || []
         });
 
-        // Fetch wishlist and cart if user is logged in
+        // NEW: Fetch wishlist and cart for both logged-in and guest users
         const token = localStorage.getItem('token');
+        const userType = localStorage.getItem('userType');
+        const sessionId = localStorage.getItem('guestSessionId');
+
         if (token) {
+          // Logged-in user
           try {
-            // Fetch wishlist
             const wishlistResponse = await axios.get(`${API_URL}api/wishlist`, {
               headers: { 'Authorization': `Bearer ${token}` }
             });
             const wishlistData = wishlistResponse.data?.data || wishlistResponse.data;
             setWishlistItems(wishlistData.products?.map(item => item.productId._id || item.productId) || []);
 
-            // Fetch cart
             const cartResponse = await axios.get(`${API_URL}api/cart`, {
               headers: { 'Authorization': `Bearer ${token}` }
             });
             const cartData = cartResponse.data?.data || cartResponse.data;
             setCartItems(cartData.items || []);
           } catch (userDataError) {
-            console.log('Wishlist/Cart not loaded:', userDataError);
+            console.log('User data not loaded:', userDataError);
+            setWishlistItems([]);
+            setCartItems([]);
+          }
+        } else if (userType === 'guest' && sessionId) {
+          // Guest user
+          try {
+            const wishlistResponse = await axios.get(`${API_URL}api/wishlist`, {
+              headers: { 'X-Session-ID': sessionId }
+            });
+            const wishlistData = wishlistResponse.data?.data || wishlistResponse.data;
+            setWishlistItems(wishlistData.products?.map(item => item.productId._id || item.productId) || []);
+
+            const cartResponse = await axios.get(`${API_URL}api/cart`, {
+              headers: { 'X-Session-ID': sessionId }
+            });
+            const cartData = cartResponse.data?.data || cartResponse.data;
+            setCartItems(cartData.items || []);
+          } catch (guestDataError) {
+            console.log('Guest data not loaded:', guestDataError);
             setWishlistItems([]);
             setCartItems([]);
           }
@@ -251,38 +272,44 @@ const FeaturedProducts = () => {
     e?.stopPropagation();
     if (!product || wishlistLoading) return;
 
+    const headers = {};
     const token = localStorage.getItem('token');
-    if (!token) {
-      alert('Please login to add items to your wishlist');
-      return;
+    const userType = localStorage.getItem('userType');
+    let sessionId = localStorage.getItem('guestSessionId');
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    } else if (userType === 'guest' && sessionId) {
+      headers['X-Session-ID'] = sessionId;
+    } else {
+      // Not logged in and not guest - prompt user
+      if (window.confirm('Add to wishlist as guest or sign in to save permanently. Click OK to sign in, Cancel for guest mode.')) {
+        localStorage.setItem('returnUrl', window.location.pathname);
+        navigate('/signin');
+        return;
+      } else {
+        // Create guest session
+        sessionId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('userType', 'guest');
+        localStorage.setItem('guestSessionId', sessionId);
+        headers['X-Session-ID'] = sessionId;
+      }
     }
 
     setWishlistLoading(true);
     try {
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      };
-
+      const config = { headers };
       const productId = product.product_id || product._id || product.id;
       const isInWishlist = wishlistItems.includes(productId);
 
       if (isInWishlist) {
         await axios.delete(`${API_URL}api/wishlist/${productId}`, config);
         setWishlistItems(prev => prev.filter(id => id !== productId));
-
-        // Dispatch custom event to update header count
         window.dispatchEvent(new CustomEvent('wishlistUpdated'));
       } else {
         await axios.post(`${API_URL}api/wishlist`, { productId }, config);
         setWishlistItems(prev => [...prev, productId]);
-
-        // Dispatch custom event to update header count
         window.dispatchEvent(new CustomEvent('wishlistUpdated'));
-
-        // Show wishlist popup
         setSelectedProduct(product);
         setShowWishlistPopup(true);
       }
@@ -297,32 +324,42 @@ const FeaturedProducts = () => {
   // Handle add to cart
   const handleAddToCart = async (product, e) => {
     e?.stopPropagation();
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        alert('Please login to add items to your cart');
+
+    const headers = {};
+    const token = localStorage.getItem('token');
+    const userType = localStorage.getItem('userType');
+    let sessionId = localStorage.getItem('guestSessionId');
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    } else if (userType === 'guest' && sessionId) {
+      headers['X-Session-ID'] = sessionId;
+    } else {
+      // Not logged in and not guest - prompt user
+      if (window.confirm('Add to cart as guest or sign in for exclusive offers. Click OK to sign in, Cancel for guest mode.')) {
+        localStorage.setItem('returnUrl', window.location.pathname);
+        navigate('/signin');
         return;
+      } else {
+        // Create guest session
+        sessionId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('userType', 'guest');
+        localStorage.setItem('guestSessionId', sessionId);
+        headers['X-Session-ID'] = sessionId;
       }
+    }
 
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      };
-
+    try {
+      const config = { headers };
       const productId = product.product_id || product._id || product.id;
+
       await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
 
-      // Update cart items
       const cartResponse = await axios.get(`${API_URL}api/cart`, config);
       const cartData = cartResponse.data?.data || cartResponse.data;
       setCartItems(cartData.items || []);
 
-      // Dispatch custom event to update header count
       window.dispatchEvent(new CustomEvent('cartUpdated'));
-
-      // Show cart popup
       setSelectedProduct(product);
       setShowCartPopup(true);
     } catch (err) {
@@ -334,24 +371,26 @@ const FeaturedProducts = () => {
   // Handle add to cart from wishlist popup
   const handleAddToCartFromWishlist = async (productId) => {
     try {
+      const headers = {};
       const token = localStorage.getItem('token');
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      };
+      const sessionId = localStorage.getItem('guestSessionId');
 
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      } else if (sessionId) {
+        headers['X-Session-ID'] = sessionId;
+      } else {
+        throw new Error('No session available');
+      }
+
+      const config = { headers };
       await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
 
-      // Update cart items
       const cartResponse = await axios.get(`${API_URL}api/cart`, config);
       const cartData = cartResponse.data?.data || cartResponse.data;
       setCartItems(cartData.items || []);
 
-      // Dispatch custom event to update header count
       window.dispatchEvent(new CustomEvent('cartUpdated'));
-
       return true;
     } catch (err) {
       console.error('Add to cart error:', err);

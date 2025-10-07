@@ -10,6 +10,7 @@ import ProductManagement from '../../Components/Admin/ProductManagement/ProductM
 import OrderManagement from '../../Components/Admin/OrderManagement/OrderManagement';
 import PaymentManagement from '../../Components/Admin/PaymentManagement/PaymentManagement';
 import Analytics from '../../Components/Admin/Analytics/Analytics';
+import AdminProfile from '../../Components/Admin/AdminProfile/AdminProfile';
 
 // API configuration
 const API_BASE_URL = import.meta.env.VITE_ADMIN_API_URL;
@@ -135,6 +136,8 @@ const AdminDashboard = () => {
         return <PaymentManagement {...commonProps} />;
       case 'analytics':
         return <Analytics {...commonProps} />;
+      case 'profile':
+        return <AdminProfile {...commonProps} />;
       default:
         return <Dashboard {...commonProps} />;
     }
@@ -169,6 +172,7 @@ const AdminDashboard = () => {
           api={api}
           adminToken={adminToken}
           setError={setError}
+          setActiveTab={setActiveTab} 
         />
         
         {/* Content Area */}

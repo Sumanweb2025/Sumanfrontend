@@ -336,26 +336,71 @@ const Dashboard = ({ api, adminToken, setIsLoading, setError, handleApiError }) 
                   </tr>
                 </thead>
                 <tbody>
-                  {recentOrders.map((order) => (
-                    <tr key={order._id}>
-                      <td>
-                        <span className="order-number">{order.orderNumber}</span>
-                      </td>
-                      <td>
-                        <div className="customer-info">
-                          <span className="customer-name">{order.userId?.name || 'N/A'}</span>
-                          <span className="customer-email">{order.userId?.email || ''}</span>
-                        </div>
-                      </td>
-                      <td>
-                        <span className={`status-badge ${getStatusBadgeClass(order.status)}`}>
-                          {order.status}
-                        </span>
-                      </td>
-                      <td className="amount">{formatCurrency(order.orderSummary?.total)}</td>
-                      <td className="date">{formatDate(order.createdAt)}</td>
-                    </tr>
-                  ))}
+                  {recentOrders.map((order) => {
+                    // Determine customer name and email
+                    const isGuest = order.isGuestOrder || !order.userId;
+                    const customerName = isGuest
+                      ? `${order.billingAddress?.firstName || ''} ${order.billingAddress?.lastName || ''}`.trim() || 'Guest User'
+                      : order.userId?.name || 'Unknown';
+                    const customerEmail = isGuest
+                      ? order.contactInfo?.email || 'N/A'
+                      : order.userId?.email || '';
+
+                    // Check for first order discount
+                    const hasFirstOrderDiscount = order.orderSummary?.firstOrderDiscount &&
+                      parseFloat(order.orderSummary.firstOrderDiscount) > 0;
+
+                    return (
+                      <tr key={order._id}>
+                        <td>
+                          <span className="order-number">
+                            {order.orderNumber}
+                            {hasFirstOrderDiscount && (
+                              <span style={{
+                                marginLeft: '6px',
+                                padding: '2px 6px',
+                                background: '#10b981',
+                                color: 'white',
+                                borderRadius: '4px',
+                                fontSize: '0.65rem',
+                                fontWeight: '600'
+                              }}>
+                                First
+                              </span>
+                            )}
+                          </span>
+                        </td>
+                        <td>
+                          <div className="customer-info">
+                            <span className="customer-name">
+                              {customerName}
+                              {isGuest && (
+                                <span style={{
+                                  marginLeft: '6px',
+                                  padding: '2px 6px',
+                                  background: '#fef3c7',
+                                  color: '#92400e',
+                                  borderRadius: '4px',
+                                  fontSize: '0.65rem',
+                                  fontWeight: '600'
+                                }}>
+                                  Guest
+                                </span>
+                              )}
+                            </span>
+                            <span className="customer-email">{customerEmail}</span>
+                          </div>
+                        </td>
+                        <td>
+                          <span className={`status-badge ${getStatusBadgeClass(order.status)}`}>
+                            {order.status}
+                          </span>
+                        </td>
+                        <td className="amount">{formatCurrency(order.orderSummary?.total)}</td>
+                        <td className="date">{formatDate(order.createdAt)}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

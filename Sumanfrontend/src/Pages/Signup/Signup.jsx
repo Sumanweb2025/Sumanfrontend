@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './Signup.css';
-
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/bootstrap.css";
+import "./Signup.css";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -15,10 +16,12 @@ const SignUp = () => {
     email: '',
     password: '',
     confirmPassword: '',
+    phone: '',
+    countryCode: '',
     agreeToTerms: false
   });
 
-   const API_URL = import.meta.env.VITE_APP_API_URL;
+  const API_URL = import.meta.env.VITE_APP_API_URL;
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -27,44 +30,64 @@ const SignUp = () => {
       [name]: type === 'checkbox' ? checked : value
     }));
 
-    // Clear specific field error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const handlePhoneChange = (value, data) => {
+    // value contains the full number with country code
+    // data.dialCode contains just the country code
+    const phoneWithoutCountryCode = value.slice(data.dialCode.length);
+    
+    setSignupData(prev => ({
+      ...prev,
+      phone: phoneWithoutCountryCode,
+      countryCode: `+${data.dialCode}`
+    }));
+
+    if (errors.phone) {
+      setErrors(prev => ({ ...prev, phone: '' }));
     }
   };
 
   const validateForm = () => {
     const newErrors = {};
 
-    // Name validation
     if (!signupData.name.trim()) {
       newErrors.name = 'Name is required';
     } else if (signupData.name.trim().length < 2) {
       newErrors.name = 'Name must be at least 2 characters';
     }
 
-    // Email validation
     if (!signupData.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(signupData.email.trim())) {
       newErrors.email = 'Please enter a valid email address';
     }
 
-    // Password validation
+    if (!signupData.phone) {
+      newErrors.phone = 'Phone number is required';
+    } else if (signupData.phone.length < 7) {
+      newErrors.phone = 'Please enter a valid phone number';
+    }
+
+    if (!signupData.countryCode) {
+      newErrors.phone = 'Please select a country code';
+    }
+
     if (!signupData.password) {
       newErrors.password = 'Password is required';
     } else if (signupData.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
     }
 
-    // Confirm password validation
     if (!signupData.confirmPassword) {
       newErrors.confirmPassword = 'Confirm password is required';
     } else if (signupData.password !== signupData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
 
-    // Terms agreement validation
     if (!signupData.agreeToTerms) {
       newErrors.agreeToTerms = 'You must agree to the terms and conditions';
     }
@@ -74,22 +97,12 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Clear previous errors
     setErrors({});
-    
-    // Validate form
+
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-      toast.error('Please fix the form errors before submitting ❌', {
-        position: "top-right",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+      toast.error('Please fix the form errors before submitting');
       return;
     }
 
@@ -99,140 +112,69 @@ const SignUp = () => {
       const response = await axios.post(`${API_URL}api/auth/signup`, {
         name: signupData.name.trim(),
         email: signupData.email.toLowerCase().trim(),
+        phone: signupData.phone,
+        countryCode: signupData.countryCode,
         password: signupData.password
       }, {
         headers: {
           'Content-Type': 'application/json',
         },
-        timeout: 10000 // 10 second timeout
+        timeout: 10000
       });
 
       if (response.data && response.data.success) {
-        // Store auth data
-        if (response.data.data?.token) {
-          localStorage.setItem('token', response.data.data.token);
-        }
-        if (response.data.data?.user) {
-          localStorage.setItem('user', JSON.stringify(response.data.data.user));
-        }
-        
-        toast.success(`Welcome to Iyappaa Sweets & Snacks, ${signupData.name}! Your account has been created successfully 🎉`, {
-          position: "top-right",
-          autoClose: 4000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-        
-        // Navigate after showing toast for a moment
+        toast.success('OTP sent to your phone number!');
+
         setTimeout(() => {
-          navigate('/', { replace: true });
-        }, 2000);
-      } else {
-        setErrors({ api: 'Account creation failed. Please try again.' });
-        toast.error('Account creation failed. Please try again. ❌', {
-          position: "top-right",
-          autoClose: 4000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
+          navigate('/verify-otp', {
+            state: {
+              tempUserId: response.data.data.tempUserId,
+              phone: signupData.phone,
+              countryCode: signupData.countryCode,
+              fullPhoneNumber: response.data.data.phoneDisplay,
+              name: signupData.name.trim(),
+              email: signupData.email.trim()
+            }
+          });
+        }, 1000);
       }
 
     } catch (error) {
       console.error('SignUp error:', error);
 
       if (error.response) {
-        
         const { data, status } = error.response;
 
         if (status === 400 && data.errors && Array.isArray(data.errors)) {
-          // Handle validation errors from server
           const formattedErrors = {};
           data.errors.forEach(err => {
             const field = err.path || err.param || err.field;
             formattedErrors[field] = err.msg || err.message;
           });
           setErrors(formattedErrors);
-          toast.error('Please fix the form errors and try again ❌', {
-            position: "top-right",
-            autoClose: 4000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
+          toast.error('Please fix the form errors and try again');
         } else if (status === 409) {
-          // Handle duplicate email
-          setErrors({ email: 'An account with this email already exists' });
-          toast.error('An account with this email already exists ❌', {
-            position: "top-right",
-            autoClose: 4000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
+          setErrors({ email: data.message || 'An account with this email or phone already exists' });
+          toast.error(data.message || 'An account with this email or phone already exists');
+        } else if (status === 429) {
+          setErrors({ api: 'Too many requests. Please wait before trying again.' });
+          toast.error('Too many requests. Please wait before trying again.');
         } else if (data.message) {
           setErrors({ api: data.message });
-           toast.error(`${data.message} ❌`, {
-            position: "top-right",
-            autoClose: 4000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
+          toast.error(data.message);
         } else {
           const errorMsg = `Server error (${status}). Please try again.`;
           setErrors({ api: errorMsg });
-         toast.error(`${errorMsg} ❌`, {
-            position: "top-right",
-            autoClose: 4000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
+          toast.error(errorMsg);
         }
       } else if (error.request) {
-        // Network error
-        const errorMsg = 'Cannot connect to server. Please check if the backend is running on http://localhost:8000';
+        const errorMsg = 'Cannot connect to server. Please check your connection.';
         setErrors({ api: errorMsg });
-        toast.error(`${errorMsg} 🌐`, {
-          position: "top-right",
-          autoClose: 4000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-      } else if (error.code === 'ECONNABORTED') {
-        // Timeout error
-        const errorMsg = 'Request timed out. Please try again.';
-        setErrors({ api: errorMsg });
-         toast.error(`${errorMsg} ❌`, {
-          position: "top-right",
-          autoClose: 4000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
+        toast.error(errorMsg);
       } else {
-        // Other error
         const errorMsg = 'An unexpected error occurred. Please try again.';
         setErrors({ api: errorMsg });
-        toast.error(`${errorMsg} ❌`, {
-          position: "top-right",
-          autoClose: 4000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
+        toast.error(errorMsg);
       }
     } finally {
       setLoading(false);
@@ -241,36 +183,27 @@ const SignUp = () => {
 
   return (
     <div className="signup-wrapper">
-       {/* Toast Container */}
       <ToastContainer
         position="top-right"
         autoClose={3000}
         hideProgressBar={true}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
         theme="light"
       />
       <div className="signup-form-logo">
-          <img src="/src/assets/logo-title.png" alt="Suman Foods Logo" />
-          <span className="signup-form-logo-text">Iyappaa Sweets & Snacks</span>
-        </div>
+        <img src="/src/assets/logo-title.png" alt="Suman Foods Logo" />
+        <span className="signup-form-logo-text">Iyappaa Sweets & Snacks</span>
+      </div>
       <div className="signup-right">
         <p className="signup-form-subtitle">Please enter your details</p>
         <h2 className="signup-form-title">Create Your Account</h2>
 
         <form onSubmit={handleSubmit} className="signup-form">
-          {/* API Error Display */}
           {errors.api && (
             <div className="signup-error-message-container">
               <div className="signup-error-message">{errors.api}</div>
             </div>
           )}
 
-          {/* Name Field */}
           <div className="signup-form-group">
             <input
               type="text"
@@ -289,7 +222,6 @@ const SignUp = () => {
             )}
           </div>
 
-          {/* Email Field */}
           <div className="signup-form-group">
             <input
               type="email"
@@ -308,7 +240,30 @@ const SignUp = () => {
             )}
           </div>
 
-          {/* Password Field */}
+          <div className="signup-form-group">
+            <PhoneInput
+              country={'ca'}
+              value={signupData.countryCode.replace('+', '') + signupData.phone}
+              onChange={handlePhoneChange}
+              enableSearch={true}
+              countryCodeEditable={false}
+              specialLabel=""
+              inputProps={{
+                name: 'phone',
+                required: true,
+              }}
+              inputStyle={{
+                width: '100%',
+                fontSize: '14px'
+              }}
+            />
+            {errors.phone && (
+              <div className="signup-error-text-wrapper">
+                <span className="signup-error-text">{errors.phone}</span>
+              </div>
+            )}
+          </div>
+
           <div className="signup-form-group">
             <input
               type="password"
@@ -328,7 +283,6 @@ const SignUp = () => {
             )}
           </div>
 
-          {/* Confirm Password Field */}
           <div className="signup-form-group">
             <input
               type="password"
@@ -347,7 +301,6 @@ const SignUp = () => {
             )}
           </div>
 
-          {/* Terms Agreement */}
           <div className="signup-form-options">
             <div className="signup-agree-terms">
               <input
@@ -359,7 +312,7 @@ const SignUp = () => {
                 required
               />
               <label htmlFor="agreeToTerms">
-                     I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer">Terms & Conditions</a>
+                I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer">Terms & Conditions</a>
               </label>
             </div>
             {errors.agreeToTerms && (
@@ -369,14 +322,13 @@ const SignUp = () => {
             )}
           </div>
 
-          {/* Submit Button */}
           <div className="signup-btn-container">
             <button type="submit" className="signup-btn" disabled={loading}>
               {loading ? (
                 <>
-                  <span className="spinner"></span> Creating Account...
+                  <span className="spinner"></span> Sending OTP...
                 </>
-              ) : 'Create Account'}
+              ) : 'Send OTP'}
             </button>
           </div>
         </form>
