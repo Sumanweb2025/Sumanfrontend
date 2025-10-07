@@ -23,16 +23,14 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
 
   const API_URL = import.meta.env.VITE_APP_API_URL;
 
-  // NEW: Helper function to get full image URL
+  // Helper function to get full image URL
   const getImageUrl = (imageUrl) => {
     if (!imageUrl) return null;
     
-    // If it's a base64 data URL, return as is
     if (imageUrl.startsWith('data:')) {
       return imageUrl;
     }
     
-    // If it's already a full URL (Google images, external URLs)
     if (imageUrl.includes('googleapis.com') || 
         imageUrl.includes('googleusercontent.com') || 
         imageUrl.startsWith('http://') || 
@@ -40,19 +38,23 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
       return imageUrl;
     }
     
-    // For local uploaded images
     if (imageUrl.startsWith('/uploads/')) {
       return `${API_URL}${imageUrl}`;
     }
     
-    // Fallback
     return imageUrl.startsWith('/') ? 
       `${API_URL}${imageUrl}` : 
       `${API_URL}/${imageUrl}`;
   };
 
-  // NEW: Fetch user profile with image
+  // ✅ FIXED: Fetch user profile with proper error handling
   const fetchUserProfile = async (token) => {
+    // Don't fetch if no token
+    if (!token) {
+      console.log('No token - skipping profile fetch');
+      return;
+    }
+
     try {
       const response = await axios.get(`${API_URL}api/auth/profile`, {
         headers: { 'Authorization': `Bearer ${token}` }
@@ -74,11 +76,19 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
           setProfileImage(null);
         }
         
-        // Update localStorage with fresh data
         localStorage.setItem('user', JSON.stringify(userData));
       }
     } catch (error) {
-      console.error('Error fetching user profile:', error);
+      // ✅ FIXED: Proper 401 handling
+      if (error.response?.status === 401) {
+        console.log('Token expired or invalid - clearing auth data');
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        setUser(null);
+        setProfileImage(null);
+      } else {
+        console.error('Error fetching user profile:', error.message);
+      }
     }
   };
 
@@ -102,7 +112,7 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
         setProfileImage(parsedUser.googleProfileImage);
       }
       
-      // Fetch fresh profile data from server
+      // Fetch fresh profile data and counts
       fetchUserProfile(token);
       fetchCounts(token);
     } else if (userType === 'guest' && guestSessionId) {
@@ -110,7 +120,7 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
       fetchGuestCounts(guestSessionId);
     }
 
-    // NEW: Listen for profile update events
+    // Listen for profile update events
     const handleProfileUpdate = () => {
       const token = localStorage.getItem('token');
       if (token) {
@@ -119,7 +129,6 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
     };
 
     window.addEventListener('profileUpdated', handleProfileUpdate);
-
 
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -151,29 +160,36 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
+      window.removeEventListener('profileUpdated', handleProfileUpdate);
       window.removeEventListener('wishlistUpdated', handleWishlistUpdate);
       window.removeEventListener('cartUpdated', handleCartUpdate);
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
-  // NEW: Fetch counts for logged-in users
+  // Fetch counts for logged-in users
   const fetchCounts = async (token) => {
-    await Promise.all([
+    await Promise.allSettled([
       fetchWishlistCount(token), 
       fetchCartCount(token)
     ]);
   };
 
-  // NEW: Fetch counts for guest users
+  // Fetch counts for guest users
   const fetchGuestCounts = async (sessionId) => {
-    await Promise.all([
+    await Promise.allSettled([
       fetchGuestWishlistCount(sessionId),
       fetchGuestCartCount(sessionId)
     ]);
   };
 
+  // ✅ FIXED: Wishlist count with proper error handling
   const fetchWishlistCount = async (token) => {
+    if (!token) {
+      setWishlistCount(0);
+      return;
+    }
+
     try {
       const response = await axios.get(`${API_URL}api/wishlist`, {
         headers: { 'Authorization': `Bearer ${token}` }
@@ -182,13 +198,23 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
       const wishlistData = response.data?.data || response.data;
       setWishlistCount(wishlistData.products?.length || 0);
     } catch (err) {
-      console.error('Error fetching wishlist count:', err);
+      if (err.response?.status === 401) {
+        console.log('Unauthorized - clearing token');
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        setUser(null);
+      }
       setWishlistCount(0);
     }
   };
 
-  // NEW: Fetch guest wishlist count
+  // ✅ FIXED: Guest wishlist count
   const fetchGuestWishlistCount = async (sessionId) => {
+    if (!sessionId) {
+      setWishlistCount(0);
+      return;
+    }
+
     try {
       const response = await axios.get(`${API_URL}api/wishlist`, {
         headers: { 'X-Session-ID': sessionId }
@@ -197,12 +223,18 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
       const wishlistData = response.data?.data || response.data;
       setWishlistCount(wishlistData.products?.length || 0);
     } catch (err) {
-      console.error('Error fetching guest wishlist count:', err);
+      console.log('Error fetching guest wishlist:', err.message);
       setWishlistCount(0);
     }
   };
 
+  // ✅ FIXED: Cart count with proper error handling
   const fetchCartCount = async (token) => {
+    if (!token) {
+      setCartCount(0);
+      return;
+    }
+
     try {
       const response = await axios.get(`${API_URL}api/cart/count`, {
         headers: { 'Authorization': `Bearer ${token}` }
@@ -211,13 +243,23 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
       const countData = response.data?.data || response.data;
       setCartCount(countData.count || 0);
     } catch (err) {
-      console.error('Error fetching cart count:', err);
+      if (err.response?.status === 401) {
+        console.log('Unauthorized - clearing token');
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        setUser(null);
+      }
       setCartCount(0);
     }
   };
 
-  // NEW: Fetch guest cart count
+  // ✅ FIXED: Guest cart count
   const fetchGuestCartCount = async (sessionId) => {
+    if (!sessionId) {
+      setCartCount(0);
+      return;
+    }
+
     try {
       const response = await axios.get(`${API_URL}api/cart/count`, {
         headers: { 'X-Session-ID': sessionId }
@@ -226,7 +268,7 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
       const countData = response.data?.data || response.data;
       setCartCount(countData.count || 0);
     } catch (err) {
-      console.error('Error fetching guest cart count:', err);
+      console.log('Error fetching guest cart:', err.message);
       setCartCount(0);
     }
   };
@@ -235,7 +277,6 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
     setShowDropdown(false);
     setShowMobileMenu(false);
     if (isGuest) {
-      // NEW: Redirect guest to sign in
       navigate('/signin');
     } else {
       navigate('/profile');
@@ -245,9 +286,9 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    localStorage.removeItem('userType'); // NEW
-    localStorage.removeItem('guestSessionId'); // NEW
-    localStorage.removeItem('hasSeenGuestModal'); // NEW
+    localStorage.removeItem('userType');
+    localStorage.removeItem('guestSessionId');
+    localStorage.removeItem('hasSeenGuestModal');
     
     setUser(null);
     setProfileImage(null);
@@ -264,7 +305,6 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
   const handleLoginClick = () => {
     setShowMobileMenu(false);
     
-    // NEW: Store current page for redirect after login
     const currentPath = window.location.pathname;
     if (currentPath !== '/signin' && currentPath !== '/signup') {
       localStorage.setItem('returnUrl', currentPath);
@@ -294,28 +334,6 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
           style={{ cursor: 'pointer', height: "130px", width: "400px" }}
         />
 
-        {/* <div className="search-bar desktop-search">
-          <input type="text" placeholder="Search products..." />
-          <FaSearch />
-        </div> */}
-
-        {/* <div className="info-section">
-          <div className="info-item">
-            <FaAward className="info-icon" />
-            <div className="info-text">
-              <div><strong>Quality Products</strong></div>
-              <div>100% authentic items</div>
-            </div>
-          </div>
-          <div className="info-item">
-            <FaTag className="info-icon" />
-            <div className="info-text">
-              <div><strong>Daily Offers</strong></div>
-              <div>Discount 20% off</div>
-            </div>
-          </div>
-        </div> */}
-
         <div className="main-header-icons desktop-icons">
           <div className="main-user-profile-section" ref={dropdownRef}>
             <div
@@ -324,7 +342,6 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
             >
               {user ? (
                 <>
-                  {/* NEW: Display profile image if available */}
                   {profileImage ? (
                     <img 
                       src={profileImage} 
@@ -342,7 +359,6 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
                   <span className="main-user-name">{user.name}</span>
                 </>
               ) : isGuest ? (
-                // NEW: Show guest indicator
                 <>
                   <FaUser className="main-header-login-icon" />
                   <span className="main-user-name">Guest</span>
@@ -367,7 +383,6 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
                     </div>
                   </>
                 ) : isGuest ? (
-                  // NEW: Guest dropdown options
                   <>
                     <div className="dropdown-item" onClick={handleLoginClick}>
                       <FaSignInAlt />
@@ -458,7 +473,6 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
             <div className="mobile-user-section">
               {user ? (
                 <div className="mobile-user-info">
-                  {/* NEW: Display profile image in mobile menu */}
                   {profileImage ? (
                     <img 
                       src={profileImage} 
@@ -475,7 +489,6 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
                   <span className="mobile-user-name">{user.name}</span>
                 </div>
               ) : isGuest ? (
-                // NEW: Guest mobile display
                 <div className="mobile-user-info">
                   <FaUser className="mobile-login-icon" />
                   <span className="mobile-user-name">Guest User</span>
@@ -508,7 +521,6 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
                   </div>
                 </>
               ) : isGuest ? (
-                // NEW: Guest mobile menu
                 <>
                   <div className="mobile-menu-item" onClick={handleWishlistClick}>
                     <FaHeart />
@@ -539,23 +551,6 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
                 </div>
               )}
             </div>
-
-            {/* <div className="mobile-info-section">
-              <div className="mobile-info-item">
-                <FaAward className="mobile-info-icon" />
-                <div className="mobile-info-text">
-                  <div><strong>Quality Products</strong></div>
-                  <div>100% authentic items</div>
-                </div>
-              </div>
-              <div className="mobile-info-item">
-                <FaTag className="mobile-info-icon" />
-                <div className="mobile-info-text">
-                  <div><strong>Daily Offers</strong></div>
-                  <div>Discount 20% off</div>
-                </div>
-              </div>
-            </div> */}
           </div>
         </div>
       )}
