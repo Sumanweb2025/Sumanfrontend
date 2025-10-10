@@ -20,7 +20,7 @@
 
 ## Project Overview
 
-**Suman Ecommerce** is a modern React-based ecommerce platform for traditional Indian snacks, sweets, and groceries across 4 brands: **Iyappaa**, **Amirth**, **Venba**, and **Little Krishna**.
+**Iyappaa Website** is a modern React-based ecommerce platform for traditional Indian snacks, sweets, and groceries across 4 brands: **Iyappaa**, **Amirth**, **Venba**, and **Little Krishna**.
 
 ### Tech Summary
 - **Framework**: React 19.1.0 + Vite 7.0.4
@@ -116,7 +116,7 @@ Backend API (Axios + JWT)
 ## Folder Structure
 
 ```
-Sumanfrontend-main/
+Sumanfrontend/
 │
 ├── public/                      # Static assets
 │
