@@ -247,7 +247,10 @@ const ProductDetailsPage = ({ addToCart }) => {
     setWishlistLoading(true);
     try {
       const config = { headers };
-      const productId = product.product_id || product._id || product.id;
+      // Get currently selected variant instead of base product
+      const currentVariant = getCurrentVariant();
+      const productId = currentVariant.product_id || currentVariant._id || currentVariant.id;
+
       const isInWishlist = wishlistItems.includes(productId);
 
       if (isInWishlist) {
@@ -258,7 +261,12 @@ const ProductDetailsPage = ({ addToCart }) => {
         await axios.post(`${API_URL}api/wishlist`, { productId }, config);
         setWishlistItems((prev) => [...prev, productId]);
         window.dispatchEvent(new CustomEvent("wishlistUpdated"));
-        setSelectedProduct(product);
+        // Add gram info for popup using selected variant
+        const productForPopup = {
+          ...currentVariant,
+          selectedGram: currentVariant.gram || currentVariant.Gram
+        };
+        setSelectedProduct(productForPopup);
         setShowWishlistPopup(true);
       }
     } catch (err) {
@@ -336,7 +344,12 @@ const ProductDetailsPage = ({ addToCart }) => {
       setCartItems(cartData.items || []);
 
       window.dispatchEvent(new CustomEvent("cartUpdated"));
-      setSelectedProduct(currentVariant);
+       // Add gram info for popup
+      const productForPopup = {
+        ...currentVariant,
+        selectedGram: currentVariant.gram || currentVariant.Gram
+      };
+      setSelectedProduct(productForPopup);
       setShowCartPopup(true);
     } catch (err) {
       console.error("Add to cart error:", err);

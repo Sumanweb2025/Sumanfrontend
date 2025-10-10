@@ -31,42 +31,46 @@ import AdminLogin from './Pages/AdminLogin/AdminLogin';
 import AdminProfile from './Components/Admin/AdminProfile/AdminProfile';
 import ScrollToTop from './Components/ScrolltoTop/ScrolltoTop';
 import OTPVerification from './Pages/OTPVerification/OTPVerification';
+import ForgotPassword from './Pages/ForgotPassword/ForgotPassword';
+import ResetPassword from './Pages/ResetPassword/ResetPassword';
 
 const App = () => {
   return (
-    
+
     <Router>
-      <ScrollToTop/>
+      <ScrollToTop />
       <Routes>
         <Route exact path="/" element={<Home />} />
-         <Route path="/product" element={<Product />} />
-         <Route path="/sweets" element={<Sweets />} />
-         <Route path="/snacks" element={<Snacks />} />
-          <Route path="/contact" element={<Contacts />} />
-         <Route path="/Ourproduct" element={<Ourproduct />} />
-         <Route path="/Ourproduct1" element={<Ourproduct1 />} />
-         <Route path="/Gudproduct" element={<Gutproduct/>}/>
-         <Route path="/Offer" element={<Offer/>}/>
-         <Route path="/groceries" element={<Groceries />} />
+        <Route path="/product" element={<Product />} />
+        <Route path="/sweets" element={<Sweets />} />
+        <Route path="/snacks" element={<Snacks />} />
+        <Route path="/contact" element={<Contacts />} />
+        <Route path="/Ourproduct" element={<Ourproduct />} />
+        <Route path="/Ourproduct1" element={<Ourproduct1 />} />
+        <Route path="/Gudproduct" element={<Gutproduct />} />
+        <Route path="/Offer" element={<Offer />} />
+        <Route path="/groceries" element={<Groceries />} />
         <Route path="/brands/iyappaa" element={<Iyyapa />} />
         <Route path="/brands/amrith" element={<Amirth />} />
         <Route path="/brands/venba" element={<Venba />} />
         <Route path="/brands/little-krishna" element={<LittleKrishna />} />
         <Route path="/signup" element={<SignUp />} />
-         <Route path="/signin" element={<SignIn />} />
-         <Route path="/profile" element={<Profile />} />
-         <Route path="/footer" element={<Footer/>} />
-         <Route path="/product/:id" element={<ProductDetailsPage/>} />
-         <Route path="/wishlist" element={<Wishlist />} />
-         <Route path="/cart" element={<Cart />} /> 
-         <Route path='/checkout' element={<CheckoutPage/>} />
-         <Route path='/myorders' element={<MyOrders/>} />
-         <Route path="/track-order" element={<OrderTrackingPage />} />
-         <Route path='/aboutus' element={<AboutUs/>} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/profile" element={<AdminProfile />} />
-          <Route path="/verify-otp" element={<OTPVerification />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/footer" element={<Footer />} />
+        <Route path="/product/:id" element={<ProductDetailsPage />} />
+        <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path='/checkout' element={<CheckoutPage />} />
+        <Route path='/myorders' element={<MyOrders />} />
+        <Route path="/track-order" element={<OrderTrackingPage />} />
+        <Route path='/aboutus' element={<AboutUs />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/profile" element={<AdminProfile />} />
+        <Route path="/verify-otp" element={<OTPVerification />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
       </Routes>
     </Router>

@@ -304,7 +304,11 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     setWishlistLoading(true);
     try {
       const config = { headers };
-      const productId = product.product_id || product._id || product.id;
+       // Get selected variant info
+      const selectedIndex = getSelectedVariant(product);
+      const selectedVariant = product.variants[selectedIndex] || product.variants[0];
+      const productId = selectedVariant.productId;
+
       const isInWishlist = wishlistItems.includes(productId);
 
       if (isInWishlist) {
@@ -315,7 +319,15 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         await axios.post(`${API_URL}api/wishlist`, { productId }, config);
         setWishlistItems(prev => [...prev, productId]);
         window.dispatchEvent(new CustomEvent('wishlistUpdated'));
-        setSelectedProduct(product);
+         // Pass selected variant data to popup
+        const productForPopup = {
+          ...product,
+          selectedGram: selectedVariant.gram,
+          price: selectedVariant.price,
+          product_id: productId,
+          _id: productId
+        };
+        setSelectedProduct(productForPopup);
         setShowWishlistPopup(true);
       }
     } catch (err) {
@@ -394,7 +406,12 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     setCartItems(cartData.items || []);
 
     window.dispatchEvent(new CustomEvent('cartUpdated'));
-    setSelectedProduct(productData);
+     // Add selectedGram for popup display
+    const productForPopup = {
+      ...productData,
+      selectedGram: productData.gram || productData.Gram
+    };
+    setSelectedProduct(productForPopup);
     setShowCartPopup(true);
   } catch (err) {
     console.error('Add to cart error:', err);
@@ -615,11 +632,19 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                               )}
                           </div>
                           <button
-                            className={`sweets-wishlist-btn ${wishlistItems.includes(product.product_id || product._id || product.id) ? 'active' : ''}`}
+                            className={`sweets-wishlist-btn ${(() => {
+                              const selectedIndex = getSelectedVariant(product);
+                              const selectedVariant = product.variants[selectedIndex] || product.variants[0];
+                              return wishlistItems.includes(selectedVariant.productId);
+                            })() ? 'active' : ''}`}
                             onClick={(e) => handleWishlistClick(e, product)}
                             disabled={wishlistLoading}
                           >
-                            {wishlistItems.includes(product.product_id || product._id || product.id) ? '❤️' : '♡'}
+                            {(() => {
+                              const selectedIndex = getSelectedVariant(product);
+                              const selectedVariant = product.variants[selectedIndex] || product.variants[0];
+                              return wishlistItems.includes(selectedVariant.productId) ? '❤️' : '♡';
+                            })()}
                           </button>
                         </div>
 

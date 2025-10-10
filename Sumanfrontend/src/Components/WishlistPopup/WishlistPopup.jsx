@@ -53,6 +53,11 @@ const WishlistPopup = ({ isOpen, onClose, product, onAddToCart, onContinueShoppi
           </div>
           <div className="wishlist-popup-item-details">
             <h4>{product.name}</h4>
+            {product.selectedGram && (
+              <p className="wishlist-popup-item-gram" style={{ fontSize: '0.85rem', color: '#666', margin: '4px 0' }}>
+                Size: {product.selectedGram}
+              </p>
+            )}
             <p className="wishlist-popup-item-price">${product.price}</p>
             <p className="wishlist-popup-item-date">{formatDate(new Date())}</p>
           </div>

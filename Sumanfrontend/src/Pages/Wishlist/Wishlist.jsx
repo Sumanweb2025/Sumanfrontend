@@ -70,13 +70,24 @@ const [guestSessionId, setGuestSessionId] = useState(null);
   }
 };
 
-  const getImageUrl = (product) => {
+    const getImageUrl = (product) => {
+    // Check for direct imageUrl
     if (product.imageUrl) {
       return product.imageUrl;
     }
     
+    // Check for imageUrls array
+    if (product.imageUrls && product.imageUrls.length > 0) {
+      return product.imageUrls[0];
+    }
+    
+    // Check for image array
     if (product.image) {
-      return `${API_URL}/images/Products/${product.image}`;
+      if (Array.isArray(product.image) && product.image.length > 0) {
+        return `${API_URL}/images/Products/${product.image[0]}`;
+      } else if (typeof product.image === 'string') {
+        return `${API_URL}/images/Products/${product.image}`;
+      }
     }
     
     return 'https://via.placeholder.com/300x300?text=No+Image';
@@ -298,6 +309,11 @@ const [guestSessionId, setGuestSessionId] = useState(null);
                         </div>
                         <div className="wishlist-product-details">
                           <h3 className="wishlist-product-name">{product.name}</h3>
+                          {(product.gram || product.Gram) && (
+                            <div style={{ fontSize: '0.85rem', color: '#666', margin: '4px 0' }}>
+                              Size: {product.gram || product.Gram}
+                            </div>
+                          )}
                           <div className="wishlist-product-rating">
                             {Array(5).fill().map((_, i) => (
                               <span

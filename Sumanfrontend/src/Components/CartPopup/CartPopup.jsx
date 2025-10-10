@@ -46,6 +46,11 @@ const CartPopup = ({ isOpen, onClose, product, cartItems, onContinueShopping, on
             </div>
             <div className="cart-popup-item-details">
               <h4>{product.name}</h4>
+              {(product.selectedGram || product.gram || product.Gram) && (
+                <p className="cart-popup-item-gram" style={{ fontSize: '0.85rem', color: '#666', margin: '4px 0' }}>
+                  Size: {product.selectedGram || product.gram || product.Gram}
+                </p>
+              )}
               <p className="cart-popup-item-price">${product.price}</p>
               <p className="cart-popup-item-date">{formatDate(new Date())}</p>
             </div>

@@ -513,8 +513,9 @@
 .iyyapa-product-image-container {
   position: relative;
   width: 100%;
-  height: 250px;
+  height: 200px;
   overflow: hidden;
+  background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
 }
 
 .iyyapa-image-wrapper {
@@ -529,32 +530,47 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Background Color Overlay - Slides from Bottom to Top */
+.iyyapa-product-image-container::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0%;
+  background: linear-gradient(135deg, #f59e0b 0%, #f97316 50%, #ea580c 100%);
+  z-index: 2;
+  transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .iyyapa-product-image.primary-image {
   position: relative;
-  z-index: 1;
+  z-index: 3;
+  transform: translateY(0);
+  opacity:1;
 }
 
 .iyyapa-product-image.secondary-image {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: 4;
+  transform: translateY(100%); /* Start from bottom, hidden */
   opacity: 0;
-  transform: scale(1.08);
 }
 
 /* Hover Effects */
 .iyyapa-product-image-container:hover .primary-image {
-  opacity: 0;
-  transform: scale(0.92);
+  transform: translateY(-10px); /* Slight lift */
+  opacity: 0; 
 }
 
 .iyyapa-product-image-container:hover .secondary-image {
+  transform: translateY(0); /* Secondary image slides from bottom to top */
   opacity: 1;
-  transform: scale(1);
 }
 
 /* Remove the existing card hover transform and replace */

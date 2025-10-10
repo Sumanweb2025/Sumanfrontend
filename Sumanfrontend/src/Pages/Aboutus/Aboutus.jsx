@@ -182,7 +182,7 @@ const AboutUs = () => {
         </section>
 
         {/* Team Section */}
-        <section className="about-section team-section">
+        {/* <section className="about-section team-section">
           <div className="about-container">
             <div className="about-section-header">
               <h2>Meet Our Team</h2>
@@ -206,10 +206,10 @@ const AboutUs = () => {
               ))}
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* CTA Section */}
-        <section className="about-section cta-section">
+        {/* <section className="about-section cta-section">
           <div className="about-container">
             <h2>Experience the Authentic Taste</h2>
             <p>
@@ -220,7 +220,7 @@ const AboutUs = () => {
               Shop Our Products
             </button>
           </div>
-        </section>
+        </section> */}
       </div>
       <Banner />
       <Footer />

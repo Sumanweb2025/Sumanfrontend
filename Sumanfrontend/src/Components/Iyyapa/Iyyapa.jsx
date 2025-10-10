@@ -298,7 +298,11 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     setWishlistLoading(true);
     try {
       const config = { headers };
-      const productId = product.product_id || product._id || product.id;
+       // Get selected variant info
+      const selectedIndex = getSelectedVariant(product);
+      const selectedVariant = product.variants[selectedIndex] || product.variants[0];
+      const productId = selectedVariant.productId;
+
       const isInWishlist = wishlistItems.includes(productId);
 
       if (isInWishlist) {
@@ -309,7 +313,15 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         await axios.post(`${API_URL}api/wishlist`, { productId }, config);
         setWishlistItems(prev => [...prev, productId]);
         window.dispatchEvent(new CustomEvent('wishlistUpdated'));
-        setSelectedProduct(product);
+        // Pass selected variant data to popup
+        const productForPopup = {
+          ...product,
+          selectedGram: selectedVariant.gram,
+          price: selectedVariant.price,
+          product_id: productId,
+          _id: productId
+        };
+        setSelectedProduct(productForPopup);
         setShowWishlistPopup(true);
       }
     } catch (err) {
@@ -388,7 +400,12 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
       setCartItems(cartData.items || []);
 
       window.dispatchEvent(new CustomEvent('cartUpdated'));
-      setSelectedProduct(productData);
+      // Add selectedGram for popup display
+      const productForPopup = {
+        ...productData,
+        selectedGram: productData.gram || productData.Gram
+      };
+      setSelectedProduct(productForPopup);
       setShowCartPopup(true);
     } catch (err) {
       console.error('Add to cart error:', err);
@@ -427,24 +444,24 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     <>
       <LoadingSpinner
         isLoading={loading}
-        brandName="Iyappaa Foods"
+        brandName="Iyappaa Sweets"
         loadingText="Loading Iyappaa products..."
         progressColor="#4CAF50"
       />
       <Header />
       <div className="iyyapa-page">
         {/* Hero Carousel Section */}
-        <div className="iyyapa-hero-carousel">
+        {/* <div className="iyyapa-hero-carousel">
           <div className="iyyapa-carousel-container">
             <div className="iyyapa-carousel-wrapper" style={{ transform: `translateX(-${currentCarouselIndex * (100 / 3)}%)` }}>
               {carouselImages.map((image, index) => (
                 <div key={index} className="iyyapa-carousel-slide">
-                  <img src={image} alt={`Iyyapa Foods ${index + 1}`} />
+                  <img src={image} alt={`Iyyapa Sweets ${index + 1}`} />
                   <div className="iyyapa-carousel-overlay">
                     <div className="iyyapa-carousel-content">
-                      <h1 className="iyyapa-carousel-title">Iyappaa Foods</h1>
-                      <p className="iyyapa-carousel-subtitle">Premium Quality Traditional Foods</p>
-                      {/* <button className="iyyapa-carousel-cta">Explore Products</button> */}
+                      <h1 className="iyyapa-carousel-title">Iyappaa Sweets</h1>
+                      <p className="iyyapa-carousel-subtitle">Premium Quality Traditional Sweets</p>
+                      <button className="iyyapa-carousel-cta">Explore Products</button>
                     </div>
                   </div>
                 </div>
@@ -466,7 +483,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
               ))}
             </div>
           </div>
-        </div>
+        </div> */}
 
         <div className="iyyapa-container">
           {/* Breadcrumb */}
@@ -682,11 +699,19 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                               )}
                           </div>
                           <button
-                            className={`iyyapa-wishlist-btn ${wishlistItems.includes(product.product_id || product._id || product.id) ? 'active' : ''}`}
+                            className={`iyyapa-wishlist-btn ${(() => {
+                              const selectedIndex = getSelectedVariant(product);
+                              const selectedVariant = product.variants[selectedIndex] || product.variants[0];
+                              return wishlistItems.includes(selectedVariant.productId);
+                            })() ? 'active' : ''}`}
                             onClick={(e) => handleWishlistClick(e, product)}
                             disabled={wishlistLoading}
                           >
-                            {wishlistItems.includes(product.product_id || product._id || product.id) ? '❤️' : '♡'}
+                            {(() => {
+                              const selectedIndex = getSelectedVariant(product);
+                              const selectedVariant = product.variants[selectedIndex] || product.variants[0];
+                              return wishlistItems.includes(selectedVariant.productId) ? '❤️' : '♡';
+                            })()}
                           </button>
 
                           {/* Stock Status */}
