@@ -9,6 +9,8 @@ import UserManagement from '../../Components/Admin/UserManagement/UserManagement
 import ProductManagement from '../../Components/Admin/ProductManagement/ProductManagement';
 import OrderManagement from '../../Components/Admin/OrderManagement/OrderManagement';
 import PaymentManagement from '../../Components/Admin/PaymentManagement/PaymentManagement';
+import OfferManagement from '../../Components/Admin/OfferManagement/OfferManagement';
+import CouponManagement from '../../Components/Admin/CouponManagement/CouponManagement';
 import Analytics from '../../Components/Admin/Analytics/Analytics';
 import AdminProfile from '../../Components/Admin/AdminProfile/AdminProfile';
 
@@ -134,6 +136,10 @@ const AdminDashboard = () => {
         return <OrderManagement {...commonProps} />;
       case 'payments':
         return <PaymentManagement {...commonProps} />;
+      case 'offers':
+        return <OfferManagement {...commonProps} />;
+      case 'coupons':
+        return <CouponManagement {...commonProps} />;
       case 'analytics':
         return <Analytics {...commonProps} />;
       case 'profile':

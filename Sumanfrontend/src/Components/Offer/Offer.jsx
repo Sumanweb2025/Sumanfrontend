@@ -13,24 +13,26 @@ const SpecialOffer = () => {
     const fetchOffer = async () => {
       try {
         const res = await fetch(`${API_URL}api/offers/active`);
-        const data = await res.json();
+        const response = await res.json();
 
-        // If backend says there's no offer
-        if (data.message === 'No active offer') {
+        // If backend says there's no offer or offer data is null
+        if (!response.success || !response.data) {
           setIsActive(false);
           return;
         }
 
-        const endDate = new Date(data.endDate);
+        const offerData = response.data;
+        const endDate = new Date(offerData.endDate);
+        const startDate = new Date(offerData.startDate);
         const now = new Date();
 
-        // If offer expired
-        if (endDate <= now) {
+         // Check if offer is within valid date range and is active
+        if (now < startDate || now > endDate || !offerData.isActive) {
           setIsActive(false);
           return;
         }
 
-        setOffer(data);
+        setOffer(offerData);
         setIsActive(true);
 
         // Countdown logic
@@ -63,13 +65,14 @@ const SpecialOffer = () => {
         }, 1000);
 
         return () => clearInterval(timer);
-      } catch {
+      } catch (error) {
+        console.error('Error fetching offer:', error);
         setIsActive(false);
       }
     };
 
     fetchOffer();
-  }, []);
+  }, [API_URL]);
 
   // If there's no valid offer, return nothing
   if (!isActive || !offer || !timeLeft) return null;
@@ -85,9 +88,11 @@ const SpecialOffer = () => {
         <div className="offer-content">
           <div className="offer-text">
             <h2 className="sub-title text-animate offer-subtitle">🎉 Limited Time</h2>
-            <h1 className="card-title text-animate offer-title shimmer-text">Special Offer – {offer.discount}% OFF</h1>
+            <h1 className="card-title text-animate offer-title shimmer-text">
+              {offer.title} – {offer.discount}{offer.discountType === 'percentage' ? '%' : ' CAD'} OFF
+            </h1>
             <p className="body-text text-animate offer-description">
-              Our sweetest deals are here! Grab {offer.title} at delicious discounts before time runs out.
+              {offer.description}
             </p>
 
             <div className="countdown-timer">
@@ -114,13 +119,14 @@ const SpecialOffer = () => {
             className="offer-image"
             animate={{ scale: [1, 1.05, 1] }}
             transition={{ repeat: Infinity, duration: 3 }}
+            style={offer.imageUrl ? { backgroundImage: `url(${offer.imageUrl})` } : {}}
           >
             <motion.div
               className="discount-badge pulse"
               animate={{ scale: [1, 1.2, 1] }}
               transition={{ repeat: Infinity, duration: 2 }}
             >
-              <span>{offer.discount}%</span>
+              <span>{offer.discount}{offer.discountType === 'percentage' ? '%' : ''}</span>
               <span>OFF</span>
             </motion.div>
           </motion.div>

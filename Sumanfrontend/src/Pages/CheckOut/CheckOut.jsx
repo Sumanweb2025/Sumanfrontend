@@ -24,6 +24,8 @@ const CheckoutPage = () => {
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponLoading, setCouponLoading] = useState(false);
+  const [availableCoupons, setAvailableCoupons] = useState([]);
+  const [showAvailableCoupons, setShowAvailableCoupons] = useState(false);
 
   // Dynamic country-state-city data
   const [countries, setCountries] = useState([]);
@@ -92,6 +94,7 @@ const CheckoutPage = () => {
 
     setIsGuest(!token && userType === 'guest');
     fetchCheckoutData();
+    fetchAvailableCoupons();
   }, []);
 
   // Add these handler functions:
@@ -205,6 +208,17 @@ const CheckoutPage = () => {
     }
   };
 
+   const fetchAvailableCoupons = async () => {
+    try {
+      const response = await axios.get(`${API_URL}api/orders/available-coupons`);
+      if (response.data.success) {
+        setAvailableCoupons(response.data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching available coupons:', error);
+    }
+  };
+
   const handleInputChange = (section, field, value) => {
     setFormData(prev => ({
       ...prev,
@@ -286,6 +300,16 @@ const CheckoutPage = () => {
       discount: 0,
       total: (parseFloat(prev.subtotal) + parseFloat(prev.tax) + parseFloat(prev.shipping)).toFixed(2)
     }));
+  };
+
+  const applySelectedCoupon = (code) => {
+    setCouponCode(code);
+    setShowAvailableCoupons(false);
+    setShowCouponInput(true);
+    // Auto-apply after a short delay
+    setTimeout(() => {
+      applyCoupon();
+    }, 100);
   };
 
   const validateForm = () => {
@@ -918,7 +942,7 @@ const CheckoutPage = () => {
                             type="text"
                             placeholder="Enter coupon code"
                             value={couponCode}
-                            onChange={(e) => setCouponCode(e.target.value)}
+                            onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                             className="coupon-input"
                           />
                           <button
@@ -928,6 +952,43 @@ const CheckoutPage = () => {
                           >
                             {couponLoading ? 'Applying...' : 'Apply'}
                           </button>
+                        </div>
+                      )}
+                      {/* Available Coupons */}
+                      {availableCoupons.length > 0 && (
+                        <div className="available-coupons-container">
+                          <button
+                            onClick={() => setShowAvailableCoupons(!showAvailableCoupons)}
+                            className="view-coupons-btn"
+                          >
+                            🎫 View Available Coupons ({availableCoupons.length})
+                          </button>
+
+                          {showAvailableCoupons && (
+                            <div className="available-coupons-list">
+                              {availableCoupons.map((coupon) => (
+                                <div key={coupon._id} className="available-coupon-item">
+                                  <div className="coupon-item-info">
+                                    <div className="coupon-item-code">{coupon.code}</div>
+                                    <div className="coupon-item-desc">{coupon.description}</div>
+                                    <div className="coupon-item-details">
+                                      <span>{coupon.discountValue}{coupon.discountType === 'percentage' ? '%' : ' CAD'} OFF</span>
+                                      {coupon.minimumOrderAmount > 0 && (
+                                        <span> • Min: ${coupon.minimumOrderAmount}</span>
+                                      )}
+                                      <span> • Valid till {new Date(coupon.validUntil).toLocaleDateString()}</span>
+                                    </div>
+                                  </div>
+                                  <button
+                                    onClick={() => applySelectedCoupon(coupon.code)}
+                                    className="apply-coupon-item-btn"
+                                  >
+                                    Apply
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>

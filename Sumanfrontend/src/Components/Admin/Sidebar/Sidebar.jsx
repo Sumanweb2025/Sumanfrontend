@@ -7,7 +7,9 @@ import {
   Package,
   TrendingUp,
   X,
-  User
+  User,
+  Tag,
+  Ticket
 } from 'lucide-react';
 import './Sidebar.css';
 
@@ -42,6 +44,18 @@ const Sidebar = ({ activeTab, setActiveTab, isMobileMenuOpen, setIsMobileMenuOpe
       label: 'Payment Management',
       icon: CreditCard,
       description: 'Payments & Refunds'
+    },
+    {
+      id: 'offers',
+      label: 'Offer Management',
+      icon: Tag,
+      description: 'Manage Offers & Promotions'
+    },
+    {
+      id: 'coupons',
+      label: 'Coupon Management',
+      icon: Ticket,
+      description: 'Manage Discount Coupons'
     },
     {
       id: 'analytics',
