@@ -563,6 +563,8 @@ const openModal = (data) => {
 - **ProductManagement**: CRUD products
 - **OrderManagement**: Manage orders
 - **PaymentManagement**: Track payments
+- **OfferManagement**: Manage offers
+- **CouponManagement**: Manage discount coupons
 - **Analytics**: Charts & reports
 - **Header, Sidebar, AdminProfile**: Admin UI
 
@@ -810,6 +812,83 @@ Admin login → Store adminToken → Navigate to /admin/dashboard
 
 ### Issue 4: CORS errors
 **Solution**: Configure backend CORS to allow frontend origin
+
+### Issue 5: Payment processing fails
+**Solution**: Verify Stripe keys and check network requests
+
+### Issue 6: Google OAuth not working
+**Solution**: Ensure correct Client ID and authorized JavaScript origins
+
+---
+
+## Feature Implementation Details
+
+### Offer System
+- **Active Offers Display**: Homepage and product pages show active offers
+- **Offer Application**: Automatic discount application at checkout
+- **Offer Types**: Percentage discounts, fixed amount discounts, BOGO offers
+- **Offer Management**: Admin can create, update, and deactivate offers
+- **Offer Validation**: Real-time validation of offer eligibility
+
+### Inventory Management
+- **Stock Tracking**: Real-time inventory updates
+- **Low Stock Alerts**: Visual indicators for low stock products
+- **Out of Stock**: Automatic disabling of "Add to Cart" for unavailable items
+- **Stock History**: Admin dashboard tracks inventory changes
+
+### Guest Checkout System
+- **Session Management**: Guest sessions tracked via sessionId
+- **Guest Cart Persistence**: Guest cart saved for 7 days
+- **Guest Wishlist**: Temporary wishlist for guest users
+- **Guest to User Migration**: Seamless migration when guest signs up
+- **Guest Limitations**: Prompted to sign in at checkout for better experience
+
+### Product Variants
+- **Weight Variants**: Multiple weight options per product
+- **Price Variations**: Different prices for different variants
+- **Variant Selection**: Dropdown/button selector on product details
+- **Variant Badge**: Visual indicator showing selected variant
+
+### Multi-Brand System Architecture
+- **Brand Pages**: Dedicated landing pages for each brand
+  - **Iyappaa**: Traditional Tamil snacks and sweets
+  - **Amirth**: Premium sweets collection
+  - **Venba**: Healthy snacks range
+  - **Little Krishna**: Kids-friendly treats
+- **Brand Filtering**: Filter products by brand across categories
+- **Brand-specific Styling**: Unique color schemes and branding per brand
+
+### Review & Rating System
+- **User Reviews**: Authenticated users can review purchased products
+- **Star Ratings**: 5-star rating system
+- **Review Images**: Users can upload images with reviews
+- **Verified Purchase Badge**: Shows if reviewer purchased the product
+- **Review Sorting**: Sort by most recent, highest rated, lowest rated
+- **Admin Moderation**: Admin can approve/reject reviews
+
+### Order Cancellation Flow
+```
+My Orders → View Order → Cancel Order Button
+→ Cancellation Reason Form → Confirm Cancellation
+→ Backend Processing → Refund Initiation (if paid)
+→ Email Notification → Order Status Updated
+```
+
+### Advanced Search & Filtering
+- **Text Search**: Search products by name, brand, category
+- **Category Filters**: Filter by Sweets, Snacks, Groceries
+- **Brand Filters**: Filter by 4 brands
+- **Price Range**: Slider to filter by price range
+- **Rating Filter**: Filter by minimum rating
+- **Sorting Options**: Price (low-high, high-low), Rating, Newest
+
+### Responsive Design Breakpoints
+```css
+/* Mobile: 320px - 767px */
+/* Tablet: 768px - 1023px */
+/* Desktop: 1024px+ */
+/* Large Desktop: 1440px+ */
+```
 
 ---
 
