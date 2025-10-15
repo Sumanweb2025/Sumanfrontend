@@ -132,6 +132,8 @@ Sumanfrontend/
 │   │   │   ├── OrderManagement/
 │   │   │   ├── PaymentManagement/
 │   │   │   ├── ProductManagement/
+|   |   |   |── OfferManagement/
+|   |   |   |── CouponManagement/
 │   │   │   ├── Sidebar/
 │   │   │   └── UserManagement/
 │   │   │
