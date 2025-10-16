@@ -68,26 +68,26 @@ const OrderTracking = () => {
     if (item.imageUrl) {
       return item.imageUrl;
     }
-    
+
     if (item.productId?.imageUrl) {
       return item.productId.imageUrl;
     }
-    
+
     if (item.productId?.image) {
       return `${API_URL}/images/Products/${item.productId.image}`;
     }
-    
+
     if (item.image) {
       return `${API_URL}/images/Products/${item.image}`;
     }
-    
+
     return 'https://via.placeholder.com/60?text=No+Image';
   };
 
   // Handle image loading errors with fallback
   const handleImageError = (e, item) => {
     const img = e.target;
-    
+
     // Try alternative image paths
     if (img.src.includes('/images/Products/')) {
       // Try with uploads path instead
@@ -130,12 +130,12 @@ const OrderTracking = () => {
 
   return (
     <>
-    <LoadingSpinner 
-                    isLoading={loading} 
-                    brandName="Track Your Orders" 
-                    loadingText="Loading your tracking information..."
-                    progressColor="#3b82f6"
-                  />
+      <LoadingSpinner
+        isLoading={loading}
+        brandName="Track Your Orders"
+        loadingText="Loading your tracking information..."
+        progressColor="#3b82f6"
+      />
       <Header />
       <div className="order-tracking-page">
         {/* Header Section */}
@@ -152,9 +152,9 @@ const OrderTracking = () => {
         <div className="tracking-container">
           <div className="tracking-card">
             <h2 className="section-title">Track Your Order Status Here</h2>
-            
+
             <p className="instruction-text">
-              To track your order please enter your Order ID in the box below and press the "Track" button. 
+              To track your order please enter your Order ID in the box below and press the "Track" button.
               This was given to you on your receipt and in the confirmation email you should have received.
             </p>
 
@@ -225,7 +225,7 @@ const OrderTracking = () => {
 
                   <div className="info-card">
                     <strong className="info-label">Order Status:</strong>
-                    <div 
+                    <div
                       className="status-value"
                       style={{ color: getStatusColor(orderData.status) }}
                     >
@@ -235,7 +235,7 @@ const OrderTracking = () => {
 
                   <div className="info-card">
                     <strong className="info-label">Payment Status:</strong>
-                    <div 
+                    <div
                       className="status-value"
                       style={{ color: getPaymentStatusColor(orderData.paymentStatus) }}
                     >
@@ -327,7 +327,7 @@ const OrderTracking = () => {
           </div>
         </div>
       </div>
-      <Banner/>
+      <Banner />
       <Footer />
     </>
   );

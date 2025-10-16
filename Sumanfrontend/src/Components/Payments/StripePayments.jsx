@@ -31,15 +31,15 @@ const cardElementOptions = {
 };
 
 // Payment Form Component
-const PaymentForm = ({ 
-  formData, 
-  appliedCoupon, 
-  orderSummary, 
-  onSuccess, 
-  onError, 
-  submitting, 
+const PaymentForm = ({
+  formData,
+  appliedCoupon,
+  orderSummary,
+  onSuccess,
+  onError,
+  submitting,
   setSubmitting,
-  isGuest 
+  isGuest
 }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -65,7 +65,7 @@ const PaymentForm = ({
     }
 
     setProcessingPayment(true);
-    
+
     try {
       // Get authentication headers
       const headers = {};
@@ -81,7 +81,7 @@ const PaymentForm = ({
         setProcessingPayment(false);
         return;
       }
-      
+
       // Step 1: Create Payment Intent
       const paymentIntentResponse = await axios.post(
         `${API_URL}api/payments/create-intent`,
@@ -161,13 +161,13 @@ const PaymentForm = ({
           </div>
         )}
       </div>
-      
+
       <div className="payment-security-notice">
         <div className="security-icons">
           <span>🔒</span>
         </div>
         <p>Your payment information is encrypted and secure</p>
-        <p style={{fontSize: '0.75rem', color: '#666'}}>All prices shown in Canadian Dollars (CAD)</p>
+        <p style={{ fontSize: '0.75rem', color: '#666' }}>All prices shown in Canadian Dollars (CAD)</p>
       </div>
 
       <button
@@ -177,8 +177,8 @@ const PaymentForm = ({
         className="pay-now-btn"
       >
         {processingPayment && <span className="loading-spinner"></span>}
-        {processingPayment 
-          ? 'Processing Payment...' 
+        {processingPayment
+          ? 'Processing Payment...'
           : `Pay $${orderSummary.total} CAD Now`
         }
       </button>
@@ -187,15 +187,15 @@ const PaymentForm = ({
 };
 
 // Main Stripe Payment Component
-const StripePaymentComponent = ({ 
-  formData, 
-  appliedCoupon, 
-  orderSummary, 
-  onSuccess, 
-  onError, 
-  submitting, 
+const StripePaymentComponent = ({
+  formData,
+  appliedCoupon,
+  orderSummary,
+  onSuccess,
+  onError,
+  submitting,
   setSubmitting,
-  isGuest 
+  isGuest
 }) => {
   return (
     <Elements stripe={stripePromise}>

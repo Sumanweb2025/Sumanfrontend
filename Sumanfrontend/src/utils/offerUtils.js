@@ -1,4 +1,3 @@
-// Utility functions for handling offers
 
 /**
  * Fetch active offer from backend
@@ -8,13 +7,13 @@ export const fetchActiveOffer = async () => {
     const API_URL = import.meta.env.VITE_APP_API_URL;
     const response = await fetch(`${API_URL}api/offers/active`);
     const data = await response.json();
-    
+
     if (data.success && data.data) {
       const offer = data.data;
       const now = new Date();
       const startDate = new Date(offer.startDate);
       const endDate = new Date(offer.endDate);
-      
+
       // Check if offer is active and within date range
       if (offer.isActive && now >= startDate && now <= endDate) {
         return offer;
@@ -35,13 +34,13 @@ export const fetchActiveOffer = async () => {
  */
 export const isProductEligibleForOffer = (product, offer) => {
   if (!offer) return false;
-  
+
   // Check if offer has reached usage limit
   if (offer.usageLimit && offer.usageCount >= offer.usageLimit) {
     return false;
   }
-  
-  // 🎯 PRIORITY 1: If specific products are selected, only those products are eligible
+
+  // PRIORITY 1: If specific products are selected, only those products are eligible
   if (offer.applicableProducts && offer.applicableProducts.length > 0) {
     const productId = product._id || product.product_id || product.id;
     // Handle both ObjectId strings and populated objects
@@ -50,16 +49,16 @@ export const isProductEligibleForOffer = (product, offer) => {
       return offerId.toString() === productId.toString();
     });
   }
-  
-  // 📦 PRIORITY 2: If no specific products but categories specified, check category
+
+  // PRIORITY 2: If no specific products but categories specified, check category
   if (offer.applicableCategories && offer.applicableCategories.length > 0) {
     const productCategory = product.category || product.Category || '';
     return offer.applicableCategories.some(
       cat => cat.toLowerCase() === productCategory.toLowerCase()
     );
   }
-  
-  // ✅ PRIORITY 3: If neither products nor categories specified, offer applies to all
+
+  // PRIORITY 3: If neither products nor categories specified, offer applies to all
   return true;
 };
 
@@ -71,9 +70,9 @@ export const isProductEligibleForOffer = (product, offer) => {
  */
 export const calculateDiscountedPrice = (originalPrice, offer) => {
   if (!offer || !originalPrice) return originalPrice;
-  
+
   let discountedPrice = originalPrice;
-  
+
   if (offer.discountType === 'percentage') {
     // Percentage discount
     const discountAmount = (originalPrice * offer.discount) / 100;
@@ -82,7 +81,7 @@ export const calculateDiscountedPrice = (originalPrice, offer) => {
     // Fixed amount discount
     discountedPrice = originalPrice - offer.discount;
   }
-  
+
   // Ensure price doesn't go below 0
   return Math.max(0, discountedPrice);
 };
@@ -94,7 +93,7 @@ export const calculateDiscountedPrice = (originalPrice, offer) => {
  */
 export const getOfferDiscountDisplay = (offer) => {
   if (!offer) return '';
-  
+
   if (offer.discountType === 'percentage') {
     return `${offer.discount}% OFF`;
   } else {

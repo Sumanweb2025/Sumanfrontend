@@ -1,5 +1,3 @@
-// Complete OTPVerification.jsx with country code support
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -18,7 +16,7 @@ const OTPVerification = () => {
   const [isBlocked, setIsBlocked] = useState(false);
   const [blockTimer, setBlockTimer] = useState(0);
   const [errors, setErrors] = useState({});
-  
+
   const inputRefs = useRef([]);
   const API_URL = import.meta.env.VITE_APP_API_URL;
 
@@ -69,7 +67,7 @@ const OTPVerification = () => {
 
   const handleOtpChange = (index, value) => {
     if (!/^\d*$/.test(value)) return;
-    
+
     if (value.length > 1) {
       handlePaste(value);
       return;
@@ -121,7 +119,7 @@ const OTPVerification = () => {
   // UPDATED: Verify OTP with countryCode
   const handleVerifyOtp = async (otpString = null) => {
     const otpValue = otpString || otp.join('');
-    
+
     if (!otpValue || otpValue.length !== 6) {
       setErrors({ otp: 'Please enter a valid 6-digit OTP' });
       toast.error('Please enter a valid 6-digit OTP');
@@ -156,11 +154,11 @@ const OTPVerification = () => {
         if (response.data.data?.user) {
           localStorage.setItem('user', JSON.stringify(response.data.data.user));
         }
-        
+
         toast.success(`Welcome ${name}! Your account has been verified successfully`);
-        
+
         setTimeout(() => {
-          navigate('/signin', { 
+          navigate('/signin', {
             replace: true,
             state: { verified: true, email }
           });
@@ -169,14 +167,14 @@ const OTPVerification = () => {
 
     } catch (error) {
       console.error('OTP verification error:', error);
-      
+
       if (error.response) {
         const { data, status } = error.response;
-        
+
         if (status === 400) {
           const newAttempts = attempts + 1;
           setAttempts(newAttempts);
-          
+
           if (newAttempts >= 3) {
             setIsBlocked(true);
             setBlockTimer(300);
@@ -186,7 +184,7 @@ const OTPVerification = () => {
             const remainingAttempts = 3 - newAttempts;
             setErrors({ otp: data.message || 'Invalid OTP' });
             toast.error(`Invalid OTP. ${remainingAttempts} attempts remaining.`);
-            
+
             setOtp(['', '', '', '', '', '']);
             inputRefs.current[0]?.focus();
           }
@@ -238,7 +236,7 @@ const OTPVerification = () => {
 
     } catch (error) {
       console.error('Resend OTP error:', error);
-      
+
       if (error.response?.status === 429) {
         toast.error('Too many resend requests. Please wait before trying again.');
         setResendTimer(120);
@@ -260,12 +258,12 @@ const OTPVerification = () => {
   // UPDATED: Format phone number to show with country code
   const formatPhoneNumber = (phoneNum, countryCodeVal) => {
     if (!phoneNum) return '';
-    
+
     // If fullPhoneNumber is available, use it
     if (fullPhoneNumber) {
       return fullPhoneNumber;
     }
-    
+
     // Otherwise construct it
     return `${countryCodeVal || ''} ${phoneNum}`;
   };
@@ -294,7 +292,7 @@ const OTPVerification = () => {
         pauseOnHover
         theme="light"
       />
-      
+
       <div className="otp-form-logo">
         <img src="/src/assets/logo-title.png" alt="Iyappaa Logo" />
         <span className="otp-form-logo-text">Iyappaa Sweets & Snacks</span>

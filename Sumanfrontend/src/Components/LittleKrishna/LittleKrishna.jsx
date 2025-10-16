@@ -32,7 +32,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const [cartItems, setCartItems] = useState([]);
 
   const [selectedVariants, setSelectedVariants] = useState({}); // Track selected variant for each product
-
+  const [activeOffer, setActiveOffer] = useState(null);
   const API_URL = import.meta.env.VITE_APP_API_URL;
 
   //'https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80'
@@ -110,11 +110,80 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     }));
   };
 
+  // Check if product is eligible for offer
+  const isProductEligibleForOffer = (productId) => {
+    if (!activeOffer) return false;
+
+    // Check if offer is active and within date range
+    const now = new Date();
+    const startDate = new Date(activeOffer.startDate);
+    const endDate = new Date(activeOffer.endDate);
+
+    if (!activeOffer.isActive || now < startDate || now > endDate) {
+      return false;
+    }
+
+    // Priority 1: Check specific products (HIGHEST PRIORITY)
+    if (activeOffer.applicableProducts && activeOffer.applicableProducts.length > 0) {
+      // If specific products are selected, ONLY those products get the offer
+      const isEligible = activeOffer.applicableProducts.some(p => {
+        // Handle both populated objects and IDs
+        const offerProductId = typeof p === 'object' ? (p.product_id || p._id) : p;
+        // Compare as strings to handle ObjectId vs string comparison
+        return String(offerProductId) === String(productId);
+      });
+
+      // Debug logging (remove after testing)
+      if (productId) {
+        console.log(`Checking product ${productId}:`, isEligible);
+      }
+
+      return isEligible;
+    }
+
+    // Priority 2: Check categories (if no specific products selected)
+    if (activeOffer.applicableCategories && activeOffer.applicableCategories.length > 0) {
+      // Check if current page category matches offer categories
+      return activeOffer.applicableCategories.some(
+        cat => cat.toLowerCase() === 'sweets'
+      );
+    }
+
+    // Priority 3: If NEITHER products NOR categories specified, apply to all
+    return true;
+  };
+
+  // Calculate discounted price
+  const calculateDiscountedPrice = (originalPrice) => {
+    if (!activeOffer || !originalPrice) return originalPrice;
+
+    let discountedPrice = originalPrice;
+
+    if (activeOffer.discountType === 'percentage') {
+      const discountAmount = (originalPrice * activeOffer.discount) / 100;
+      discountedPrice = originalPrice - discountAmount;
+    } else if (activeOffer.discountType === 'fixed') {
+      discountedPrice = originalPrice - activeOffer.discount;
+    }
+
+    return Math.max(0, discountedPrice);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const productsResponse = await axios.get(`${API_URL}api/products/search?brand=little krishna`);
         const productsData = productsResponse.data?.data || productsResponse.data?.products || productsResponse.data;
+
+        // Fetch active offer
+        try {
+          const offerResponse = await axios.get(`${API_URL}api/offers/active`);
+          if (offerResponse.data?.success && offerResponse.data?.data) {
+            setActiveOffer(offerResponse.data.data);
+          }
+        } catch (offerError) {
+          console.log('No active offer found');
+        }
 
         // Group products by name
         const groupedProducts = groupProductsByName(productsData);
@@ -300,7 +369,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         await axios.post(`${API_URL}api/wishlist`, { productId }, config);
         setWishlistItems(prev => [...prev, productId]);
         window.dispatchEvent(new CustomEvent('wishlistUpdated'));
-         // Pass selected variant data to popup
+        // Pass selected variant data to popup
         const productForPopup = {
           ...product,
           selectedGram: selectedVariant.gram,
@@ -390,7 +459,10 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
       // Add selectedGram for popup display
       const productForPopup = {
         ...productData,
-        selectedGram: productData.gram || productData.Gram
+        selectedGram: productData.gram || productData.Gram,
+        // Ensure product ID fields are preserved (not overridden by variant)
+        product_id: productId,
+        _id: productId
       };
       setSelectedProduct(productForPopup);
       setShowCartPopup(true);
@@ -643,6 +715,21 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                         onClick={() => handleProductClick(product)}
                       >
                         <div className="little-krishna-product-image-container">
+                          {/* Offer Badge */}
+                          {(() => {
+                            const selectedIndex = getSelectedVariant(product);
+                            const selectedVariant = product.variants[selectedIndex] || product.variants[0];
+                            const hasOffer = isProductEligibleForOffer(selectedVariant.productId);
+
+                            if (hasOffer && activeOffer) {
+                              return (
+                                <div className="little-krishna-offer-badge">
+                                  {activeOffer.discount}{activeOffer.discountType === 'percentage' ? '%' : '$'} OFF
+                                </div>
+                              );
+                            }
+                            return null;
+                          })()}
                           <div className="little-krishna-image-wrapper">
                             {/* Primary Image - uses first image in array */}
                             <img
@@ -694,7 +781,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                             onClick={(e) => handleWishlistClick(e, product)}
                             disabled={wishlistLoading}
                           >
-                             {(() => {
+                            {(() => {
                               const selectedIndex = getSelectedVariant(product);
                               const selectedVariant = product.variants[selectedIndex] || product.variants[0];
                               return wishlistItems.includes(selectedVariant.productId) ? '❤️' : '♡';
@@ -733,14 +820,27 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                             <span className="little-krishna-rating-text">({product.rating?.toFixed(1) || '0.0'})</span>
                           </div>
 
-                          <div className="price-text little-krishna-product-price">{(() => {
+                          <div className="little-krishna-product-price-section">{(() => {
                             const selectedIndex = getSelectedVariant(product);
                             const selectedVariant = product.variants[selectedIndex] || product.variants[0];
-                            const price = selectedVariant.price;
+                            const originalPrice = selectedVariant.price;
+                            const hasOffer = isProductEligibleForOffer(selectedVariant.productId);
 
-                            return price !== undefined && price !== null
-                              ? `$${price}`
-                              : <span style={{ color: '#999', fontSize: "0.9rem" }}>$0 (Price not fixed)</span>;
+                            if (originalPrice === undefined || originalPrice === null) {
+                              return <span className="price-text" style={{ color: '#999', fontSize: "0.9rem" }}>$0 (Price not fixed)</span>;
+                            }
+
+                            if (hasOffer && activeOffer) {
+                              const discountedPrice = calculateDiscountedPrice(originalPrice);
+                              return (
+                                <>
+                                  <span className="price-text little-krishna-discounted-price">${discountedPrice.toFixed(2)}</span>
+                                  <span className="little-krishna-original-price">${originalPrice.toFixed(2)}</span>
+                                </>
+                              );
+                            }
+
+                            return <span className="price-text">${originalPrice.toFixed(2)}</span>;
                           })()}</div>
 
                           {/* Gram Variants Display */}
@@ -840,6 +940,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         onAddToCart={handleAddToCartFromWishlist}
         onContinueShopping={handleContinueShopping}
         onOpenWishlistPage={handleOpenWishlistPage}
+        activeOffer={activeOffer}
       />
 
       {/* Cart Popup */}
@@ -850,6 +951,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         cartItems={cartItems}
         onContinueShopping={handleContinueShopping}
         onViewCart={handleViewCart}
+        activeOffer={activeOffer}
       />
 
       <Banner />

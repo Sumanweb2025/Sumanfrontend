@@ -288,14 +288,23 @@
   animation: slideInUp 0.3s ease-out;
 }
 
-.info-card:nth-child(1) { animation-delay: 0.1s; }
-.info-card:nth-child(2) { animation-delay: 0.2s; }
-.info-card:nth-child(3) { animation-delay: 0.3s; }
+.info-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.info-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.info-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
 
 @keyframes fadeIn {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -306,6 +315,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -317,7 +327,7 @@
   .admin-info-cards {
     grid-template-columns: 1fr;
   }
-  
+
   .admin-form-row {
     grid-template-columns: 1fr;
   }
@@ -327,28 +337,28 @@
   .admin-profile-content {
     padding: 20px;
   }
-  
+
   .admin-profile-form {
     padding: 20px;
   }
-  
+
   .admin-profile-image-container {
     width: 120px;
     height: 120px;
   }
-  
+
   .admin-profile-image-icon {
     font-size: 48px;
   }
-  
+
   .info-card {
     padding: 16px;
   }
-  
+
   .admin-form-actions {
     flex-direction: column;
   }
-  
+
   .admin-form-actions button {
     width: 100%;
   }
@@ -358,16 +368,16 @@
   .admin-profile-content {
     padding: 16px;
   }
-  
+
   .admin-profile-form {
     padding: 16px;
   }
-  
+
   .admin-profile-image-container {
     width: 100px;
     height: 100px;
   }
-  
+
   .admin-profile-image-icon {
     font-size: 40px;
   }

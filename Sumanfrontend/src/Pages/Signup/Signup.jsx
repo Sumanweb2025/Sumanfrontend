@@ -39,7 +39,7 @@ const SignUp = () => {
     // value contains the full number with country code
     // data.dialCode contains just the country code
     const phoneWithoutCountryCode = value.slice(data.dialCode.length);
-    
+
     setSignupData(prev => ({
       ...prev,
       phone: phoneWithoutCountryCode,

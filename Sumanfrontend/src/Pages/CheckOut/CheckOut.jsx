@@ -26,6 +26,7 @@ const CheckoutPage = () => {
   const [couponLoading, setCouponLoading] = useState(false);
   const [availableCoupons, setAvailableCoupons] = useState([]);
   const [showAvailableCoupons, setShowAvailableCoupons] = useState(false);
+  const [activeOffer, setActiveOffer] = useState(null);
 
   // Dynamic country-state-city data
   const [countries, setCountries] = useState([]);
@@ -96,6 +97,68 @@ const CheckoutPage = () => {
     fetchCheckoutData();
     fetchAvailableCoupons();
   }, []);
+
+  // Check if product is eligible for offer
+  const isProductEligibleForOffer = (product) => {
+    if (!activeOffer || !product) {
+      // console.log('No offer or product:', { activeOffer, product });
+      return false;
+    }
+
+    const productId = product._id || product.product_id;
+    // console.log('Checking eligibility for product:', { 
+    //   productId, 
+    //   productName: product.name,
+    //   offerProducts: activeOffer.applicableProducts 
+    // });
+
+    const now = new Date();
+    const startDate = new Date(activeOffer.startDate);
+    const endDate = new Date(activeOffer.endDate);
+
+    if (!activeOffer.isActive || now < startDate || now > endDate) {
+      // console.log('Offer not active or expired');
+      return false;
+    }
+
+    if (activeOffer.applicableProducts && activeOffer.applicableProducts.length > 0) {
+      const isEligible = activeOffer.applicableProducts.some(p => {
+        const offerProductId = typeof p === 'object' ? (p.product_id || p._id) : p;
+        const match = String(offerProductId) === String(productId);
+        console.log('Comparing:', { offerProductId, productId, match });
+        return match;
+      });
+      //console.log('Product eligibility (specific products):', isEligible);
+      return isEligible;
+    }
+
+    if (activeOffer.applicableCategories && activeOffer.applicableCategories.length > 0) {
+      const isEligible = activeOffer.applicableCategories.some(
+        cat => cat.toLowerCase() === (product.category || '').toLowerCase()
+      );
+      //console.log('Product eligibility (category):', isEligible);
+      return isEligible;
+    }
+
+    //console.log('Product eligible (all products)');
+    return true;
+  };
+
+  // Calculate discounted price
+  const calculateDiscountedPrice = (originalPrice) => {
+    if (!activeOffer || !originalPrice) return originalPrice;
+
+    let discountedPrice = originalPrice;
+
+    if (activeOffer.discountType === 'percentage') {
+      const discountAmount = (originalPrice * activeOffer.discount) / 100;
+      discountedPrice = originalPrice - discountAmount;
+    } else if (activeOffer.discountType === 'fixed') {
+      discountedPrice = originalPrice - activeOffer.discount;
+    }
+
+    return Math.max(0, discountedPrice);
+  };
 
   // Add these handler functions:
   const handleDropdownFocus = (dropdown) => {
@@ -198,6 +261,11 @@ const CheckoutPage = () => {
       const data = response.data.data;
       setOrderItems(data.items);
       setOrderSummary(data.summary);
+      // Set active offer from backend response
+      if (data.activeOffer) {
+        setActiveOffer(data.activeOffer);
+        //console.log('Active offer from checkout:', data.activeOffer);
+      }
       setLoading(false);
     } catch (error) {
       console.error('Error fetching checkout data:', error);
@@ -208,7 +276,7 @@ const CheckoutPage = () => {
     }
   };
 
-   const fetchAvailableCoupons = async () => {
+  const fetchAvailableCoupons = async () => {
     try {
       const response = await axios.get(`${API_URL}api/orders/available-coupons`);
       if (response.data.success) {
@@ -332,19 +400,19 @@ const CheckoutPage = () => {
 
     // Phone validation - check if it's a valid Canadian number (minimum 10 digits)
     if (!formData.billingAddress.phone) {
-    newErrors['billingAddress.phone'] = 'Phone number is required';
-  } else {
-    // Remove all non-digit characters to get just the numbers
-    const digitsOnly = formData.billingAddress.phone.replace(/\D/g, '');
-    
-    // Check if phone number has at least 10 digits (minimum valid phone number)
-    if (digitsOnly.length < 10) {
-      newErrors['billingAddress.phone'] = 'Please enter a valid phone number';
-    } else if (digitsOnly.length > 15) {
-      // Maximum international phone number length
-      newErrors['billingAddress.phone'] = 'Phone number is too long';
+      newErrors['billingAddress.phone'] = 'Phone number is required';
+    } else {
+      // Remove all non-digit characters to get just the numbers
+      const digitsOnly = formData.billingAddress.phone.replace(/\D/g, '');
+
+      // Check if phone number has at least 10 digits (minimum valid phone number)
+      if (digitsOnly.length < 10) {
+        newErrors['billingAddress.phone'] = 'Please enter a valid phone number';
+      } else if (digitsOnly.length > 15) {
+        // Maximum international phone number length
+        newErrors['billingAddress.phone'] = 'Phone number is too long';
+      }
     }
-  }
 
     // Postal code validation based on country
     if (formData.billingAddress.postalCode) {
@@ -509,7 +577,7 @@ const CheckoutPage = () => {
                       </p>
                     </>
                   )}
-                  
+
                   {orderDetails?.paymentStatus === 'paid' && (
                     <>
                       <p className="checkout-order-label">Payment Status</p>
@@ -909,14 +977,34 @@ const CheckoutPage = () => {
                         </span>
                       </div>
                       <div className="checkout-item-details">
-                        <h3 className="checkout-item-name">{item.productId.name}</h3>
-                        <p className="checkout-item-price">${item.productId.price}</p>
+                        <h3 className="checkout-item-name">
+                          {item.productId.name}
+                          <span className="checkout-item-qty"> (Qty: {item.quantity})</span>
+                        </h3>
+                        {isProductEligibleForOffer(item.productId) && activeOffer ? (
+                          <div className="checkout-item-price-container">
+                            <p className="checkout-item-price-discounted">
+                              ${calculateDiscountedPrice(item.productId.price).toFixed(2)} each
+                            </p>
+                            <p className="checkout-item-price-original">
+                              ${item.productId.price.toFixed(2)}
+                            </p>
+                          </div>
+                        ) : (
+                          <p className="checkout-item-price">${item.productId.price.toFixed(2)} each</p>
+                        )}
                         {item.productId.brand && (
                           <p className="checkout-item-brand">{item.productId.brand}</p>
                         )}
                       </div>
                       <div className="checkout-item-total">
-                        <p>${(item.productId.price * item.quantity).toFixed(2)}</p>
+                        {isProductEligibleForOffer(item.productId) && activeOffer ? (
+                          <p className="checkout-total-discounted">
+                            ${(calculateDiscountedPrice(item.productId.price) * item.quantity).toFixed(2)}
+                          </p>
+                        ) : (
+                          <p>${(item.productId.price * item.quantity).toFixed(2)}</p>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -1013,6 +1101,13 @@ const CheckoutPage = () => {
                     <span>Subtotal</span>
                     <span>${orderSummary.subtotal}</span>
                   </div>
+
+                  {orderSummary.offerSavings && parseFloat(orderSummary.offerSavings) > 0 && (
+                    <div className="total-row offer-savings-row" style={{ color: '#ff6b6b', fontWeight: '600' }}>
+                      <span>🎁 Offer Savings</span>
+                      <span>- ${parseFloat(orderSummary.offerSavings).toFixed(2)}</span>
+                    </div>
+                  )}
 
                   <div className="total-row">
                     <span>Tax (HST 13%)</span>

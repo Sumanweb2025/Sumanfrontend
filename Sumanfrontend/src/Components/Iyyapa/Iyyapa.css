@@ -60,7 +60,7 @@
 }
 
 .iyyapa-carousel-content {
-  margin-left:40px;
+  margin-left: 40px;
   color: white;
   padding: 20px;
   animation: slideInUp 0.8s ease-out;
@@ -168,27 +168,33 @@
 .iyyapa-categories-section {
   margin: 40px 0;
   text-align: center;
-  
+
 }
+
 .iyyapa-breadcrumb {
   font-size: 14px;
   margin-bottom: 20px;
   color: #666;
 }
+
 .iyyapa-breadcrumb .iyyapa-link {
   color: #666;
   cursor: pointer;
   text-decoration: none;
   transition: color 0.2s ease-in-out;
 }
+
 .iyyapa-breadcrumb .iyyapa-link:hover {
-  color: #666;         /* Darker blue on hover */
+  color: #666;
+  /* Darker blue on hover */
   text-decoration: underline;
 }
+
 .iyyapa-breadcrumb .iyyapa-current {
   color: #333;
   font-weight: 500;
 }
+
 .categories-title {
   font-size: 1.8rem;
   color: #333;
@@ -444,7 +450,7 @@
 
 /* Page Header */
 .iyyapa-main-content .iyyapa-page-header {
-   display: flex;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
@@ -550,7 +556,7 @@
   position: relative;
   z-index: 3;
   transform: translateY(0);
-  opacity:1;
+  opacity: 1;
 }
 
 .iyyapa-product-image.secondary-image {
@@ -558,18 +564,21 @@
   top: 0;
   left: 0;
   z-index: 4;
-  transform: translateY(100%); /* Start from bottom, hidden */
+  transform: translateY(100%);
+  /* Start from bottom, hidden */
   opacity: 0;
 }
 
 /* Hover Effects */
 .iyyapa-product-image-container:hover .primary-image {
-  transform: translateY(-10px); /* Slight lift */
-  opacity: 0; 
+  transform: translateY(-10px);
+  /* Slight lift */
+  opacity: 0;
 }
 
 .iyyapa-product-image-container:hover .secondary-image {
-  transform: translateY(0); /* Secondary image slides from bottom to top */
+  transform: translateY(0);
+  /* Secondary image slides from bottom to top */
   opacity: 1;
 }
 
@@ -640,6 +649,36 @@
   border: 1px solid rgba(244, 67, 54, 0.3);
 }
 
+/* Offer Badge */
+.iyyapa-offer-badge {
+  position: absolute;
+  top: 50px;
+  left: 10px;
+  background: linear-gradient(135deg, #e31e24 0%, #e31e24 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+  animation: pulse 2s ease-in-out infinite;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
 /* Product Info */
 .iyyapa-product-info {
   padding: 15px;
@@ -689,11 +728,32 @@
   margin-left: 5px;
 }
 
+.iyyapa-product-price-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
 .iyyapa-product-price {
   font-size: 20px;
   font-weight: bold;
   color: #2e7d32;
   margin-bottom: 5px;
+}
+
+.iyyapa-discounted-price {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ff6b6b;
+}
+
+.iyyapa-original-price {
+  font-size: 16px;
+  color: #999;
+  text-decoration: line-through;
+  font-weight: 500;
 }
 
 .iyyapa-product-piece {
@@ -1071,7 +1131,7 @@
   }
 
   .iyyapa-main-content .iyyapa-page-header {
-    display:flex;
+    display: flex;
     flex-direction: column;
     gap: 12px;
     text-align: center;
@@ -1144,7 +1204,7 @@
   }
 
   .iyyapa-main-content .iyyapa-page-header {
-    display:flex;
+    display: flex;
     flex-direction: column;
     gap: 10px;
     text-align: center;

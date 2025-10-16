@@ -81,13 +81,13 @@ const SignIn = () => {
         profileImage: user.profileImage || user.picture || null
       };
 
-      console.log('Storing user data:', {
-        name: userDataToStore.name,
-        email: userDataToStore.email,
-        hasProfileImage: !!userDataToStore.profileImage,
-        profileImageType: userDataToStore.profileImage ?
-          (userDataToStore.profileImage.startsWith('data:') ? 'base64' : 'url') : 'none'
-      });
+      // console.log('Storing user data:', {
+      //   name: userDataToStore.name,
+      //   email: userDataToStore.email,
+      //   hasProfileImage: !!userDataToStore.profileImage,
+      //   profileImageType: userDataToStore.profileImage ?
+      //     (userDataToStore.profileImage.startsWith('data:') ? 'base64' : 'url') : 'none'
+      // });
 
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(userDataToStore));
@@ -103,7 +103,7 @@ const SignIn = () => {
   const handleLoginSuccess = (user, token) => {
     // Store user data
     const stored = storeUserData(user, token);
-    
+
     if (!stored) {
       setErrors({ api: 'Failed to save user data. Please try again.' });
       toast.error('Failed to save user data. Please try again.', {
@@ -123,7 +123,7 @@ const SignIn = () => {
       console.log('Guest session detected - data will be migrated by backend');
       // Backend has already merged the data via sessionId in request
     }
-    
+
     localStorage.removeItem('userType');
     localStorage.removeItem('guestSessionId');
     localStorage.removeItem('hasSeenGuestModal'); // Reset modal for next logout
@@ -197,7 +197,7 @@ const SignIn = () => {
     try {
       // NEW: Get guest session ID for migration
       const guestSessionId = localStorage.getItem('guestSessionId');
-      
+
       const response = await axios.post(`${API_URL}api/auth/login`, {
         email: signinData.email.toLowerCase().trim(),
         password: signinData.password,
@@ -280,7 +280,7 @@ const SignIn = () => {
     try {
       // NEW: Get guest session ID for migration
       const guestSessionId = localStorage.getItem('guestSessionId');
-      
+
       const response = await axios.post(`${API_URL}api/auth/google-auth`, {
         credential,
         sessionId: guestSessionId // NEW: Send to backend for migration

@@ -107,7 +107,7 @@ const ResetPassword = () => {
 
       if (error.response && error.response.data) {
         const { data } = error.response;
-        
+
         if (data.errors && Array.isArray(data.errors)) {
           const formattedErrors = {};
           data.errors.forEach(err => {

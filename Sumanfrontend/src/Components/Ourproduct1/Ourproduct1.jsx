@@ -49,7 +49,7 @@ const ProductDiscovery = () => {
     <div className="discovery-container">
       <div className="discovery-content">
         <div className="discovery-text">
-          <div 
+          <div
             ref={textRef}
             className={`text-content ${isLoaded ? 'loaded' : ''}`}
           >
@@ -59,7 +59,7 @@ const ProductDiscovery = () => {
               Indulge your sweet tooth with our irresistible selection of treats! Whether you're looking for a quick snack or a special dessert to brighten your day, we've got the perfect sweet for every craving.
             </p>
           </div>
-          <div 
+          <div
             ref={buttonsRef}
             className={`discovery-buttons ${isLoaded ? 'loaded' : ''}`}
           >
@@ -90,7 +90,7 @@ const ProductDiscovery = () => {
           ))}
         </div>
       </div>
-      
+
       {/* Decorative elements like iyappaa site */}
       <div className="decorative-element-1"></div>
       <div className="decorative-element-2"></div>

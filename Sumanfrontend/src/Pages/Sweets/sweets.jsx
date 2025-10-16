@@ -32,7 +32,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   const [cartItems, setCartItems] = useState([]);
 
   const [selectedVariants, setSelectedVariants] = useState({}); // Track selected variant for each product
-
+  const [activeOffer, setActiveOffer] = useState(null);
   // Add ref for scroll target
   const mainContentRef = useRef(null);
 
@@ -98,12 +98,79 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     }));
   };
 
+  // Check if product is eligible for offer
+  const isProductEligibleForOffer = (productId) => {
+    if (!activeOffer) return false;
+
+    // Check if offer is active and within date range
+    const now = new Date();
+    const startDate = new Date(activeOffer.startDate);
+    const endDate = new Date(activeOffer.endDate);
+
+    if (!activeOffer.isActive || now < startDate || now > endDate) {
+      return false;
+    }
+
+    // Priority 1: Check specific products (HIGHEST PRIORITY)
+    if (activeOffer.applicableProducts && activeOffer.applicableProducts.length > 0) {
+      // If specific products are selected, ONLY those products get the offer
+      const isEligible = activeOffer.applicableProducts.some(p => {
+        // Handle both populated objects and IDs
+        const offerProductId = typeof p === 'object' ? (p.product_id || p._id) : p;
+        // Compare as strings to handle ObjectId vs string comparison
+        return String(offerProductId) === String(productId);
+      });
+
+      // Debug logging (remove after testing)
+      if (productId) {
+        console.log(`Checking product ${productId}:`, isEligible);
+      }
+
+      return isEligible;
+    }
+
+    // Priority 2: Check categories (if no specific products selected)
+    if (activeOffer.applicableCategories && activeOffer.applicableCategories.length > 0) {
+      // Check if current page category matches offer categories
+      return activeOffer.applicableCategories.some(
+        cat => cat.toLowerCase() === 'sweets'
+      );
+    }
+
+    // Priority 3: If NEITHER products NOR categories specified, apply to all
+    return true;
+  };
+
+  // Calculate discounted price
+  const calculateDiscountedPrice = (originalPrice) => {
+    if (!activeOffer || !originalPrice) return originalPrice;
+
+    let discountedPrice = originalPrice;
+
+    if (activeOffer.discountType === 'percentage') {
+      const discountAmount = (originalPrice * activeOffer.discount) / 100;
+      discountedPrice = originalPrice - discountAmount;
+    } else if (activeOffer.discountType === 'fixed') {
+      discountedPrice = originalPrice - activeOffer.discount;
+    }
+
+    return Math.max(0, discountedPrice);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const productsResponse = await axios.get(`${API_URL}api/products/search?category=sweets`);
         const productsData = productsResponse.data?.data || productsResponse.data?.products || productsResponse.data;
-
+        // Fetch active offer
+        try {
+          const offerResponse = await axios.get(`${API_URL}api/offers/active`);
+          if (offerResponse.data?.success && offerResponse.data?.data) {
+            setActiveOffer(offerResponse.data.data);
+          }
+        } catch (offerError) {
+          console.log('No active offer found');
+        }
         // Group products by name
         const groupedProducts = groupProductsByName(productsData);
         setProducts(groupedProducts);
@@ -304,7 +371,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     setWishlistLoading(true);
     try {
       const config = { headers };
-       // Get selected variant info
+      // Get selected variant info
       const selectedIndex = getSelectedVariant(product);
       const selectedVariant = product.variants[selectedIndex] || product.variants[0];
       const productId = selectedVariant.productId;
@@ -319,7 +386,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         await axios.post(`${API_URL}api/wishlist`, { productId }, config);
         setWishlistItems(prev => [...prev, productId]);
         window.dispatchEvent(new CustomEvent('wishlistUpdated'));
-         // Pass selected variant data to popup
+        // Pass selected variant data to popup
         const productForPopup = {
           ...product,
           selectedGram: selectedVariant.gram,
@@ -339,85 +406,88 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
   };
 
   const handleAddToCartFromWishlist = async (productId) => {
-  try {
-    const headers = {};
-    const token = localStorage.getItem('token');
-    const sessionId = localStorage.getItem('guestSessionId');
-    
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    } else if (sessionId) {
-      headers['X-Session-ID'] = sessionId;
-    } else {
-      throw new Error('No session available');
+    try {
+      const headers = {};
+      const token = localStorage.getItem('token');
+      const sessionId = localStorage.getItem('guestSessionId');
+
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      } else if (sessionId) {
+        headers['X-Session-ID'] = sessionId;
+      } else {
+        throw new Error('No session available');
+      }
+
+      const config = { headers };
+      await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
+
+      const cartResponse = await axios.get(`${API_URL}api/cart`, config);
+      const cartData = cartResponse.data?.data || cartResponse.data;
+      setCartItems(cartData.items || []);
+
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
+      return true;
+    } catch (err) {
+      console.error('Add to cart error:', err);
+      throw err;
     }
-
-    const config = { headers };
-    await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
-
-    const cartResponse = await axios.get(`${API_URL}api/cart`, config);
-    const cartData = cartResponse.data?.data || cartResponse.data;
-    setCartItems(cartData.items || []);
-
-    window.dispatchEvent(new CustomEvent('cartUpdated'));
-    return true;
-  } catch (err) {
-    console.error('Add to cart error:', err);
-    throw err;
-  }
-};
+  };
 
   const handleAddToCart = async (e, productData) => {
-  e.stopPropagation();
-  
-  const headers = {};
-  const token = localStorage.getItem('token');
-  const userType = localStorage.getItem('userType');
-  let sessionId = localStorage.getItem('guestSessionId');
-  
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  } else if (userType === 'guest' && sessionId) {
-    headers['X-Session-ID'] = sessionId;
-  } else {
-    // Not logged in and not guest - prompt user
-    if (window.confirm('Add to cart as guest or sign in for exclusive offers. Click OK to sign in, Cancel for guest mode.')) {
-      localStorage.setItem('returnUrl', window.location.pathname);
-      navigate('/signin');
-      return;
-    } else {
-      // Create guest session
-      sessionId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-      localStorage.setItem('userType', 'guest');
-      localStorage.setItem('guestSessionId', sessionId);
+    e.stopPropagation();
+
+    const headers = {};
+    const token = localStorage.getItem('token');
+    const userType = localStorage.getItem('userType');
+    let sessionId = localStorage.getItem('guestSessionId');
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    } else if (userType === 'guest' && sessionId) {
       headers['X-Session-ID'] = sessionId;
+    } else {
+      // Not logged in and not guest - prompt user
+      if (window.confirm('Add to cart as guest or sign in for exclusive offers. Click OK to sign in, Cancel for guest mode.')) {
+        localStorage.setItem('returnUrl', window.location.pathname);
+        navigate('/signin');
+        return;
+      } else {
+        // Create guest session
+        sessionId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('userType', 'guest');
+        localStorage.setItem('guestSessionId', sessionId);
+        headers['X-Session-ID'] = sessionId;
+      }
     }
-  }
 
-  try {
-    const config = { headers };
-    const productId = productData.productId || productData.product_id || productData._id || productData.id;
-    
-    await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
+    try {
+      const config = { headers };
+      const productId = productData.productId || productData.product_id || productData._id || productData.id;
 
-    // Update cart items
-    const cartResponse = await axios.get(`${API_URL}api/cart`, config);
-    const cartData = cartResponse.data?.data || cartResponse.data;
-    setCartItems(cartData.items || []);
+      await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
 
-    window.dispatchEvent(new CustomEvent('cartUpdated'));
-     // Add selectedGram for popup display
-    const productForPopup = {
-      ...productData,
-      selectedGram: productData.gram || productData.Gram
-    };
-    setSelectedProduct(productForPopup);
-    setShowCartPopup(true);
-  } catch (err) {
-    console.error('Add to cart error:', err);
-    alert(err.response?.data?.message || 'Failed to add to cart');
-  }
-};
+      // Update cart items
+      const cartResponse = await axios.get(`${API_URL}api/cart`, config);
+      const cartData = cartResponse.data?.data || cartResponse.data;
+      setCartItems(cartData.items || []);
+
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
+      // Add selectedGram for popup display
+      const productForPopup = {
+        ...productData,
+        selectedGram: productData.gram || productData.Gram,
+        // Ensure product ID fields are preserved (not overridden by variant)
+        product_id: productId,
+        _id: productId
+      };
+      setSelectedProduct(productForPopup);
+      setShowCartPopup(true);
+    } catch (err) {
+      console.error('Add to cart error:', err);
+      alert(err.response?.data?.message || 'Failed to add to cart');
+    }
+  };
 
   const handleContinueShopping = () => {
     setShowWishlistPopup(false);
@@ -589,6 +659,21 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                         onClick={() => handleProductClick(product)}
                       >
                         <div className="sweets-product-image-container">
+                          {/* Offer Badge */}
+                          {(() => {
+                            const selectedIndex = getSelectedVariant(product);
+                            const selectedVariant = product.variants[selectedIndex] || product.variants[0];
+                            const hasOffer = isProductEligibleForOffer(selectedVariant.productId);
+
+                            if (hasOffer && activeOffer) {
+                              return (
+                                <div className="sweets-offer-badge">
+                                  {activeOffer.discount}{activeOffer.discountType === 'percentage' ? '%' : '$'} OFF
+                                </div>
+                              );
+                            }
+                            return null;
+                          })()}
                           <div className="sweets-image-wrapper">
                             {/* Primary Image - uses first image in array */}
                             <img
@@ -661,14 +746,27 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                             <span className="sweets-rating-text">({product.rating?.toFixed(1) || '0.0'})</span>
                           </div>
 
-                          <div className="price-text sweets-product-price">{(() => {
+                          <div className="sweets-product-price-section">{(() => {
                             const selectedIndex = getSelectedVariant(product);
                             const selectedVariant = product.variants[selectedIndex] || product.variants[0];
-                            const price = selectedVariant.price;
+                            const originalPrice = selectedVariant.price;
+                            const hasOffer = isProductEligibleForOffer(selectedVariant.productId);
 
-                            return price !== undefined && price !== null
-                              ? `$${price}`
-                              : <span style={{ color: '#999', fontSize: "0.9rem" }}>$0 (Price not fixed)</span>;
+                            if (originalPrice === undefined || originalPrice === null) {
+                              return <span className="price-text" style={{ color: '#999', fontSize: "0.9rem" }}>$0 (Price not fixed)</span>;
+                            }
+
+                            if (hasOffer && activeOffer) {
+                              const discountedPrice = calculateDiscountedPrice(originalPrice);
+                              return (
+                                <>
+                                  <span className="price-text sweets-discounted-price">${discountedPrice.toFixed(2)}</span>
+                                  <span className="sweets-original-price">${originalPrice.toFixed(2)}</span>
+                                </>
+                              );
+                            }
+
+                            return <span className="price-text">${originalPrice.toFixed(2)}</span>;
                           })()}</div>
 
                           {/* Gram Variants Display */}
@@ -784,6 +882,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         onAddToCart={handleAddToCartFromWishlist}
         onContinueShopping={handleContinueShopping}
         onOpenWishlistPage={handleOpenWishlistPage}
+        activeOffer={activeOffer}
       />
 
       {/* Cart Popup */}
@@ -794,6 +893,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
         cartItems={cartItems}
         onContinueShopping={handleContinueShopping}
         onViewCart={handleViewCart}
+        activeOffer={activeOffer}
       />
       <Banner />
       <Footer />

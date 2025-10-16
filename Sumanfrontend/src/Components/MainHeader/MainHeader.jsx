@@ -12,7 +12,7 @@ import {
 const MainHeader = ({ onProfileClick, onLogout }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [isGuest, setIsGuest] = useState(false); 
+  const [isGuest, setIsGuest] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -26,32 +26,32 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
   // Helper function to get full image URL
   const getImageUrl = (imageUrl) => {
     if (!imageUrl) return null;
-    
+
     if (imageUrl.startsWith('data:')) {
       return imageUrl;
     }
-    
-    if (imageUrl.includes('googleapis.com') || 
-        imageUrl.includes('googleusercontent.com') || 
-        imageUrl.startsWith('http://') || 
-        imageUrl.startsWith('https://')) {
+
+    if (imageUrl.includes('googleapis.com') ||
+      imageUrl.includes('googleusercontent.com') ||
+      imageUrl.startsWith('http://') ||
+      imageUrl.startsWith('https://')) {
       return imageUrl;
     }
-    
+
     if (imageUrl.startsWith('/uploads/')) {
       return `${API_URL}${imageUrl}`;
     }
-    
-    return imageUrl.startsWith('/') ? 
-      `${API_URL}${imageUrl}` : 
+
+    return imageUrl.startsWith('/') ?
+      `${API_URL}${imageUrl}` :
       `${API_URL}/${imageUrl}`;
   };
 
-  // ✅ FIXED: Fetch user profile with proper error handling
+  // FIXED: Fetch user profile with proper error handling
   const fetchUserProfile = async (token) => {
     // Don't fetch if no token
     if (!token) {
-      console.log('No token - skipping profile fetch');
+      // console.log('No token - skipping profile fetch');
       return;
     }
 
@@ -63,7 +63,7 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
       if (response.data.success) {
         const userData = response.data.data.user;
         setUser(userData);
-        
+
         // Set profile image
         if (userData.profileImage) {
           const fullImageUrl = getImageUrl(userData.profileImage);
@@ -75,11 +75,11 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
         } else {
           setProfileImage(null);
         }
-        
+
         localStorage.setItem('user', JSON.stringify(userData));
       }
     } catch (error) {
-      // ✅ FIXED: Proper 401 handling
+      // FIXED: Proper 401 handling
       if (error.response?.status === 401) {
         console.log('Token expired or invalid - clearing auth data');
         localStorage.removeItem('token');
@@ -102,7 +102,7 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
       const parsedUser = JSON.parse(userData);
       setUser(parsedUser);
       setIsGuest(false);
-      
+
       // Set initial profile image from localStorage
       if (parsedUser.profileImage) {
         setProfileImage(getImageUrl(parsedUser.profileImage));
@@ -111,7 +111,7 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
       } else if (parsedUser.googleProfileImage) {
         setProfileImage(parsedUser.googleProfileImage);
       }
-      
+
       // Fetch fresh profile data and counts
       fetchUserProfile(token);
       fetchCounts(token);
@@ -170,7 +170,7 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
   // Fetch counts for logged-in users
   const fetchCounts = async (token) => {
     await Promise.allSettled([
-      fetchWishlistCount(token), 
+      fetchWishlistCount(token),
       fetchCartCount(token)
     ]);
   };
@@ -183,7 +183,7 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
     ]);
   };
 
-  // ✅ FIXED: Wishlist count with proper error handling
+  // FIXED: Wishlist count with proper error handling
   const fetchWishlistCount = async (token) => {
     if (!token) {
       setWishlistCount(0);
@@ -208,7 +208,7 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
     }
   };
 
-  // ✅ FIXED: Guest wishlist count
+  // FIXED: Guest wishlist count
   const fetchGuestWishlistCount = async (sessionId) => {
     if (!sessionId) {
       setWishlistCount(0);
@@ -228,7 +228,7 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
     }
   };
 
-  // ✅ FIXED: Cart count with proper error handling
+  // FIXED: Cart count with proper error handling
   const fetchCartCount = async (token) => {
     if (!token) {
       setCartCount(0);
@@ -253,7 +253,7 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
     }
   };
 
-  // ✅ FIXED: Guest cart count
+  // FIXED: Guest cart count
   const fetchGuestCartCount = async (sessionId) => {
     if (!sessionId) {
       setCartCount(0);
@@ -289,7 +289,7 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
     localStorage.removeItem('userType');
     localStorage.removeItem('guestSessionId');
     localStorage.removeItem('hasSeenGuestModal');
-    
+
     setUser(null);
     setProfileImage(null);
     setIsGuest(false);
@@ -297,19 +297,19 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
     setCartCount(0);
     setShowDropdown(false);
     setShowMobileMenu(false);
-    
+
     if (onLogout) onLogout();
     navigate('/');
   };
 
   const handleLoginClick = () => {
     setShowMobileMenu(false);
-    
+
     const currentPath = window.location.pathname;
     if (currentPath !== '/signin' && currentPath !== '/signup') {
       localStorage.setItem('returnUrl', currentPath);
     }
-    
+
     navigate('/signin');
   };
 
@@ -343,9 +343,9 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
               {user ? (
                 <>
                   {profileImage ? (
-                    <img 
-                      src={profileImage} 
-                      alt="Profile" 
+                    <img
+                      src={profileImage}
+                      alt="Profile"
                       className="main-user-avatar-image"
                       onError={(e) => {
                         console.error('Profile image load error');
@@ -474,9 +474,9 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
               {user ? (
                 <div className="mobile-user-info">
                   {profileImage ? (
-                    <img 
-                      src={profileImage} 
-                      alt="Profile" 
+                    <img
+                      src={profileImage}
+                      alt="Profile"
                       className="mobile-user-avatar-image"
                       onError={(e) => {
                         e.target.style.display = 'none';

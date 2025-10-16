@@ -628,6 +628,33 @@
   border: 1px solid rgba(244, 67, 54, 0.3);
 }
 
+/* Offer Badge */
+.amirth-offer-badge {
+  position: absolute;
+  top: 50px;
+  left: 10px;
+  background: linear-gradient(135deg, #e31e24 0%, #e31e24 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+  animation: pulse 2s ease-in-out infinite;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
 /* Product Info */
 .amirth-product-info {
   padding: 15px;
@@ -677,11 +704,32 @@
   margin-left: 5px;
 }
 
+.amirth-product-price-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
 .amirth-product-price {
   font-size: 20px;
   font-weight: bold;
   color: #2e7d32;
   margin-bottom: 5px;
+}
+
+.amirth-discounted-price {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ff6b6b;
+}
+
+.amirth-original-price {
+  font-size: 16px;
+  color: #999;
+  text-decoration: line-through;
+  font-weight: 500;
 }
 
 .amirth-product-piece {

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import './Offer.css';
 
 const SpecialOffer = () => {
   const [timeLeft, setTimeLeft] = useState(null);
   const [offer, setOffer] = useState(null);
   const [isActive, setIsActive] = useState(false);
+  const navigate = useNavigate();
 
   const API_URL = import.meta.env.VITE_APP_API_URL;
 
@@ -109,7 +111,16 @@ const SpecialOffer = () => {
 
             <button
               className="button-text offer-button"
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              onClick={() => {
+                // Navigate to category page based on offer
+                if (offer.applicableCategories && offer.applicableCategories.length > 0) {
+                  const category = offer.applicableCategories[0].toLowerCase();
+                  navigate(`/${category}`);
+                } else {
+                  // If no specific category, scroll to top
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
             >
               Shop Now
             </button>

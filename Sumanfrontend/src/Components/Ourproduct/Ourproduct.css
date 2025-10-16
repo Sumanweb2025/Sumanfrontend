@@ -13,7 +13,8 @@
 .our-divider {
   width: 80px;
   height: 3px;
-  background: linear-gradient(45deg, #ff6b35, #f7931e);;
+  background: linear-gradient(45deg, #ff6b35, #f7931e);
+  ;
   margin: 0 auto 20px;
 }
 
@@ -28,13 +29,15 @@
   padding: 30px 20px;
   text-align: center;
   position: relative;
-  background: #fef9e7; /* soft yellow pastel */
+  background: #fef9e7;
+  /* soft yellow pastel */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
 }
 
 .our-card:hover {
-  background: #fcb900; /* slightly deeper pastel yellow */
+  background: #fcb900;
+  /* slightly deeper pastel yellow */
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   transform: translateY(-4px);
 }
@@ -60,6 +63,7 @@
   color: #1b5e20;
   margin-bottom: 8px;
 }
+
 .our-card-image img {
   transition: transform 0.3s ease;
 }

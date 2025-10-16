@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, Bell, User, LogOut, RefreshCw, Volume2, VolumeX } from 'lucide-react';
+import { Menu, Bell, User, LogOut, RefreshCw, Volume2, VolumeX, X } from 'lucide-react';
 import './Header.css';
+import NotificationSidebar from '../NotificationSidebar/NotificationSidebar';
 
 const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen, api, adminToken, setError, setActiveTab }) => {
   const [notifications, setNotifications] = useState([]);
@@ -11,6 +12,7 @@ const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen, api, adminToken, setErr
   const [unreadCount, setUnreadCount] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [previousNotificationCount, setPreviousNotificationCount] = useState(0);
+  const [showNotificationSidebar, setShowNotificationSidebar] = useState(false);
 
   const notificationRef = useRef(null);
   const profileRef = useRef(null);
@@ -325,11 +327,17 @@ const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen, api, adminToken, setErr
                 )}
               </div>
 
-              {notifications.length > 10 && (
-                <div className="admin-notification-footer">
-                  <button className="admin-view-all-btn">View All Notifications</button>
-                </div>
-              )}
+              <div className="admin-notification-footer">
+                <button
+                  className="admin-view-all-btn"
+                  onClick={() => {
+                    setShowNotifications(false);
+                    setShowNotificationSidebar(true);
+                  }}
+                >
+                  View All Notifications
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -392,6 +400,12 @@ const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen, api, adminToken, setErr
           )}
         </div>
       </div>
+      {/* Notification Sidebar */}
+      <NotificationSidebar
+        isOpen={showNotificationSidebar}
+        onClose={() => setShowNotificationSidebar(false)}
+        adminToken={adminToken}
+      />
     </header>
   );
 };

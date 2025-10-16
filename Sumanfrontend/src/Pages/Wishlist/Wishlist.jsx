@@ -16,71 +16,85 @@ const WishlistPage = () => {
   const [error, setError] = useState(null);
   const [removingItems, setRemovingItems] = useState(new Set());
   const [addingToCart, setAddingToCart] = useState(new Set());
+  const [activeOffer, setActiveOffer] = useState(null);
 
   const [isGuest, setIsGuest] = useState(false);
-const [guestSessionId, setGuestSessionId] = useState(null);
+  const [guestSessionId, setGuestSessionId] = useState(null);
 
 
   const API_URL = import.meta.env.VITE_APP_API_URL;
 
   useEffect(() => {
-  const token = localStorage.getItem('token');
-  const userType = localStorage.getItem('userType');
-  const sessionId = localStorage.getItem('guestSessionId');
-  
-  if (token) {
-    setIsGuest(false);
-    fetchWishlist(token, null);
-  } else if (userType === 'guest' && sessionId) {
-    setIsGuest(true);
-    setGuestSessionId(sessionId);
-    fetchWishlist(null, sessionId);
-  } else {
-    // No token and no guest session - redirect to home
-    navigate('/');
-  }
-}, []);
+    // Fetch active offer
+    const fetchActiveOffer = async () => {
+      try {
+        const offerResponse = await axios.get(`${API_URL}api/offers/active`);
+        if (offerResponse.data?.success && offerResponse.data?.data) {
+          setActiveOffer(offerResponse.data.data);
+        }
+      } catch (offerError) {
+        console.log('No active offer found');
+      }
+    };
+
+    fetchActiveOffer();
+    const token = localStorage.getItem('token');
+    const userType = localStorage.getItem('userType');
+    const sessionId = localStorage.getItem('guestSessionId');
+
+    if (token) {
+      setIsGuest(false);
+      fetchWishlist(token, null);
+    } else if (userType === 'guest' && sessionId) {
+      setIsGuest(true);
+      setGuestSessionId(sessionId);
+      fetchWishlist(null, sessionId);
+    } else {
+      // No token and no guest session - redirect to home
+      navigate('/');
+    }
+  }, []);
 
   const fetchWishlist = async (token = null, sessionId = null) => {
-  try {
-    const headers = {};
-    
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    } else if (sessionId) {
-      headers['X-Session-ID'] = sessionId;
-    } else {
-      navigate('/');
-      return;
+    try {
+      const headers = {};
+
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      } else if (sessionId) {
+        headers['X-Session-ID'] = sessionId;
+      } else {
+        navigate('/');
+        return;
+      }
+
+      const response = await axios.get(`${API_URL}api/wishlist`, { headers });
+
+      const wishlistData = response.data?.data || response.data;
+      setWishlistItems(wishlistData.products || []);
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching wishlist:', err);
+      setError(err.response?.data?.message || 'Failed to load wishlist');
+      setLoading(false);
+
+      if (err.response?.status === 401 && !sessionId) {
+        navigate('/signin');
+      }
     }
+  };
 
-    const response = await axios.get(`${API_URL}api/wishlist`, { headers });
-
-    const wishlistData = response.data?.data || response.data;
-    setWishlistItems(wishlistData.products || []);
-    setLoading(false);
-  } catch (err) {
-    console.error('Error fetching wishlist:', err);
-    setError(err.response?.data?.message || 'Failed to load wishlist');
-    setLoading(false);
-    
-    if (err.response?.status === 401 && !sessionId) {
-      navigate('/signin');
-    }
-  }
-};
-
-    const getImageUrl = (product) => {
+  const getImageUrl = (product) => {
     // Check for direct imageUrl
     if (product.imageUrl) {
       return product.imageUrl;
     }
-    
+
     // Check for imageUrls array
     if (product.imageUrls && product.imageUrls.length > 0) {
       return product.imageUrls[0];
     }
-    
+
     // Check for image array
     if (product.image) {
       if (Array.isArray(product.image) && product.image.length > 0) {
@@ -89,130 +103,180 @@ const [guestSessionId, setGuestSessionId] = useState(null);
         return `${API_URL}/images/Products/${product.image}`;
       }
     }
-    
+
     return 'https://via.placeholder.com/300x300?text=No+Image';
   };
 
-  const handleRemoveFromWishlist = async (productId) => {
-  const headers = {};
-  const token = localStorage.getItem('token');
-  const sessionId = localStorage.getItem('guestSessionId');
-  
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  } else if (sessionId) {
-    headers['X-Session-ID'] = sessionId;
-  } else {
-    return;
-  }
+  // Check if product is eligible for offer
+  const isProductEligibleForOffer = (product) => {
+    if (!activeOffer || !product) return false;
 
-  setRemovingItems(prev => new Set(prev).add(productId));
+    const productId = product.product_id || product._id;
 
-  try {
-    await axios.delete(`${API_URL}api/wishlist/${productId}`, { headers });
+    // Check if offer is active and within date range
+    const now = new Date();
+    const startDate = new Date(activeOffer.startDate);
+    const endDate = new Date(activeOffer.endDate);
 
-    setWishlistItems(prev =>
-      prev.filter(item => (item.productId._id || item.productId) !== productId)
-    );
-
-    window.dispatchEvent(new CustomEvent('wishlistUpdated'));
-    
-    toast.success('Item removed from wishlist! 🗑️', {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-    });
-  } catch (err) {
-    console.error('Error removing from wishlist:', err);
-    toast.error('Failed to remove item from wishlist! ❌', {
-      position: "top-right",
-      autoClose: 4000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-    });
-  } finally {
-    setRemovingItems(prev => {
-      const newSet = new Set(prev);
-      newSet.delete(productId);
-      return newSet;
-    });
-  }
-};
-
- const handleAddToCart = async (product) => {
-  const headers = {};
-  const token = localStorage.getItem('token');
-  const sessionId = localStorage.getItem('guestSessionId');
-  
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  } else if (sessionId) {
-    headers['X-Session-ID'] = sessionId;
-  } else {
-    // Prompt to sign in or continue as guest
-    if (window.confirm('Sign in to save your cart. Click OK to sign in, or Cancel to continue as guest.')) {
-      localStorage.setItem('returnUrl', '/wishlist');
-      navigate('/signin');
-    } else {
-      // Generate guest session
-      const newSessionId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-      localStorage.setItem('userType', 'guest');
-      localStorage.setItem('guestSessionId', newSessionId);
-      headers['X-Session-ID'] = newSessionId;
+    if (!activeOffer.isActive || now < startDate || now > endDate) {
+      return false;
     }
-  }
 
-  const productId = product._id || product.product_id || product.id;
-  setAddingToCart(prev => new Set(prev).add(productId));
+    // Priority 1: Check specific products
+    if (activeOffer.applicableProducts && activeOffer.applicableProducts.length > 0) {
+      return activeOffer.applicableProducts.some(p => {
+        const offerProductId = typeof p === 'object' ? (p.product_id || p._id) : p;
+        return String(offerProductId) === String(productId);
+      });
+    }
 
-  try {
-    // Add to cart
-    await axios.post(`${API_URL}api/cart`,
-      { productId, quantity: 1 },
-      { headers }
-    );
+    // Priority 2: Check categories
+    if (activeOffer.applicableCategories && activeOffer.applicableCategories.length > 0) {
+      return activeOffer.applicableCategories.some(
+        cat => cat.toLowerCase() === (product.category || product.Category || '').toLowerCase()
+      );
+    }
 
-    // Remove from wishlist after successful cart addition
-    await axios.delete(`${API_URL}api/wishlist/${productId}`, { headers });
+    // Priority 3: Apply to all
+    return true;
+  };
 
-    setWishlistItems(prev =>
-      prev.filter(item => (item.productId._id || item.productId || item._id) !== productId)
-    );
+  // Calculate discounted price
+  const calculateDiscountedPrice = (originalPrice) => {
+    if (!activeOffer || !originalPrice) return originalPrice;
 
-    window.dispatchEvent(new CustomEvent('cartUpdated'));
-    window.dispatchEvent(new CustomEvent('wishlistUpdated'));
-    
-    toast.success(`🛒 ${product.name} added to cart!`, {
-      position: "top-right",
-      autoClose: 4000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-    });
-  } catch (err) {
-    console.error('Error adding to cart:', err);
-    toast.error(err.response?.data?.message || 'Failed to add to cart! ❌', {
-      position: "top-right",
-      autoClose: 4000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-    });
-  } finally {
-    setAddingToCart(prev => {
-      const newSet = new Set(prev);
-      newSet.delete(productId);
-      return newSet;
-    });
-  }
-};
+    let discountedPrice = originalPrice;
+
+    if (activeOffer.discountType === 'percentage') {
+      const discountAmount = (originalPrice * activeOffer.discount) / 100;
+      discountedPrice = originalPrice - discountAmount;
+    } else if (activeOffer.discountType === 'fixed') {
+      discountedPrice = originalPrice - activeOffer.discount;
+    }
+
+    return Math.max(0, discountedPrice);
+  };
+
+  const handleRemoveFromWishlist = async (productId) => {
+    const headers = {};
+    const token = localStorage.getItem('token');
+    const sessionId = localStorage.getItem('guestSessionId');
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    } else if (sessionId) {
+      headers['X-Session-ID'] = sessionId;
+    } else {
+      return;
+    }
+
+    setRemovingItems(prev => new Set(prev).add(productId));
+
+    try {
+      await axios.delete(`${API_URL}api/wishlist/${productId}`, { headers });
+
+      setWishlistItems(prev =>
+        prev.filter(item => (item.productId._id || item.productId) !== productId)
+      );
+
+      window.dispatchEvent(new CustomEvent('wishlistUpdated'));
+
+      toast.success('Item removed from wishlist!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } catch (err) {
+      console.error('Error removing from wishlist:', err);
+      toast.error('Failed to remove item from wishlist! ', {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } finally {
+      setRemovingItems(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(productId);
+        return newSet;
+      });
+    }
+  };
+
+  const handleAddToCart = async (product) => {
+    const headers = {};
+    const token = localStorage.getItem('token');
+    const sessionId = localStorage.getItem('guestSessionId');
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    } else if (sessionId) {
+      headers['X-Session-ID'] = sessionId;
+    } else {
+      // Prompt to sign in or continue as guest
+      if (window.confirm('Sign in to save your cart. Click OK to sign in, or Cancel to continue as guest.')) {
+        localStorage.setItem('returnUrl', '/wishlist');
+        navigate('/signin');
+      } else {
+        // Generate guest session
+        const newSessionId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('userType', 'guest');
+        localStorage.setItem('guestSessionId', newSessionId);
+        headers['X-Session-ID'] = newSessionId;
+      }
+    }
+
+    const productId = product._id || product.product_id || product.id;
+    setAddingToCart(prev => new Set(prev).add(productId));
+
+    try {
+      // Add to cart
+      await axios.post(`${API_URL}api/cart`,
+        { productId, quantity: 1 },
+        { headers }
+      );
+
+      // Remove from wishlist after successful cart addition
+      await axios.delete(`${API_URL}api/wishlist/${productId}`, { headers });
+
+      setWishlistItems(prev =>
+        prev.filter(item => (item.productId._id || item.productId || item._id) !== productId)
+      );
+
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
+      window.dispatchEvent(new CustomEvent('wishlistUpdated'));
+
+      toast.success(`🛒 ${product.name} added to cart!`, {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } catch (err) {
+      console.error('Error adding to cart:', err);
+      toast.error(err.response?.data?.message || 'Failed to add to cart! ❌', {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } finally {
+      setAddingToCart(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(productId);
+        return newSet;
+      });
+    }
+  };
 
   const handleProductClick = (product) => {
     const productData = product.productId || product;
@@ -232,7 +296,7 @@ const [guestSessionId, setGuestSessionId] = useState(null);
         progressColor="#3b82f6"
       />
       <Header />
-      
+
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -245,7 +309,7 @@ const [guestSessionId, setGuestSessionId] = useState(null);
         pauseOnHover
         theme="light"
       />
-      
+
       <div className="wishlist-page">
         <div className="wishlist-container">
           <div className="breadcrumb">
@@ -284,7 +348,7 @@ const [guestSessionId, setGuestSessionId] = useState(null);
                 <div className="header-price">Unit Price</div>
                 <div className="header-action">Remove</div>
               </div>
-              
+
               <div className="wishlist-items">
                 {wishlistItems.map((item) => {
                   const product = item.productId || item;
@@ -297,6 +361,11 @@ const [guestSessionId, setGuestSessionId] = useState(null);
                     <div key={productId} className={`wishlist-item ${isRemoving ? 'processing' : ''}`}>
                       <div className="wishlist-item-product" onClick={() => handleProductClick(product)}>
                         <div className="wishlist-product-image-container">
+                          {isProductEligibleForOffer(product) && activeOffer && (
+                            <div className="wishlist-offer-badge">
+                              {activeOffer.discount}{activeOffer.discountType === 'percentage' ? '%' : '$'} OFF
+                            </div>
+                          )}
                           <img
                             src={imageUrl}
                             alt={product.name || 'Product'}
@@ -326,11 +395,22 @@ const [guestSessionId, setGuestSessionId] = useState(null);
                           </div>
                         </div>
                       </div>
-                      
+
                       <div className="price-text wishlist-item-price">
-                        ${product.price}
+                        {isProductEligibleForOffer(product) && activeOffer ? (
+                          <div className="wishlist-price-container">
+                            <span className="wishlist-discounted-price">
+                              ${calculateDiscountedPrice(product.price).toFixed(2)}
+                            </span>
+                            <span className="wishlist-original-price">
+                              ${product.price.toFixed(2)}
+                            </span>
+                          </div>
+                        ) : (
+                          <span>${product.price}</span>
+                        )}
                       </div>
-                      
+
                       <div className="wishlist-item-actions">
                         <button
                           className="button-text wishlist-add-to-cart-btn"

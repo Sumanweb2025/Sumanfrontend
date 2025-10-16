@@ -23,7 +23,7 @@ const ForgotPassword = () => {
 
   const validateEmail = () => {
     const newErrors = {};
-    
+
     if (!email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(email)) {
@@ -67,7 +67,7 @@ const ForgotPassword = () => {
 
       if (error.response && error.response.data) {
         const { data } = error.response;
-        
+
         if (data.message) {
           setErrors({ api: data.message });
           toast.error(data.message, {
@@ -189,8 +189,8 @@ const ForgotPassword = () => {
               Click the link in the email to reset your password. If you don't see the email, check your spam folder.
             </p>
             <div className="forgot-password-btn-container">
-              <button 
-                onClick={() => navigate('/signin')} 
+              <button
+                onClick={() => navigate('/signin')}
                 className="forgot-password-btn"
               >
                 Back to Sign In

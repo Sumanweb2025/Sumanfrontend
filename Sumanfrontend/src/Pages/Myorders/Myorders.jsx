@@ -9,6 +9,7 @@ import LoadingSpinner from '../../Components/LoadingSpinner/LoadingSpinner';
 const MyOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const API_URL = import.meta.env.VITE_APP_API_URL;
 
   useEffect(() => {
@@ -71,7 +72,7 @@ const MyOrders = () => {
 
       // Send reason in request body
       const response = await axios.put(
-        `${API_URL}/api/orders/${orderId}/cancel`,
+        `${API_URL}api/orders/${orderId}/cancel`,
         {
           reason: reason || 'Customer requested cancellation'
         },

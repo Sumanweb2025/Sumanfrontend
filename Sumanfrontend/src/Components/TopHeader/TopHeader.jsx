@@ -58,7 +58,7 @@ const TopHeader = () => {
             ))}
           </div>
         </div>
-        
+
         <div className="mobile-social">
           <FaFacebookF />
           <FaInstagram />
