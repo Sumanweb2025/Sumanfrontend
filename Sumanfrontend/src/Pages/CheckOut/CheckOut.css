@@ -234,9 +234,9 @@
 }
 
 /* Remove rotation transform since we're using different icons */
-.dropdown-icon.rotated {
+/* .dropdown-icon.rotated {
   color: #ffd700;
-}
+} */
 
 /* Disabled state for dropdown icon */
 .select-wrapper:has(.country-select:disabled) .dropdown-icon,

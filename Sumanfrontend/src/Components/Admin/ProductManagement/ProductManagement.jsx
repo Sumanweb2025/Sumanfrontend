@@ -18,7 +18,7 @@ import {
 import './ProductManagement.css';
 
 // API configuration
-const API_BASE_URL = import.meta.env.VITE_APP_API_URL;
+const API_BASE_URL = import.meta.env.VITE_ADMIN_API_URL;
 
 const ProductManagement = ({ api, adminToken, setIsLoading, setError, handleApiError }) => {
   const [products, setProducts] = useState([]);

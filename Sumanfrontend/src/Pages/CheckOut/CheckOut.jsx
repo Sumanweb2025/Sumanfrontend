@@ -715,9 +715,9 @@ const CheckoutPage = () => {
                         </option>
                       ))}
                     </select>
-                    <div className={`dropdown-icon ${dropdownStates.country ? 'rotated' : ''}`}>
+                    {/* <div className={`dropdown-icon ${dropdownStates.country ? 'rotated' : ''}`}>
                       {dropdownStates.country ? <FaChevronUp /> : <FaChevronDown />}
-                    </div>
+                    </div> */}
                   </div>
 
                   {/* Name fields */}
@@ -809,9 +809,9 @@ const CheckoutPage = () => {
                           </option>
                         ))}
                       </select>
-                      <div className={`dropdown-icon ${dropdownStates.city ? 'rotated' : ''}`}>
+                      {/* <div className={`dropdown-icon ${dropdownStates.city ? 'rotated' : ''}`}>
                         {dropdownStates.city ? <FaChevronUp /> : <FaChevronDown />}
-                      </div>
+                      </div> */}
                       {errors['billingAddress.city'] && (
                         <p className="error-message">
                           <span className="error-icon">⚠ </span>
@@ -835,9 +835,9 @@ const CheckoutPage = () => {
                           </option>
                         ))}
                       </select>
-                      <div className={`dropdown-icon ${dropdownStates.state ? 'rotated' : ''}`}>
+                      {/* <div className={`dropdown-icon ${dropdownStates.state ? 'rotated' : ''}`}>
                         {dropdownStates.state ? <FaChevronUp /> : <FaChevronDown />}
-                      </div>
+                      </div> */}
                     </div>
                   </div>
 
