@@ -20,7 +20,7 @@ const AboutUs = () => {
 
   // Add this function to handle navigation
   const handleShopProducts = () => {
-    navigate('/brands/iyappaa'); 
+    navigate('/brands/iyappaa');
   };
 
   const teamMembers = [
@@ -97,7 +97,7 @@ const AboutUs = () => {
 
       <div className="about-us-page">
         {/* Our Journey Section */}
-        <section className="about-section journey-section" 
+        <section className="about-section journey-section"
         // style={{
         //   backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
         // }}
@@ -157,11 +157,11 @@ const AboutUs = () => {
         </section>
 
         {/* Values Section */}
-        <section className="about-section values-section" 
+        <section className="about-section values-section"
         // style={{
         //   backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`
         //   }}
-          >
+        >
           <div className="about-container">
             <div className="about-section-header">
               <h2>Our Core Values</h2>

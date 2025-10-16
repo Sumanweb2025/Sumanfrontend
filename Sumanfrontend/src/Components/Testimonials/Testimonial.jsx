@@ -18,7 +18,7 @@ const Testimonials = () => {
     {
       id: 2,
       name: "Rajesh Kumar",
-      location: "Coimbatore", 
+      location: "Coimbatore",
       rating: 5,
       comment: "Best rice I've ever purchased online. The packaging was excellent and the rice quality is top-notch. Highly recommended!",
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face"
@@ -90,8 +90,8 @@ const Testimonials = () => {
 
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, index) => (
-      <span 
-        key={index} 
+      <span
+        key={index}
         className={`star ${index < rating ? 'filled' : ''}`}
       >
         ★
@@ -108,8 +108,8 @@ const Testimonials = () => {
         </div>
 
         <div className="testimonials-content">
-          <button 
-            className="nav-button prev-button" 
+          <button
+            className="nav-button prev-button"
             onClick={handlePrev}
             disabled={isAnimating}
           >
@@ -126,8 +126,8 @@ const Testimonials = () => {
                 </div>
               </div>
               <div className="testimonial-author">
-                <img 
-                  src={testimonials[currentIndex].image} 
+                <img
+                  src={testimonials[currentIndex].image}
                   alt={testimonials[currentIndex].name}
                   className="author-image"
                 />
@@ -139,8 +139,8 @@ const Testimonials = () => {
             </div>
           </div>
 
-          <button 
-            className="nav-button next-button" 
+          <button
+            className="nav-button next-button"
             onClick={handleNext}
             disabled={isAnimating}
           >

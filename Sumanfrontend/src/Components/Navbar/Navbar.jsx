@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Navbar.css';
-import { 
-  FaPhoneAlt, 
+import {
+  FaPhoneAlt,
   FaChevronDown,
   FaStore,
   FaBars,
   FaTimes
 } from 'react-icons/fa';
-import { 
+import {
   MdHome,
   MdPerson,
   MdCake,
@@ -67,9 +67,9 @@ const Navbar = () => {
     { name: 'SWEETS', icon: <MdCake style={{ color: '#000000' }} />, path: '/sweets' },
     { name: 'SNACKS', icon: <MdFastfood style={{ color: '#000000' }} />, path: '/snacks' },
     { name: 'GROCERIES', icon: <MdShoppingCart style={{ color: '#000000' }} />, path: '/groceries' },
-    { 
-      name: 'BRANDS', 
-      icon: <FaStore style={{ color: '#000000' }} />, 
+    {
+      name: 'BRANDS',
+      icon: <FaStore style={{ color: '#000000' }} />,
       isDropdown: true
     }
   ];
@@ -85,8 +85,8 @@ const Navbar = () => {
     <div className={`Header-navbar ${isScrolled ? 'navbar-fixed' : ''}`}>
       {/* All Categories Button - Always Visible */}
       <div className="all-categories-dropdown" ref={dropdownRef}>
-        <button 
-          className="all-categories-btn" 
+        <button
+          className="all-categories-btn"
           onClick={() => setShowBrands(!showBrands)}
         >
           <FaBars className="hamburger-icon" />
@@ -98,8 +98,8 @@ const Navbar = () => {
             {allCategoriesItems.map((item) => (
               <div key={item.name}>
                 {item.isDropdown ? (
-                  <div 
-                    className="dropdown-section brands-section" 
+                  <div
+                    className="dropdown-section brands-section"
                     ref={brandDropdownRef}
                     onMouseEnter={() => setShowBrandDropdown(true)}
                     onMouseLeave={() => setShowBrandDropdown(false)}
@@ -143,20 +143,20 @@ const Navbar = () => {
 
       {/* Mobile Navigation Menu */}
       <div className="mobile-nav-toggle mobile-tablet-only" ref={mobileNavRef}>
-        <button 
-          className="mobile-nav-btn" 
+        <button
+          className="mobile-nav-btn"
           onClick={() => setShowMobileNav(!showMobileNav)}
         >
           {showMobileNav ? <FaTimes /> : <FaBars />}
         </button>
-        
+
         {/* Mobile Navigation Dropdown */}
         {showMobileNav && (
           <div className="mobile-nav-dropdown">
             {categories.map((category) => (
-              <Link 
-                key={category.name} 
-                to={category.path} 
+              <Link
+                key={category.name}
+                to={category.path}
                 className="mobile-nav-item"
                 onClick={() => setShowMobileNav(false)}
               >

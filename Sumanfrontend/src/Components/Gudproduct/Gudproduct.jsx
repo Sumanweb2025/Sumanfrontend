@@ -424,7 +424,7 @@ const FeaturedProducts = () => {
 
   // Handle shop now click
   const handleShopNow = () => {
-    console.log('Shop now clicked for category:', activeCategory);
+    // console.log('Shop now clicked for category:', activeCategory);
     if (activeCategory === 'sweets') {
       navigate('/sweets');
     } else if (activeCategory === 'snacks') {

@@ -224,7 +224,7 @@ const AdminProfile = ({ api, adminToken, setIsLoading, setError, handleApiError 
       // Step 2: Upload new image if selected
       let imageUrl = null;
       if (profileImage) {
-        console.log('Uploading new profile image...');
+        //console.log('Uploading new profile image...');
 
         const formDataObj = new FormData();
         formDataObj.append('profileImage', profileImage);

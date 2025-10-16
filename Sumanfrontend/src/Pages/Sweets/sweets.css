@@ -21,8 +21,10 @@
   color: #333;
   font-weight: 500;
 }
+
 .sweets-link:hover {
-  color: #666;         /* Darker blue on hover */
+  color: #666;
+  /* Darker blue on hover */
   text-decoration: underline;
 }
 
@@ -294,7 +296,7 @@
   position: relative;
   z-index: 3;
   transform: translateY(0);
-  opacity:1;
+  opacity: 1;
 }
 
 .sweets-product-image.secondary-image {
@@ -302,23 +304,27 @@
   top: 0;
   left: 0;
   z-index: 4;
-  transform: translateY(100%); /* Start from bottom, hidden */
+  transform: translateY(100%);
+  /* Start from bottom, hidden */
   opacity: 0;
 }
 
 /* UPDATED: Hover Effects - Bottom to Top Background Color Reveal */
 .sweets-product-image-container:hover::before {
-  height: 100%; /* Background color fills from bottom to top */
+  height: 100%;
+  /* Background color fills from bottom to top */
 }
 
 /* UPDATED: Hover Effects - Top to Bottom Slide */
 .sweets-product-image-container:hover .primary-image {
-  transform: translateY(-10px); /* Slight lift */
-  opacity: 0; 
+  transform: translateY(-10px);
+  /* Slight lift */
+  opacity: 0;
 }
 
 .sweets-product-image-container:hover .secondary-image {
-  transform: translateY(0); /* Secondary image slides from bottom to top */
+  transform: translateY(0);
+  /* Secondary image slides from bottom to top */
   opacity: 1;
 }
 
@@ -348,7 +354,8 @@
   cursor: pointer;
   font-size: 16px;
   transition: all 0.3s ease;
-  z-index: 10; /* Higher z-index to stay on top */
+  z-index: 10;
+  /* Higher z-index to stay on top */
 }
 
 .sweets-wishlist-btn:hover {
@@ -359,6 +366,36 @@
 .sweets-wishlist-btn.active {
   color: #e91e63;
   background: white;
+}
+
+/* Offer Badge */
+.sweets-offer-badge {
+  position: absolute;
+  top: 50px;
+  left: 10px;
+  background: linear-gradient(135deg, #e31e24 0%, #e31e24 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+  animation: pulse 2s ease-in-out infinite;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
 }
 
 /* Product Info */
@@ -401,11 +438,32 @@
   margin-left: 5px;
 }
 
+.sweets-product-price-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
 .sweets-product-price {
   font-size: 18px;
   font-weight: bold;
   color: #28a745;
   margin-bottom: 5px;
+}
+
+.sweets-discounted-price {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ff6b6b;
+}
+
+.sweets-original-price {
+  font-size: 16px;
+  color: #999;
+  text-decoration: line-through;
+  font-weight: 500;
 }
 
 .sweets-product-piece {
@@ -600,12 +658,12 @@
     max-width: 1400px;
     padding: 30px;
   }
-  
+
   .sweets-products-grid {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 25px;
   }
-  
+
   .sweets-sidebar {
     width: 320px;
   }
@@ -617,12 +675,12 @@
     max-width: 1100px;
     padding: 25px;
   }
-  
+
   .sweets-products-grid {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
   }
-  
+
   .sweets-sidebar {
     width: 280px;
   }
@@ -633,12 +691,12 @@
   .sweets-container {
     padding: 20px;
   }
-  
+
   .sweets-page-content {
     flex-direction: column;
     gap: 20px;
   }
-  
+
   .sweets-sidebar {
     width: 100%;
     position: static;
@@ -648,7 +706,7 @@
     gap: 20px;
     padding: 15px;
   }
-  
+
   .sweets-filter-section {
     margin-bottom: 0;
     border-bottom: none;
@@ -656,28 +714,28 @@
     border-right: 1px solid #eee;
     padding-right: 15px;
   }
-  
+
   .sweets-filter-section:last-child {
     border-right: none;
     padding-right: 0;
   }
-  
+
   .sweets-products-grid {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 18px;
   }
-  
+
   .sweets-page-header {
     flex-direction: column;
     gap: 15px;
     text-align: center;
     padding: 15px;
   }
-  
+
   .sweets-page-header h1 {
     font-size: 24px;
   }
-  
+
   .sweets-sort-controls {
     justify-content: center;
   }
@@ -688,12 +746,12 @@
   .sweets-container {
     padding: 15px;
   }
-  
+
   .sweets-page-content {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .sweets-sidebar {
     width: 100%;
     position: static;
@@ -701,41 +759,41 @@
     display: block;
     padding: 12px;
   }
-  
+
   .sweets-filter-section {
     margin-bottom: 20px;
     border-bottom: 1px solid #eee;
     padding-bottom: 15px;
   }
-  
+
   .sweets-products-grid {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 15px;
   }
-  
+
   .sweets-page-header {
     flex-direction: column;
     gap: 12px;
     text-align: center;
     padding: 12px;
   }
-  
+
   .sweets-page-header h1 {
     font-size: 22px;
   }
-  
+
   .sweets-product-image-container {
     height: 180px;
   }
-  
+
   .sweets-product-info {
     padding: 12px;
   }
-  
+
   .sweets-product-name {
     font-size: 14px;
   }
-  
+
   .sweets-product-price {
     font-size: 16px;
   }
@@ -746,130 +804,130 @@
   .sweets-container {
     padding: 10px;
   }
-  
+
   .sweets-page-content {
     flex-direction: column;
     gap: 10px;
   }
-  
+
   .sweets-sidebar {
     width: 100%;
     position: static;
     margin-bottom: 15px;
     padding: 12px;
   }
-  
+
   .sweets-filter-section {
     margin-bottom: 15px;
     border-bottom: 1px solid #eee;
     padding-bottom: 12px;
   }
-  
+
   .sweets-filter-section h3 {
     font-size: 14px;
     margin-bottom: 10px;
   }
-  
+
   .sweets-products-grid {
     grid-template-columns: repeat(auto-fill, minmax(370px, 1fr));
     gap: 12px;
   }
-  
+
   .sweets-page-header {
     flex-direction: column;
     gap: 10px;
     text-align: center;
     padding: 10px;
   }
-  
+
   .sweets-page-header h1 {
     font-size: 20px;
   }
-  
+
   .sweets-sort-controls {
     justify-content: center;
     flex-wrap: wrap;
   }
-  
+
   .sweets-sort-select {
     font-size: 12px;
     padding: 6px 10px;
   }
-  
+
   .sweets-product-card {
     border-radius: 6px;
   }
-  
+
   .sweets-product-image-container {
     height: 160px;
   }
-  
+
   .sweets-product-info {
     padding: 10px;
   }
-  
+
   .sweets-product-name {
     font-size: 13px;
     line-height: 1.2;
   }
-  
+
   .sweets-product-brand {
     font-size: 11px;
   }
-  
+
   .sweets-product-price {
     font-size: 15px;
   }
-  
+
   .sweets-product-piece {
     font-size: 11px;
   }
-  
+
   .sweet-add-to-cart-btn {
     padding: 8px;
     font-size: 12px;
   }
-  
+
   .sweets-wishlist-btn {
     width: 30px;
     height: 30px;
     font-size: 14px;
   }
-  
+
   .sweets-pagination {
     gap: 3px;
     flex-wrap: wrap;
     justify-content: center;
   }
-  
+
   .sweets-pagination-btn {
     padding: 6px 10px;
     font-size: 12px;
   }
-  
+
   .sweets-deal-items {
     gap: 8px;
   }
-  
+
   .sweets-deal-image {
     width: 40px;
     height: 40px;
   }
-  
+
   .sweets-deal-name {
     font-size: 12px;
   }
-  
+
   .sweets-deal-price {
     font-size: 13px;
   }
-  
+
   .sweet-gram-button {
     padding: 2px 6px;
     font-size: 9px;
     min-width: 35px;
   }
-  
+
   .sweet-gram-variants {
     gap: 3px;
   }
@@ -881,28 +939,28 @@
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 10px;
   }
-  
+
   .sweets-product-image-container {
     height: 140px;
   }
-  
+
   .sweets-product-info {
     padding: 8px;
   }
-  
+
   .sweets-product-name {
     font-size: 12px;
   }
-  
+
   .sweets-product-price {
     font-size: 14px;
   }
-  
+
   .sweet-add-to-cart-btn {
     padding: 6px;
     font-size: 11px;
   }
-  
+
   .sweet-gram-button {
     padding: 2px 4px;
     font-size: 8px;

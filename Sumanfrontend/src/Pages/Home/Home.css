@@ -1,5 +1,5 @@
-.home-container{
-   overflow: hidden;
+.home-container {
+  overflow: hidden;
 }
 
 /* Full Width Image Carousel */
@@ -158,21 +158,21 @@
   .image-carousel-section {
     height: 400px;
   }
-  
+
   .carousel-nav {
     width: 45px;
     height: 45px;
   }
-  
+
   .carousel-nav svg {
     width: 20px;
     height: 20px;
   }
-  
+
   .carousel-nav-prev {
     left: 15px;
   }
-  
+
   .carousel-nav-next {
     right: 15px;
   }
@@ -182,25 +182,25 @@
   .image-carousel-section {
     height: 300px;
   }
-  
+
   .carousel-nav {
     width: 40px;
     height: 40px;
   }
-  
+
   .carousel-nav svg {
     width: 18px;
     height: 18px;
   }
-  
+
   .carousel-nav-prev {
     left: 10px;
   }
-  
+
   .carousel-nav-next {
     right: 10px;
   }
-  
+
   .pagination-dot {
     width: 10px;
     height: 10px;
@@ -211,23 +211,23 @@
   .image-carousel-section {
     height: 250px;
   }
-  
+
   .carousel-nav {
     width: 35px;
     height: 35px;
   }
-  
+
   .carousel-nav svg {
     width: 16px;
     height: 16px;
   }
-  
+
   .pagination-dot {
     width: 8px;
     height: 8px;
     gap: 8px;
   }
-  
+
   .carousel-pagination {
     bottom: 15px;
     gap: 8px;

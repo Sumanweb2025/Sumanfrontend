@@ -167,7 +167,7 @@
 .little-krishna-categories-section {
   margin: 40px 0;
   text-align: center;
-  
+
 }
 
 .little-krishna-categories-title {
@@ -243,17 +243,23 @@
   font-size: 14px;
   color: #666;
 }
+
 .little-krishna-breadcrumb .little-krishna-link {
-  color: #666;         /* Blue link color */
-  cursor: pointer;        /* Hand cursor */
-  text-decoration: none;  /* No underline by default */
+  color: #666;
+  /* Blue link color */
+  cursor: pointer;
+  /* Hand cursor */
+  text-decoration: none;
+  /* No underline by default */
   transition: color 0.2s ease-in-out;
 }
 
 .little-krishna-breadcrumb .little-krishna-link:hover {
-  color: #666;         /* Darker blue on hover */
+  color: #666;
+  /* Darker blue on hover */
   text-decoration: underline;
 }
+
 .little-krishna-breadcrumb .little-krishna-current {
   color: #333;
   font-weight: 500;
@@ -435,7 +441,7 @@
 
 /* Page Header */
 .little-krishna-main-content .little-krishna-page-header {
-   display: flex;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
@@ -541,7 +547,7 @@
   position: relative;
   z-index: 3;
   transform: translateY(0);
-  opacity:1;
+  opacity: 1;
 }
 
 .little-krishna-product-image.secondary-image {
@@ -549,23 +555,27 @@
   top: 0;
   left: 0;
   z-index: 4;
-  transform: translateY(100%); /* Start from bottom, hidden */
+  transform: translateY(100%);
+  /* Start from bottom, hidden */
   opacity: 0;
 }
 
 /* UPDATED: Hover Effects - Bottom to Top Background Color Reveal */
 .little-krishna-product-image-container:hover::before {
-  height: 100%; /* Background color fills from bottom to top */
+  height: 100%;
+  /* Background color fills from bottom to top */
 }
 
 /* Hover Effects */
 .little-krishna-product-image-container:hover .primary-image {
-   transform: translateY(-10px); /* Slight lift */
-  opacity: 0; 
+  transform: translateY(-10px);
+  /* Slight lift */
+  opacity: 0;
 }
 
 .little-krishna-product-image-container:hover .secondary-image {
-  transform: translateY(0); /* Secondary image slides from bottom to top */
+  transform: translateY(0);
+  /* Secondary image slides from bottom to top */
   opacity: 1;
 }
 
@@ -636,6 +646,36 @@
   border: 1px solid rgba(244, 67, 54, 0.3);
 }
 
+/* Offer Badge */
+.little-krishna-offer-badge {
+  position: absolute;
+  top: 50px;
+  left: 10px;
+  background: linear-gradient(135deg, #e31e24 0%, #e31e24 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+  animation: pulse 2s ease-in-out infinite;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
 /* Product Info */
 .little-krishna-product-info {
   padding: 15px;
@@ -685,11 +725,32 @@
   margin-left: 5px;
 }
 
+.little-krishna-product-price-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
 .little-krishna-product-price {
   font-size: 20px;
   font-weight: bold;
   color: #2e7d32;
   margin-bottom: 5px;
+}
+
+.little-krishna-discounted-price {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ff6b6b;
+}
+
+.little-krishna-original-price {
+  font-size: 16px;
+  color: #999;
+  text-decoration: line-through;
+  font-weight: 500;
 }
 
 .little-krishna-product-piece {
@@ -968,7 +1029,7 @@
   }
 
   .little-krishna-main-content .little-krishna-page-header {
-    display:flex;
+    display: flex;
     flex-direction: column;
     gap: 15px;
     text-align: center;
@@ -1068,7 +1129,7 @@
   }
 
   .little-krishna-main-content .little-krishna-page-header {
-    display:flex;
+    display: flex;
     flex-direction: column;
     gap: 12px;
     text-align: center;
@@ -1141,7 +1202,7 @@
   }
 
   .little-krishna-main-content .little-krishna-page-header {
-    display:flex;
+    display: flex;
     flex-direction: column;
     gap: 10px;
     text-align: center;

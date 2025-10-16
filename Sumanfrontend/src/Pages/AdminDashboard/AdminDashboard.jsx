@@ -27,11 +27,11 @@ const api = {
         'Authorization': `Bearer ${token}`,
       },
     });
-    
+
     if (!response.ok) {
       throw new Error(`API Error: ${response.status}`);
     }
-    
+
     return await response.json();
   },
 
@@ -44,11 +44,11 @@ const api = {
       },
       body: JSON.stringify(data),
     });
-    
+
     if (!response.ok) {
       throw new Error(`API Error: ${response.status}`);
     }
-    
+
     return await response.json();
   },
 
@@ -61,11 +61,11 @@ const api = {
       },
       body: JSON.stringify(data),
     });
-    
+
     if (!response.ok) {
       throw new Error(`API Error: ${response.status}`);
     }
-    
+
     return await response.json();
   },
 
@@ -77,11 +77,11 @@ const api = {
         'Authorization': `Bearer ${token}`,
       },
     });
-    
+
     if (!response.ok) {
       throw new Error(`API Error: ${response.status}`);
     }
-    
+
     return await response.json();
   }
 };
@@ -93,7 +93,7 @@ const AdminDashboard = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [adminToken, setAdminToken] = useState(localStorage.getItem('adminToken'));
-  
+
   // Check authentication
   useEffect(() => {
     if (!adminToken) {
@@ -108,7 +108,7 @@ const AdminDashboard = () => {
     console.error('API Error:', error);
     setError(error.message);
     setIsLoading(false);
-    
+
     if (error.message.includes('401')) {
       localStorage.removeItem('adminToken');
       window.location.href = '/admin/login';
@@ -160,49 +160,49 @@ const AdminDashboard = () => {
 
   return (
     <>
-    <div className="admin-dashboard">
-      {/* Sidebar */}
-      <Sidebar 
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        isMobileMenuOpen={isMobileMenuOpen}
-        setIsMobileMenuOpen={setIsMobileMenuOpen}
-      />
-      
-      {/* Main Content */}
-      <div className="admin-main-content">
-        {/* Header */}
-        <Header 
+      <div className="admin-dashboard">
+        {/* Sidebar */}
+        <Sidebar
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
           isMobileMenuOpen={isMobileMenuOpen}
           setIsMobileMenuOpen={setIsMobileMenuOpen}
-          api={api}
-          adminToken={adminToken}
-          setError={setError}
-          setActiveTab={setActiveTab} 
         />
-        
-        {/* Content Area */}
-        <div className="admin-content">
-          {/* Loading Overlay */}
-          {isLoading && (
-            <div className="admin-loading-overlay">
-              <div className="loading-spinner"></div>
-            </div>
-          )}
-          
-          {/* Error Message */}
-          {error && (
-            <div className="admin-error-message">
-              <span>{error}</span>
-              <button onClick={() => setError(null)} className="error-close">×</button>
-            </div>
-          )}
-          
-          {/* Active Component */}
-          {renderActiveComponent()}
+
+        {/* Main Content */}
+        <div className="admin-main-content">
+          {/* Header */}
+          <Header
+            isMobileMenuOpen={isMobileMenuOpen}
+            setIsMobileMenuOpen={setIsMobileMenuOpen}
+            api={api}
+            adminToken={adminToken}
+            setError={setError}
+            setActiveTab={setActiveTab}
+          />
+
+          {/* Content Area */}
+          <div className="admin-content">
+            {/* Loading Overlay */}
+            {isLoading && (
+              <div className="admin-loading-overlay">
+                <div className="loading-spinner"></div>
+              </div>
+            )}
+
+            {/* Error Message */}
+            {error && (
+              <div className="admin-error-message">
+                <span>{error}</span>
+                <button onClick={() => setError(null)} className="error-close">×</button>
+              </div>
+            )}
+
+            {/* Active Component */}
+            {renderActiveComponent()}
+          </div>
         </div>
       </div>
-    </div>
     </>
   );
 };

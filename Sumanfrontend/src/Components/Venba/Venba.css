@@ -168,26 +168,32 @@
 .venba-categories-section {
   margin: 40px 0;
   text-align: center;
- }
- .venba-breadcrumb {
+}
+
+.venba-breadcrumb {
   font-size: 14px;
   margin-bottom: 20px;
   color: #666;
 }
+
 .venba-breadcrumb .venba-link {
   color: #666;
   cursor: pointer;
   text-decoration: none;
   transition: color 0.2s ease-in-out;
 }
+
 .venba-breadcrumb .venba-link:hover {
-  color: #666;         /* Darker blue on hover */
+  color: #666;
+  /* Darker blue on hover */
   text-decoration: underline;
 }
+
 .venba-breadcrumb .venba-current {
   color: #333;
   font-weight: 500;
 }
+
 .categories-title {
   font-size: 1.8rem;
   color: #333;
@@ -274,8 +280,8 @@
   align-items: flex-start;
 }
 
-.venba-main-content .venba-page-header{
-  display:flex;
+.venba-main-content .venba-page-header {
+  display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
@@ -443,7 +449,7 @@
 
 /* Page Header */
 .venba-main-content .venba-page-header {
-   display: flex;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
@@ -508,6 +514,7 @@
   position: relative;
   border: 1px solid #e0e0e0;
 }
+
 .venba-product-image-container {
   position: relative;
   width: 100%;
@@ -548,7 +555,7 @@
   position: relative;
   z-index: 3;
   transform: translateY(0);
-  opacity:1;
+  opacity: 1;
 }
 
 .venba-product-image.secondary-image {
@@ -556,23 +563,27 @@
   top: 0;
   left: 0;
   z-index: 4;
-  transform: translateY(100%); /* Start from bottom, hidden */
+  transform: translateY(100%);
+  /* Start from bottom, hidden */
   opacity: 0;
 }
 
 /* UPDATED: Hover Effects - Bottom to Top Background Color Reveal */
 .venba-product-image-container:hover::before {
-  height: 100%; /* Background color fills from bottom to top */
+  height: 100%;
+  /* Background color fills from bottom to top */
 }
 
 /* Hover Effects */
 .venba-product-image-container:hover .primary-image {
-  transform: translateY(-10px); /* Slight lift */
-  opacity: 0; 
+  transform: translateY(-10px);
+  /* Slight lift */
+  opacity: 0;
 }
 
 .venba-product-image-container:hover .secondary-image {
-  transform: translateY(0); /* Secondary image slides from bottom to top */
+  transform: translateY(0);
+  /* Secondary image slides from bottom to top */
   opacity: 1;
 }
 
@@ -643,6 +654,36 @@
   border: 1px solid rgba(244, 67, 54, 0.3);
 }
 
+/* Offer Badge */
+.venba-offer-badge {
+  position: absolute;
+  top: 50px;
+  left: 10px;
+  background: linear-gradient(135deg, #e31e24 0%, #e31e24 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+  animation: pulse 2s ease-in-out infinite;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
 /* Product Info */
 .venba-product-info {
   padding: 15px;
@@ -692,11 +733,32 @@
   margin-left: 5px;
 }
 
+.venba-product-price-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
 .venba-product-price {
   font-size: 20px;
   font-weight: bold;
   color: #2e7d32;
   margin-bottom: 5px;
+}
+
+.venba-discounted-price {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ff6b6b;
+}
+
+.venba-original-price {
+  font-size: 16px;
+  color: #999;
+  text-decoration: line-through;
+  font-weight: 500;
 }
 
 .venba-product-piece {
@@ -800,6 +862,7 @@
   font-weight: 500;
   color: #495057;
 }
+
 /* Pagination */
 .venba-pagination {
   display: flex;
@@ -866,6 +929,7 @@
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -877,6 +941,7 @@
     opacity: 0;
     transform: translateY(50px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -903,12 +968,12 @@
     max-width: 1400px;
     padding: 30px;
   }
-  
+
   .venba-products-grid {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 25px;
   }
-  
+
   .venba-sidebar {
     width: 320px;
   }
@@ -920,12 +985,12 @@
     max-width: 1100px;
     padding: 25px;
   }
-  
+
   .venba-products-grid {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
   }
-  
+
   .venba-sidebar {
     width: 280px;
   }
@@ -936,12 +1001,12 @@
   .venba-container {
     padding: 20px;
   }
-  
+
   .venba-page-content {
     flex-direction: column;
     gap: 20px;
   }
-  
+
   .venba-sidebar {
     width: 100%;
     position: static;
@@ -951,7 +1016,7 @@
     gap: 20px;
     padding: 15px;
   }
-  
+
   .venba-filter-section {
     margin-bottom: 0;
     border-bottom: none;
@@ -959,29 +1024,29 @@
     border-right: 1px solid #eee;
     padding-right: 15px;
   }
-  
+
   .venba-filter-section:last-child {
     border-right: none;
     padding-right: 0;
   }
-  
+
   .venba-products-grid {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 18px;
   }
-  
+
   .venba-main-content .venba-page-header {
-    display:flex;
+    display: flex;
     flex-direction: column;
     gap: 15px;
     text-align: center;
     padding: 15px;
   }
-  
+
   .venba-page-header h1 {
     font-size: 24px;
   }
-  
+
   .venba-sort-controls {
     justify-content: center;
   }
@@ -1009,18 +1074,18 @@
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     gap: 15px;
   }
-  
+
   .categories-title {
     font-size: 1.5rem;
     margin-bottom: 25px;
   }
-  
+
   .venba-category-image {
     width: 50px;
     height: 50px;
     margin-bottom: 10px;
   }
-  
+
   .venba-category-name {
     font-size: 0.8rem;
   }
@@ -1045,12 +1110,12 @@
   .venba-container {
     padding: 15px;
   }
-  
+
   .venba-page-content {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .venba-sidebar {
     width: 100%;
     position: static;
@@ -1058,52 +1123,52 @@
     display: block;
     padding: 15px;
   }
-  
+
   .venba-filter-section {
     margin-bottom: 20px;
     border-bottom: 1px solid #eee;
     padding-bottom: 15px;
   }
-  
+
   .venba-products-grid {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 15px;
   }
-  
+
   .venba-main-content .venba-page-header {
-    display:flex;
+    display: flex;
     flex-direction: column;
     gap: 12px;
     text-align: center;
     padding: 12px;
   }
-  
+
   .venba-page-header h1 {
     font-size: 22px;
   }
-  
+
   .venba-product-image-container {
     height: 180px;
   }
-  
+
   .venba-product-info {
     padding: 12px;
   }
-  
+
   .venba-product-name {
     font-size: 14px;
   }
-  
+
   .venba-product-price {
     font-size: 16px;
   }
-  
+
   .venba-gram-button {
     padding: 3px 8px;
     font-size: 10px;
     min-width: 40px;
   }
-  
+
   .venba-gram-variants {
     gap: 4px;
   }
@@ -1114,121 +1179,121 @@
   .venba-container {
     padding: 10px;
   }
-  
+
   .venba-page-content {
     flex-direction: column;
     gap: 10px;
   }
-  
+
   .venba-sidebar {
     width: 100%;
     position: static;
     margin-bottom: 15px;
     padding: 12px;
   }
-  
+
   .venba-filter-section {
     margin-bottom: 15px;
     border-bottom: 1px solid #eee;
     padding-bottom: 12px;
   }
-  
+
   .venba-filter-section h3 {
     font-size: 14px;
     margin-bottom: 10px;
   }
-  
+
   .venba-products-grid {
     grid-template-columns: repeat(auto-fill, minmax(370px, 1fr));
     gap: 12px;
   }
-  
+
   .venba-main-content .venba-page-header {
-    display:flex;
+    display: flex;
     flex-direction: column;
     gap: 10px;
     text-align: center;
     padding: 10px;
   }
-  
+
   .venba-page-header h1 {
     font-size: 20px;
   }
-  
+
   .venba-sort-controls {
     justify-content: center;
     flex-wrap: wrap;
   }
-  
+
   .venba-sort-select {
     font-size: 12px;
     padding: 6px 10px;
   }
-  
+
   .venba-product-card {
     border-radius: 6px;
   }
-  
+
   .venba-product-image-container {
     height: 160px;
   }
-  
+
   .venba-product-info {
     padding: 10px;
   }
-  
+
   .venba-product-name {
     font-size: 13px;
     line-height: 1.2;
   }
-  
+
   .venba-product-brand {
     font-size: 11px;
   }
-  
+
   .venba-product-price {
     font-size: 15px;
   }
-  
+
   .venba-product-piece {
     font-size: 11px;
   }
-  
+
   .venba-add-to-cart-btn {
     padding: 8px;
     font-size: 12px;
   }
-  
+
   .venba-wishlist-btn {
     width: 30px;
     height: 30px;
     font-size: 14px;
   }
-  
+
   .venba-pagination {
     gap: 3px;
     flex-wrap: wrap;
     justify-content: center;
   }
-  
+
   .venba-pagination-btn {
     padding: 6px 10px;
     font-size: 12px;
   }
-  
+
   .venba-deal-items {
     gap: 8px;
   }
-  
+
   .venba-deal-image {
     width: 40px;
     height: 40px;
   }
-  
+
   .venba-deal-name {
     font-size: 12px;
   }
-  
+
   .venba-deal-price {
     font-size: 13px;
   }
@@ -1256,17 +1321,17 @@
     grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
     gap: 10px;
   }
-  
+
   .categories-title {
     font-size: 1.3rem;
     margin-bottom: 20px;
   }
-  
+
   .venba-category-image {
     width: 40px;
     height: 40px;
   }
-  
+
   .venba-category-name {
     font-size: 0.7rem;
   }
@@ -1290,7 +1355,7 @@
     font-size: 9px;
     min-width: 35px;
   }
-  
+
   .venba-gram-variants {
     gap: 3px;
   }
@@ -1302,28 +1367,28 @@
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 10px;
   }
-  
+
   .venba-product-image-container {
     height: 140px;
   }
-  
+
   .venba-product-info {
     padding: 8px;
   }
-  
+
   .venba-product-name {
     font-size: 12px;
   }
-  
+
   .venba-product-price {
     font-size: 14px;
   }
-  
+
   .venba-add-to-cart-btn {
     padding: 6px;
     font-size: 11px;
   }
-  
+
   .venba-gram-button {
     padding: 2px 4px;
     font-size: 8px;
@@ -1383,9 +1448,11 @@
     transform: translateX(-100%) translateY(-100%) rotate(45deg);
     opacity: 0;
   }
+
   50% {
     opacity: 1;
   }
+
   100% {
     transform: translateX(100%) translateY(100%) rotate(45deg);
     opacity: 0;

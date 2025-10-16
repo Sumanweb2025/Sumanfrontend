@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 const categories = [
   {
     title: 'SWEETS',
-    
+
     // img: 'https://images.unsplash.com/photo-1582716401301-b2407dc7563d?w=200&h=200&fit=crop&crop=center',
     img: Sweetimg,
     alt: 'Indian Sweets',
@@ -35,7 +35,7 @@ const categories = [
     className: 'heat-eat',
     comingSoon: true,
   },
-  
+
   {
     title: 'NUTRITIONS',
     img: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=200&h=200&fit=crop&crop=center',

@@ -6,7 +6,7 @@ import Ourproduct1 from "../../Components/Ourproduct1/Ourproduct1";
 import GutProduct from '../../Components/Gudproduct/Gudproduct';
 import Offer from '../../Components/Offer/Offer';
 import Banner from '../../Components/ShippingBanner/ShippingBanner';
-import Testimonials from '../../Components/Testimonials/Testimonial'; 
+import Testimonials from '../../Components/Testimonials/Testimonial';
 import Footer from '../../Components/Footer/Footer';
 import GuestWelcomeModal from '../../Components/GuestPopup/GuestPopup'; // NEW
 import './Home.css';
@@ -19,7 +19,7 @@ import homeheader4 from '../../assets/little krishna home header.png';
 const Home = () => {
   const [loading, setLoading] = useState(true);
   const [showGuestModal, setShowGuestModal] = useState(false); // NEW
-  
+
   // Background images array
   const carouselImages = [
     { url: homeheader1 },
@@ -31,20 +31,23 @@ const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  
+  const [hasSelectedOption, setHasSelectedOption] = useState(false); // Track if user selected an option
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-      
-      // NEW: Check if user has seen the modal and is not logged in
-      const hasSeenModal = localStorage.getItem('hasSeenGuestModal');
+
+      // NEW: Check if user has selected an option and is not logged in
+      const userSelectedOption = localStorage.getItem('userSelectedOption');
       const token = localStorage.getItem('token');
-      
-      if (!hasSeenModal && !token) {
+
+      if (!userSelectedOption && !token) {
         // Show modal after 1 second delay
         setTimeout(() => {
           setShowGuestModal(true);
         }, 1000);
+      } else if (userSelectedOption) {
+        setHasSelectedOption(true);
       }
     }, 1000);
 
@@ -53,18 +56,26 @@ const Home = () => {
 
   // NEW: Handle guest modal actions
   const handleContinueAsGuest = () => {
-    localStorage.setItem('hasSeenGuestModal', 'true');
+    localStorage.setItem('userSelectedOption', 'guest');
     localStorage.setItem('userType', 'guest');
-    
+
     // Generate and store session ID for guest
     const sessionId = generateSessionId();
     localStorage.setItem('guestSessionId', sessionId);
-    
+
+    setHasSelectedOption(true);
     setShowGuestModal(false);
   };
 
-  const handleCloseGuestModal = () => {
-    localStorage.setItem('hasSeenGuestModal', 'true');
+  const handleSignIn = () => {
+    localStorage.setItem('userSelectedOption', 'signin');
+    setHasSelectedOption(true);
+    setShowGuestModal(false);
+  };
+
+  const handleCloseModal = () => {
+    // Just close the modal without saving selection
+    // Popup will reappear on scroll since user hasn't selected an option
     setShowGuestModal(false);
   };
 
@@ -72,6 +83,43 @@ const Home = () => {
   const generateSessionId = () => {
     return 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
   };
+
+  // NEW: Handle scroll event to show popup every 4 seconds
+  useEffect(() => {
+    if (hasSelectedOption || loading) return;
+
+    let scrollTimeout;
+    let showPopupInterval;
+
+    const handleScroll = () => {
+      // Clear existing timeout
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+      if (showPopupInterval) clearInterval(showPopupInterval);
+
+      // Set timeout to start showing popup after user scrolls
+      scrollTimeout = setTimeout(() => {
+        // Show popup every 4 seconds while scrolling
+        showPopupInterval = setInterval(() => {
+          const token = localStorage.getItem('token');
+          const userSelectedOption = localStorage.getItem('userSelectedOption');
+
+          if (!userSelectedOption && !token && !hasSelectedOption) {
+            setShowGuestModal(true);
+          } else {
+            if (showPopupInterval) clearInterval(showPopupInterval);
+          }
+        }, 3000);
+      }, 1000);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+      if (showPopupInterval) clearInterval(showPopupInterval);
+    };
+  }, [hasSelectedOption, loading]);
 
   // Auto slide functionality
   useEffect(() => {
@@ -112,7 +160,7 @@ const Home = () => {
     setCurrentSlide(index);
     setProgress(0);
     setIsAutoPlaying(false);
-    
+
     setTimeout(() => {
       setIsAutoPlaying(true);
     }, 3000);
@@ -142,9 +190,9 @@ const Home = () => {
 
   return (
     <>
-      <LoadingSpinner 
-        isLoading={loading} 
-        brandName="Iyappaa Sweets" 
+      <LoadingSpinner
+        isLoading={loading}
+        brandName="Iyappaa Sweets"
         loadingText="Loading our site..."
         progressColor="#3b82f6"
       />
@@ -152,15 +200,16 @@ const Home = () => {
       {/* NEW: Guest Welcome Modal */}
       <GuestWelcomeModal
         isOpen={showGuestModal}
-        onClose={handleCloseGuestModal}
         onContinueAsGuest={handleContinueAsGuest}
+        onSignIn={handleSignIn}
+        onClose={handleCloseModal}
       />
 
       <div className="home-container">
         <Header />
 
         {/* Image Carousel Section */}
-        <div 
+        <div
           className="image-carousel-section"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -170,35 +219,34 @@ const Home = () => {
               {carouselImages.map((image, index) => (
                 <div
                   key={index}
-                  className={`carousel-slide ${
-                    index === currentSlide 
-                      ? 'active' 
+                  className={`carousel-slide ${index === currentSlide
+                      ? 'active'
                       : index === currentSlide - 1 || (currentSlide === 0 && index === carouselImages.length - 1)
                         ? 'prev'
                         : 'next'
-                  }`}
+                    }`}
                   style={{ backgroundImage: `url(${image.url})` }}
                 />
               ))}
             </div>
 
-            <button 
+            <button
               className="carousel-nav carousel-nav-prev"
               onClick={prevSlide}
               aria-label="Previous image"
             >
               <svg viewBox="0 0 24 24">
-                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
               </svg>
             </button>
 
-            <button 
+            <button
               className="carousel-nav carousel-nav-next"
               onClick={nextSlide}
               aria-label="Next image"
             >
               <svg viewBox="0 0 24 24">
-                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
               </svg>
             </button>
 
@@ -213,8 +261,8 @@ const Home = () => {
             </div>
 
             <div className="carousel-progress">
-              <div 
-                className="progress-bar" 
+              <div
+                className="progress-bar"
                 style={{ width: `${progress}%` }}
               />
             </div>

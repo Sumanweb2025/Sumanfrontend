@@ -259,53 +259,53 @@
   .testimonials-section {
     padding: 40px 10px;
   }
-  
+
   .testimonials-title {
     font-size: 1.6rem;
   }
-  
+
   .testimonials-content {
     flex-direction: column;
     gap: 20px;
   }
-  
+
   .testimonial-card-container {
     margin: 0;
     order: 1;
     max-width: 100%;
   }
-  
+
   .testimonial-card {
     padding: 20px 15px;
   }
-  
+
   .nav-button {
     width: 35px;
     height: 35px;
     font-size: 1rem;
   }
-  
+
   .prev-button {
     order: 0;
   }
-  
+
   .next-button {
     order: 2;
   }
-  
+
   .testimonial-author {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .author-info {
     text-align: center;
   }
-  
+
   .testimonial-text {
     font-size: 0.95rem;
   }
-  
+
   .quote-icon {
     font-size: 2rem;
   }
@@ -315,26 +315,26 @@
   .testimonials-title {
     font-size: 1.4rem;
   }
-  
+
   .testimonial-card {
     padding: 18px 12px;
   }
-  
+
   .testimonial-text {
     font-size: 0.9rem;
   }
-  
+
   .author-image {
     width: 40px;
     height: 40px;
   }
-  
+
   .nav-button {
     width: 32px;
     height: 32px;
     font-size: 0.9rem;
   }
-  
+
   .quote-icon {
     font-size: 1.8rem;
   }

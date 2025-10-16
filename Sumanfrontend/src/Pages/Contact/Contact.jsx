@@ -60,9 +60,9 @@ const Contact = () => {
 
   const contactInfo = [
     {
-      icon: <FaPhone className="contact-icon"/>,
+      icon: <FaPhone className="contact-icon" />,
       title: 'Phone',
-      detail: '+1 647-573-6363',
+      detail: '+1 416 562 6363',
       subdetail: 'Mon–Fri, 9:30 AM – 6:30 PM'
     },
     {
@@ -99,11 +99,11 @@ const Contact = () => {
       <div className="contact-page">
         {/* Hero Section */}
         <section className="contact-hero" style={{
-            backgroundImage: `
+          backgroundImage: `
               linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
               url('https://images.unsplash.com/photo-1423666639041-f56000c27a9a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')
             `
-          }}>
+        }}>
           <div className="hero-content">
             <motion.h1
               initial={{ opacity: 0, y: -30 }}

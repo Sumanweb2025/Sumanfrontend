@@ -21,8 +21,10 @@
   color: #333;
   font-weight: 500;
 }
+
 .snacks-link:hover {
-  color: #666;         /* Darker blue on hover */
+  color: #666;
+  /* Darker blue on hover */
   text-decoration: underline;
 }
 
@@ -79,7 +81,7 @@
 }
 
 .snacks-search-input:focus {
-  border-color:#28a745;
+  border-color: #28a745;
 }
 
 /* Filter Options */
@@ -116,7 +118,7 @@
 }
 
 .snacks-price-slider {
- width: 100%;
+  width: 100%;
   accent-color: #28a745;
 }
 
@@ -291,34 +293,38 @@
 }
 
 .snacks-product-image.primary-image {
-   position: relative;
+  position: relative;
   z-index: 3;
   transform: translateY(0);
-  opacity:1;
+  opacity: 1;
 }
 
 .snacks-product-image.secondary-image {
- position: absolute;
+  position: absolute;
   top: 0;
   left: 0;
   z-index: 4;
-  transform: translateY(100%); /* Start from bottom, hidden */
+  transform: translateY(100%);
+  /* Start from bottom, hidden */
   opacity: 0;
 }
 
 /* UPDATED: Hover Effects - Bottom to Top Background Color Reveal */
 .snacks-product-image-container:hover::before {
-  height: 100%; /* Background color fills from bottom to top */
+  height: 100%;
+  /* Background color fills from bottom to top */
 }
 
 /* Hover Effects */
 .snacks-product-image-container:hover .primary-image {
-  transform: translateY(-10px); /* Slight lift */
-  opacity: 0; 
+  transform: translateY(-10px);
+  /* Slight lift */
+  opacity: 0;
 }
 
 .snacks-product-image-container:hover .secondary-image {
-  transform: translateY(0); /* Secondary image slides from bottom to top */
+  transform: translateY(0);
+  /* Secondary image slides from bottom to top */
   opacity: 1;
 }
 
@@ -362,6 +368,36 @@
   background: white;
 }
 
+/* Offer Badge */
+.snacks-offer-badge {
+  position: absolute;
+  top: 50px;
+  left: 10px;
+  background: linear-gradient(135deg, #e31e24 0%, #e31e24 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+  animation: pulse 2s ease-in-out infinite;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
 /* Product Info */
 .snacks-product-info {
   padding: 15px;
@@ -402,11 +438,32 @@
   margin-left: 5px;
 }
 
+.snacks-product-price-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
 .snacks-product-price {
   font-size: 18px;
   font-weight: bold;
   color: #28a745;
   margin-bottom: 5px;
+}
+
+.snacks-discounted-price {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ff6b6b;
+}
+
+.snacks-original-price {
+  font-size: 16px;
+  color: #999;
+  text-decoration: line-through;
+  font-weight: 500;
 }
 
 .snacks-product-piece {
@@ -416,7 +473,7 @@
 }
 
 .snack-add-to-cart-btn {
-   width: 100%;
+  width: 100%;
   padding: 10px;
   background-color: #28a745;
   color: white;
@@ -429,7 +486,7 @@
 }
 
 .snack-add-to-cart-btn:hover {
-   background-color: #218838;
+  background-color: #218838;
   transform: translateY(-1px);
 }
 
@@ -536,7 +593,7 @@
 }
 
 .snacks-pagination-btn.active {
-   background-color: #28a745;
+  background-color: #28a745;
   color: white;
   border-color: #28a745;
 }
@@ -565,6 +622,7 @@
 .empty {
   color: #666;
 }
+
 .snacks-product-stock {
   position: absolute;
   top: 10px;
@@ -601,12 +659,12 @@
     max-width: 1400px;
     padding: 30px;
   }
-  
+
   .snacks-products-grid {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 25px;
   }
-  
+
   .snacks-sidebar {
     width: 320px;
   }
@@ -618,12 +676,12 @@
     max-width: 1100px;
     padding: 25px;
   }
-  
+
   .snacks-products-grid {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
   }
-  
+
   .snacks-sidebar {
     width: 280px;
   }
@@ -634,12 +692,12 @@
   .snacks-container {
     padding: 20px;
   }
-  
+
   .snacks-page-content {
     flex-direction: column;
     gap: 20px;
   }
-  
+
   .snacks-sidebar {
     width: 100%;
     position: static;
@@ -649,7 +707,7 @@
     gap: 20px;
     padding: 15px;
   }
-  
+
   .snacks-filter-section {
     margin-bottom: 0;
     border-bottom: none;
@@ -657,28 +715,28 @@
     border-right: 1px solid #eee;
     padding-right: 15px;
   }
-  
+
   .snacks-filter-section:last-child {
     border-right: none;
     padding-right: 0;
   }
-  
+
   .snacks-products-grid {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 18px;
   }
-  
+
   .snacks-page-header {
     flex-direction: column;
     gap: 15px;
     text-align: center;
     padding: 15px;
   }
-  
+
   .snacks-page-header h1 {
     font-size: 24px;
   }
-  
+
   .snacks-sort-controls {
     justify-content: center;
   }
@@ -689,12 +747,12 @@
   .snacks-container {
     padding: 15px;
   }
-  
+
   .snacks-page-content {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .snacks-sidebar {
     width: 100%;
     position: static;
@@ -702,51 +760,51 @@
     display: block;
     padding: 15px;
   }
-  
+
   .snacks-filter-section {
     margin-bottom: 20px;
     border-bottom: 1px solid #eee;
     padding-bottom: 15px;
   }
-  
+
   .snacks-products-grid {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 15px;
   }
-  
+
   .snacks-page-header {
     flex-direction: column;
     gap: 12px;
     text-align: center;
     padding: 12px;
   }
-  
+
   .snacks-page-header h1 {
     font-size: 22px;
   }
-  
+
   .snacks-product-image-container {
     height: 180px;
   }
-  
+
   .snacks-product-info {
     padding: 12px;
   }
-  
+
   .snacks-product-name {
     font-size: 14px;
   }
-  
+
   .snacks-product-price {
     font-size: 16px;
   }
-  
+
   .snack-gram-button {
     padding: 3px 8px;
     font-size: 10px;
     min-width: 40px;
   }
-  
+
   .snack-gram-variants {
     gap: 4px;
   }
@@ -757,130 +815,130 @@
   .snacks-container {
     padding: 10px;
   }
-  
+
   .snacks-page-content {
     flex-direction: column;
     gap: 10px;
   }
-  
+
   .snacks-sidebar {
     width: 100%;
     position: static;
     margin-bottom: 15px;
     padding: 12px;
   }
-  
+
   .snacks-filter-section {
     margin-bottom: 15px;
     border-bottom: 1px solid #eee;
     padding-bottom: 12px;
   }
-  
+
   .snacks-filter-section h3 {
     font-size: 14px;
     margin-bottom: 10px;
   }
-  
+
   .snacks-products-grid {
     grid-template-columns: repeat(auto-fill, minmax(370px, 1fr));
     gap: 12px;
   }
-  
+
   .snacks-page-header {
     flex-direction: column;
     gap: 10px;
     text-align: center;
     padding: 10px;
   }
-  
+
   .snacks-page-header h1 {
     font-size: 20px;
   }
-  
+
   .snacks-sort-controls {
     justify-content: center;
     flex-wrap: wrap;
   }
-  
+
   .snacks-sort-select {
     font-size: 12px;
     padding: 6px 10px;
   }
-  
+
   .snacks-product-card {
     border-radius: 6px;
   }
-  
+
   .snacks-product-image-container {
     height: 160px;
   }
-  
+
   .snacks-product-info {
     padding: 10px;
   }
-  
+
   .snacks-product-name {
     font-size: 13px;
     line-height: 1.2;
   }
-  
+
   .snacks-product-brand {
     font-size: 11px;
   }
-  
+
   .snacks-product-price {
     font-size: 15px;
   }
-  
+
   .snacks-product-piece {
     font-size: 11px;
   }
-  
+
   .snack-add-to-cart-btn {
     padding: 8px;
     font-size: 12px;
   }
-  
+
   .snacks-wishlist-btn {
     width: 30px;
     height: 30px;
     font-size: 14px;
   }
-  
+
   .snacks-pagination {
     gap: 3px;
     flex-wrap: wrap;
     justify-content: center;
   }
-  
+
   .snacks-pagination-btn {
     padding: 6px 10px;
     font-size: 12px;
   }
-  
+
   .snacks-deal-items {
     gap: 8px;
   }
-  
+
   .snacks-deal-image {
     width: 40px;
     height: 40px;
   }
-  
+
   .snacks-deal-name {
     font-size: 12px;
   }
-  
+
   .snacks-deal-price {
     font-size: 13px;
   }
-  
+
   .snack-gram-button {
     padding: 2px 6px;
     font-size: 9px;
     min-width: 35px;
   }
-  
+
   .snack-gram-variants {
     gap: 3px;
   }
@@ -892,28 +950,28 @@
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 10px;
   }
-  
+
   .snacks-product-image-container {
     height: 140px;
   }
-  
+
   .snacks-product-info {
     padding: 8px;
   }
-  
+
   .snacks-product-name {
     font-size: 12px;
   }
-  
+
   .snacks-product-price {
     font-size: 14px;
   }
-  
+
   .snack-add-to-cart-btn {
     padding: 6px;
     font-size: 11px;
   }
-  
+
   .snack-gram-button {
     padding: 2px 4px;
     font-size: 8px;

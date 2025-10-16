@@ -87,10 +87,10 @@ const CouponManagement = ({ api, adminToken }) => {
         maximumDiscountAmount: formData.maximumDiscountAmount ? parseFloat(formData.maximumDiscountAmount) : null
       };
 
-      const endpoint = editingCoupon 
-        ? `/coupons/${editingCoupon._id}` 
+      const endpoint = editingCoupon
+        ? `/coupons/${editingCoupon._id}`
         : '/coupons/create';
-      
+
       const method = editingCoupon ? 'put' : 'post';
       const response = await api[method](endpoint, submitData, adminToken);
 
@@ -200,16 +200,16 @@ const CouponManagement = ({ api, adminToken }) => {
     return Math.round((coupon.usedCount / coupon.usageLimit) * 100);
   };
 
-//   if (loading) {
-//     return <div className="loading-spinner">Loading coupons...</div>;
-//   }
+  //   if (loading) {
+  //     return <div className="loading-spinner">Loading coupons...</div>;
+  //   }
 
   return (
     <div className="coupon-management">
       <div className="coupon-header">
         <h2>Coupon Management</h2>
-        <button 
-          className="btn-primary"
+        <button
+          className="coupon-btn-primary"
           onClick={() => {
             resetForm();
             setShowModal(true);
@@ -309,8 +309,8 @@ const CouponManagement = ({ api, adminToken }) => {
                       </span>
                       {usagePercent !== null && (
                         <div className="coupon-usage-bar">
-                          <div 
-                            className="coupon-usage-progress" 
+                          <div
+                            className="coupon-usage-progress"
                             style={{ width: `${usagePercent}%` }}
                           />
                         </div>
@@ -323,19 +323,19 @@ const CouponManagement = ({ api, adminToken }) => {
                     </span>
                   </td>
                   <td className="coupon-actions">
-                    <button 
+                    <button
                       className="coupon-btn-edit"
                       onClick={() => handleEdit(coupon)}
                     >
                       Edit
                     </button>
-                    <button 
+                    <button
                       className={`coupon-btn-toggle ${coupon.isActive ? 'active' : 'inactive'}`}
                       onClick={() => handleToggleStatus(coupon._id)}
                     >
                       {coupon.isActive ? 'Deactivate' : 'Activate'}
                     </button>
-                    <button 
+                    <button
                       className="coupon-btn-delete"
                       onClick={() => handleDelete(coupon._id)}
                     >
@@ -355,7 +355,7 @@ const CouponManagement = ({ api, adminToken }) => {
           <div className="coupon-modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="coupon-modal-header">
               <h3>{editingCoupon ? 'Edit Coupon' : 'Create New Coupon'}</h3>
-              <button 
+              <button
                 className="coupon-close-btn"
                 onClick={() => {
                   setShowModal(false);
@@ -365,7 +365,7 @@ const CouponManagement = ({ api, adminToken }) => {
                 ×
               </button>
             </div>
-            
+
             <form onSubmit={handleSubmit} className="coupon-form">
               <div className="coupon-form-group">
                 <label>Coupon Code *</label>
@@ -533,8 +533,8 @@ const CouponManagement = ({ api, adminToken }) => {
               </div>
 
               <div className="coupon-form-actions">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="coupon-btn-secondary"
                   onClick={() => {
                     setShowModal(false);

@@ -11,7 +11,7 @@
   width: 100%;
   z-index: 1000;
   box-sizing: border-box;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
 }
 
@@ -27,6 +27,7 @@
   from {
     transform: translateY(-100%);
   }
+
   to {
     transform: translateY(0);
   }
@@ -81,7 +82,7 @@
   top: 50px;
   left: 0;
   min-width: 250px;
-  box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
   z-index: 1001;
   border-radius: 8px;
   border: 1px solid #e0e0e0;
@@ -156,7 +157,7 @@
   top: 0;
   min-width: 200px;
   background-color: #fff;
-  box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   z-index: 1002;
@@ -221,7 +222,7 @@
   right: 0;
   width: 100vw;
   left: calc(-100vw + 100%);
-  box-shadow: 0px 4px 15px rgba(0,0,0,0.15);
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15);
   z-index: 1002;
   border-radius: 0 0 8px 8px;
   border: 1px solid #e0e0e0;
@@ -234,6 +235,7 @@
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -323,15 +325,16 @@
 
 /* Responsive Design */
 @media (max-width: 1024px) {
+
   /* Start hiding desktop navigation on tablets */
   .Header-nav-links.desktop-only {
     display: none !important;
   }
-  
+
   .mobile-tablet-only {
     display: block !important;
   }
-  
+
   /* All Categories dropdown still works normally on tablets */
   .categories-dropdown-content {
     min-width: 280px;
@@ -344,15 +347,15 @@
     justify-content: space-between;
     flex-wrap: nowrap;
   }
-  
+
   .phone-info {
     font-size: 12px;
   }
-  
+
   .call-text {
     display: none;
   }
-  
+
   .mobile-nav-dropdown {
     left: -20px;
     right: -20px;
@@ -365,31 +368,31 @@
     padding: 8px 12px;
     flex-wrap: nowrap;
   }
-  
+
   .phone-info {
     font-size: 11px;
   }
-  
+
   .phone-number {
     font-size: 12px;
   }
-  
+
   .mobile-nav-btn {
     padding: 10px;
     font-size: 16px;
   }
-  
+
   .mobile-nav-dropdown {
     left: -15px;
     right: -15px;
     width: calc(100vw + 30px);
   }
-  
+
   .mobile-nav-item {
     padding: 14px 18px;
     font-size: 15px;
   }
-  
+
   .all-categories-btn {
     font-size: 13px;
     padding: 10px 14px;

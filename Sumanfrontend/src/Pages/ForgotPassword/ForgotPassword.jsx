@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import logoImage from '../../assets/logo-title.png';
 import './ForgotPassword.css';
 
 const ForgotPassword = () => {
@@ -23,7 +24,7 @@ const ForgotPassword = () => {
 
   const validateEmail = () => {
     const newErrors = {};
-    
+
     if (!email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(email)) {
@@ -67,7 +68,7 @@ const ForgotPassword = () => {
 
       if (error.response && error.response.data) {
         const { data } = error.response;
-        
+
         if (data.message) {
           setErrors({ api: data.message });
           toast.error(data.message, {
@@ -132,7 +133,7 @@ const ForgotPassword = () => {
         theme="light"
       />
       <div className="forgot-password-form-logo">
-        <img src="/src/assets/logo-title.png" alt="Suman Foods Logo" />
+        <img src={logoImage} alt="Suman Foods Logo" />
         <span className="forgot-password-form-logo-text">Iyappaa Sweets & Snacks</span>
       </div>
       <div className="forgot-password-right">
@@ -189,8 +190,8 @@ const ForgotPassword = () => {
               Click the link in the email to reset your password. If you don't see the email, check your spam folder.
             </p>
             <div className="forgot-password-btn-container">
-              <button 
-                onClick={() => navigate('/signin')} 
+              <button
+                onClick={() => navigate('/signin')}
                 className="forgot-password-btn"
               >
                 Back to Sign In

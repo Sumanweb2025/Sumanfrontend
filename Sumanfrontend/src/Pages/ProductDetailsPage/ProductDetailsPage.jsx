@@ -46,12 +46,14 @@ const ProductDetailsPage = ({ addToCart }) => {
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
   const [allProducts, setAllProducts] = useState([]);
 
+  const [activeOffer, setActiveOffer] = useState(null);
+
   const API_URL = import.meta.env.VITE_APP_API_URL;
 
   // Category route mapping
   const CATEGORY_ROUTES = {
     'grocery': '/groceries',
-    'snacks': '/snacks', 
+    'snacks': '/snacks',
     'sweets': '/sweets',
     // Add more mappings as needed
   };
@@ -59,12 +61,27 @@ const ProductDetailsPage = ({ addToCart }) => {
   // Helper function to get correct category route
   const getCategoryRoute = (category) => {
     if (!category) return '/';
-    
+
     const categoryLower = category.toLowerCase();
     return CATEGORY_ROUTES[categoryLower] || `/${categoryLower}`;
   };
 
   useEffect(() => {
+    // ALWAYS fetch active offer (regardless of product source)
+    const fetchActiveOffer = async () => {
+      try {
+        const offerResponse = await axios.get(`${API_URL}api/offers/active`);
+        if (offerResponse.data?.success && offerResponse.data?.data) {
+          setActiveOffer(offerResponse.data.data);
+          //console.log('Active offer loaded:', offerResponse.data.data);
+        }
+      } catch (offerError) {
+        console.log('No active offer found');
+      }
+    };
+
+    fetchActiveOffer(); // Run this ALWAYS
+
     const fetchProductDetails = async () => {
       if (!product) {
         try {
@@ -213,7 +230,58 @@ const ProductDetailsPage = ({ addToCart }) => {
     if (productVariants.length > 0 && selectedVariantIndex < productVariants.length) {
       return productVariants[selectedVariantIndex];
     }
-    return product || { price: 0 };
+    return product || {};
+  };
+
+  // Check if current product is eligible for offer
+  const isProductEligibleForOffer = () => {
+    if (!activeOffer || !product) return false;
+
+    const currentProduct = getCurrentVariant();
+    const productId = currentProduct.product_id || currentProduct._id;
+
+    // Check if offer is active and within date range
+    const now = new Date();
+    const startDate = new Date(activeOffer.startDate);
+    const endDate = new Date(activeOffer.endDate);
+
+    if (!activeOffer.isActive || now < startDate || now > endDate) {
+      return false;
+    }
+
+    // Priority 1: Check specific products
+    if (activeOffer.applicableProducts && activeOffer.applicableProducts.length > 0) {
+      return activeOffer.applicableProducts.some(p => {
+        const offerProductId = typeof p === 'object' ? (p.product_id || p._id) : p;
+        return String(offerProductId) === String(productId);
+      });
+    }
+
+    // Priority 2: Check categories
+    if (activeOffer.applicableCategories && activeOffer.applicableCategories.length > 0) {
+      return activeOffer.applicableCategories.some(
+        cat => cat.toLowerCase() === (currentProduct.category || product.category || '').toLowerCase()
+      );
+    }
+
+    // Priority 3: Apply to all
+    return true;
+  };
+
+  // Calculate discounted price
+  const calculateDiscountedPrice = (originalPrice) => {
+    if (!activeOffer || !originalPrice) return originalPrice;
+
+    let discountedPrice = originalPrice;
+
+    if (activeOffer.discountType === 'percentage') {
+      const discountAmount = (originalPrice * activeOffer.discount) / 100;
+      discountedPrice = originalPrice - discountAmount;
+    } else if (activeOffer.discountType === 'fixed') {
+      discountedPrice = originalPrice - activeOffer.discount;
+    }
+
+    return Math.max(0, discountedPrice);
   };
 
   const handleWishlistClick = async () => {
@@ -344,7 +412,7 @@ const ProductDetailsPage = ({ addToCart }) => {
       setCartItems(cartData.items || []);
 
       window.dispatchEvent(new CustomEvent("cartUpdated"));
-       // Add gram info for popup
+      // Add gram info for popup
       const productForPopup = {
         ...currentVariant,
         selectedGram: currentVariant.gram || currentVariant.Gram
@@ -405,8 +473,8 @@ const ProductDetailsPage = ({ addToCart }) => {
         return;
       }
 
-      console.log('Submitting review for product:', productId);
-      console.log('Review data:', reviewForm);
+      // console.log('Submitting review for product:', productId);
+      // console.log('Review data:', reviewForm);
 
       const response = await axios.post(
         `${API_URL}api/reviews/product/${productId}`,
@@ -760,6 +828,12 @@ const ProductDetailsPage = ({ addToCart }) => {
             {/* Product Images */}
             <div className="product-images">
               <div className="main-image">
+                {/* Offer Badge */}
+                {isProductEligibleForOffer() && activeOffer && (
+                  <div className="product-details-offer-badge">
+                    {activeOffer.discount}{activeOffer.discountType === 'percentage' ? '%' : '$'} OFF
+                  </div>
+                )}
                 <img
                   src={productImages[selectedImage]}
                   alt={product.name}
@@ -807,18 +881,36 @@ const ProductDetailsPage = ({ addToCart }) => {
               </div>
 
               <div className="product-details-price">
-                <span className="product-details-current-price">
-                  ${(getCurrentVariant().price * quantity).toFixed(2)}
-                </span>
-                {getCurrentVariant().originalPrice && (
-                  <span className="product-details-original-price">
-                    ${(getCurrentVariant().originalPrice * quantity).toFixed(2)}
-                  </span>
-                )}
-                {quantity > 1 && (
-                  <span className="product-details-price-per-unit">
-                    ${getCurrentVariant().price} per unit
-                  </span>
+                {isProductEligibleForOffer() && activeOffer ? (
+                  <>
+                    <span className="product-details-current-price product-details-discounted">
+                      ${(calculateDiscountedPrice(getCurrentVariant().price) * quantity).toFixed(2)}
+                    </span>
+                    <span className="product-details-original-price product-details-strikethrough">
+                      ${(getCurrentVariant().price * quantity).toFixed(2)}
+                    </span>
+                    {quantity > 1 && (
+                      <span className="product-details-price-per-unit">
+                        ${calculateDiscountedPrice(getCurrentVariant().price).toFixed(2)} per unit
+                      </span>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <span className="product-details-current-price">
+                      ${(getCurrentVariant().price * quantity).toFixed(2)}
+                    </span>
+                    {getCurrentVariant().originalPrice && (
+                      <span className="product-details-original-price">
+                        ${(getCurrentVariant().originalPrice * quantity).toFixed(2)}
+                      </span>
+                    )}
+                    {quantity > 1 && (
+                      <span className="product-details-price-per-unit">
+                        ${getCurrentVariant().price} per unit
+                      </span>
+                    )}
+                  </>
                 )}
               </div>
 
@@ -973,6 +1065,7 @@ const ProductDetailsPage = ({ addToCart }) => {
         onAddToCart={handleAddToCartFromWishlist}
         onContinueShopping={handleContinueShopping}
         onOpenWishlistPage={handleOpenWishlistPage}
+        activeOffer={activeOffer}
       />
 
       {/* Cart Popup */}
@@ -983,6 +1076,7 @@ const ProductDetailsPage = ({ addToCart }) => {
         cartItems={cartItems}
         onContinueShopping={handleContinueShopping}
         onViewCart={handleViewCart}
+        activeOffer={activeOffer}
       />
       <Banner />
       <Footer />

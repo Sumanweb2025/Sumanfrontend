@@ -17,10 +17,22 @@ const OfferManagement = ({ api, adminToken }) => {
     endDate: '',
     isActive: true,
     applicableCategories: [],
+    applicableProducts: [],
     minimumOrderAmount: 0
   });
 
-  const categories = ['Sweets', 'Snacks', 'Groceries', 'All'];
+  // Product selection states
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedBrand, setSelectedBrand] = useState('');
+  const [categoryBrands, setCategoryBrands] = useState([]);
+  const [categoryProducts, setCategoryProducts] = useState([]);
+  const [loadingProducts, setLoadingProducts] = useState(false);
+  const [loadingBrands, setLoadingBrands] = useState(false);
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [showProductsModal, setShowProductsModal] = useState(false);
+  const [viewingOfferProducts, setViewingOfferProducts] = useState(null);
+
+  const categories = ['Sweets', 'Snacks', 'Grocery', 'All'];
 
   useEffect(() => {
     fetchOffers();
@@ -75,13 +87,107 @@ const OfferManagement = ({ api, adminToken }) => {
     }
   };
 
+  // Fetch brands by category
+  const fetchBrandsByCategory = async (category) => {
+    if (!category || category === 'All') return;
+
+    try {
+      setLoadingBrands(true);
+      const response = await api.get(`/offers/brands-by-category?category=${category}`, adminToken);
+      if (response.success) {
+        setCategoryBrands(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching brands:', error);
+      alert('Failed to load brands');
+    } finally {
+      setLoadingBrands(false);
+    }
+  };
+
+  // Fetch products by category and brand
+  const fetchProductsByCategory = async (category, brand = '') => {
+    if (!category || category === 'All') return;
+
+    try {
+      setLoadingProducts(true);
+      let url = `/offers/products-by-category?category=${category}`;
+      if (brand) {
+        url += `&brand=${brand}`;
+      }
+      const response = await api.get(url, adminToken);
+      if (response.success) {
+        setCategoryProducts(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      alert('Failed to load products');
+    } finally {
+      setLoadingProducts(false);
+    }
+  };
+
+  // Handle category selection for product filtering
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(category);
+    setSelectedBrand(''); // Reset brand when category changes
+    setCategoryBrands([]);
+    fetchBrandsByCategory(category);
+    fetchProductsByCategory(category);
+  };
+
+  // Handle brand selection
+  const handleBrandSelect = (brand) => {
+    setSelectedBrand(brand);
+    fetchProductsByCategory(selectedCategory, brand);
+  };
+
+  // Toggle product selection
+  const handleProductToggle = (product) => {
+    const productId = product._id;
+    const isSelected = selectedProducts.some(p => p._id === productId);
+
+    if (isSelected) {
+      setSelectedProducts(selectedProducts.filter(p => p._id !== productId));
+      setFormData({
+        ...formData,
+        applicableProducts: formData.applicableProducts.filter(id => id !== productId)
+      });
+    } else {
+      setSelectedProducts([...selectedProducts, product]);
+      setFormData({
+        ...formData,
+        applicableProducts: [...formData.applicableProducts, productId]
+      });
+    }
+  };
+
+  // Select all products in current category
+  const handleSelectAllProducts = () => {
+    const allProductIds = categoryProducts.map(p => p._id);
+    setSelectedProducts([...selectedProducts, ...categoryProducts.filter(p => !selectedProducts.some(sp => sp._id === p._id))]);
+    setFormData({
+      ...formData,
+      applicableProducts: [...new Set([...formData.applicableProducts, ...allProductIds])]
+    });
+  };
+
+  // Clear selected products
+  const handleClearSelectedProducts = () => {
+    setSelectedProducts([]);
+    setFormData({
+      ...formData,
+      applicableProducts: []
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const endpoint = editingOffer 
-        ? `/offers/${editingOffer._id}` 
+      const endpoint = editingOffer
+        ? `/offers/${editingOffer._id}`
         : '/offers/create';
-      
+
       const method = editingOffer ? 'put' : 'post';
       const response = await api[method](endpoint, formData, adminToken);
 
@@ -109,8 +215,11 @@ const OfferManagement = ({ api, adminToken }) => {
       endDate: offer.endDate.split('T')[0],
       isActive: offer.isActive,
       applicableCategories: offer.applicableCategories || [],
+      applicableProducts: offer.applicableProducts?.map(p => p._id || p) || [],
       minimumOrderAmount: offer.minimumOrderAmount || 0
     });
+    // Set selected products for display
+    setSelectedProducts(offer.applicableProducts || []);
     setShowModal(true);
   };
 
@@ -163,9 +272,15 @@ const OfferManagement = ({ api, adminToken }) => {
       endDate: '',
       isActive: true,
       applicableCategories: [],
+      applicableProducts: [],
       minimumOrderAmount: 0
     });
     setEditingOffer(null);
+    setSelectedProducts([]);
+    setCategoryProducts([]);
+    setCategoryBrands([]);
+    setSelectedCategory('');
+    setSelectedBrand('');
   };
 
   const getOfferStatus = (offer) => {
@@ -179,16 +294,16 @@ const OfferManagement = ({ api, adminToken }) => {
     return { text: 'Active', class: 'status-active' };
   };
 
-//   if (loading) {
-//     return <div className="offer-loading-spinner">Loading offers...</div>;
-//   }
+  //   if (loading) {
+  //     return <div className="offer-loading-spinner">Loading offers...</div>;
+  //   }
 
   return (
     <div className="offer-management">
       <div className="offer-header">
         <h2>Offer Management</h2>
-        <button 
-          className="btn-primary"
+        <button
+          className="offer-btn-primary"
           onClick={() => {
             resetForm();
             setShowModal(true);
@@ -227,6 +342,7 @@ const OfferManagement = ({ api, adminToken }) => {
             <tr>
               <th>Title</th>
               <th>Discount</th>
+              <th>Products</th>
               <th>Start Date</th>
               <th>End Date</th>
               <th>Status</th>
@@ -246,6 +362,27 @@ const OfferManagement = ({ api, adminToken }) => {
                   <td>
                     {offer.discount}{offer.discountType === 'percentage' ? '%' : ' CAD'} OFF
                   </td>
+                  <td>
+                    {offer.applicableProducts && offer.applicableProducts.length > 0 ? (
+                      <span
+                        className="offer-products-count"
+                        onClick={() => {
+                          setViewingOfferProducts(offer);
+                          setShowProductsModal(true);
+                        }}
+                        style={{ cursor: 'pointer' }}
+                        title="Click to view products"
+                      >
+                        {offer.applicableProducts.length} products
+                      </span>
+                    ) : offer.applicableCategories && offer.applicableCategories.length > 0 ? (
+                      <span className="offer-categories-tag">
+                        {offer.applicableCategories.join(', ')}
+                      </span>
+                    ) : (
+                      <span className="offer-all-products">All Products</span>
+                    )}
+                  </td>
                   <td>{new Date(offer.startDate).toLocaleDateString()}</td>
                   <td>{new Date(offer.endDate).toLocaleDateString()}</td>
                   <td>
@@ -253,21 +390,21 @@ const OfferManagement = ({ api, adminToken }) => {
                       {status.text}
                     </span>
                   </td>
-                  <td className="actions">
-                    <button 
-                      className="btn-edit"
+                  <td className="offer-actions">
+                    <button
+                      className="offer-btn-edit"
                       onClick={() => handleEdit(offer)}
                     >
                       Edit
                     </button>
-                    <button 
-                      className={`btn-toggle ${offer.isActive ? 'active' : 'inactive'}`}
+                    <button
+                      className={`offer-btn-toggle ${offer.isActive ? 'active' : 'inactive'}`}
                       onClick={() => handleToggleStatus(offer._id)}
                     >
                       {offer.isActive ? 'Deactivate' : 'Activate'}
                     </button>
-                    <button 
-                      className="btn-delete"
+                    <button
+                      className="offer-btn-delete"
                       onClick={() => handleDelete(offer._id)}
                     >
                       Delete
@@ -286,7 +423,7 @@ const OfferManagement = ({ api, adminToken }) => {
           <div className="offer-modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="offer-modal-header">
               <h3>{editingOffer ? 'Edit Offer' : 'Create New Offer'}</h3>
-              <button 
+              <button
                 className="offer-close-btn"
                 onClick={() => {
                   setShowModal(false);
@@ -296,7 +433,7 @@ const OfferManagement = ({ api, adminToken }) => {
                 ×
               </button>
             </div>
-            
+
             <form onSubmit={handleSubmit} className="offer-form">
               <div className="offer-form-group">
                 <label>Title *</label>
@@ -412,6 +549,144 @@ const OfferManagement = ({ api, adminToken }) => {
                 </div>
               </div>
 
+              {/* Product Selection Section */}
+              <div className="offer-form-group">
+                <label>Select Specific Products (Optional)</label>
+                <p className="offer-help-text">Leave empty to apply offer to all products in selected categories</p>
+
+                {/* Category filter for products */}
+                <div className="offer-product-category-filter">
+                  <label>Filter by Category:</label>
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => handleCategorySelect(e.target.value)}
+                    className="offer-category-select"
+                  >
+                    <option value="">-- Select Category --</option>
+                    {categories.filter(c => c !== 'All').map(category => (
+                      <option key={category} value={category}>{category}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Brand filter */}
+                {selectedCategory && categoryBrands.length > 0 && (
+                  <div className="offer-product-brand-filter">
+                    <label>Filter by Brand (Optional):</label>
+                    <select
+                      value={selectedBrand}
+                      onChange={(e) => handleBrandSelect(e.target.value)}
+                      className="offer-brand-select"
+                    >
+                      <option value="">All Brands</option>
+                      {categoryBrands.map(brand => (
+                        <option key={brand} value={brand}>{brand}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                {/* Selected Products Display */}
+                {selectedProducts.length > 0 && (
+                  <div className="offer-selected-products">
+                    <div className="offer-selected-header">
+                      <span>Selected Products: {selectedProducts.length}</span>
+                      <button
+                        type="button"
+                        className="btn-clear-selection"
+                        onClick={handleClearSelectedProducts}
+                      >
+                        Clear All
+                      </button>
+                    </div>
+                    <div className="offer-selected-list">
+                      {selectedProducts.map(product => (
+                        <div key={product._id} className="offer-selected-product-item">
+                          <span>{product.name} ({product.gram}g)</span>
+                          <button
+                            type="button"
+                            onClick={() => handleProductToggle(product)}
+                            className="btn-remove-product"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Products List */}
+                {selectedCategory && (
+                  <div className="offer-products-list">
+                    <div className="offer-products-header">
+                      <span>{categoryProducts.length} products found</span>
+                      {categoryProducts.length > 0 && (
+                        <button
+                          type="button"
+                          className="btn-select-all"
+                          onClick={handleSelectAllProducts}
+                        >
+                          Select All
+                        </button>
+                      )}
+                    </div>
+
+                    {loadingProducts ? (
+                      <div className="offer-loading">Loading products...</div>
+                    ) : (
+                      <div className="offer-products-grid">
+                        {categoryProducts.map(product => {
+                          const isSelected = selectedProducts.some(p => p._id === product._id);
+                          return (
+                            <div
+                              key={product._id}
+                              className={`offer-product-card ${isSelected ? 'selected' : ''}`}
+                              onClick={() => handleProductToggle(product)}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={isSelected}
+                                onChange={() => handleProductToggle(product)}
+                                onClick={(e) => e.stopPropagation()}
+                              />
+                              <div className="offer-product-info">
+                                <span className="offer-product-name">{product.name}</span>
+                                <span className="offer-product-details">
+                                  {product.brand} | {product.gram}g | ${product.price}
+                                </span>
+                                {formData.discount && formData.discountType ? (
+                                  <span className="offer-product-price-preview">
+                                    <span className="offer-price-original">${product.price}</span>
+                                    <span className="offer-price-arrow">→</span>
+                                    <span className="offer-price-discounted">
+                                      ${formData.discountType === 'percentage'
+                                        ? (product.price - (product.price * formData.discount / 100)).toFixed(2)
+                                        : Math.max(0, product.price - formData.discount).toFixed(2)
+                                      }
+                                    </span>
+                                    <span className="offer-price-savings">
+                                      (Save ${formData.discountType === 'percentage'
+                                        ? ((product.price * formData.discount / 100).toFixed(2))
+                                        : formData.discount
+                                      })
+                                    </span>
+                                  </span>
+                                ) : (
+                                  <span className="offer-product-details">
+                                    ${product.price}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
               <div className="offer-form-group">
                 <label className="checkbox-label">
                   <input
@@ -425,9 +700,9 @@ const OfferManagement = ({ api, adminToken }) => {
               </div>
 
               <div className="offer-form-actions">
-                <button 
-                  type="button" 
-                  className="btn-secondary"
+                <button
+                  type="button"
+                  className="offer-btn-secondary"
                   onClick={() => {
                     setShowModal(false);
                     resetForm();
@@ -435,11 +710,59 @@ const OfferManagement = ({ api, adminToken }) => {
                 >
                   Cancel
                 </button>
-                <button type="submit" className="btn-primary">
+                <button type="submit" className="offer-btn-primary">
                   {editingOffer ? 'Update Offer' : 'Create Offer'}
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Products View Modal */}
+      {showProductsModal && viewingOfferProducts && (
+        <div className="offer-modal-overlay" onClick={() => setShowProductsModal(false)}>
+          <div className="offer-modal-content offer-products-view-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="offer-modal-header">
+              <h3>Products in "{viewingOfferProducts.title}"</h3>
+              <button className="offer-modal-close" onClick={() => setShowProductsModal(false)}>
+                ×
+              </button>
+            </div>
+            <div className="offer-modal-body">
+              <div className="offer-products-view-list">
+                {viewingOfferProducts.applicableProducts && viewingOfferProducts.applicableProducts.length > 0 ? (
+                  viewingOfferProducts.applicableProducts.map((product, index) => (
+                    <div key={product._id || index} className="offer-product-view-item">
+                      <div className="offer-product-view-info">
+                        <span className="offer-product-view-number">{index + 1}</span>
+                        <div className="offer-product-view-details">
+                          <h4>{product.name}</h4>
+                          <p>
+                            <strong>Brand:</strong> {product.brand} |
+                            <strong> Category:</strong> {product.category} |
+                            <strong> Weight:</strong> {product.gram}g |
+                            <strong> Price:</strong> ${product.price}
+                          </p>
+                          <p className="offer-discount-preview">
+                            <strong>Discount:</strong> {viewingOfferProducts.discount}{viewingOfferProducts.discountType === 'percentage' ? '%' : '$'} OFF
+                            {viewingOfferProducts.discountType === 'percentage' && (
+                              <span className="offer-discounted-amount"> → ${(product.price - (product.price * viewingOfferProducts.discount / 100)).toFixed(2)}</span>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="offer-no-products">No specific products selected</p>
+                )}
+              </div>
+            </div>
+            <div className="offer-modal-footer">
+              <button className="offer-btn-secondary" onClick={() => setShowProductsModal(false)}>
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}

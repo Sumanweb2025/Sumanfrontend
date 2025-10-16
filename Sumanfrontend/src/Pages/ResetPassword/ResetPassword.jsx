@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import logoImage from '../../assets/logo-title.png';
 import './ResetPassword.css';
 
 const ResetPassword = () => {
@@ -107,7 +108,7 @@ const ResetPassword = () => {
 
       if (error.response && error.response.data) {
         const { data } = error.response;
-        
+
         if (data.errors && Array.isArray(data.errors)) {
           const formattedErrors = {};
           data.errors.forEach(err => {
@@ -182,7 +183,7 @@ const ResetPassword = () => {
         theme="light"
       />
       <div className="reset-password-form-logo">
-        <img src="/src/assets/logo-title.png" alt="Suman Foods Logo" />
+        <img src={logoImage} alt="Suman Foods Logo" />
         <span className="reset-password-form-logo-text">Iyappaa Sweets & Snacks</span>
       </div>
       <div className="reset-password-right">
