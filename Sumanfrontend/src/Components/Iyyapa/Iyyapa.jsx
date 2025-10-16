@@ -516,7 +516,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     <>
       <LoadingSpinner
         isLoading={loading}
-        brandName="Iyappaa Sweets"
+        brandName="Iyappaa"
         loadingText="Loading Iyappaa products..."
         progressColor="#4CAF50"
       />

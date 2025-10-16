@@ -502,7 +502,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     <>
       <LoadingSpinner
         isLoading={loading}
-        brandName="Little Krishna Foods"
+        brandName="Little Krishna"
         loadingText="Loading Little Krishna products..."
         progressColor="#4CAF50"
       />

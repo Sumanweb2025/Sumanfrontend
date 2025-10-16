@@ -516,7 +516,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     <>
       <LoadingSpinner
         isLoading={loading}
-        brandName="Venba Foods"
+        brandName="Venba"
         loadingText="Loading Venba products..."
         progressColor="#4CAF50"
       />

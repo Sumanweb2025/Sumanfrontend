@@ -62,7 +62,7 @@ const Contact = () => {
     {
       icon: <FaPhone className="contact-icon" />,
       title: 'Phone',
-      detail: '+1 647-573-6363',
+      detail: '+1 416 562 6363',
       subdetail: 'Mon–Fri, 9:30 AM – 6:30 PM'
     },
     {

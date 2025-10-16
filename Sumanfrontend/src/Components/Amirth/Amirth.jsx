@@ -518,7 +518,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
     <>
       <LoadingSpinner
         isLoading={loading}
-        brandName="Amirth Foods"
+        brandName="Amirth"
         loadingText="Loading Amirth products..."
         progressColor="#4CAF50"
       />
