@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import logoImage from '../../assets/logo-title.png';
 import './ForgotPassword.css';
 
 const ForgotPassword = () => {
@@ -132,7 +133,7 @@ const ForgotPassword = () => {
         theme="light"
       />
       <div className="forgot-password-form-logo">
-        <img src="/src/assets/logo-title.png" alt="Suman Foods Logo" />
+        <img src={logoImage} alt="Suman Foods Logo" />
         <span className="forgot-password-form-logo-text">Iyappaa Sweets & Snacks</span>
       </div>
       <div className="forgot-password-right">

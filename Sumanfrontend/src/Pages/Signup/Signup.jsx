@@ -5,6 +5,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/bootstrap.css";
+import logoImage from '../../assets/logo-title.png';
 import "./Signup.css";
 
 const SignUp = () => {
@@ -190,7 +191,7 @@ const SignUp = () => {
         theme="light"
       />
       <div className="signup-form-logo">
-        <img src="/src/assets/logo-title.png" alt="Suman Foods Logo" />
+        <img src={logoImage} alt="Suman Foods Logo" />
         <span className="signup-form-logo-text">Iyappaa Sweets & Snacks</span>
       </div>
       <div className="signup-right">

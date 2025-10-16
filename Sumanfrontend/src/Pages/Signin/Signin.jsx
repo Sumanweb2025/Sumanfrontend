@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import logoImage from '../../assets/logo-title.png';
 import './Signin.css';
 
 // Google Sign-In Component
@@ -347,7 +348,7 @@ const SignIn = () => {
         theme="light"
       />
       <div className="signin-form-logo">
-        <img src="/src/assets/logo-title.png" alt="Suman Foods Logo" />
+        <img src={logoImage} alt="Suman Foods Logo" />
         <span className="signin-form-logo-text">Iyappaa Sweets & Snacks</span>
       </div>
       <div className="signin-right">

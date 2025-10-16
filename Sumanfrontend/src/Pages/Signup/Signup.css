@@ -12,13 +12,13 @@
 .signup-form-logo {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   margin-bottom: 10px;
   width: 100%;
 }
 
 .signup-form-logo img {
-  height: 70px;
+  height: 90px;
   width: auto;
   object-fit: contain;
 }

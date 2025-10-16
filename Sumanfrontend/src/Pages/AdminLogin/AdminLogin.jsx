@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import logoImage from '../../assets/logo-title.png';
 
 const API_BASE_URL = import.meta.env.VITE_ADMIN_API_URL;
 
@@ -78,7 +79,7 @@ const AdminLogin = () => {
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8fafc' }}>
       <div className="admin-form-logo">
-        <img style={{ width:'auto', height: '150px' , objectFit: 'contain'}} src="/src/assets/logo-title.png" alt="Suman Foods Logo" />
+        <img style={{ width:'auto', height: '150px' , objectFit: 'contain'}} src={logoImage} alt="Iyappaa Logo" />
       </div>
       <div style={{ maxWidth: '500px', width: '100%', padding: '32px', backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
