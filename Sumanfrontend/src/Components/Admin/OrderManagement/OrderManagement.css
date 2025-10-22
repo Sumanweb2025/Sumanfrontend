@@ -84,7 +84,7 @@
 }
 
 /* Modal Styles */
-.admin-modal-overlay {
+.admin-order-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -97,7 +97,7 @@
   z-index: 1000;
 }
 
-.admin-modal {
+.admin-order-modal {
   background: white;
   border-radius: 12px;
   padding: 24px;
@@ -107,7 +107,7 @@
   overflow-y: auto;
 }
 
-.admin-modal-header {
+.admin-order-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -116,14 +116,14 @@
   border-bottom: 1px solid #e5e7eb;
 }
 
-.admin-modal-title {
+.admin-order-modal-title {
   font-size: 18px;
   font-weight: 600;
   color: #1f2937;
   margin: 0;
 }
 
-.admin-modal-close {
+.admin-order-modal-close {
   background: none;
   border: none;
   font-size: 24px;
@@ -138,11 +138,11 @@
   border-radius: 8px;
 }
 
-.admin-modal-close:hover {
+.admin-order-modal-close:hover {
   background: #f3f4f6;
 }
 
-.admin-modal-actions {
+.admin-order-modal-actions {
   display: flex;
   gap: 12px;
   justify-content: flex-end;

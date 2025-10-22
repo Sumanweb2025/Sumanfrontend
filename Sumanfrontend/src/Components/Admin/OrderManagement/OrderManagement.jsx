@@ -41,6 +41,8 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [showStatusUpdateModal, setShowStatusUpdateModal] = useState(false);
   const [newStatus, setNewStatus] = useState('');
+  const [trackingNumber, setTrackingNumber] = useState('');
+  const [estimatedDeliveryDate, setEstimatedDeliveryDate] = useState('');
 
   useEffect(() => {
     fetchOrders();
@@ -90,19 +92,41 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
     try {
       setIsLoading(true);
 
-      const response = await api.put(`/orders/${selectedOrder._id}/status`, {
+      const updateData = {
         status: newStatus
-      }, adminToken);
+      };
+
+      // Add tracking number if provided
+      if (trackingNumber.trim()) {
+        updateData.trackingNumber = trackingNumber.trim();
+      }
+
+      // Add estimated delivery date if provided
+      if (estimatedDeliveryDate) {
+        updateData.estimatedDeliveryDate = estimatedDeliveryDate;
+      }
+
+      const response = await api.put(`/orders/${selectedOrder._id}/status`, updateData, adminToken);
 
       if (response.success) {
         setOrders(prev => prev.map(order =>
           order._id === selectedOrder._id
-            ? { ...order, status: newStatus }
+            ? { 
+                ...order, 
+                status: newStatus,
+                trackingNumber: trackingNumber || order.trackingNumber,
+                estimatedDeliveryDate: estimatedDeliveryDate || order.estimatedDeliveryDate
+              }
             : order
         ));
         setShowStatusUpdateModal(false);
         setNewStatus('');
+        setTrackingNumber('');
+        setEstimatedDeliveryDate('');
         setSelectedOrder(null);
+
+        // Show success message
+        alert(`✅ Order status updated to "${newStatus}". Customer will receive an email notification.`);
       }
     } catch (error) {
       handleApiError(error);
@@ -442,6 +466,8 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
                           onClick={() => {
                             setSelectedOrder(order);
                             setNewStatus(order.status);
+                            setTrackingNumber(order.trackingNumber || '');
+                            setEstimatedDeliveryDate(order.estimatedDeliveryDate ? new Date(order.estimatedDeliveryDate).toISOString().split('T')[0] : '');
                             setShowStatusUpdateModal(true);
                           }}
                           className="admin-btn admin-btn-primary"
@@ -648,6 +674,8 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
                 className="admin-btn admin-btn-primary"
                 onClick={() => {
                   setNewStatus(selectedOrder.status);
+                  setTrackingNumber(selectedOrder.trackingNumber || '');
+                  setEstimatedDeliveryDate(selectedOrder.estimatedDeliveryDate ? new Date(selectedOrder.estimatedDeliveryDate).toISOString().split('T')[0] : '');
                   setShowStatusUpdateModal(true);
                 }}
               >
@@ -661,19 +689,19 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
 
       {/* Status Update Modal */}
       {showStatusUpdateModal && selectedOrder && (
-        <div className="admin-modal-overlay" onClick={() => setShowStatusUpdateModal(false)}>
-          <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="admin-modal-header">
-              <h3 className="admin-modal-title">Update Order Status</h3>
+        <div className="admin-order-modal-overlay" onClick={() => setShowStatusUpdateModal(false)}>
+          <div className="admin-order-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="admin-order-modal-header">
+              <h3 className="admin-order-modal-title">Update Order Status</h3>
               <button
-                className="admin-modal-close"
+                className="admin-order-modal-close"
                 onClick={() => setShowStatusUpdateModal(false)}
               >
                 ×
               </button>
             </div>
 
-            <div className="modal-content">
+            <div className="admin-order-modal-content">
               <div className="current-status">
                 <p><strong>Current Status:</strong></p>
                 <span className={`status-badge ${getStatusBadgeClass(selectedOrder.status)}`}>
@@ -682,7 +710,7 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
               </div>
 
               <div className="admin-form-group">
-                <label className="admin-form-label">New Status</label>
+                <label className="admin-form-label">New Status *</label>
                 <select
                   value={newStatus}
                   onChange={(e) => setNewStatus(e.target.value)}
@@ -693,6 +721,61 @@ const OrderManagement = ({ api, adminToken, setIsLoading, setError, handleApiErr
                   ))}
                 </select>
               </div>
+              {/* Tracking Number Field - Show for shipped/delivered status */}
+              {(newStatus === 'shipped' || newStatus === 'delivered') && (
+                <div className="admin-form-group">
+                  <label className="admin-form-label">
+                    Tracking Number {newStatus === 'shipped' && '(Optional)'}
+                  </label>
+                  <input
+                    type="text"
+                    value={trackingNumber}
+                    onChange={(e) => setTrackingNumber(e.target.value)}
+                    placeholder="Enter tracking number"
+                    className="admin-form-input"
+                  />
+                  <small className="form-help-text">
+                    Tracking number will be sent to customer via email
+                  </small>
+                </div>
+              )}
+
+              {/* Estimated Delivery Date - Show for processing/shipped status */}
+              {(newStatus === 'processing' || newStatus === 'shipped') && (
+                <div className="admin-form-group">
+                  <label className="admin-form-label">
+                    Estimated Delivery Date (Optional)
+                  </label>
+                  <input
+                    type="date"
+                    value={estimatedDeliveryDate}
+                    onChange={(e) => setEstimatedDeliveryDate(e.target.value)}
+                    min={new Date().toISOString().split('T')[0]}
+                    className="admin-form-input"
+                  />
+                  <small className="form-help-text">
+                    Expected delivery date for customer reference
+                  </small>
+                </div>
+              )}
+
+              {/* Email Notification Info */}
+              {(newStatus === 'processing' || newStatus === 'shipped' || newStatus === 'delivered') && (
+                <div style={{
+                  background: '#e3f2fd',
+                  padding: '15px',
+                  borderRadius: '8px',
+                  marginTop: '15px',
+                  border: '1px solid #90caf9'
+                }}>
+                  <p style={{ margin: 0, fontSize: '14px', color: '#1976d2', fontWeight: '500' }}>
+                    📧 Email Notification
+                  </p>
+                  <p style={{ margin: '8px 0 0 0', fontSize: '13px', color: '#555', lineHeight: '1.6' }}>
+                    Customer will receive an automated email notification about this status update to <strong>{selectedOrder.contactInfo?.email}</strong>
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="admin-modal-actions">
