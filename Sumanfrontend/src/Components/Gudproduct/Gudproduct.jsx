@@ -268,8 +268,8 @@ const FeaturedProducts = () => {
   }, []);
 
   // Handle wishlist click
-  const handleWishlistClick = async (product, e) => {
-    e?.stopPropagation();
+  const handleWishlistClick = async (e, product) => {
+    e.stopPropagation();
     if (!product || wishlistLoading) return;
 
     const headers = {};
@@ -299,7 +299,7 @@ const FeaturedProducts = () => {
     setWishlistLoading(true);
     try {
       const config = { headers };
-      const productId = product.product_id || product._id || product.id;
+      const productId = product._id?.$oid || product._id || product.product_id || product.id;
       const isInWishlist = wishlistItems.includes(productId);
 
       if (isInWishlist) {
@@ -310,7 +310,13 @@ const FeaturedProducts = () => {
         await axios.post(`${API_URL}api/wishlist`, { productId }, config);
         setWishlistItems(prev => [...prev, productId]);
         window.dispatchEvent(new CustomEvent('wishlistUpdated'));
-        setSelectedProduct(product);
+        // Pass product data to popup
+        const productForPopup = {
+          ...product,
+          product_id: productId,
+          _id: productId
+        };
+        setSelectedProduct(productForPopup);
         setShowWishlistPopup(true);
       }
     } catch (err) {
@@ -322,8 +328,9 @@ const FeaturedProducts = () => {
   };
 
   // Handle add to cart
-  const handleAddToCart = async (product, e) => {
-    e?.stopPropagation();
+  const handleAddToCart = async (e, product) => {
+    e.stopPropagation();
+    if (!product) return;
 
     const headers = {};
     const token = localStorage.getItem('token');
@@ -351,7 +358,7 @@ const FeaturedProducts = () => {
 
     try {
       const config = { headers };
-      const productId = product.product_id || product._id || product.id;
+      const productId = product._id?.$oid || product._id || product.product_id || product.id;
 
       await axios.post(`${API_URL}api/cart`, { productId, quantity: 1 }, config);
 
@@ -360,7 +367,13 @@ const FeaturedProducts = () => {
       setCartItems(cartData.items || []);
 
       window.dispatchEvent(new CustomEvent('cartUpdated'));
-      setSelectedProduct(product);
+      // Preserve product ID for popup
+      const productForPopup = {
+        ...product,
+        product_id: productId,
+        _id: productId
+      };
+      setSelectedProduct(productForPopup);
       setShowCartPopup(true);
     } catch (err) {
       console.error('Add to cart error:', err);
@@ -399,10 +412,23 @@ const FeaturedProducts = () => {
   };
 
   // Handle product click
-  const handleProductClick = (productId) => {
-    if (productId) {
-      navigate(`/products/${productId}`);
-    }
+  const handleProductClick = (product) => {
+    if (!product) return;
+
+    // Show loading spinner when navigating to product details
+    setLoading(true);
+
+    // Small delay to show the loading spinner before navigation
+    setTimeout(() => {
+      const productId = product._id?.$oid || product._id || product.product_id;
+
+      navigate(`/product/${productId}`, {
+        state: {
+          product,
+          productName: product.name,
+        }
+      });
+    }, 1000);
   };
 
   // Popup handlers
@@ -496,7 +522,7 @@ const FeaturedProducts = () => {
                   <div
                     key={productId}
                     className="gud-product-card"
-                    onClick={() => handleProductClick(productId)}
+                    onClick={() => handleProductClick(product)}
                   >
                     <div className="gud-product-image-card">
                       <img
@@ -512,7 +538,7 @@ const FeaturedProducts = () => {
                       {/* Wishlist heart */}
                       <button
                         className={`wishlist-heart ${wishlistItems.includes(productId) ? 'active' : ''}`}
-                        onClick={(e) => handleWishlistClick(product, e)}
+                        onClick={(e) => handleWishlistClick(e, product)}
                         disabled={wishlistLoading}
                         title={wishlistItems.includes(productId) ? 'Remove from wishlist' : 'Add to wishlist'}
                       >
@@ -526,7 +552,7 @@ const FeaturedProducts = () => {
                         <div className="product-footer">
                           <button
                             className="gudproduct-add-to-cart-btn"
-                            onClick={(e) => handleAddToCart(product, e)}
+                            onClick={(e) => handleAddToCart(e, product)}
                             title="Add to Cart"
                           >
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">

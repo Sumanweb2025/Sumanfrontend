@@ -1,5 +1,5 @@
 import './Ourproduct.css';
-import Sweetimg from "../../assets/glukarosa.png";
+import Sweetimg from "../../assets/mysore pak.png";
 import Snacksimg from "../../assets/hot_mixture.png";
 import { Link } from 'react-router-dom';
 
@@ -54,9 +54,17 @@ const FoodCategories = () => {
         {categories.map((cat, idx) => (
           <div key={idx} className={`our-card our-${cat.className}`}>
             {cat.comingSoon && <div className="our-coming-soon small-text font-bold">COMING SOON</div>}
-            <div className="our-card-image">
-              <img src={cat.img} alt={cat.alt} />
-            </div>
+            {cat.link ? (
+              <Link to={cat.link} className="our-card-image-link">
+                <div className="our-card-image">
+                  <img src={cat.img} alt={cat.alt} />
+                </div>
+              </Link>
+            ) : (
+              <div className="our-card-image">
+                <img src={cat.img} alt={cat.alt} />
+              </div>
+            )}
             {cat.link ? (
               <Link to={cat.link} className="our-card-title-link">
                 <div className="our-card-title">{cat.title}</div>

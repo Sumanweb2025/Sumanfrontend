@@ -5,8 +5,13 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
 
+   // Public directory for static assets
+  publicDir: 'public',
+
    // Production build optimizations
   build: {
+     // Output directory
+    outDir: 'dist',
     // Enable minification
     minify: 'terser',
     terserOptions: {

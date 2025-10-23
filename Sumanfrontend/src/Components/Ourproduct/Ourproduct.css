@@ -14,7 +14,6 @@
   width: 80px;
   height: 3px;
   background: linear-gradient(45deg, #ff6b35, #f7931e);
-  ;
   margin: 0 auto 20px;
 }
 
@@ -40,6 +39,12 @@
   /* slightly deeper pastel yellow */
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   transform: translateY(-4px);
+}
+
+.our-card-image-link {
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
 }
 
 
