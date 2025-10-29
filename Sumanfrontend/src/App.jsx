@@ -33,6 +33,10 @@ import ScrollToTop from './Components/ScrolltoTop/ScrolltoTop';
 import OTPVerification from './Pages/OTPVerification/OTPVerification';
 import ForgotPassword from './Pages/ForgotPassword/ForgotPassword';
 import ResetPassword from './Pages/ResetPassword/ResetPassword';
+import DeliveryLogin from './Pages/DeliveryPortal/DeliveryLogin/DeliveryLogin';
+import DeliveryDashboard from './Pages/DeliveryPortal/DeliveryDashboard/DeliveryDashboard';
+import DeliveryDetails from './Pages/DeliveryPortal/DeliveryDetails/DeliveryDetails';
+import DeliveryProfile from './Pages/DeliveryPortal/DeliveryProfile/DeliveryProfile';
 
 const App = () => {
   return (
@@ -71,6 +75,11 @@ const App = () => {
         <Route path="/verify-otp" element={<OTPVerification />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        // Delivery Portal Routes
+        <Route path="/delivery/login" element={<DeliveryLogin />} />
+        <Route path="/delivery/dashboard" element={<DeliveryDashboard />} />
+        <Route path="/delivery/details/:deliveryId" element={<DeliveryDetails />} />
+        <Route path="/delivery/profile" element={<DeliveryProfile />} />
 
       </Routes>
     </Router>

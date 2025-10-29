@@ -547,7 +547,7 @@ const FeaturedProducts = () => {
 
                       <div className="gud-product-info">
                         <h3 className="gud-product-name">{product.name}</h3>
-                        <span className="price-text text-animate gud-product-price">${(product.price || 0).toFixed(2)}</span>
+                        {/* <span className="price-text text-animate gud-product-price">${(product.price || 0).toFixed(2)}</span> */}
 
                         <div className="product-footer">
                           <button

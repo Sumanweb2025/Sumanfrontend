@@ -396,7 +396,7 @@ const WishlistPage = () => {
                         </div>
                       </div>
 
-                      <div className="price-text wishlist-item-price">
+                      {/* <div className="price-text wishlist-item-price">
                         {isProductEligibleForOffer(product) && activeOffer ? (
                           <div className="wishlist-price-container">
                             <span className="wishlist-discounted-price">
@@ -409,7 +409,7 @@ const WishlistPage = () => {
                         ) : (
                           <span>${product.price}</span>
                         )}
-                      </div>
+                      </div> */}
 
                       <div className="wishlist-item-actions">
                         <button

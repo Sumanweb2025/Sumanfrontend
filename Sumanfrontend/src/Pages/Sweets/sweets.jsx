@@ -746,7 +746,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                             <span className="sweets-rating-text">({product.rating?.toFixed(1) || '0.0'})</span>
                           </div>
 
-                          <div className="sweets-product-price-section">{(() => {
+                          {/* <div className="sweets-product-price-section">{(() => {
                             const selectedIndex = getSelectedVariant(product);
                             const selectedVariant = product.variants[selectedIndex] || product.variants[0];
                             const originalPrice = selectedVariant.price;
@@ -767,7 +767,7 @@ const SweetsListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                             }
 
                             return <span className="price-text">${originalPrice.toFixed(2)}</span>;
-                          })()}</div>
+                          })()}</div> */}
 
                           {/* Gram Variants Display */}
                           {product.hasMultipleVariants ? (

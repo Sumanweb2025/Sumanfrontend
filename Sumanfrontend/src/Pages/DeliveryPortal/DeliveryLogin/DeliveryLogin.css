@@ -1,0 +1,343 @@
+
+/* Container */
+.delivery-login-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dbeafe 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.delivery-login-wrapper {
+  max-width: 450px;
+  width: 100%;
+}
+
+/* Logo Section */
+.delivery-login-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.delivery-logo-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  background: #16a34a;
+  border-radius: 50%;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+}
+
+.delivery-logo-circle svg {
+  width: 40px;
+  height: 40px;
+  color: white;
+}
+
+.delivery-login-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 10px;
+}
+
+.delivery-login-subtitle {
+  font-size: 16px;
+  color: #6b7280;
+}
+
+/* Login Card */
+.delivery-login-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+}
+
+.delivery-login-card-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+/* Alert */
+.delivery-alert {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.delivery-alert svg {
+  width: 20px;
+  height: 20px;
+  color: #dc2626;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.delivery-alert-text {
+  font-size: 14px;
+  color: #991b1b;
+  flex: 1;
+}
+
+/* Form */
+.delivery-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.delivery-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.delivery-form-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.delivery-input-wrapper {
+  position: relative;
+}
+
+.delivery-input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  color: #9ca3af;
+}
+
+.delivery-input {
+  width: 100%;
+  padding: 12px 14px 12px 44px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.3s;
+  box-sizing: border-box;
+}
+
+.delivery-input:focus {
+  outline: none;
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+}
+
+.delivery-input.uppercase {
+  text-transform: uppercase;
+}
+
+/* Submit Button */
+.delivery-submit-btn {
+  width: 100%;
+  padding: 14px 20px;
+  background: #16a34a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.delivery-submit-btn:hover:not(:disabled) {
+  background: #15803d;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+}
+
+.delivery-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.delivery-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid white;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: delivery-spin 0.8s linear infinite;
+}
+
+@keyframes delivery-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Help Text */
+.delivery-help-text {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.delivery-help-text p {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Footer */
+.delivery-login-footer {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.delivery-login-footer p {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .delivery-login-container {
+    padding: 15px;
+  }
+
+  .delivery-login-card {
+    padding: 30px 24px;
+  }
+
+  .delivery-login-title {
+    font-size: 28px;
+  }
+
+  .delivery-login-card-title {
+    font-size: 22px;
+  }
+
+  .delivery-logo-circle {
+    width: 70px;
+    height: 70px;
+  }
+
+  .delivery-logo-circle svg {
+    width: 35px;
+    height: 35px;
+  }
+}
+
+@media (max-width: 480px) {
+  .delivery-login-container {
+    padding: 10px;
+  }
+
+  .delivery-login-card {
+    padding: 24px 20px;
+  }
+
+  .delivery-login-title {
+    font-size: 24px;
+  }
+
+  .delivery-login-subtitle {
+    font-size: 14px;
+  }
+
+  .delivery-login-card-title {
+    font-size: 20px;
+    margin-bottom: 24px;
+  }
+
+  .delivery-form-group {
+    gap: 20px;
+  }
+
+  .delivery-input {
+    padding: 11px 12px 11px 42px;
+    font-size: 14px;
+  }
+
+  .delivery-submit-btn {
+    padding: 12px 18px;
+    font-size: 15px;
+  }
+
+  .delivery-logo-circle {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 16px;
+  }
+
+  .delivery-logo-circle svg {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+@media (max-width: 360px) {
+  .delivery-login-card {
+    padding: 20px 16px;
+  }
+
+  .delivery-login-title {
+    font-size: 22px;
+  }
+
+  .delivery-input {
+    font-size: 13px;
+  }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+  .delivery-login-container {
+    background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  }
+
+  .delivery-login-card {
+    background: #1f2937;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .delivery-login-title,
+  .delivery-login-card-title {
+    color: #f9fafb;
+  }
+
+  .delivery-login-subtitle,
+  .delivery-help-text p,
+  .delivery-login-footer p {
+    color: #d1d5db;
+  }
+
+  .delivery-form-label {
+    color: #e5e7eb;
+  }
+
+  .delivery-input {
+    background: #374151;
+    border-color: #4b5563;
+    color: #f9fafb;
+  }
+
+  .delivery-input:focus {
+    border-color: #16a34a;
+    background: #374151;
+  }
+}

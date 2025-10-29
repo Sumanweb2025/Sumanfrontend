@@ -834,7 +834,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                             <span className="amirth-rating-text">({product.rating?.toFixed(1) || '0.0'})</span>
                           </div>
 
-                          <div className="amirth-product-price-section">{(() => {
+                          {/* <div className="amirth-product-price-section">{(() => {
                             const selectedIndex = getSelectedVariant(product);
                             const selectedVariant = product.variants[selectedIndex] || product.variants[0];
                             const originalPrice = selectedVariant.price;
@@ -855,7 +855,7 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters }) => {
                             }
 
                             return <span className="price-text">${originalPrice.toFixed(2)}</span>;
-                          })()}</div>
+                          })()}</div> */}
 
                           {/* Gram Variants Display */}
                           {product.hasMultipleVariants ? (

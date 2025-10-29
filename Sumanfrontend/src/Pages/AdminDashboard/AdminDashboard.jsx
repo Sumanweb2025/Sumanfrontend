@@ -13,6 +13,7 @@ import OfferManagement from '../../Components/Admin/OfferManagement/OfferManagem
 import CouponManagement from '../../Components/Admin/CouponManagement/CouponManagement';
 import Analytics from '../../Components/Admin/Analytics/Analytics';
 import AdminProfile from '../../Components/Admin/AdminProfile/AdminProfile';
+import DeliveryManagement from '../../Components/Admin/DeliveryManagement/DeliveryManagement';
 
 // API configuration
 const API_BASE_URL = import.meta.env.VITE_ADMIN_API_URL;
@@ -136,6 +137,8 @@ const AdminDashboard = () => {
         return <OrderManagement {...commonProps} />;
       case 'payments':
         return <PaymentManagement {...commonProps} />;
+      case 'delivery':
+        return <DeliveryManagement {...commonProps} />;
       case 'offers':
         return <OfferManagement {...commonProps} />;
       case 'coupons':

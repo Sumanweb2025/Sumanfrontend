@@ -9,7 +9,8 @@ import {
   X,
   User,
   Tag,
-  Ticket
+  Ticket,
+  Truck
 } from 'lucide-react';
 import './Sidebar.css';
 
@@ -44,6 +45,12 @@ const Sidebar = ({ activeTab, setActiveTab, isMobileMenuOpen, setIsMobileMenuOpe
       label: 'Payment Management',
       icon: CreditCard,
       description: 'Payments & Refunds'
+    },
+    {
+      id: 'delivery',
+      label: 'Delivery Management',
+      icon: Truck,
+      description: 'Deliveries & Delivery Persons'
     },
     {
       id: 'offers',

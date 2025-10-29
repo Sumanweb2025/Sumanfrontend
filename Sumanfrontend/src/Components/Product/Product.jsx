@@ -362,12 +362,12 @@ const ProductListingPage = ({ addToCart, onFilterChange, activeFilters = {} }) =
                             {product.description || 'A traditional South Indian snack made with authentic ingredients and spices for the perfect taste experience. Rich in flavor and made with love using traditional recipes passed down through generations.'}
                           </p>
 
-                          <div className="home-product-price-section">
+                          {/* <div className="home-product-price-section">
                             <span className="price-text home-price">${(product.price || 0).toFixed(2)}</span>
                             {product.originalPrice && (
                               <span className="home-original-price">${product.originalPrice.toFixed(2)}</span>
                             )}
-                          </div>
+                          </div> */}
 
                           <div className="home-product-actions">
                             <button

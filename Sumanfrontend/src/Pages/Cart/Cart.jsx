@@ -239,7 +239,7 @@ const DesktopCartItem = ({
           </div>
         )}
 
-        <div className="price-text item-price">
+        {/* <div className="price-text item-price">
           {isProductEligibleForOffer(product) && activeOffer ? (
             <>
               <span className="cart-discounted-price">${calculateDiscountedPrice(price).toFixed(2)}</span>
@@ -248,7 +248,7 @@ const DesktopCartItem = ({
           ) : (
             <span>${price.toFixed(2)}</span>
           )}
-        </div>
+        </div> */}
 
         {productDescription && (
           <p className="small-text item-description">
