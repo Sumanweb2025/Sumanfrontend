@@ -1199,8 +1199,13 @@
   }
 
   .iyyapa-products-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 12px;
+    grid-template-columns: 1fr !important;
+    gap: 15px;
+    width: 100%;
+  }
+
+  .iyyapa-main-content {
+    width: 100%;
   }
 
   .iyyapa-main-content .iyyapa-page-header {
@@ -1218,62 +1223,124 @@
   .iyyapa-sort-controls {
     justify-content: center;
     flex-wrap: wrap;
+    width: 100%;
   }
 
   .iyyapa-sort-select {
-    font-size: 12px;
-    padding: 6px 10px;
+    font-size: 14px;
+    padding: 8px 12px;
+    width: 100%;
+    max-width: 250px;
   }
 
   .iyyapa-product-card {
-    border-radius: 6px;
+    border-radius: 12px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   }
 
   .iyyapa-product-image-container {
-    height: 160px;
+    height: 250px;
+    min-height: 250px;
+    width: 100%;
   }
 
   .iyyapa-product-info {
-    padding: 10px;
+    padding: 15px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
   }
 
   .iyyapa-product-name {
-    font-size: 13px;
-    line-height: 1.2;
+    font-size: 16px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    font-weight: 600;
   }
 
   .iyyapa-product-brand {
-    font-size: 11px;
+    font-size: 13px;
+    margin-bottom: 5px;
+  }
+
+  .iyyapa-product-category {
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+
+  .iyyapa-product-rating {
+    margin-bottom: 10px;
+  }
+
+  .star-filled,
+  .star-empty {
+    font-size: 16px;
   }
 
   .iyyapa-product-price {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .iyyapa-product-price-section {
+    margin-bottom: 10px;
+  }
+
+  .iyyapa-discounted-price {
+    font-size: 18px;
+  }
+
+  .iyyapa-original-price {
     font-size: 15px;
   }
 
   .iyyapa-product-piece {
-    font-size: 11px;
+    font-size: 13px;
   }
 
   .iyyapa-add-to-cart-btn {
-    padding: 8px;
-    font-size: 12px;
+    padding: 12px;
+    font-size: 14px;
+    margin-top: auto;
+    width: 100%;
+    font-weight: 600;
   }
 
   .iyyapa-wishlist-btn {
-    width: 30px;
-    height: 30px;
-    font-size: 14px;
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
+    top: 10px;
+    right: 10px;
+  }
+
+  .iyyapa-stock-badge {
+    top: 10px;
+    left: 10px;
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+
+  .iyyapa-offer-badge {
+    top: 45px;
+    left: 10px;
+    padding: 5px 10px;
+    font-size: 11px;
   }
 
   .iyyapa-pagination {
-    gap: 3px;
+    gap: 5px;
     flex-wrap: wrap;
     justify-content: center;
+    margin-top: 20px;
   }
 
   .iyyapa-pagination-btn {
-    padding: 6px 10px;
-    font-size: 12px;
+    padding: 8px 12px;
+    font-size: 13px;
   }
 
   .iyyapa-deal-items {
@@ -1346,13 +1413,29 @@
   }
 
   .iyyapa-gram-button {
-    padding: 2px 6px;
-    font-size: 9px;
-    min-width: 35px;
+    padding: 5px 10px;
+    font-size: 11px;
+    min-width: 45px;
   }
 
   .iyyapa-gram-variants {
-    gap: 3px;
+    gap: 6px;
+    margin: 10px 0;
+  }
+
+  .iyyapa-single-gram {
+    margin: 10px 0;
+  }
+
+  .iyyapa-gram-display {
+    padding: 5px 12px;
+    font-size: 12px;
+  }
+
+  .iyyapa-results-info {
+    font-size: 13px;
+    padding: 8px 0;
+    margin-bottom: 10px;
   }
 }
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Package, Lock, User, AlertCircle } from 'lucide-react';
+import logoImage from '../../../assets/logo-title.png';
 import './DeliveryLogin.css';
 
 const DeliveryLogin = () => {
@@ -53,11 +54,8 @@ const DeliveryLogin = () => {
         {/* Logo/Header */}
         <div className="delivery-login-header">
           <div className="delivery-logo-circle">
-            <Package />
+           <img src={logoImage} alt="Iyappaa Logo" />
           </div>
-          <h1 className="delivery-login-title">
-            Delivery Portal
-          </h1>
           <p className="delivery-login-subtitle">
             Iyappaa Sweets & Snacks
           </p>
@@ -65,9 +63,10 @@ const DeliveryLogin = () => {
 
         {/* Login Card */}
         <div className="delivery-login-card">
-          <h2 className="delivery-login-card-title">
-            Delivery Person Login
-          </h2>
+          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937', margin: '0 0 8px 0' }}>Delivery Person Login</h1>
+          <p style={{ color: '#6b7280', margin: 0 }}>Sign in to access delivery dashboard</p>
+        </div>
 
           {error && (
             <div className="delivery-alert">
@@ -146,7 +145,7 @@ const DeliveryLogin = () => {
 
         {/* Footer */}
         <div className="delivery-login-footer">
-          <p>© 2024 Iyappaa Sweets & Snacks. All rights reserved.</p>
+          <p>© 2025 Iyappaa Sweets & Snacks. All rights reserved.</p>
         </div>
       </div>
     </div>

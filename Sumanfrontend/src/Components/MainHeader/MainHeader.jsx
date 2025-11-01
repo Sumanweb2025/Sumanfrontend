@@ -460,12 +460,12 @@ const MainHeader = ({ onProfileClick, onLogout }) => {
         </div>
       </div>
 
-      <div className="mobile-search">
+      {/* <div className="mobile-search">
         <div className="search-bar">
           <input type="text" placeholder="Search products..." />
           <FaSearch />
         </div>
-      </div>
+      </div> */}
 
       {showMobileMenu && (
         <div className="mobile-menu" ref={mobileMenuRef}>

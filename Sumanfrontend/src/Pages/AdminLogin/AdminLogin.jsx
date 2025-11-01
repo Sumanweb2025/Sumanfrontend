@@ -77,9 +77,12 @@ const AdminLogin = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8fafc' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f5f5f5' }}>
       <div className="admin-form-logo">
-        <img style={{ width:'auto', height: '150px' , objectFit: 'contain'}} src={logoImage} alt="Iyappaa Logo" />
+        <img style={{ width:'auto', height: '120px' , objectFit: 'contain'}} src={logoImage} alt="Iyappaa Logo" />
+        <p style={{fontSize:'16px', color: '#6b7280' , marginBottom: '10px'}}>
+            Iyappaa Sweets & Snacks
+          </p>
       </div>
       <div style={{ maxWidth: '500px', width: '100%', padding: '32px', backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
@@ -194,6 +197,10 @@ const AdminLogin = () => {
           <strong>API Endpoint:</strong> {API_BASE_URL}/admin/login
         </div> */}
       </div>
+      {/* Footer */}
+        <div style={{marginTop: '24px' , textAlign: 'center'}}>
+          <p style={{fontSize: '13px' , color:'#6b7280' , margin: '0'}}>© 2025 Iyappaa Sweets & Snacks. All rights reserved.</p>
+        </div>
     </div>
   );
 };

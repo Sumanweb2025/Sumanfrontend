@@ -35,7 +35,7 @@ const DeliveryDashboard = () => {
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('dashboard');
   const [activeDeliveryTab, setActiveDeliveryTab] = useState('pending');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 768);
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [actionLoading, setActionLoading] = useState(null);
@@ -68,7 +68,7 @@ const DeliveryDashboard = () => {
     try {
       setLoading(true);
       setError('');
-      
+
       // Fetch deliveries based on active tab
       let url = `${API_URL}api/delivery/my-deliveries`;
       if (activeDeliveryTab === 'completed') {
@@ -78,13 +78,13 @@ const DeliveryDashboard = () => {
       }
 
       console.log('Fetching deliveries from:', url);
-      
+
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
       console.log('Deliveries response:', response.data);
-      
+
       if (response.data && response.data.data) {
         setDeliveries(response.data.data);
       } else {
@@ -124,13 +124,13 @@ const DeliveryDashboard = () => {
           headers: { Authorization: `Bearer ${token}` }
         }
       );
-      
+
       // Create notifications for new/pending deliveries
-      const newDeliveries = response.data.data.filter(d => 
-        d.deliveryStatus === 'assigned' && 
+      const newDeliveries = response.data.data.filter(d =>
+        d.deliveryStatus === 'assigned' &&
         !d.notificationRead
       );
-      
+
       setNotifications(newDeliveries.map(d => ({
         id: d._id,
         message: `New delivery assigned: Order #${d.orderNumber}`,
@@ -142,10 +142,27 @@ const DeliveryDashboard = () => {
     }
   };
 
+  useEffect(() => {
+    const handleMobileSidebarClose = (e) => {
+      if (window.innerWidth < 768 && sidebarOpen) {
+        const sidebar = document.querySelector('.delivery-dashboard-sidebar');
+        const clickedOutside = sidebar && !sidebar.contains(e.target);
+        const clickedMenuBtn = e.target.closest('.delivery-dashboard-menu-btn');
+
+        if (clickedOutside && !clickedMenuBtn) {
+          setSidebarOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener('click', handleMobileSidebarClose);
+    return () => document.removeEventListener('click', handleMobileSidebarClose);
+  }, [sidebarOpen]);
+
   const handleStatusUpdate = async (deliveryId, newStatus, notes = '') => {
     try {
       setActionLoading(deliveryId);
-      
+
       let url = `${API_URL}api/delivery/${deliveryId}`;
       let data = {};
 
@@ -165,7 +182,7 @@ const DeliveryDashboard = () => {
 
       // Refresh data
       await fetchAllData();
-      
+
       alert(`Delivery status updated to ${newStatus.replace('_', ' ')}`);
     } catch (err) {
       console.error('Failed to update status:', err);
@@ -191,6 +208,18 @@ const DeliveryDashboard = () => {
       case 'out_for_delivery': return 'blue';
       case 'failed': return 'red';
       default: return 'yellow';
+    }
+  };
+
+  const handleMenuToggle = (e) => {
+    e.stopPropagation();
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  const handleNavClick = (tab) => {
+    setActiveTab(tab);
+    if (window.innerWidth < 768) {
+      setSidebarOpen(false);
     }
   };
 
@@ -250,14 +279,14 @@ const DeliveryDashboard = () => {
       <div className="delivery-dashboard-quick-actions">
         <h3>Quick Actions</h3>
         <div className="delivery-dashboard-action-buttons">
-          <button 
+          <button
             className="delivery-dashboard-action-btn primary"
             onClick={() => setActiveTab('deliveries')}
           >
             <List />
             <span>View All Deliveries</span>
           </button>
-          <button 
+          <button
             className="delivery-dashboard-action-btn secondary"
             onClick={() => {
               setActiveTab('deliveries');
@@ -383,7 +412,7 @@ const DeliveryDashboard = () => {
                     <MapPin />
                     <span>{delivery.customerInfo.address}</span>
                   </div>
-                  <a 
+                  <a
                     href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(delivery.customerInfo.address)}`}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -438,7 +467,7 @@ const DeliveryDashboard = () => {
                     </button>
                   </>
                 )}
-                
+
                 {delivery.deliveryStatus === 'out_for_delivery' && (
                   <>
                     <button
@@ -512,7 +541,7 @@ const DeliveryDashboard = () => {
         <nav className="delivery-dashboard-sidebar-nav">
           <button
             className={`delivery-dashboard-nav-item ${activeTab === 'dashboard' ? 'active' : ''}`}
-            onClick={() => setActiveTab('dashboard')}
+            onClick={() => handleNavClick('dashboard')}
           >
             <Home />
             {sidebarOpen && <span>Dashboard</span>}
@@ -530,7 +559,7 @@ const DeliveryDashboard = () => {
         </nav>
 
         <div className="delivery-dashboard-sidebar-footer">
-          <button 
+          <button
             className="delivery-dashboard-user-info"
             onClick={() => navigate('/delivery/profile')}
             title="View Profile"
@@ -555,7 +584,7 @@ const DeliveryDashboard = () => {
           <div className="delivery-dashboard-header-left">
             <button
               className="delivery-dashboard-menu-btn"
-              onClick={() => setSidebarOpen(!sidebarOpen)}
+              onClick={handleMenuToggle}
             >
               <Menu />
             </button>

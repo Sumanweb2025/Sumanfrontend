@@ -333,7 +333,7 @@
   }
 
   .signup-form-logo img {
-    height: 30px;
+    height: 100px;
   }
 
   .toast {
@@ -358,7 +358,7 @@
 
   .signup-form-logo {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: 8px;
   }
 
@@ -366,9 +366,9 @@
     font-size: 13px;
   }
 
-  .signup-form-logo img {
+  /* .signup-form-logo img {
     height: 28px;
-  }
+  } */
 
   .signup-form input {
     height: 46px;

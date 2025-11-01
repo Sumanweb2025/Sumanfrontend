@@ -415,7 +415,7 @@ const SignIn = () => {
           </div>
         </form>
 
-        <div className="google-auth-section">
+        {/* <div className="google-auth-section">
           <GoogleSignIn
             onSuccess={handleGoogleSuccess}
             onError={handleGoogleError}
@@ -426,7 +426,7 @@ const SignIn = () => {
               <span className="spinner"></span> Signing in with Google...
             </div>
           )}
-        </div>
+        </div> */}
 
         <div className="signin-footer">
           <p>Don't have an account? <a href="/signup">Sign up</a></p>

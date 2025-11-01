@@ -880,7 +880,7 @@ const ProductDetailsPage = ({ addToCart }) => {
                 </div>
               </div>
 
-              <div className="product-details-price">
+              {/* <div className="product-details-price">
                 {isProductEligibleForOffer() && activeOffer ? (
                   <>
                     <span className="product-details-current-price product-details-discounted">
@@ -912,7 +912,7 @@ const ProductDetailsPage = ({ addToCart }) => {
                     )}
                   </>
                 )}
-              </div>
+              </div> */}
 
               {/* Add Gram/Variant Selection */}
               {productVariants.length > 1 ? (

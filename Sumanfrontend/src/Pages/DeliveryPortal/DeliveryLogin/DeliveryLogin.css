@@ -1,8 +1,7 @@
-
 /* Container */
 .delivery-login-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f0fdf4 0%, #dbeafe 100%);
+  background: #f5f5f5;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10,39 +9,33 @@
 }
 
 .delivery-login-wrapper {
-  max-width: 450px;
+  max-width: 500px;
   width: 100%;
 }
 
 /* Logo Section */
 .delivery-login-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 10px;
 }
 
 .delivery-logo-circle {
-  display: inline-flex;
-  align-items: center;
+  width: 100%;
+  display:flex;
   justify-content: center;
-  width: 80px;
-  height: 80px;
-  background: #16a34a;
-  border-radius: 50%;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+  align-items: center;
 }
 
-.delivery-logo-circle svg {
-  width: 40px;
-  height: 40px;
-  color: white;
+.delivery-logo-circle img {
+   height: 120px;
+  width: auto;
+  object-fit: contain;
 }
 
 .delivery-login-title {
   font-size: 32px;
   font-weight: 700;
   color: #1f2937;
-  margin-bottom: 10px;
 }
 
 .delivery-login-subtitle {
@@ -62,7 +55,6 @@
   font-size: 24px;
   font-weight: 600;
   color: #1f2937;
-  margin-bottom: 30px;
   text-align: center;
 }
 
@@ -96,7 +88,7 @@
 .delivery-login-form {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 14px;
 }
 
 .delivery-form-group {
@@ -191,7 +183,7 @@
 
 /* Help Text */
 .delivery-help-text {
-  margin-top: 24px;
+  margin-top: 14px;
   text-align: center;
 }
 
@@ -231,14 +223,13 @@
     font-size: 22px;
   }
 
-  .delivery-logo-circle {
+  /* .delivery-logo-circle {
     width: 70px;
     height: 70px;
-  }
+  } */
 
-  .delivery-logo-circle svg {
-    width: 35px;
-    height: 35px;
+  .delivery-logo-circle img {
+    height: 100px;
   }
 }
 
@@ -249,10 +240,6 @@
 
   .delivery-login-card {
     padding: 24px 20px;
-  }
-
-  .delivery-login-title {
-    font-size: 24px;
   }
 
   .delivery-login-subtitle {
@@ -279,15 +266,16 @@
   }
 
   .delivery-logo-circle {
-    width: 60px;
-    height: 60px;
-    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
   }
 
-  .delivery-logo-circle svg {
-    width: 30px;
-    height: 30px;
-  }
+  /* .delivery-logo-circle img {
+    height: 28px;
+  } */
 }
 
 @media (max-width: 360px) {
@@ -301,6 +289,10 @@
 
   .delivery-input {
     font-size: 13px;
+  }
+
+  .delivery-logo-circle {
+   margin-bottom: 16px;
   }
 }
 
